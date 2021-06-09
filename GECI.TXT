@@ -88,7 +88,7 @@ from offset IOFF
   69    STRMERGE          70    NOALIGN           71    NOT
   72    UNION             73    ENDUNION          74    SAFE
   75    RUNBG             76    OLD               77    EXTRA
-
+  78    CONT
 
 |       = significant for idents
 
@@ -511,6 +511,10 @@ store = set to current variables
 76      do SUPER
 77      DOUBLEIF block optimizer for : IF IF x THEN x=0 ELSE x=y THEN y
 78      do INC/DEC (f.e. DEC x,10 )
+79      EXPECT3
+80      end job
+81      end job
+82      fill CONT label
 
 +---------------------------------------------------------------+
 |       OPT bits and cli-flags                                  |
@@ -1106,15 +1110,15 @@ A               addressreg
 
 stack frames used (id ALWAYS last!!!):
 
-id:     construct:              exit    frame: (top..bottom)
+id:     construct:              exit  cont   frame: (top..bottom)
 
-1       PROC/ENDPROC                    id:INT
-2       IF/ENDIF                        lab2, id:INT
-3       WHILE/ENDWHILE          *       _lab_, jumpbacklab, id:INT
-4       FOR/ENDFOR              *       jumbacklab, _lab_, step, var, id:INT
-5       SELECT/CASE/ENDSELECT           varoffs, lab, labend, id:INT
-6       REPEAT/UNTIL                    _lab_, jumbacklab, id:INT
-7       LOOP/ENDLOOP                    _lab_, id:INT
+1       PROC/ENDPROC                  cont   id:INT
+2       IF/ENDIF                             lab2, id:INT
+3       WHILE/ENDWHILE          *     *      _lab_, jumpbacklab, id:INT
+4       FOR/ENDFOR              *     *      jumbacklab, _lab_, step, var, contlab, id:INT
+5       SELECT/CASE/ENDSELECT                varoffs, lab, labend, id:INT
+6       REPEAT/UNTIL            *     *      _lab_, jumbacklab, id:INT
+7       LOOP/ENDLOOP            *     *      _lab_, jumbacklab, id:INT
 8       SELECT_OF
 
 has to become (ends with):      FOR/WHILE/UNTIL:        lab,jumpback,id
@@ -1197,7 +1201,10 @@ has to become (ends with):      FOR/WHILE/UNTIL:        lab,jumpback,id
 69      C       method def outside module
 70      C       libdef prob
 71      C       object not known at this point
-
+72              incorrect union definition
+73              16 bit value expected
+74      D       not enough memory for compile stack
+75      D       minimum compile stack size is 30000
 
 WARNINGS:
 
