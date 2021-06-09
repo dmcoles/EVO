@@ -1,0 +1,1270 @@
++---------------------------------------------------------------+
+|       interimcodes (tokens)                                   |
++---------------------------------------------------------------+
+[hint: if 16bit ref prob in EC then move big data tables to end of exe]
+
+num             type                    parameters
+
+-1      .       end_of_interim
+0       .       end_of_statement [EOI]
+1               value [VALUE]           v:LONG
+2       *X      libcall [LIBC]          off_lib:INT, off_call:INT, regs:PTR,
+                                        movemmask:INT, exc:INT
+3       *.      "," [COM]
+4       *       ":=" [ASSIGN]
+5       [X]     ident [IDENT]           id:PTR TO ident
+6               string [STR]            strlen:INT, wordlen:INT,
+                                        strdata[wordlen]:ARRAY OF INT
+
+7       *       "+"     11      *       "="     15      *       "<="
+8       *       "-"     12      .       ">"     16              "<>"
+9       *       "*"     13      *       "<"     17      *       "("
+10      *       "/"     14      *       ">="    18      .       ")"
+
+19      .       ":"
+20              <empty>
+21      []      source_ptr              line:INT, srclinenum
+22      *X      efunc                   entry:PTR TO tab
+23      *       "{"
+24              "}"
+25              const_resolved          ascii:PTR TO STR, hashentry:LONG
+26              ".W"
+27              ".L"
+28              ".B"
+29      *       "["                     otherbracket:PTR TO
+                                          interim_after_closing_bracket
+30      .       "]"
+31      X       objecthead              o:PTR TO objectheader
+32      *       "^"
+33              "++"
+34              "--"
+35      *       "."
+36      *       "`"
+37              "!"                     [was "|"]
+38      *X      libcallparse            l:PTR TO table
+39      X       objectmember            o:PTR TO member
+40      *.      "<=>"
+41      *       "::"
+42      X       objmemberascii          a:PTR TO STR (method+shared ONLY)
+43              floatvalue              v:LONG
+44              dummy (skip)            [only after $04xx tokens]
+45      X       objectheadascii         a:PTR TO STR (mutrec PTR TO in objs)
+46      .       "|"
+47      *       ">>"                    shift right
+48      *       "<<"                    shift left
+
+
+*       = never end of stat
+.       = next token to decide if ">" is part of a LISP-cell
+[]/X/@  = mac prob/save/prev_token (for tokenised macromethod)
+
+NOTE:   adding to this --> error reconstruction, skip etc.
+
+from offset IOFF
+
+| 0  *  PROC            | 1     ENDPROC         | 2  *  IF
+| 3     ENDIF           | 4  *  VOID            | 5  *  WHILE
+| 6     ENDWHILE        | 7  *  FOR             | 8     ENDFOR
+| 9  *  SELECT          | 10 *  CASE            | 11    DEFAULT
+| 12    ENDSELECT       | 13    REPEAT          | 14 *  UNTIL
+| 15 *  JUMP            | 16 *  DEF             | 17 *  LOCAL (=DEF)
+| 18 .  ELSE            | 19 *  INCBIN          | 20    LONG
+  21    INT               22    CHAR              23 *  INC
+  24 *  DEC               25 *. THEN              26    LOOP
+  27    ENDLOOP           28 .  DO                29 *  AND
+  30 *  OR                31 *  CONST             32 *  OPT
+  33    MODULE            34    STACK             35    EXIT
+  36    LARGE             37    ASM               38    NOWARN
+  39 *  TO                40 *  STEP              41    ARRAY
+  42    STRING            43 *  DIR               44 *  PTR
+  45 *  OF                46 *  ELSEIF            47    LIST
+  48 *  OBJECT            49    ENDOBJECT       | 50 *  SIZEOF
+| 51    RETURN          | 52 *  OSVERSION       | 53 *  ENUM
+| 54 *  SET             | 55 *. BUT             | 56    HANDLE
+| 57    EXCEPT          | 58 *  RAISE           | 59    EXPORT
+  60    REG               61 *  END             | 62 *  IS
+| 63 *  NEW             | 64    PUBLIC          | 65    PRIVATE
+| 66    SUPER           | 67    PREPROCESS      | 68 *  LIBRARY
+  69    STRMERGE          70    NOALIGN           71    NOT
+  72    UNION             73    ENDUNION          74    SAFE
+  75    RUNBG             76    OLD               77    EXTRA
+
+
+|       = significant for idents
+
+to change: INSTABLE, INSJOBTAB, PARSEUPPER, HEAVYTABLE,
+           CONTINUEKEY, PARSEGETIDENTNR, PARSEGETINSNR
+
++---------------------------------------------------------------+
+|       run-time variables                                      |
++---------------------------------------------------------------+
+
+those with "" are actual addressable variables
+
+-4      stack return                            [sys]
+-8      "stdout"                                [io]
+-12     "conout"                                [io]
+-16     "stdrast"                               [gfx]
+-20     linked memory list:PTR TO mem           [sys]
+-24     exit jump code adr.                     [sys]
+-28     cli return value                        [os]
+-32     "arg"                                   [os]
+-36     "wbmessage"                             [os]
+-40     "execbase"                              [base]
+-44     "dosbase"                               [base]
+-48     "intuitionbase"                         [base]
+-52     "gfxbase"                               [base]
+-56     "mathieeesingbasbase"                   [base] 97-101
+-60     "mathieeesingtransbase"                 [base] 102-109
+-64     stack bottom adr.                       [sys]
+-66.W   qualifier                               [intui]
+-68.W   code                                    [intui]
+-72     iaddress                                [intui]
+-76     code_return                             [exc]
+-80     stack_return                            [exc]
+-84     "exception"                             [exc]
+-88     saved a5                                [exc]
+-92     "stdin"                                 [io]
+-96     "exceptioninfo"                         [exc]
+-100    chopmem                                 [new]
+-104    chopleft                                [new]
+-108    cellsmem                                [gc]
+-112    cellsfree                               [gc]
+-116    chunksize                               [gc]
+-120    "thistask"                              [sys]
+
+
++---------------------------------------------------------------+
+|       structures                                              |
++---------------------------------------------------------------+
+
+OBJECT ident_lex_parse
+  next:LONG                     -4
+  ascii:PTR TO STR              0
+  type:CHAR                     4, [local,global,lab] = [1,2,3], 0=ndef
+  flags:CHAR                    5
+  pr:PTR TO proc                6, [proc,NIL,proc]
+  info:INT                      10
+  heavy:LONG                    VARHEAVY
+ENDOBJECT
+
+            0/1  1/2     2/4        3/8 4/16
+flags = SET USED,SYS_VAR,EXPORT (*),REG,REAL|METHOD
+(*) = in mainsource var komt uit module, variable coalescing
+etype = PTR TO [1,2,4] | PTR TO <object>
+info = [if_arg_then_offset,0,lab=-1 | proc=-2 | -3/-4 code in other module]
+offset = +arg, -localvar
+heavy: only for local+reg_alloc | labels from module [NIL|PTR TO procclass]
+
+OBJECT ident_parse_compile
+  next:LONG                     -4
+  etype:LONG                    0, [type,type,ascii]
+  type:CHAR                     4, [local,global,lab] = [1,2,3]
+  flags:CHAR                    5
+  pr:PTR TO proc                6, [proc,PTR TO globinfo|NIL,proc|NIL if lab]
+  info:INT                      10, [offset/regnum,offset,ID=label]
+ENDOBJECT
+
+OBJECT globinfo
+  ascii:PTR TO STR              0
+  used:PTR TO offsetinfo        4
+ENDOBJECT
+
+OBJECT offsetinfo
+  next:PTR TO offsetinfo        0
+  off:LONG                      4 offset from code
+  opsize:INT                    8 [1,2,4] (see GENGI)
+ENDOBJECT
+
+OBJECT proc
+  next:PTR TO proc              -4
+  nrargs:INT                    0
+  flags:CHAR                    2, SET COMPILE_RTD,METHOD,NO_REGALLOC,HAS_TAB,SAFEPROC
+  numregvars:CHAR               3, 0..3
+  nrloc:INT                     4, -(nrloc*4)
+  defargs:PTR TO vallist        6
+  of_object:PTR TO objectheader 10
+  ident:PTR TO ident            14
+  self:PTR TO ident             18
+  method:PTR TO method          22
+  regtable:PTR TO LONG          26 if regalloc
+ENDOBJECT
+
+OBJECT const
+  cnext:PTR TO const            hashed
+  cascii:PTR TO CHAR            4
+  cval:LONG                     8
+  cflags:CHAR                   12, bit 0=export
+  dummy:CHAR                    _empty_spot_
+ENDOBJECT
+
+OBJECT member
+  onext:PTR TO member           -4
+  ooff:INT                      0, offset
+  oflags:CHAR                   2, SET PRIVATE,EXTRA_TYPED
+  dummy:CHAR                    3, _empty_spot_
+  osize:INT                     4, fieldsize [1,2,4,0=array]
+  oid:INT                       6, object ID
+  oascii:PTR TO STR             8, NIL if PRIVATE
+  optrtype                      12, if EXTRA_TYPED  -+ asciiname ___ 0
+  info                          16, if ptr_to_obj   -+ next
+ENDOBJECT
+
+types in OBJECT
+till now: INT/CHAR/LONG/ARRAY/<obj>
+extra: PTRTO/ARRAYOF INT/CHAR/LONG/<obj>
+
+OBJECT objectheader
+  onext:PTR TO member           -4
+  odel:INT                      0, delegate size + IS_OO flag
+  otype:CHAR                    2, flags: bit 0=export, 1=import , 2=unions
+  dummy:CHAR                    3, _empty_spot_
+  osize:INT                     4, sizeof object
+  oid:INT                       6, object ID
+  oascii:PTR TO STR             8
+  omemb:PTR TO member           12, memberlist
+  omethod:PTR TO method         16, methodlist
+  osuper:PTR TO objecthead|NIL  20, superclass -> needed in main?
+  odelegatecode                 24, initcode, NIL=not_here(MinM),
+                                              adr=here|1=no_del_whatsoever
+  oaccess:PTR TO access         28
+  odeloff:INT                   32, offset from object (-1)
+  odestructoff                  34, -1=none
+ENDOBJECT
+
+OBJECT access
+  next:PTR TO access            0
+  code:PTR                      4, a4offset
+  type:INT                      8, 0=a4 (new, build del), 1=dcode (link del)
+ENDOBJECT
+
+OBJECT method
+  m_next:PTR TO method          0
+  m_proc:PTR TO proc|NIL        4
+  m_type:CHAR                   8 [0=METHOD, 1=FROZEN, 2=SHARED, 3=EMPTY]
+  m_flags:CHAR                  9 SET INHERITED,ARGERR,DESTRUCTOR,PRIVATE
+  m_off:INT                     10 delegate offset
+  m_name:PTR TO STR             12
+ENDOBJECT
+
+OBJECT modlist
+  mi_next:PTR TO modlist        0
+  mi_flags:CHAR                 4 SET SECONDARY
+  mi_dummy                      5 _empty_spot_
+  mi_namelen:LONG               6
+  mi_mod:PTR TO emodule         10
+  mi_list:PTR TO procclass      14
+  mi_nameptr:LONG               18
+ENDOBJECT
+
+OBJECT procclass
+  pc_next:PTR TO procclass      0
+  pc_type:INT                   4 [1=class, 2=lab/proc]
+  pc_info:PTR                   6 [TO ident|TO objectheader]
+  pc_acc:PTR TO modaccess       10 empty for class
+ENDOBJECT
+
+OBJECT modaccess
+  next, adr                     (adr=abs)
+ENDOBJECT
+
+OBJECT libasc
+  ascii:PTR                     (met direct erachter regs)
+  offset_base:INT               b.v. -44
+  offset_func:INT               b.v. -552
+  exception_index:INT           -1=none
+ENDOBJECT
+
+OBJECT code_list                fixproccode
+  next:PTR TO code_list
+  type:INT                      see # below:
+
+  1:    OBJECT proc_offset
+          identptr:PTR          6
+          offset:LONG           10 from codeblock
+        ENDOBJECT
+
+  2:    OBJECT code_block
+          adr:PTR               6
+          codebegin:LONG        10 if putreloc
+        ENDOBJECT
+
+  3:    OBJECT reloc_block      in putreloc
+          adr:PTR               6
+          len:LONG              10
+        ENDOBJECT
+
+  4:    OBJECT adr_patch
+          adr:PTR               6
+          len:LONG              10
+          mod_vers:INT          14
+        ENDOBJECT
+
+  5:    OBJECT proc_acc         other proc access linking
+          name:STR              6 proc/lab
+          acc_list:PTR          10 [narg:INT,num:INT,LONG,...]
+        ENDOBJECT
+
+  6:    OBJECT class
+          classname:STR         6
+          acclist:PTR           10 [INT,(LONG,INT),...]
+        ENDOBJECT
+
+  7:    OBJECT classx
+          o:PTR TO obj          6
+          delcode:LONG          10
+          acclist:PTR           14
+        ENDOBJECT
+
+  8:    OBJECT debug
+          next:PTR              6
+          d:PTR TO linedebug    10
+          offset:LONG           14
+        ENDOBJECT
+
+ENDOBJECT
+
+OBJECT string_link
+  next:PTR TO string_link
+  label:INT                     4, link with this label#
+  first:LONG                    6
+  ptrs:PTR TO list|NIL          10 [str,next]
+  -> was: numpointers:INT       6
+  ->      pointers:ARRAY OF STR 8, each has wordlen at -2(p)
+ENDOBJECT
+
+OBJECT runtime_string_or_list
+  next:PTR TO runtime_bla
+  size:LONG                     total allocated mem
+  link:PTR TO string            (here start non-dynamic version). maybe NIL
+  max:INT                       -4
+  len:INT                       -2
+  data[max+1]:ARRAY OF x        0
+ENDOBJECT
+
+OBJECT mem
+  next,alloc_size,actual_mem[]:ARRAY
+ENDOBJECT
+
+OBJECT efunctab
+  ascii:PTR TO STR              NIL = endtab
+  code_begin:PTR                code_end is code_begin of next tabentry
+  nrarg:LONG                    -(nrarg) --> vararg
+  defarginfos:LONG              see: default arguments
+ENDOBJECT
+
+OBJECT branch
+  next:PTR TO branch
+  operand_adr:PTR
+  labelno:INT
+  linenum:INT
+ENDOBJECT
+
+OBJECT label
+  label_adr:PTR                 labelno is index on ARRAY OF label
+ENDOBJECT
+
+OBJECT reloc                    the odd reloc here and there
+  next,code
+ENDOBJECT
+
+OBJECT offslist                 track libbasevars
+  next, var
+ENDOBJECT
+
+OBJECT raiseinfo
+  comparatortoken:INT
+  exceptionval:LONG
+  testagainstval:LONG
+ENDOBJECT
+
+OBJECT debug
+  next:LONG                     0
+  type:INT                      4
+  1,2,3:                        arg/loc/glob vars
+    beginline:INT               6
+    num:INT                     8
+    codes[num]:ARRAY OF INT     10 code = offset tov A5 | 30000+regnum
+  4:                            procname
+    num:INT                     6
+    name[num]:ARRAY             8
+  5:
+    len:INT (cur = 4, for future extensions)
+    self_line:INT
+    self_code:INT
+ENDOBJECT
+
+-> preprocessor: #ifdef #ifndef #endif #define
+
+OBJECT macro
+  next:PTR TO macro             0
+  name:PTR TO CHAR              4
+  body:PTR TO CHAR              8
+  nargs:INT                     12
+  flags:CHAR                    14 bit 0:import
+  dummy:CHAR                    15
+ENDOBJECT
+
+OBJECT libinfo
+  name:STR                      0
+  vers:LONG                     4
+  rev:LONG                      8
+  info:STR                      12
+  dum:INT                       16
+  numpr:INT                     18
+  procs:ARRAY OF:               20
+    (20 bytes each:
+    OBJECT proclibinfo
+      i:PTR TO ident            0
+      regnums[12]:ARRAY OF CHAR 4
+      regs:INT                  16 reverse movem
+      nargs:INT                 18 if regs/nargs = -1:LONG not opp (no manual regs)
+    ENDOBJECT 
+  ...
+  NIL
+ENDOBJECT
+
++---------------------------------------------------------------+
+|       statements job codes                                    |
++---------------------------------------------------------------+
+
+push,pop = keep track of this uitem on compile-stack (a5)
+store = set to current variables
+* = watch with variables
+
+0       endjob
+1*      getlab, store {19}
+2       getexp, make D0
+3*      getvar, store
+4       getcomma
+5       push ident
+6       gen. newlab, push, store {15}
+7       pop ident and check
+8       unstore, make branch {6,21}
+9       copy 2 bytes of jobcode to (a4)
+10      as [9], for 4
+11      as [9], for <n>
+12      as [9], for 6
+13      as [9], for 8
+14      as [9], for 10
+15      pop lab, define lab {6}
+16      make <exp> in D0, or moveq [ENDPROC,RETURN]
+17      proc on, check
+18      proc off
+19*     get lab, check, define lab {1}
+20      newlab, define lab, push {21}
+21      pop lab, store {20,6}
+22**    unstore var, make offset (see also [35]), [all,source]
+23*     push varoffset (unstore)
+24*     pop varoffset (unstore)
+25      push lab (unstore) {21}
+26      push lab (store) [second set]
+27      pop lab (store) [second set]
+28      like [6] [second set]
+29      like [8] [second set]
+30      set flag=1
+31      skip <n>+1 words if flag=0
+32      set flag=0
+33      do DEF/LOCAL/PROC: parse declarations
+34      set size for LINK A5
+35      like [22], now: move dest
+36      get "("
+37      get ")"
+38      do INCBIN
+39      do LONG
+40      do INT
+41      do CHAR
+42      statement, recursively
+43      IF nextcode is available (f.e. ELSE) THEN continue ELSE stop
+44      cause syntax error
+45      like [43], only now instead of stop eat until 0
+46      skip one word of jobcode
+47      expect ":="
+48      expect TO
+49      do mid-part of FOR
+50      end global vars
+51      make new endlab for IF (use with ELSEIF)
+52      make branch to lab of [51]
+53      define address
+54      waiste lab
+55      do OBJECT definition
+56      IF case of [12], OPTIIF
+57      set if-exp flag
+58      do RETURN
+59      like [8], but for 32bit reloc with BRA
+60      version of [42] for IF <exp>
+61      version of [2] for IF <exp> and WHILE, and REPEAT!
+62      make STEP addq from stack
+63      check for HANDLE after PROC
+64      do EXCEPT
+65      close exception handler in ENDPROC
+66      push vartype
+67      pop vartype
+68      make RTS or RTD
+69      do NEW
+70      like 43, only now fixed for RETURN/IS
+71      check and do SELECT OF
+72      check for OF <object>
+73      saveregs PROC (restore in job 18)
+74      do END
+75      fill EXIT label
+76      do SUPER
+77      DOUBLEIF block optimizer for : IF IF x THEN x=0 ELSE x=y THEN y
+78      do INC/DEC (f.e. DEC x,10 )
+
++---------------------------------------------------------------+
+|       OPT bits and cli-flags                                  |
++---------------------------------------------------------------+
+
+CODEPREFS
+
+bit     flags           opt             clear   set
+
+0    +3 -  -            STACK=<size>    calc    custom stack
+1       -  NILCHECK/S   -               -       check "." and "[]" for NIL
+2       l  LARGE/S      LARGE           small   large
+3       a  ASM/S        ASM             inline  asm only
+4       n  NOWARN/S     NOWARN          warn    no warnings
+5       E  ERRBYTE/S    -               0/10    byte# errorspot
+6       w  WB/S         -               -       wb_to_front
+7       rX -            REG             DIY     reg_alloc (max X regs)
+8  0 +2 -  -            OSVERSION=<ver> v33     kick <ver>
+9  1    b  SHOWBUF/S    -               -       show bufs
+10 2    mX ADDBUF/N/K   -               add 1   add X
+11 3    e  ERRLINE/S    -               0/10    line# errorspot
+12 4    -  -            MODULE          exe     module
+13 5    s  SYM/S        -               -       symbolhunk
+14 6    -  -            EXPORT          priv.   exports all
+15 7    q  QUIET/S      -               messys  quiet
+16 0 +1 -  -            RTD             use RTS use RTD for PROC call
+17 1    c  IGNORECACHE/S-               cache   don't use (ignore) cache
+18 2    h  HOLD/S       -               normal  hold cli before cleanup
+19 3    -  -            -               don't   use mathieeesingbas
+20 4    -  -            -               don't   use mathieeesingtrans
+21 5    L  LINEDEBUG/S  -               -       add line debug hunk
+22 6    -  DEBUG/S      -               -       gen NOPs + linedebug + infos
+23 7    -  -            PREPROCESS      -       macro def + use + condcompil
+24 0 +0 -  -            STRMERGE        -       string merging
+25 1    -  -            RUNBG
+26 2    
+27 3    
+28 4    
+29 5    
+30 6    
+31 7    
+
+SOURCE/A
+REG/N/K
+OPTI/S (REG=5)
+
++---------------------------------------------------------------+
+|       module format                                           |
++---------------------------------------------------------------+
+
+OBJECT emodule
+  "EMOD":LONG
+  firstjobcode:INT
+
+0       EOF
+
+1       OBJECT constdef
+          skipsize:LONG                 if vers>=6
+          -> any # until len=0
+          len:INT
+          value:LONG
+          id[len]:ARRAY
+        ENDOBJECT
+
+2       OBJECT objectdef
+          skipsize:LONG                 if vers>=6
+          -> any # until len=0
+          len:INT                       if -1 then no id, private (only v4)
+          size:INT                      either membersize or -1 if objhead
+          offset:INT                    zero for objhead
+          id[len]:ARRAY
+            ptrtype:INT                 if vers>=6
+                                        [0=none,1=char,2=int,4=long,-1=obj]
+              len:INT                   if ptrtype=obj
+              name[len]                 of object type pointed to
+        ENDOBJECT
+
+        first one is always head, after last 0 follows totalize.w.
+        if -1, then then obj has nosize.
+
+        after totalsize (if vers>=7):
+
+        OBJECT classdef
+          odel:INT                      if 0 then no further infos
+          delcode:LONG                  offset
+          len:INT
+          superasc[len]:ARRAY           -> not present for now
+          deloff:INT
+          destr:INT
+          -> any #of these until type+flags = $FFFF
+            type:CHAR
+            flags:CHAR
+            off:INT
+            len:INT
+            asc[len]:ARRAY              methodname
+            nargs:INT
+            len:INT
+            defargs[len]:ARRAY OF LONG
+            arglen:INT                          /* GRIO */
+            argstring[arglen]:ARRAY     if >0   /* GRIO */
+          -> any # until type = -1
+            type:INT                    access
+            off:LONG
+        ENDOBJECT
+
+3       OBJECT codeblock
+          nr_of_longs:LONG
+          code[nr_of_longs]:ARRAY OF LONG
+        ENDOBJECT
+
+4       OBJECT labeldefs                -> any number of these, until len=-1
+          len:INT                       length string+zeroes in bytes
+          id[len]:ARRAY                 always even
+          offset:LONG
+          type:INT                      1=proc, 2=lab
+          nrarg:INT                     from here only if proc!
+          nrloc:INT                     -(loc*4)
+          numdefargs:INT
+          defargs[num]:ARRAY OF LONG    if >0
+          arglen:INT
+          argstring[arglen]:ARRAY       if >0
+        ENDOBJECT
+
+5       OBJECT sysparams                always as first one in module !!!!!
+          stackused:LONG                0
+          osversion:INT                 4
+          codeprefs:LONG                6
+          cpubitsets[3]:ARRAY OF INT    10, see elsewhere
+          modversion:INT                16 [ 0(=1),2,3,4,... ]
+          reserved:LONG                 18
+        ENDOBJECT
+
+        version         0  = no sysparams available, v2.1(b) with newer:
+                             'could not read module'
+                        1  = v2.3 .. v2.4b with newer: 'not right version'
+                        2  = v2.4c+
+                        3  = v2.4e+ (with globals)
+                        4  = v2.4f+ (with private members)
+                        5  = v2.6d+ (skips + module in module)
+                        6  = v2.7b+ (const/obj skips + new types in objects)
+                        7  = v2.7d+ (classes in modules)
+                        8  = v3.0c+ (debuginfos)
+                        9  = v3.1a+ (more debuginfos)
+                        10 = v3.1b+ (fix opersize globals)
+
+
+6       LIBDEF
+        only available with version=0. after this modulechunk no others.
+        [1] libname, nilterm (only "\0" is ok too)
+        [2] basename (nilterm)
+        [3] any number of these until first byte = $FF
+            - chars funcname (not nil-term)
+            - register bytes [0..14] for args, if args=0 then byte 16
+            example: DC.B "Open",8,0,"Write",...,"FunNoArgs",16,"Bla",0,$FF
+
+7       OBJECT relocinfos
+          numreloc:LONG
+          relocs[numreloc]:ARRAY OF LONG
+        ENDOBJECT
+
+8       OBJECT globals
+          len:INT                       any #until len=-1 (*)
+          ascii[len]:ARRAY              if len>0
+          codeoff[]:ARRAY OF off        (vers>=10)?(LONG,opersize:INT):LONG
+          NIL:LONG
+        ENDOBJECT
+
+        (*) also 0 for private globals
+            also $8000: next LONG is skipsize. real len follows (off=6)
+
+9       OBJECT modinfo
+          skiplen:LONG
+            len:INT                     any #until len =0
+            name[len]:ARRAY
+              type:INT                  0=end, 1=class, 2=lab/proc
+              len:INT
+              name[len]:ARRAY
+              2 narg:INT                (-1=lab)
+                num:INT
+                access[num]:ARRAY OF LONG
+              1 num:INT
+                access[num]:ARRAY OF [LONG,INT]
+        ENDOBJECT
+
+10      OBJECT debug
+          -> any #of hunks until $3F1=0 (same as hunk, i.e. 10:INT, $3F1, ...)
+        ENOBJECT
+
+        OBJECT debug_hunk
+          $3F1:LONG
+          len_from_here:LONG
+          0:LONG
+          "LINE"|"L"+offs|"EVAR":LONG
+            line -> len_name_in_longs:LONG
+                    name[len]:ARRAY OF LONG
+                    linedebug:ARRAY OF (linenum:LONG,offs:LONG)
+            evar -> job:INT (0..4)
+                    4: len:INT, name[len]:ARRAY
+                    1,2,3: (see OBJECT debug)
+        ENDOBJECT
+
+11      OBJECT macros
+          len:INT                       until len=0
+          name[len]:ARRAY
+          nargs:INT
+          flags:CHAR
+          dummy:CHAR
+          len:INT
+          body[len]:ARRAY
+        ENDOBJECT
+
+ENDOBJECT
+
+                        0       1       2       skip
+
+1       const           r       r [x]   S [x]   
+2       object          r       r [x]   r [ ]   
+3       codeblock       r       S [x]   r [x]   ok      
+4       lab/proc        r       M [x]   r [x]   -
+5       sys             r       M [x]   r [x]   -
+6       lib             r       r [x]   S [x]   
+7       reloc           r       S [x]   r [x]   ok
+8       glob            r       S [x]   r [x]   $8000
+9       modinfo         r [x]   S [x]   r [x]   ok
+10      debug           r       S       r
+11      macros          r       r       S
+
+
+0 = normal module            in main source
+2 = module from other module in main source
+1 = module                   in module
+
+S = Skip (often: INT mark, LONG bytes_to_skip_from_after_this_long
+M = Special Action
+
++---------------------------------------------------------------+
+|       identifier parsing                                      |
++---------------------------------------------------------------+
+
+identifier predecessors:
+
+object head             TO OF : SIZEOF ::
+object member           .
+local/glob/label        other
+
+OF outside of obj_def:  ARRAY OF obj, SELECT var OF exp, PROC x() OF obj
+
++---------------------------------------------------------------+
+|       register assignments etc.                               |
++---------------------------------------------------------------+
+
+TOKENIZE:               a0              ptr to source
+                        a1              ptr to interim codes
+                        a2              ident work area
+                        d4              last token before this one
+                        d7/d6           current char, next char
+
+COMPILE:                (a2)            during jobinterpret only
+                        a3              interimcode
+                        a4              asmcode
+                        a5              compilerstack
+
+EXP:                    a3-a5           from COMPILE
+                        a1/d3/d4        set ins. / len opcode+operands
+                        d5              -1=startexp, 0=op, 1=val
+
+ASM_GRABVALUE:          d0-d4/a0        thrashable
+                        d0              wasvalue:BOOL
+                        d1              if wasvalue then value
+
+ASM_COMPILE:            a3/a4           interim/code
+                        a1              opcode
+                        a0              jobcode
+                        d1              size 1..3
+                        a2/a5/a6        free
+
+GETIDENTNR:             a0-a2           like in PARSE
+                        d3              PTR TO proc, (local) if any.
+                        d5/a5           PTR TO ident
+                        d5,a3/a4        freely used
+
+ADDLABEL:               d0              lab
+                        a4              spot
+                        a0/d0           trash
+
+ADDBRANCH:              a4              end.w instr
+                        d0              label#
+                        d1/a0           thrashable
+                        NEWOP.W         opcode for long version | NIL
+
+ADDBRANCHRELOC:         a4              voor rel. LONG
+                        rest            like ADDBRANCH without NEWOP
+
+EADDRESSMODI:           a1/d3-d5/d7     saved from EXP
+                        d0              0       ea->d0
+                                        1       ea->d1
+                                        2       d0->ea
+                                        $10000  no D2
+                        a0              identptr
+                        a1              object or NIL
+                        d2              1=inc, 2=dec, 0=nix
+                        d3              unscaled array index [0..], -1=in d0
+                        d4              readsize [0=lea,1,2,4]
+                        d5              objectsize
+                        d7              ---
+
+
+code generation for ^p++ and p[i].member++
+
+                [subq objsize]
+
+d3=-1                           d3=0,   d3=other
+
+[push d0]
+<exp>                           compiler calc offset
+[pop d2/move.l d0,d2]           [move d2]
+[lsl d2]
+[add d2]
+
+                [ident -> a0]
+                [moveq/ext]
+                move (a0) / o(a0) / 0(a0,d2)
+
+                [addq objsize]
+
++---------------------------------------------------------------+
+|       bufusage                                                |
++---------------------------------------------------------------+
+
+buffers                                 type            init    border
+-------                                 ----            ----    ------
+[1] Interim                             realloc         50      10
+    realloc1 / curinterim
+[2] Acode (+LibAsc)                     fixed           SRC     MAXSTACK (20)
+    alloc3,check3 / curacode
+[3] Heap                                expand          10      2
+    alloc5,getm,donem,doneh / heap
+[4] Labels                              realloc         15      5
+    realloc6 / labm
+
+ESTACKBUF:      lex .. start compile    code/addr. buf
+                compile                 stack
+                after                   module buf
+                upon error              erstring buf
+
+
++---------------------------------------------------------------+
+|       default args                                            |
++---------------------------------------------------------------+
+
+StrCmp/Add/Copy         -1      MidStr                  -1
+Val                     0       InStr                   0
+ListCmp/Add/Copy        -1      Plot/Line/Box           1
+Colour                  0       SetTopaz                8
+CleanUp                 0       Raise                   0
+OpenS/OpenW             0
+
+real longword used in funtab:
+
+NIL             no defarg, no nothing
+1..255          moveq val for defarg
+-1              0 defarg
+other           adr [of new code?]
+
+
++---------------------------------------------------------------+
+|       macros                                                  |
++---------------------------------------------------------------+
+
+HASHC d_hashdatareg, ea_chardata.b              -> hash one char
+HASHE d_hashdatareg                             -> compute final hashvalue
+HASH  a_string, d_hashdatareg, d_thrash         -> do all hashing
+
+GENVAR bit:imm, ident:Ax, offset:EA.W, thrash:Dx
+
+opcode is already generated, A4 points directly after it.
+opcode must be must have x(A5) as main EA (set to A4 by macro).
+macros tests for undecl idents.
+bit is either 0 or 9. 0 means regular EA, 9 means MOVE dest. EA
+
+TSTMOD  (NE -> module)
+
+CHKB    d,dtr,erlab
+CHKW    d,dtr,erlab
+
+SAVER   savemask.ea, mask_for_restr.d
+RESTR   rmask.ea
+
+LOWER   trstring.a, dtr   (after: Ax at 0-byte)
+
+GETM    a
+DONEM   a
+DONEH   a (heavy-use version)
+
+GINFO   asciiptr, atr, ident.a  (builds globinfo if necessary)
+GENGI   ident:Ax (geen A3-A5), Dx.tr
+
+CHESTB  curstack.ea, tr.dx, howoftencheck, error    (a5 check)
+
+INTERN  num    (cause internal error)
+
++---------------------------------------------------------------+
+|       processors supported                                    |
++---------------------------------------------------------------+
+
+OBJECT generate_code_for
+  cpu:INT, fpu:INT, bitset:INT
+ENDOBJECT
+
+cpu     0 = 68000+
+        1 = 68020+
+        2 = 68040+
+
+fpu     0 = FFP
+        1 = 68881+
+        2 = 68040+
+
+bits:
+
+0 = 010         3 = 040         6 = EC040       9  = 882
+1 = 020         4 = 060         7 = EC060       10 = 851
+2 = 030         5 = EC030       8 = 881
+
+combinations that make sense for now:
+
+<no_opt>        500, 600, 2000
+OPT 020         1200, 4000/030 etc.
+OPT 020,881     2500, 3000, 1200/881, 4000/030/881, 4000/040 etc.
+
+
++---------------------------------------------------------------+
+|       internal errors                                         |
++---------------------------------------------------------------+
+
+[compilerpart,errornum,linenum,cookiesthrashed,pc_offset,...]
+
+compilerpart    = [1..12] part of compiler in which error occured
+errornum        = 0 error caused by own cookie-check
+                = 1 for system guru (libraries etc.)
+                = [2,3,4,5,...] processor guru (reboot advisable)
+                = 100+ specific errors:
+                  100 = lib opti failed
+                  101 = libbase search fail
+                  102 = no delegate offs at call
+                  103 = beta module used (v1 .. v4)
+                  104 = regalloc prob
+                  105 = prep not empty line
+linenum         = -1 if no lines were being processed
+                = [0..] current linenum
+cookiesthrashed = #of cookies thrashed. reboot if >0
+pc_offset       = within EC
+
+
++---------------------------------------------------------------+
+|       exception handling interna                              |
++---------------------------------------------------------------+
+
+global variables available after a HANDLE:
+
+        code_return = PTR TO except_code (IF NIL THEN CleanUp())
+        stack_return = PTR TO base level of handler stack
+
+global variables available after an EXCEPT:
+
+        exception = exception ID
+        exceptioninfo = opt. attr value from Throw()
+
+scheme:
+
+PROC bla() HANDLE
+  <defs>
+  ** push [prev_stack,prev_code,a5]
+  ** fill [code_return,stack_return]
+  <body>
+  ** restore prev
+  ** bra endproc
+EXCEPT
+  (in Raise) -> restore prev
+  <e_body>
+  -> close block? (prob when no EXCEPT?)
+ENDPROC
+
+
++---------------------------------------------------------------+
+|       types and relations between them                        |
++---------------------------------------------------------------+
+
+only FOUR actual types exist in E:
+
+type:                   var:    member: derived_types:
+
+PTR TO CHAR             1       1       ARRAY OF CHAR,     STRING, LONG, <>
+PTR TO INT              2       2       ARRAY OF INT
+PTR TO LONG             4       4       ARRAY OF LONG,     LIST
+PTR TO <object>         PTR     0       ARRAY OF <object>, <object>
+
+dependancies on usability:
+
+                        LONG    INT/CHAR/LONG   ARRAY   STRING/LIST     <obj>
+
+in declaration:         *       -               *       *               *
+as PTR TO / ARRAY OF    -       *               -       -               *
+a member                -       *               1       -               *
+
+1 = in restricted form, disguised as <object>
+
+
++---------------------------------------------------------------+
+|       label types                                             |
++---------------------------------------------------------------+
+
+0..9            system [1=main,5=initglob,6=initdel,7=pre?,8=post?]
+10..numefuncs   (255 alterable) E funcs (WriteF=10, Mul=11 etc.)
+numefuncs..x    labels (proc+lab)
+x..y            generated labels
+
++---------------------------------------------------------------+
+|       inline assembler ea's                                   |
++---------------------------------------------------------------+
+
+bit     syntax                  mode    reg
+
+0       Dx                      000     r
+1       Ax                      001     r
+2       (Ax)                    010     r
+3       (Ax)+                   011     r
+4       -(Ax)                   100     r
+5       off(Ax)                 101     r
+6       off(Ax,Rx.s)            110
+7       4.W                     111     000
+8       4                       111     001
+9       lab(PC)                 111     010
+10      lab(PC,Rx.s)            111     011
+11      #value                  111     100
+
+5       var                     101     r       r=4/5
+5       libcall(A6)             101     r
+
++---------------------------------------------------------------+
+|       inline assembler interim-codes                          |
++---------------------------------------------------------------+
+
+mnemonics = 1..112 + [$100,$200,$300]=[.B,.W..L]
+eamodi    = 0..63 (6 bits ea) + $400 + ($100*bit)
+
++---------------------------------------------------------------+
+|       inline assembler jobcodes                               |
++---------------------------------------------------------------+
+
+num     func                            args:INT
+
+1       not_implemented_yet
+2       putsize                         bitoffset
+3       putsize_move                    bitoffset
+4       getea                           mask,offset
+5       getea_move                      mask,offset
+6       eat_comma
+7       do_add_sub
+8       do_moveq
+9       do_addq_subq_imm
+10      do_bcc
+11      do_dbcc
+12      put_addressreg                  offset
+13      do_shift_asr_asl_lsr_lsl        mem_opcode
+14      put_datareg                     offset
+15      do_bitins                       imm_opcode
+16      size_a
+17      size_e
+18      do_xreg_abcd_subx
+19      do_exg
+20      do_cmpm
+21      do_movem
+22      do_trap
+23      do_movep
+
++---------------------------------------------------------------+
+|       inline assembler parsing                                |
++---------------------------------------------------------------+
+
+starts with:    is:
+
+#               imm
+D               datareg
+A               addressreg
+(               addr. indir., post inc.
+-               pre decr.
+<num>           abs. long, abs. short, addr. verpl., addr. index, pc index
+<ident>         rel pc, e_var, label, abs. long, abs. short
+
++---------------------------------------------------------------+
+|       compile stack                                           |
++---------------------------------------------------------------+
+
+stack frames used (id ALWAYS last!!!):
+
+id:     construct:              exit    frame: (top..bottom)
+
+1       PROC/ENDPROC                    id:INT
+2       IF/ENDIF                        lab2, id:INT
+3       WHILE/ENDWHILE          *       _lab_, jumpbacklab, id:INT
+4       FOR/ENDFOR              *       jumbacklab, _lab_, step, var, id:INT
+5       SELECT/CASE/ENDSELECT           varoffs, lab, labend, id:INT
+6       REPEAT/UNTIL                    _lab_, jumbacklab, id:INT
+7       LOOP/ENDLOOP                    _lab_, id:INT
+8       SELECT_OF
+
+has to become (ends with):      FOR/WHILE/UNTIL:        lab,jumpback,id
+
++---------------------------------------------------------------+
+|       errors                                                  |
++---------------------------------------------------------------+
+
+[L]ex_parse, [C]ompile_parse, [D]os, [A]ddress_calc, [I]dentcheck, ...
+
+0       L       syntax
+1       L       unknown keyword/const/mnemonic
+2       C       := expected
+3       L       garbage in line
+4       C       label exp
+5       C       comma exp
+6       C       var exp
+7       L       LONG overflow
+8       L       missing '
+9       C       block structure
+10      D       illegal commandline flag
+11      C       divmul 16bit only
+12      C       too many tokens in stat
+13      C,A     no main
+14      C       double label
+15      C       * or / with lowword = 0
+16      D       input source
+17      D       output exe/module
+18      D       no args
+19      L,C     illegal/unknown ea
+20      L       () structure
+21      L       double decl var
+22      I       undecl ident
+23      C       expecting () (wrong #of args)
+24      L       unknown E/Lib ident
+25      C       illegal funcall
+26      L       unknown formatting code
+27      L       error in /* */
+28      C       INCBIN error
+29      C       } exp
+30      C       immediate val exp
+31      C       illegal size
+32      C       E used in OPT ASM-mode
+33      C       illegal type
+34      C       ] exp
+35      C       scope error
+36      L       MODULE read error
+37      L,C     workspace full
+38      O       allocmem fail
+39      C       object def
+40      C       object ref
+41      C       IF expr
+42      C,L     object ident unknown
+43      L       double object ident
+44      A       large model needed
+45      A       .S outof 256 bound
+46      C       too big expr ([]) / PROC-size / const-string-size
+47      C       handler def
+48      C       not allowed in module
+49      C       module only
+50      C       semantics error
+51      M       you need a newer compiler for this :-)
+52      L       [] structure sucks
+53      Asm     You need a better CPU/FPU for this
+54      C       object does not understand this method
+55      C       baseclass method <=> method #of args
+56      C       toomany regvars in function
+57      LI      linker can't find sym
+58      D       math lib
+59      C       illegal destructor def
+60      C       private member use/init
+61      C       double method
+62      M       object ptr not found
+63      Prep    unknown #keyword
+64      Prep    macrodef
+65      Prep    #if nesting
+66      Prep    macro double
+67      Prep    #if syntax
+68      Prep    macro nesting
+69      C       method def outside module
+70      C       libdef prob
+71      C       object not known at this point
+
+
+WARNINGS:
+
+bit     0       a4/a5 used
+        1       stack ?
+        2       stack !
+        3       = assignment
+        4       hardware change because of opt in module
+        5       var proc call
+        6       code outside procs
+        7       regs var used in handler
+
+
++---------------------------------------------------------------+
+|       REG_ALLOC factors                                       |
++---------------------------------------------------------------+
+
+... = weight factor spot, figures in (%)
+
+FOR ... ENDFOR                          800
+FOR ... DO ...                          800
+
+(idem for WHILE, LOOP, REPEAT)
+
+SELECT ... CASE ... ENDSELECT           1600 / 25
+
+IF ... THEN ... ENDIF                   100 / 50
+
+PROC ... ENDPROC                        100 (abs)
+
+
++---------------------------------------------------------------+
+|       MODULE CACHE                                            |
++---------------------------------------------------------------+
+
+naam:   DC.B    "EmoduleCache",0
+
+OBJECT cache
+  port:mp                       -> 0
+  cookie:LONG                   -> 34
+  modlist:PTR TO mod            -> 38
+  debug:PTR TO debugdata        -> 42 (only for use with EcDebug (tm))
+  lock:INT                      -> 46 [1=in_use]
+  reserved:INT                  -> 48
+  portname[50]:ARRAY            -> 50
+ENDOBJECT                       -> SIZEOF cache = 100
+
+OBJECT mod
+  next:PTR TO mod               -> 0
+  len:LONG                      -> 4 _all_inclusive_, +- 24+strlen+modlen+10
+  name:PTR TO STR               -> 8
+  namelen:LONG                  -> 12 actual_len+1
+  module:PTR TO emodule         -> 16
+  modulelen:LONG                -> 20
+  checksum:LONG                 -> 24
+  reserved:LONG                 -> 28
+  data[...]:ARRAY               -> 32
+ENDOBJECT
+
+OBJECT debugdata
+  objs:PTR TO PTR               -> 0 pointer to real list-pointer
+  procs:PTR TO PTR              -> 4
+  identhash                     -> 8
+  dbugval                       -> 12, hex/dec value
+  dbugadr                       -> 16, for dump
+  modinfolist                   -> 20
+  codelist                      -> 24
+ENDOBJECT
+
+

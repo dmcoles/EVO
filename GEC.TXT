@@ -1,0 +1,280 @@
+GEC v3.3g :
+GRIO Amiga E Compiler !
+
+Changes maked from Amiga E v3.3a:
+
+
+Optimisations:
+  (3.3b)
+    Better ELSEIF:
+        Was:                    Is:
+        Scc     D0              Bcc     xxx
+        EXT.W   D0
+        EXT.L   D0
+        BEQ     xxx
+    
+    Testing data in D0:
+        Was:                    Is:
+            MOVE.L  xx(Ax),D0
+                OR
+            MOVE.L  Dx,D0
+        TST.L   D0              Bcc     xxx
+        Bcc     xxx
+    
+    Stack back:
+        Was:                    Is:
+            JSR     xxxPROC/EFUNC
+        LEA     4(A7),A7        ADDQ.L  #4,A7
+  (3.3c)
+    Short instruction for interval (-128;127):
+        Was:                    Is:
+            MOVE.L  xxxx,D0
+        CMP.L   #0,D0           BEQ     xxx
+        or
+        TST.L   D0
+        BEQ     xxx
+        Was:                    Is:
+        CMP.L   #1,D0           MOVEQ   #1,D1
+        BEQ     xxx             CMP.L   D1,D0
+                    BEQ     xxx
+
+        Was:                    Is:
+        OR.L    #-1,D0          MOVEQ   #-1,D1
+                    OR.L    D1,D0
+
+        Was:                    Is:
+        SUB.L   #25,D0          MOVEQ   #25,D1
+                    SUB.L   D1,D0
+
+        Was:                    Is:
+        ...                     ...
+
+    MOVEM instrunction:
+        Was:                    Is:
+        MOVEM.L D3,-(A7)        MOVE.L  D3,-(A7)
+        MOVEM.L (A7)+,A5        MOVEA.L (A7)+,A5
+
+    Start value for variable:
+        Was:                    Is:
+        MOVEQ   #0,D0           MOVEQ   #0,D0
+        MOVE.L  D0,-$0224(A4)   MOVE.L  D0,-$0224(A4)
+        MOVEQ   #0,D0           MOVE.L  D0,-$0228(A4)
+        MOVE.L  D0,-$0228(A4)
+
+    NEW [1,x,10000]:
+        Was:                    Is:
+        MOVE.L  D0,(A7)         MOVE.L  D0,(A7)
+        MOVEQ   #1,D0           MOVEA.L D0,A6
+        MOVE.L  (A7),A6         MOVEQ  #1,D0
+        MOVE.L  D0,4(A6)        MOVE.L  D0,4(A6)
+        MOVE.L  x(A5),D0        MOVE.L  x(A5),D0
+        MOVE.L  (A7),A6         MOVE.L  D0,8(A6)
+        MOVE.L  D0,8(A6)        MOVE.L  #10000,D0
+        MOVE.L  #10000,D0       MOVE.L  D0,12(A6)
+        MOVE.L  (A7),A6
+        MOVE.L  D0,12(A6)
+
+    Zero offset to Ax register:
+        Was:                    Is:
+        MOVE.L  (A7)+,$0000(A0) MOVE.L  (A7)+,(A0)
+        MOVE.L  D0,$0000(A7)    MOVE.L  D0,(A7)
+
+   (3.3d)
+    Removed LINK A5,#-XXXX/UNLK A5:
+        if PROC haven't args and vars
+
+
+    Put element to the list:
+
+        Was:                    Is:
+        LEA     xx(PC),A0       PEA     xx(PC)
+        MOVE.L  A0,D0
+        MOVE.L  D0,-(A7)
+
+        Was:                    Is:
+        MOVE.L  #xx,D0          PEA     xx.(W/L)
+        MOVE.L  D0,-(A7)
+
+        Was:                    Is:
+        MOVE.L  xx(A4/A5)/Dx,D0 MOVE.L  xx(A4/A5)/Dx,-(A7)
+        MOVE.L  D0,-(A7)
+
+   (3.3f)
+    Some improvements in EAEXP.
+
+   (3.3g)
+
+
+Added features:
+  (3.3b)
+    -Possible to use EXIT in LOOP/ENDLOOP and REPEAT/UNTIL .
+    -Improved functions:
+        StrCopy()
+        StrCmp()
+        StrAdd()
+        MidStr()
+        ForAll()
+        Exitst()
+        SelectList()
+        FileLength()
+        ReadStr()       ->      much faster
+        MapList()
+        ListCmp()
+        ListAdd()
+        ListCopy()
+        String()
+        OstrCmp() .
+    -New function StriCmp() -> case sensitive version of StrCmp() .
+  (3.3c)
+    -String joining in the list by "+" . 
+    -Get/set list elements by 1+a .
+    -Function InStri() -> like InStr() but it case sensitive .
+    -Geting address of object member/method: {abc.a[3].z} .
+    -Line number report in branches .
+    -OPT STRMERGE for string merging .
+    -EXPORT ignored if not used in MODULE .
+  (3.3d)
+    -In definition OBJECT or var array size can be defined by [4*3+1]
+    -DEF a:REG abc now accepted .
+    -"=>" and ">=" it's the same , "=<" and "<=" it's the same .
+    -Things like that : Func()::blah.a now is possible .
+    -Using OPT 020+ we get improved code :
+     1. to the startup compiler put test code for entered CPU
+     2. inline mul/div (*;/) working for long sizes
+     3. function Mul()/Div() is patched for 020+
+     4. EXT.W;EXT.L is changed to EXTB.L .
+   (3.3e)
+    -Modified startup code .
+    -REGS var in HANDLER PROC ( only if you define them ,
+     no in optimisation ).Becarefull with that this maybe very dangerous
+     if you use REGS var in HANDLE'r.
+    -Using LONG label -> we get reloc of entered label .
+    -Short version ARRAY definition in PROC/OBJECT ( DEF a[10]:CHAR ) .
+    -NOALIGN keyword for OBJECT definition , it's turn off auto align 
+     odd members (example : OBJECT blah NOALIGN ).
+    -INC/DEC extension : INC x,20 ( x:=x+20 ) .
+    -ASM mnemonics:
+        MUL(U/S) AND DIV(U/S)   - long size
+        EXTB.L
+    -NOT keyword for IF/WHILE/UNTIL expresion .
+    -UNION keyword for OBJECT's definitions :
+           OBJECT abc
+             a:LONG
+             UNION
+               [b:INT,c,d]
+               [
+                e:CHAR
+                f:LONG
+                g:INT
+               ]
+             ENDUNION
+             k:PTR TO LONG
+          -> or something like that :
+             UNION [
+              [b:INT,c,d],
+              [e:CHAR,f:LONG,
+               g:INT]
+             ]
+           ENDOBJECT
+    -Added operators : &  eq AND
+              || eq OR
+              ~  eq NOT .
+    -Possible assigment in member/list elements ([a.e:=0]) .
+  (3.3f)
+    -New functions:
+        StrClone(estr) - duplicate estring
+        ListClone(elist) - only long size elements
+        GetA4() - ...
+    -Keyword SAFE for PROC's ( ex: PROC SAFE bla(a,b) ) :
+        result push REG's D2-D7/A2-A6 on the stack .
+    -OPT RUNBG - run background ( 2 vers 4 kick<v37 & kick>=v37 ) .
+    -Modified startup code (to work with or without RUNBG , and
+        fake stack is setup ).
+    -New global var "thistask" .
+    -Modified LIBRARY startup/Open/Close ; tasks never be hash-tabled
+     but tabled by dynamic allocated one linked list .
+    - "//" is a comment .
+    -Added exporting in MODULE arg name for method's ;
+         optional can be switched off by new keyword OLD
+     ( ex: OPT MODULE OLD ); update ShowModule tool for display "new"
+     module .
+  (3.3g)
+    - Improved fake stack setting , now is more os compatible
+      ( used exec SwapStack() for OS v37 else old things ).
+    - Added PRIVATE methods in OOP ( PROC bla() OF abc PRIVATE IS EMPTY )
+    - member can be used as method ( OBJECT abc;a,b;ENDOBJECT -> abc.a(1,2) )
+    - possible set PROC/label address in static list like this [1,2,main]
+      ( old mode [1,2,{main}]  ; is still working  ,but code is longer )
+    - registers can be used as normal variable ( very beta )
+    - EXTRA keyword for LIBRARY mode (idea taken from CreativE) :
+      LIBRARY namestring,version,revision,versionstring EXTRA value IS ...;
+      now library base can have more variables
+    - PREPROCESS'ing is on at beginnig , OPT PREPROCESS leaved for down compatibility.
+    - Added shift expresion (exp. CONST  ABC=1<<4; x:=y<<3 ).
+    - Function added AstringF - like StringF but for normal string's
+
+    
+Fixed Bugs:
+  (3.3b)
+    -Functions:
+        Facos()
+        Fsinh()
+        ... .
+  (3.3c)
+    -Bad object reference:
+        OBJECT bla
+        brr
+        ENDOBJECT
+        PROC main()
+        DEF i:bla
+        WriteF('\d\n',i.brr.brr)
+        ENDPROC
+    -MOVEQ #-128,D0 now accepted .
+    -Default member in object now is PTR TO CHAR .
+    -RAISE error report .
+    -Error report without "]" in DEF a[ .
+    -Library base showed unref if called in other module .
+    -EOR.L #3,D0 changed to EORI.L #3,D0 .
+   (3.3d)
+    -Get address member then a first is dereference : {a::abc.c} .
+   (3.3e)
+    -Getting address member if he not defined .
+    -Bad brach set in LIBRARY if OPT CPU not used .
+    -Things like:
+        IF IF x THEN x ELSE x=y THEN y ELSE 0
+     generating bad code .
+    -"IF" optimiser cut TST after functions/procedures;
+        Example:
+        IF CtrlC() THEN Raise(ERR_BREAK)
+        CODE:
+        BSR     CtrlC
+        BEQ     xxx .
+   (3.3f)
+    - Bad reporting in case: OBJECT bla; a,b,c ;PROC zzz() ( or CONST ...)
+      error message "label expected" - now "incorrect object definition" .
+    - Small fixes in head code in LIBRARY output .
+    - Raise() in LIBRARY if PROC isn't have HANDLE'r JUMP to $0 address .
+    - Small bug in geting var address .
+    - Agrrh... nasty bug in close library routine . Resolved.
+    - Fake stack maker bug ( in setting Upper/Lower pointers) .
+   (3.3g)
+    - Another bugs fixed in "get address " sequence (ex.: {a.c[a]} ).
+    - Problem with definition static OBJECT's and UNION's members.
+    - Small bug in reg exp
+ 
+
+
+
+DATE HISTORY:
+    3.3b    20.11.1999 -> 12.12.1999
+    3.3c    15.12.1999 -> 12.01.2000
+    3.3d    21.01.2000 -> 02.03.2000
+    3.3e    05.04.2000 -> 22.06.2000
+    3.3f    03.01.2001 -> 15.10.2001
+    3.3g    04.01.2002 -> 16.06.2003
+
+
+
+
+ogrio@o2.pl
+
