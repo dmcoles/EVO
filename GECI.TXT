@@ -145,6 +145,7 @@ OBJECT ident_lex_parse
   flags:CHAR                    5
   pr:PTR TO proc                6, [proc,NIL,proc]
   info:INT                      10
+  lineNUM:INT                   12 (VARLINENO)
   heavy:LONG                    VARHEAVY
 ENDOBJECT
 
@@ -154,6 +155,7 @@ flags = SET USED,SYS_VAR,EXPORT (*),REG,REAL|METHOD
 etype = PTR TO [1,2,4] | PTR TO <object>
 info = [if_arg_then_offset,0,lab=-1 | proc=-2 | -3/-4 code in other module]
 offset = +arg, -localvar
+lineNUM = line number of declaration used in reporting unused variables
 heavy: only for local+reg_alloc | labels from module [NIL|PTR TO procclass]
 
 OBJECT ident_parse_compile
