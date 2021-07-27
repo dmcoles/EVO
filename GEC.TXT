@@ -261,10 +261,23 @@ Fixed Bugs:
     - Another bugs fixed in "get address " sequence (ex.: {a.c[a]} ).
     - Problem with definition static OBJECT's and UNION's members.
     - Small bug in reg exp
- 
-
-
-
+   (3.3h)
+    - Add CONT command, similar to EXIT but continues the loop at the top
+      instead of dropping out.
+    - Make default cpu 68000
+    - Make stack buffer configurable (and default it to 50k)
+    - Fix file handle leak
+    - Fixed breaking defect MIDSTR command
+    - Allow CONT and EXIT commands to be called inside an IF or SELECT
+    - Add ANDALSO and ORELSE short circuit versions of AND and OR
+    - Optimised IF/WHILE/REPEAT expressions and removed TST immediately
+      following MOVEQ
+    - Fixed KickVersion not returning true when version number is exactly
+      equal to the requested version
+    - Allow String(0) which was valid in E v3.3a
+    - Show line numbers for unused variables/labels/procs
+    - Allow \U for unsigned longs (in WriteF)
+    
 DATE HISTORY:
     3.3b    20.11.1999 -> 12.12.1999
     3.3c    15.12.1999 -> 12.01.2000
@@ -272,6 +285,7 @@ DATE HISTORY:
     3.3e    05.04.2000 -> 22.06.2000
     3.3f    03.01.2001 -> 15.10.2001
     3.3g    04.01.2002 -> 16.06.2003
+    3.3h    09.06.2021 -> ??.??.????
 
 
 
