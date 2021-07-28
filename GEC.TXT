@@ -276,7 +276,12 @@ Fixed Bugs:
       equal to the requested version
     - Allow String(0) which was valid in E v3.3a
     - Show line numbers for unused variables/labels/procs
-    - Allow \U for unsigned longs (in WriteF)
+    - Allow new formatting characters \u (unsigned long) \q (double quote)
+      \! (ascii bell) \v (vertical tab) \xHH (hex char) (taken from
+      CreativE)
+    - Allow macros to be defined by passing in DEFINE command line
+      parameter (taken from CreativE / ECX)
+    - Allow string consts (taken from CreativE)
     
 DATE HISTORY:
     3.3b    20.11.1999 -> 12.12.1999
