@@ -88,7 +88,8 @@ from offset IOFF
   69    STRMERGE          70    NOALIGN           71    NOT
   72    UNION             73    ENDUNION          74    SAFE
   75    RUNBG             76    OLD               77    EXTRA
-  78    CONT
+  78    CONT              79    ANDALSO           80    ORELSE
+  81    POOL
 
 |       = significant for idents
 
@@ -132,7 +133,8 @@ those with "" are actual addressable variables
 -112    cellsfree                               [gc]
 -116    chunksize                               [gc]
 -120    "thistask"                              [sys]
-
+-124    pool
+-128    opened files list
 
 +---------------------------------------------------------------+
 |       structures                                              |
@@ -552,8 +554,8 @@ bit     flags           opt             clear   set
 23 7    -  -            PREPROCESS      -       macro def + use + condcompil
 24 0 +0 -  -            STRMERGE        -       string merging
 25 1    -  -            RUNBG
-26 2    
-27 3    
+26 2    -  -            POOL            -       enable pool (v39+ only)
+27 3    -  -                            -       auto close files
 28 4    
 29 5    
 30 6    
@@ -1207,6 +1209,11 @@ has to become (ends with):      FOR/WHILE/UNTIL:        lab,jumpback,id
 73              16 bit value expected
 74      D       not enough memory for compile stack
 75      D       minimum compile stack size is 30000
+76              unknown HEX value after \x
+77              this instruction needs a newer OS version
+78              value expected
+79              ")" expected
+80              this instruction works only in pool mode
 
 WARNINGS:
 

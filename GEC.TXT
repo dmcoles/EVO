@@ -282,6 +282,13 @@ Fixed Bugs:
     - Allow macros to be defined by passing in DEFINE command line
       parameter (taken from CreativE / ECX)
     - Allow string consts (taken from CreativE)
+    - Added #date preprocessor (taken from CreativE but enhanced with hours
+      minutes and seconds options)
+    - Added DoMethod, DoMethodA, CoerceMethod, CoerceMethodA,
+      DoSuperMethod, DoSuperMethodA, Set, Sets, Get, Gets, CtrlD, CtrlE, CtrlF,
+      Chk, Eof, Fopen, Fclose, Alloc, Free, PutF, ReadB, WriteB, Size, Lsl, Lsr
+      functions (all taken from CreativE)
+    - We now have optimised versions of WriteF, PrintF, PutF when targetting OS 37
     
 DATE HISTORY:
     3.3b    20.11.1999 -> 12.12.1999
