@@ -261,7 +261,9 @@ Fixed Bugs:
     - Another bugs fixed in "get address " sequence (ex.: {a.c[a]} ).
     - Problem with definition static OBJECT's and UNION's members.
     - Small bug in reg exp
-   (3.3h)
+
+Development restarted:
+   (3.4a)
     - Add CONT command, similar to EXIT but continues the loop at the top
       instead of dropping out.
     - Make default cpu 68000
@@ -297,10 +299,7 @@ DATE HISTORY:
     3.3e    05.04.2000 -> 22.06.2000
     3.3f    03.01.2001 -> 15.10.2001
     3.3g    04.01.2002 -> 16.06.2003
-    3.3h    09.06.2021 -> ??.??.????
+    3.4a    09.06.2021 -> ??.??.????
 
 
-
-
-ogrio@o2.pl
 
