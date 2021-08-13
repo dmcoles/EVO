@@ -1,0 +1,70 @@
+OPT MODULE
+OPT EXPORT
+
+OBJECT bltnode
+  n:PTR TO bltnode
+  function:LONG
+  stat:CHAR
+  dummy:CHAR
+  blitsize:INT
+  beamsync:INT
+  cleanup:LONG
+ENDOBJECT     /* SIZEOF=18 */
+
+CONST CLEANMEN=6,
+      CLEANME=$40,
+      CLEANUP=$40,
+      HSIZEBITS=6,
+      VSIZEBITS=10,
+      HSIZEMASK=$3F,
+      VSIZEMASK=$3FF,
+      MAXBYTESPERROW=$1000,
+      MINBYTESPERROW=$80,
+      MAXBYTESPERROW=$1000,
+      ABC=$80,
+      ABNC=$40,
+      ANBC=$20,
+      ANBNC=16,
+      NABC=8,
+      NABNC=4,
+      NANBC=2,
+      NANBNC=1,
+      BC0B_DEST=8,
+      BC0B_SRCC=9,
+      BC0B_SRCB=10,
+      BC0B_SRCA=11,
+      BC0F_DEST=$100,
+      BC0F_SRCC=$200,
+      BC0F_SRCB=$400,
+      BC0F_SRCA=$800,
+      BC1F_DESC=2,
+      DEST=$100,
+      SRCC=$200,
+      SRCB=$400,
+      SRCA=$800,
+      ASHIFTSHIFT=12,
+      BSHIFTSHIFT=12,
+      LINEMODE=1,
+      FILL_OR=8,
+      FILL_XOR=16,
+      FILL_CARRYIN=4,
+      ONEDOT=2,
+      OVFLAG=$20,
+      SIGNFLAG=$40,
+      BLITREVERSE=2,
+      SUD=16,
+      SUL=8,
+      AUL=4,
+      OCTANT8=24,
+      OCTANT7=4,
+      OCTANT6=12,
+      OCTANT5=28,
+      OCTANT4=20,
+      OCTANT3=8,
+      OCTANT2=0,
+      OCTANT1=16
+
+CONST A_OR_B=ABC OR ANBC OR NABC OR ABNC OR ANBNC OR NABNC,
+      A_OR_C=ABC OR NABC OR ABNC OR ANBC OR NANBC OR ANBNC,
+      A_XOR_C=NABC OR ABNC OR NANBC OR ANBNC,
+      A_TO_D=ABC OR ANBC OR ABNC OR ANBNC

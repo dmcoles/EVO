@@ -1,0 +1,67 @@
+OPT MODULE
+OPT EXPORT
+
+OPT PREPROCESS
+
+CONST PDTA_MODEID=$800010C8,
+      PDTA_BITMAPHEADER=$800010C9,
+      PDTA_BITMAP=$800010CA,
+      PDTA_COLORREGISTERS=$800010CB,
+      PDTA_CREGS=$800010CC,
+      PDTA_GREGS=$800010CD,
+      PDTA_COLORTABLE=$800010CE,
+      PDTA_COLORTABLE2=$800010CF,
+      PDTA_ALLOCATED=$800010D0,
+      PDTA_NUMCOLORS=$800010D1,
+      PDTA_NUMALLOC=$800010D2,
+      PDTA_REMAP=$800010D3,
+      PDTA_SCREEN=$800010D4,
+      PDTA_FREESOURCEBITMAP=$800010D5,
+      PDTA_GRAB=$800010D6,
+      PDTA_DESTBITMAP=$800010D7,
+      PDTA_CLASSBITMAP=$800010D8,
+      PDTA_NUMSPARSE=$800010D9,  -> Data for this tag is unsigned INT
+      PDTA_SPARSETABLE=$800010DA,
+      MSKNONE=0,
+      MSKHASMASK=1,
+      MSKHASTRANSPARENTCOLOR=2,
+      MSKLASSO=3,
+      MSKHASALPHA=4,
+      CMPNONE=0,
+      CMPBYTERUN1=1,
+      CMPBYTERUN2=2
+
+#define PICTUREDTCLASS 'picture.datatype'
+
+OBJECT bitmapheader
+  width:INT  -> This is unsigned
+  height:INT  -> This is unsigned
+  left:INT
+  top:INT
+  depth:CHAR
+  masking:CHAR
+  compression:CHAR
+  pad:CHAR
+  transparent:INT  -> This is unsigned
+  xaspect:CHAR
+  yaspect:CHAR
+  pagewidth:INT
+  pageheight:INT
+ENDOBJECT     /* SIZEOF=20 */
+
+OBJECT colorregister
+  red:CHAR
+  green:CHAR
+  blue:CHAR
+ENDOBJECT     /* SIZEOF=3 */
+
+CONST ID_ILBM=$494C424D,
+      ID_BMHD=$424D4844,
+      ID_BODY=$424F4459,
+      ID_CMAP=$434D4150,
+      ID_CRNG=$43524E47,
+      ID_GRAB=$47524142,
+      ID_SPRT=$53505254,
+      ID_DEST=$44455354,
+      ID_CAMG=$43414D47
+

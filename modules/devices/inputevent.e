@@ -1,0 +1,135 @@
+OPT MODULE
+OPT EXPORT
+
+MODULE 'devices/timer',
+       'intuition/screens',
+       'utility/hooks',
+       'utility/tagitem'
+
+CONST IECLASS_NULL=0,
+      IECLASS_RAWKEY=1,
+      IECLASS_RAWMOUSE=2,
+      IECLASS_EVENT=3,
+      IECLASS_POINTERPOS=4,
+      IECLASS_TIMER=6,
+      IECLASS_GADGETDOWN=7,
+      IECLASS_GADGETUP=8,
+      IECLASS_REQUESTER=9,
+      IECLASS_MENULIST=10,
+      IECLASS_CLOSEWINDOW=11,
+      IECLASS_SIZEWINDOW=12,
+      IECLASS_REFRESHWINDOW=13,
+      IECLASS_NEWPREFS=14,
+      IECLASS_DISKREMOVED=15,
+      IECLASS_DISKINSERTED=16,
+      IECLASS_ACTIVEWINDOW=17,
+      IECLASS_INACTIVEWINDOW=18,
+      IECLASS_NEWPOINTERPOS=19,
+      IECLASS_MENUHELP=20,
+      IECLASS_CHANGEWINDOW=21,
+      IECLASS_MAX=21,
+      IESUBCLASS_COMPATIBLE=0,
+      IESUBCLASS_PIXEL=1,
+      IESUBCLASS_TABLET=2,
+      IESUBCLASS_NEWTABLET=3
+
+OBJECT iepointerpixel
+  screen:PTR TO screen
+  positionx:INT
+  positiony:INT
+ENDOBJECT     /* SIZEOF=8 */
+
+OBJECT iepointertablet
+  rangex:INT  -> This is unsigned
+  rangey:INT  -> This is unsigned
+  valuex:INT  -> This is unsigned
+  valuey:INT  -> This is unsigned
+  pressure:INT
+ENDOBJECT     /* SIZEOF=10 */
+
+OBJECT ienewtablet
+  callback:PTR TO hook
+  scaledx:INT  -> This is unsigned
+  scaledy:INT  -> This is unsigned
+  scaledxfraction:INT  -> This is unsigned
+  scaledyfraction:INT  -> This is unsigned
+  tabletx:LONG
+  tablety:LONG
+  rangex:LONG
+  rangey:LONG
+  taglist:PTR TO tagitem
+ENDOBJECT     /* SIZEOF=32 */
+
+CONST IECODE_UP_PREFIX=$80,
+      IECODEB_UP_PREFIX=7,
+      IECODE_KEY_CODE_FIRST=0,
+      IECODE_KEY_CODE_LAST=$77,
+      IECODE_COMM_CODE_FIRST=$78,
+      IECODE_COMM_CODE_LAST=$7F,
+      IECODE_C0_FIRST=0,
+      IECODE_C0_LAST=31,
+      IECODE_ASCII_FIRST=$20,
+      IECODE_ASCII_LAST=$7E,
+      IECODE_ASCII_DEL=$7F,
+      IECODE_C1_FIRST=$80,
+      IECODE_C1_LAST=$9F,
+      IECODE_LATIN1_FIRST=$A0,
+      IECODE_LATIN1_LAST=$FF,
+      IECODE_LBUTTON=$68,
+      IECODE_RBUTTON=$69,
+      IECODE_MBUTTON=$6A,
+      IECODE_NOBUTTON=$FF,
+      IECODE_NEWACTIVE=1,
+      IECODE_NEWSIZE=2,
+      IECODE_REFRESH=3,
+      IECODE_REQSET=1,
+      IECODE_REQCLEAR=0,
+      IEQUALIFIER_LSHIFT=1,
+      IEQUALIFIER_RSHIFT=2,
+      IEQUALIFIER_CAPSLOCK=4,
+      IEQUALIFIER_CONTROL=8,
+      IEQUALIFIER_LALT=16,
+      IEQUALIFIER_RALT=$20,
+      IEQUALIFIER_LCOMMAND=$40,
+      IEQUALIFIER_RCOMMAND=$80,
+      IEQUALIFIER_NUMERICPAD=$100,
+      IEQUALIFIER_REPEAT=$200,
+      IEQUALIFIER_INTERRUPT=$400,
+      IEQUALIFIER_MULTIBROADCAST=$800,
+      IEQUALIFIER_MIDBUTTON=$1000,
+      IEQUALIFIER_RBUTTON=$2000,
+      IEQUALIFIER_LEFTBUTTON=$4000,
+      IEQUALIFIER_RELATIVEMOUSE=$8000,
+      IEQUALIFIERB_LSHIFT=0,
+      IEQUALIFIERB_RSHIFT=1,
+      IEQUALIFIERB_CAPSLOCK=2,
+      IEQUALIFIERB_CONTROL=3,
+      IEQUALIFIERB_LALT=4,
+      IEQUALIFIERB_RALT=5,
+      IEQUALIFIERB_LCOMMAND=6,
+      IEQUALIFIERB_RCOMMAND=7,
+      IEQUALIFIERB_NUMERICPAD=8,
+      IEQUALIFIERB_REPEAT=9,
+      IEQUALIFIERB_INTERRUPT=10,
+      IEQUALIFIERB_MULTIBROADCAST=11,
+      IEQUALIFIERB_MIDBUTTON=12,
+      IEQUALIFIERB_RBUTTON=13,
+      IEQUALIFIERB_LEFTBUTTON=14,
+      IEQUALIFIERB_RELATIVEMOUSE=15
+
+OBJECT inputevent
+  nextevent:PTR TO inputevent
+  class:CHAR
+  subclass:CHAR
+  code:INT  -> This is unsigned
+  qualifier:INT  -> This is unsigned
+-> a) next four CHARs are unioned as "eventaddress:LONG"
+-> b) next two CHARs are unioned as "x:INT"
+  prev1downcode:CHAR
+  prev1downqual:CHAR
+-> b) next two CHARs are unioned "y:INT"
+  prev2downcode:CHAR
+  prev2downqual:CHAR
+  timestamp:timeval
+ENDOBJECT     /* SIZEOF=22 */
+

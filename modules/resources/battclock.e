@@ -1,0 +1,6 @@
+OPT MODULE
+OPT EXPORT
+
+OPT PREPROCESS
+
+#define BATTCLOCKNAME 'battclock.resource'

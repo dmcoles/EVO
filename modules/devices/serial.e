@@ -1,0 +1,75 @@
+OPT MODULE
+OPT EXPORT
+
+OPT PREPROCESS
+
+MODULE 'exec/io'
+
+CONST SER_DEFAULT_CTLCHAR=$11130000,
+      SDCMD_QUERY=9,
+      SDCMD_BREAK=10,
+      SDCMD_SETPARAMS=11,
+      SER_DEVFINISH=11,
+      SERB_XDISABLED=7,
+      SERF_XDISABLED=$80,
+      SERB_EOFMODE=6,
+      SERF_EOFMODE=$40,
+      SERB_SHARED=5,
+      SERF_SHARED=$20,
+      SERB_RAD_BOOGIE=4,
+      SERF_RAD_BOOGIE=16,
+      SERB_QUEUEDBRK=3,
+      SERF_QUEUEDBRK=8,
+      SERB_7WIRE=2,
+      SERF_7WIRE=4,
+      SERB_PARTY_ODD=1,
+      SERF_PARTY_ODD=2,
+      SERB_PARTY_ON=0,
+      SERF_PARTY_ON=1,
+      IOSTB_XOFFREAD=4,
+      IOSTF_XOFFREAD=16,
+      IOSTB_XOFFWRITE=3,
+      IOSTF_XOFFWRITE=8,
+      IOSTB_READBREAK=2,
+      IOSTF_READBREAK=4,
+      IOSTB_WROTEBREAK=1,
+      IOSTF_WROTEBREAK=2,
+      IOSTB_OVERRUN=0,
+      IOSTF_OVERRUN=1,
+      SEXTB_MSPON=1,
+      SEXTF_MSPON=2,
+      SEXTB_MARK=0,
+      SEXTF_MARK=1
+
+OBJECT termarray
+  ta0:LONG
+  ta1:LONG
+ENDOBJECT     /* SIZEOF=8 */
+
+OBJECT ioextser
+  iostd:iostd
+  ctlchar:LONG
+  rbuflen:LONG
+  extflags:LONG
+  baud:LONG
+  brktime:LONG
+  termarray:termarray
+  readlen:CHAR
+  writelen:CHAR
+  stopbits:CHAR
+  serflags:CHAR
+  status:INT  -> This is unsigned
+ENDOBJECT     /* SIZEOF=82 */
+
+CONST SERERR_DEVBUSY=1,
+      SERERR_BAUDMISMATCH=2,
+      SERERR_BUFERR=4,
+      SERERR_INVPARAM=5,
+      SERERR_LINEERR=6,
+      SERERR_PARITYERR=9,
+      SERERR_TIMERERR=11,
+      SERERR_BUFOVERFLOW=12,
+      SERERR_NODSR=13,
+      SERERR_DETECTEDBREAK=15
+
+#define SERIALNAME 'serial.device'
