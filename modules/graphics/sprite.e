@@ -1,5 +1,6 @@
-OPT MODULE
-OPT EXPORT
+  OPT MODULE
+  OPT EXPORT
+  OPT PREPROCESS
 
 OBJECT simplesprite
   posctldata:PTR TO INT  -> Target is unsigned

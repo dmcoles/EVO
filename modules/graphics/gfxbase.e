@@ -1,22 +1,10 @@
-OPT MODULE
-OPT EXPORT
+  OPT MODULE
+  OPT EXPORT
+  OPT PREPROCESS
 
-OPT PREPROCESS
-
-MODULE 'exec/interrupts',
-       'exec/libraries',
-       'exec/lists',
-       'exec/semaphores',
-       'exec/tasks',
-       'graphics/copper',
-       'graphics/monitor',
-       'graphics/sprite',
-       'graphics/text',
-       'graphics/view',
-       'hardware/blit'
+  MODULE 'exec/libraries','exec/interrupts','exec/lists','graphics/monitor','graphics/view','graphics/copper','hardware/blit','graphics/text','exec/tasks','exec/semaphores','graphics/regions'
 
 OBJECT gfxbase
--> Um, this was missing
   lib:lib
   actiview:PTR TO view
   copinit:PTR TO copinit
@@ -61,7 +49,7 @@ OBJECT gfxbase
   mindisplaycolumn:INT  -> This is unsigned
   chiprevbits0:CHAR
   memtype:CHAR
-  crb_reserved[4]:ARRAY
+  crb_reserved[4]:ARRAY OF CHAR
   monitor_id:INT  -> This is unsigned
   hedley[8]:ARRAY OF LONG
   hedley_sprites[8]:ARRAY OF LONG
@@ -85,8 +73,8 @@ OBJECT gfxbase
   displayinfodatabase:LONG
   topline:INT  -> This is unsigned
   activiewcprsemaphore:PTR TO ss
-  utilbase:PTR TO LONG
-  execbase:PTR TO LONG
+  utilbase:PTR TO lib
+  execbase:PTR TO lib
   bwshifts:PTR TO CHAR
   strtfetchmasks:PTR TO INT  -> Target is unsigned
   stopfetchmasks:PTR TO INT  -> Target is unsigned
@@ -119,7 +107,9 @@ OBJECT gfxbase
   vbcounter:LONG
   hashtablesemaphore:PTR TO ss
   hwemul[9]:ARRAY OF LONG
-ENDOBJECT     /* SIZEOF=497 */
+  scratch:PTR TO regionrectangle
+  scratchsize:LONG
+ENDOBJECT     /* SIZEOF=544 */
 
 #define chunkytoplanarptr hwemul[0]
 

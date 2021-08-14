@@ -1,7 +1,8 @@
-OPT MODULE
-OPT EXPORT
+  OPT MODULE
+  OPT EXPORT
+  OPT PREPROCESS
 
-MODULE 'utility/hooks'
+  MODULE 'utility/hooks'
 
 CONST ED_NAME=1,
       ED_TYPE=2,

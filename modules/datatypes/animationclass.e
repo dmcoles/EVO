@@ -35,6 +35,9 @@ CONST ADTA_DUMMY=$80001258,
       ADTA_PERIOD=$800011F8,
       ADTA_VOLUME=$800011F9,
       ADTA_CYCLES=$800011FA,
+      ADTA_LEFTSAMPLE=$80001201,
+      ADTA_RIGHTSAMPLE=$80001202,
+      ADTA_SAMPLESPERSEC=$800011FF,      
       ID_ANIM="ANIM",
       ID_ANHD="ANHD",
       ID_DLTA="DLTA"
@@ -60,7 +63,9 @@ CONST ADTM_DUMMY=$700,
       ADTM_START=$703,
       ADTM_PAUSE=$704,
       ADTM_STOP=$705,
-      ADTM_LOCATE=$706
+      ADTM_LOCATE=$706,
+      ADTM_LOADNEWFORMATFRAME=$707,
+      ADTM_UNLOADNEWFORMATFRAME=$708
 
 OBJECT adtframe
   methodid:LONG
@@ -74,6 +79,23 @@ OBJECT adtframe
   period:LONG
   userdata:LONG
 ENDOBJECT
+
+OBJECT adtnewformatframe
+  methodid:LONG
+  timestamp:LONG
+  frame:LONG
+  duration:LONG
+  bitmap:PTR TO bitmap
+  cmap:PTR TO colormap
+  sample:PTR TO CHAR
+  samplelength:LONG
+  period:LONG
+  userdata:LONG
+  size:LONG
+  leftsample:PTR TO CHAR
+  rightsample:PTR TO CHAR
+  samplespersec:LONG
+ENDOBJECT     /* SIZEOF=56 */
 
 OBJECT adtstart
   methodid:LONG

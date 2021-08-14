@@ -1,5 +1,6 @@
-OPT MODULE
-OPT EXPORT
+  OPT MODULE
+  OPT EXPORT
+  OPT PREPROCESS
 
 MODULE 'exec/lists',
        'exec/nodes',
@@ -15,9 +16,12 @@ OBJECT tc
   sigwait:LONG
   sigrecvd:LONG
   sigexcept:LONG
--> a) next two INTS unioned "etask:PTR TO etask"
-  trapalloc:INT  -> This is unsigned
-  trapable:INT  -> This is unsigned
+  UNION
+  [etask:PTR TO etask]
+  [trapalloc:INT  -> This is unsigned
+    trapable:INT  -> This is unsigned
+  ]
+  ENDUNION
   exceptdata:LONG
   exceptcode:LONG
   trapdata:LONG
@@ -55,7 +59,6 @@ OBJECT stackswapstruct
 ENDOBJECT     /* SIZEOF=12 */
 
 CONST TB_PROCTIME=0,
-      TB_ETASK=3,
       TB_STACKCHK=4,
       TB_EXCEPT=5,
       TB_SWITCH=6,

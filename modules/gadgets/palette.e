@@ -1,0 +1,34 @@
+  OPT MODULE
+  OPT EXPORT
+  OPT PREPROCESS
+
+  MODULE 'graphics/rastport','intuition/screens','intuition/intuition','graphics/gfx'
+
+OBJECT pboxdrawmsg
+  methodid:LONG
+  rastport:PTR TO rastport
+  drawinfo:PTR TO drawinfo
+  bounds:rectangle
+  state:LONG
+  color:LONG
+  gadget:PTR TO gadget
+ENDOBJECT
+
+CONST PALETTE_DUMMY=$85004000,
+      PALETTE_COLOUR=$85004001,
+      PALETTE_COLOUROFFSET=$85004002,
+      PALETTE_COLOURTABLE=$85004003,
+      PALETTE_NUMCOLOURS=$85004004,
+      PALETTE_RENDERHOOK=$85004007,
+      PALETTE_COLOR=$85004001,
+      PALETTE_COLOROFFSET=$85004002,
+      PALETTE_COLORTABLE=$85004003,
+      PALETTE_NUMCOLORS=$85004004,
+      PB_DRAW=$202,
+      PBCB_OK=0,
+      PBCB_UNKNOWN=1,
+      PBR_NORMAL=0,
+      PBR_SELECTED=1,
+      PBR_NORMALDISABLED=2,
+      PBR_SELECTEDDISABLED=8
+

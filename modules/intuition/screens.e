@@ -1,18 +1,11 @@
-OPT MODULE
-OPT EXPORT
+  OPT MODULE
+  OPT EXPORT
+  OPT PREPROCESS
 
-MODULE 'exec/nodes',
-       'exec/tasks',
-       'graphics/clip',
-       'graphics/gfx',
-       'graphics/layers',
-       'graphics/rastport',
-       'graphics/text',
-       'graphics/view',
-       'intuition/intuition',
-       'utility/tagitem'
+  MODULE 'exec/nodes','graphics/view','graphics/rastport','graphics/gfx','graphics/layers','exec/tasks','graphics/text','intuition/intuition','utility/tagitem','graphics/clip'
 
-CONST DRI_VERSION=2
+
+CONST DRI_VERSION=3
 
 OBJECT drawinfo
   version:INT  -> This is unsigned
@@ -42,7 +35,8 @@ CONST DRIF_NEWLOOK=1,
       BARDETAILPEN=9,
       BARBLOCKPEN=10,
       BARTRIMPEN=11,
-      NUMDRIPENS=12,
+      BARCONTOURPEN=12,
+      NUMDRIPENS=13,
       PEN_C3=$FEFC,
       PEN_C2=$FEFD,
       PEN_C1=$FEFE,
@@ -140,6 +134,7 @@ CONST SCREENTYPE=15,
       SA_LIKEWORKBENCH=$80000047,
       SA_RESERVED=$80000048,
       SA_MINIMIZEISG=$80000049,
+      SA_OFFSCREENDRAGGING=$8000004A,
       OSERR_NOMONITOR=1,
       OSERR_NOCHIPS=2,
       OSERR_NOMEM=3,
@@ -148,7 +143,8 @@ CONST SCREENTYPE=15,
       OSERR_UNKNOWNMODE=6,
       OSERR_TOODEEP=7,
       OSERR_ATTACHFAIL=8,
-      OSERR_NOTAVAILABLE=9
+      OSERR_NOTAVAILABLE=9,
+      OSERR_NORTGBITMAP=10
 
 OBJECT ns
   leftedge:INT

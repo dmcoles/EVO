@@ -1,0 +1,81 @@
+pragma2module window
+pragma2module virtual
+pragma2module texteditor
+pragma2module string
+pragma2module speedbar
+pragma2module space
+pragma2module slider
+pragma2module sketchboard
+pragma2module scroller
+pragma2module requester
+pragma2module radiobutton
+pragma2module popcycle
+pragma2module penmap
+pragma2module palette
+pragma2module listview
+pragma2module listbrowser
+pragma2module layout
+pragma2module label
+pragma2module integer
+pragma2module glyph
+pragma2module getscreenmode
+pragma2module getfont
+pragma2module getfile
+pragma2module getcolor
+pragma2module fuelgauge
+pragma2module drawlist
+pragma2module datebrowser
+pragma2module clicktab
+pragma2module chooser
+pragma2module checkbox
+pragma2module button
+pragma2module bitmap
+pragma2module bevel
+pragma2module arexx
+fdtom wb_lib.fd
+fdtom utility_lib.fd
+fdtom translator_lib.fd
+fdtom trackfile_lib.fd resource
+fdtom timer_lib.fd
+fdtom rexxsyslib_lib.fd
+fdtom realtime_lib.fd
+fdtom ramdrive_lib.fd
+fdtom potgo_lib.fd resource
+fdtom nonvolatile_lib.fd
+fdtom misc_lib.fd resource
+fdtom mathtrans_lib.fd
+fdtom mathieeesingtrans_lib.fd
+fdtom mathieeesingbas_lib.fd
+fdtom mathieeedoubtrans_lib.fd
+fdtom mathieeedoubbas_lib.fd
+fdtom mathffp_lib.fd
+fdtom lowlevel_lib.fd
+fdtom locale_lib.fd
+fdtom layers_lib.fd
+fdtom keymap_lib.fd
+fdtom intuition_lib.fd
+fdtom input_lib.fd
+fdtom iffparse_lib.fd
+fdtom icon_lib.fd
+fdtom graphics_lib.fd
+fdtom gadtools_lib.fd
+fdtom expansion_lib.fd
+fdtom dtclass_lib.fd
+fdtom dos_lib.fd
+fdtom disk_lib.fd resource
+fdtom diskfont_lib.fd
+fdtom datatypes_lib.fd
+fdtom console_lib.fd
+fdtom commodities_lib.fd
+fdtom colorwheel_lib.fd
+fdtom cia_lib.fd resource
+fdtom cardres_lib.fd resource
+fdtom bullet_lib.fd
+fdtom battmem_lib.fd resource
+fdtom battclock_lib.fd resource
+fdtom asl_lib.fd
+fdtom amigaguide_lib.fd
+fdtom exec_lib.fd
+
+delete #?_lvo.m
+copy #?.m /

@@ -1,7 +1,8 @@
-OPT MODULE
-OPT EXPORT
+  OPT MODULE
+  OPT EXPORT
+  OPT PREPROCESS
 
-MODULE 'dos/dos'
+  MODULE 'dos/dos'
 
 OBJECT anchorpath
   base:PTR TO achain
@@ -17,7 +18,7 @@ ENDOBJECT     /* SIZEOF=280 */
 
 CONST APB_DOWILD=0,
       APF_DOWILD=1,
-      APB_ITSWILD=1,
+      APB_ITSWILD=1,      
       APF_ITSWILD=2,
       APB_DODIR=2,
       APF_DODIR=4,
@@ -31,7 +32,7 @@ CONST APB_DOWILD=0,
       APF_DIRCHANGED=$40,
       APB_FOLLOWHLINKS=7,
       APF_FOLLOWHLINKS=$80
-
+      
 OBJECT achain
   child:PTR TO achain
   parent:PTR TO achain
@@ -39,10 +40,10 @@ OBJECT achain
   info:fileinfoblock
   flags:CHAR  -> This is signed
 -> Um, what about 'string[1]:ARRAY'?
-ENDOBJECT     /* SIZEOF=273 */
+ENDOBJECT     /* SIZEOF=274 */
 
 CONST DDB_PATTERNBIT=0,
-      DDF_PATTERNBIT=1,
+      DDF_PATTERNBIT=1,     
       DDB_EXAMINEDBIT=1,
       DDF_EXAMINEDBIT=2,
       DDB_COMPLETED=2,
@@ -61,7 +62,7 @@ CONST DDB_PATTERNBIT=0,
       P_NOTCLASS=$87,
       P_CLASS=$88,
       P_REPBEG=$89,
-      P_REPEND=$8A,
+      P_REPEND=$8A,     
       P_STOP=$8B,
       COMPLEX_BIT=1,
       EXAMINE_BIT=2,

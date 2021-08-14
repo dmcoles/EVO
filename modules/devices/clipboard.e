@@ -1,5 +1,5 @@
-OPT MODULE
-OPT EXPORT
+  OPT MODULE
+  OPT EXPORT
 
 MODULE 'exec/devices',
        'exec/nodes',
@@ -7,7 +7,7 @@ MODULE 'exec/devices',
 
 CONST DEVICES_CLIPBOARD_I=1,
       CBD_POST=9,
-      CBD_CURRENTREADID=10,
+       CBD_CURRENTREADID=10,
       CBD_CURRENTWRITEID=11,
       CBD_CHANGEHOOK=12,
       CBERR_OBSOLETEID=1
@@ -15,7 +15,7 @@ CONST DEVICES_CLIPBOARD_I=1,
 OBJECT clipboardunitpartial
   node:ln
   unitnum:LONG
-ENDOBJECT     /* SIZEOF=NONE !!! */
+ENDOBJECT     /* SIZEOF=18 */
 
 OBJECT ioclipreq
   message:mn
@@ -43,5 +43,6 @@ OBJECT cliphookmsg
   type:LONG
   changecmd:LONG
   clipid:LONG
-ENDOBJECT     /* SIZEOF=NONE !!! */
+ENDOBJECT     /* SIZEOF=12 */
+
 

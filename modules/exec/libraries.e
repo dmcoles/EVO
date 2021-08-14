@@ -1,7 +1,8 @@
-OPT MODULE
-OPT EXPORT
+  OPT MODULE
+  OPT EXPORT
+  OPT PREPROCESS
 
-MODULE 'exec/nodes'
+  MODULE 'exec/nodes'
 
 CONST LIB_VECTSIZE=6,
       LIB_RESERVED=4,
@@ -12,7 +13,7 @@ CONST LIB_VECTSIZE=6,
       LIB_CLOSE=-12,
       LIB_EXPUNGE=-18,
       LIB_EXTFUNC=-24
-
+      
 OBJECT lib
   ln:ln
   flags:CHAR

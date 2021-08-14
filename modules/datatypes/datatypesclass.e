@@ -1,18 +1,11 @@
-OPT MODULE
-OPT EXPORT
+  OPT MODULE
+  OPT EXPORT
 
-OPT PREPROCESS
+  OPT PREPROCESS
 
 #define DATATYPESCLASS 'datatypesclass'
 
-MODULE 'exec/io',
-       'exec/semaphores',
-       'graphics/gfx',
-       'graphics/rastport',
-       'graphics/view',
-       'intuition/cghooks',
-       'intuition/screens',
-       'utility/tagitem'
+MODULE 'intuition/cghooks','utility/tagitem','graphics/rastport','devices/printer','exec/io','graphics/gfx','intuition/screens','graphics/view','exec/semaphores'
 
 CONST DTA_DUMMY=$80001000,
       DTA_TEXTATTR=$8000100A,
@@ -44,6 +37,10 @@ CONST DTA_DUMMY=$80001000,
       DTA_CONTROLPANEL=$80001024,
       DTA_IMMEDIATE=$80001025,
       DTA_REPEAT=$80001026,
+      DTA_SOURCEADDRESS=$80001027,
+      DTA_SOURCESIZE=$80001028,
+      DTA_RESERVED=$80001029,
+      DTA_CLASS=$8000103E,
       DTA_NAME=$80001064,
       DTA_SOURCETYPE=$80001065,
       DTA_HANDLE=$80001066,
@@ -78,8 +75,8 @@ CONST DTA_DUMMY=$80001000,
       DTST_RAM=1,
       DTST_FILE=2,
       DTST_CLIPBOARD=3,
-      DTST_HOTLINK=4
-
+      DTST_HOTLINK=4,
+      DTST_MEMORY=5
 
 OBJECT dtspecialinfo
   lock:ss
@@ -127,7 +124,7 @@ CONST DTM_FRAMEBOX=$601,
       DTM_DRAW=$641,
       DTM_RELEASEDRAWINFO=$642,
       DTM_WRITE=$650
-
+      
 OBJECT frameinfo
   propertyflags:LONG
   resolution:tpoint
@@ -140,7 +137,7 @@ OBJECT frameinfo
   screen:PTR TO screen
   colormap:PTR TO colormap
   flags:LONG
-ENDOBJECT     /* SIZEOF=35 */
+ENDOBJECT     /* SIZEOF=36 */
 
 CONST FIF_SCALABLE=1,
       FIF_SCROLLABLE=2,
@@ -149,13 +146,13 @@ CONST FIF_SCALABLE=1,
 OBJECT dtgeneral
   methodid:LONG
   ginfo:PTR TO gadgetinfo
-ENDOBJECT     /* SIZEOF=NONE !!! */
+ENDOBJECT     /* SIZEOF=8 */
 
 OBJECT dtselect
   methodid:LONG
   ginfo:PTR TO gadgetinfo
   select:rectangle
-ENDOBJECT     /* SIZEOF=NONE !!! */
+ENDOBJECT     /* SIZEOF=16 */
 
 OBJECT dtframebox
   methodid:LONG
@@ -164,7 +161,7 @@ OBJECT dtframebox
   frameinfo:PTR TO frameinfo
   sizeframeinfo:LONG
   frameflags:LONG
-ENDOBJECT     /* SIZEOF=NONE !!! */
+ENDOBJECT     /* SIZEOF=24 */
 
 CONST FRAMEF_SPECIFY=1
 
@@ -173,14 +170,14 @@ OBJECT dtgoto
   ginfo:PTR TO gadgetinfo
   nodename:PTR TO CHAR
   attrlist:PTR TO tagitem
-ENDOBJECT     /* SIZEOF=NONE !!! */
+ENDOBJECT     /* SIZEOF=16 */
 
 OBJECT dttrigger
   methodid:LONG
   ginfo:PTR TO gadgetinfo
   function:LONG
   data:LONG
-ENDOBJECT     /* SIZEOF=NONE !!! */
+ENDOBJECT     /* SIZEOF=16 */
 
 CONST STM_PAUSE=1,
       STM_PLAY=2,
@@ -197,17 +194,32 @@ CONST STM_PAUSE=1,
       STM_FASTFORWARD=13,
       STM_STOP=14,
       STM_RESUME=15,
-      STM_LOCATE=16
+      STM_LOCATE=16,
+      STM_HELP=17,
+      STM_SEARCH=18,
+      STM_SEARCH_NEXT=19,
+      STM_SEARCH_PREV=20,
+      STM_UNRETRACE=21,
+      STM_USER=100,
 
--> Um, this object was missing
+      STMF_METHOD_MASK=$0000FFFF,
+      STMF_DATA_MASK=$00FF0000,
+      STMF_RESERVED_MASK=$FF000000,
+      STMD_VOID=$00010000,
+      STMD_ULONG=$00020000,
+      STMD_STRPTR=$00030000,
+      STMD_TAGLIST=$00040000
+
 OBJECT dtprint
   methodid:LONG
   ginfo:PTR TO gadgetinfo
--> a) next is unioned with "iodrp:PTR TO iodrpreq"
--> b) next is unioned with "iopc:PTR TO ioprtcmdreq""
-  ios:PTR TO iostd
+  UNION
+  [iodrp:PTR TO iodrpreq]
+  [iopc:PTR TO ioprtcmdreq]
+  [ios:PTR TO iostd]
+  ENDUNION
   attrlist:PTR TO tagitem
-ENDOBJECT
+ENDOBJECT     /* SIZEOF=16 */
 
 OBJECT dtdraw
   methodid:LONG
@@ -219,7 +231,7 @@ OBJECT dtdraw
   tophoriz:LONG
   topvert:LONG
   attrlist:PTR TO tagitem
-ENDOBJECT     /* SIZEOF=NONE !!! */
+ENDOBJECT     /* SIZEOF=36 */
 
 OBJECT dtwrite
   methodid:LONG
@@ -227,8 +239,6 @@ OBJECT dtwrite
   filehandle:LONG
   mode:LONG
   attrlist:PTR TO tagitem
-ENDOBJECT     /* SIZEOF=NONE !!! */
-
+ENDOBJECT     /* SIZEOF=20 */
 CONST DTWM_IFF=0,
       DTWM_RAW=1
-

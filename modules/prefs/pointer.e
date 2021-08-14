@@ -12,8 +12,9 @@ OBJECT pointerprefs
   ieight:INT  -> This is unsigned
   depth:INT  -> This is unsigned
   ysize:INT  -> This is unsigned
-  x:INT  -> This is unsigned
-ENDOBJECT     /* SIZEOF=18 */
+  x:INT
+  y:INT
+ENDOBJECT     /* SIZEOF=32 */
 
 CONST WBP_NORMAL=0,
       WBP_BUSY=1

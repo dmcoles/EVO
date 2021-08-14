@@ -1,20 +1,21 @@
-OPT MODULE
-OPT EXPORT
+  OPT MODULE
+  OPT EXPORT
+  OPT PREPROCESS
 
-MODULE 'exec/nodes',
-       'graphics/text'
+  MODULE 'graphics/text','exec/nodes','exec/libraries','diskfont/glyph','utility/tagitem'
 
-CONST MAXFONTPATH=$100
-
+CONST MAXFONTPATH=$100,
+      TA_CHARSET=$80000003
+      
 OBJECT fc
-  filename[$100]:ARRAY
+  filename[256]:ARRAY OF CHAR
   ysize:INT  -> This is unsigned
   style:CHAR
   flags:CHAR
 ENDOBJECT     /* SIZEOF=260 */
 
 OBJECT tfc
-  filename[$fe]:ARRAY
+  filename[254]:ARRAY OF CHAR
   tagcount:INT  -> This is unsigned
   ysize:INT  -> This is unsigned
   style:CHAR
@@ -28,7 +29,23 @@ CONST FCH_ID=$F00,
 OBJECT fch
   fileid:INT  -> This is unsigned
   numentries:INT  -> This is unsigned
-ENDOBJECT     /* SIZEOF=NONE !!! */
+ENDOBJECT     /* SIZEOF=4 */
+
+OBJECT eglyphengine
+  reserved:LONG
+  bulletbase:PTR TO lib
+  glyphengine:PTR TO glyphengine
+ENDOBJECT
+
+OBJECT outlinefont
+  otagpath:PTR TO CHAR
+  taglist:PTR TO tagitem
+  enginename:PTR TO CHAR
+  libraryname:PTR TO CHAR
+  eengine:eglyphengine
+  reserved:LONG
+  userdata:LONG
+ENDOBJECT
 
 CONST DFH_ID=$F80,
       MAXFONTNAME=$20
@@ -38,7 +55,7 @@ OBJECT diskfontheader
   fileid:INT  -> This is unsigned
   revision:INT  -> This is unsigned
   segment:LONG
-  name[$20]:ARRAY
+  name[32]:ARRAY OF CHAR
   tf:textfont
 ENDOBJECT     /* SIZEOF=106 */
 
@@ -51,6 +68,11 @@ CONST DFH_TAGLIST=18,
       AFF_SCALED=4,
       AFB_BITMAP=3,
       AFF_BITMAP=8,
+      AFB_OTAG=4,
+      AFF_OTAG=$10,
+      AFB_TYPE=6,
+      AFF_CHARSET=$20,
+      AFF_TYPE=$40,
       AFB_TAGGED=16,
       AFF_TAGGED=$10000,
       AFF_TTATTR=$10000
@@ -67,5 +89,7 @@ ENDOBJECT     /* SIZEOF=14 */
 
 OBJECT afh
   numentries:INT  -> This is unsigned
-ENDOBJECT     /* SIZEOF=NONE !!! */
+ENDOBJECT     /* SIZEOF=2 */
+
+
 

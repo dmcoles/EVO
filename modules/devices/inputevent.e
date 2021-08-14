@@ -1,5 +1,6 @@
-OPT MODULE
-OPT EXPORT
+  OPT MODULE
+  OPT EXPORT
+  OPT PREPROCESS
 
 MODULE 'devices/timer',
        'intuition/screens',
@@ -61,7 +62,6 @@ OBJECT ienewtablet
 ENDOBJECT     /* SIZEOF=32 */
 
 CONST IECODE_UP_PREFIX=$80,
-      IECODEB_UP_PREFIX=7,
       IECODE_KEY_CODE_FIRST=0,
       IECODE_KEY_CODE_LAST=$77,
       IECODE_COMM_CODE_FIRST=$78,
@@ -108,12 +108,12 @@ CONST IECODE_UP_PREFIX=$80,
       IEQUALIFIERB_RALT=5,
       IEQUALIFIERB_LCOMMAND=6,
       IEQUALIFIERB_RCOMMAND=7,
-      IEQUALIFIERB_NUMERICPAD=8,
+      IEQUALIFIERB_NUMERICPAD=8,    
       IEQUALIFIERB_REPEAT=9,
       IEQUALIFIERB_INTERRUPT=10,
       IEQUALIFIERB_MULTIBROADCAST=11,
       IEQUALIFIERB_MIDBUTTON=12,
-      IEQUALIFIERB_RBUTTON=13,
+      IEQUALIFIERB_RBUTTON=13,     
       IEQUALIFIERB_LEFTBUTTON=14,
       IEQUALIFIERB_RELATIVEMOUSE=15
 
@@ -123,13 +123,15 @@ OBJECT inputevent
   subclass:CHAR
   code:INT  -> This is unsigned
   qualifier:INT  -> This is unsigned
--> a) next four CHARs are unioned as "eventaddress:LONG"
--> b) next two CHARs are unioned as "x:INT"
-  prev1downcode:CHAR
+  UNION
+  [eventaddress:LONG]
+  [x:INT
+  y:INT]
+  [prev1downcode:CHAR
   prev1downqual:CHAR
--> b) next two CHARs are unioned "y:INT"
   prev2downcode:CHAR
-  prev2downqual:CHAR
+  prev2downqual:CHAR]
+  ENDUNION
   timestamp:timeval
 ENDOBJECT     /* SIZEOF=22 */
 

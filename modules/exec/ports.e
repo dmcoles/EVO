@@ -1,5 +1,5 @@
-OPT MODULE
-OPT EXPORT
+  OPT MODULE
+  OPT EXPORT
 
 MODULE 'exec/lists',
        'exec/nodes'
@@ -16,8 +16,8 @@ CONST MP_SOFTINT=16,
       PF_ACTION=3,
       PA_SIGNAL=0,
       PA_SOFTINT=1,
-      PA_IGNORE=2
-
+      PA_IGNORE=2     
+      
 OBJECT mn
   ln:ln
   replyport:PTR TO mp

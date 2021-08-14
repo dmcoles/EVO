@@ -1,7 +1,8 @@
-OPT MODULE
-OPT EXPORT
+  OPT MODULE
+  OPT EXPORT
+  OPT PREPROCESS
 
-MODULE 'exec/nodes'
+  MODULE 'exec/nodes','graphics/gfxbase'
 
 OBJECT xln
   succ:PTR TO ln
@@ -11,7 +12,7 @@ OBJECT xln
   name:PTR TO CHAR
   subsystem:CHAR
   subtype:CHAR
-  library:LONG
+  library:PTR TO gfxbase
   init:LONG
 ENDOBJECT     /* SIZEOF=24 */
 

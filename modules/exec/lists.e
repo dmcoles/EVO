@@ -1,9 +1,9 @@
-OPT MODULE
-OPT EXPORT
+  OPT MODULE
+  OPT EXPORT
 
-OPT PREPROCESS
+  OPT PREPROCESS
 
-MODULE 'exec/nodes'
+  MODULE 'exec/nodes'
 
 #define IsListEmpty(x)    (x::mlh.tailpred = (x))
 #define IsMsgPortEmpty(x) (x::mp.ln.tailpred = x::mp.ln)

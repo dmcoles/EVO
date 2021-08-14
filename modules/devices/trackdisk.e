@@ -1,7 +1,7 @@
-OPT MODULE
-OPT EXPORT
+  OPT MODULE
+  OPT EXPORT
 
-OPT PREPROCESS
+  OPT PREPROCESS
 
 MODULE 'exec/devices',
        'exec/io'
@@ -13,7 +13,7 @@ CONST NUMSECS=11,
       TDF_EXTCOM=$8000,
       TD_MOTOR=9,
       TD_SEEK=10,
-      TD_FORMAT=11,
+      TD_FORMAT=11,     
       TD_REMOVE=12,
       TD_CHANGENUM=13,
       TD_CHANGESTATE=14,
@@ -27,6 +27,10 @@ CONST NUMSECS=11,
       TD_GETGEOMETRY=22,
       TD_EJECT=23,
       TD_LASTCOMM=24,
+      TD_READ64=24,
+      TD_WRITE64=25,
+      TD_SEEK64=26,
+      TD_FORMAT64=27,
       ETD_WRITE=$8003,
       ETD_READ=$8002,
       ETD_MOTOR=$8009,
@@ -110,7 +114,9 @@ OBJECT publicunit
   currtrk:INT  -> This is unsigned
   calibratedelay:LONG
   counter:LONG
-ENDOBJECT     /* SIZEOF=64 */
+  postwritedelay:LONG
+  sideselectdelay:LONG
+ENDOBJECT     /* SIZEOF=72 */
 
 CONST TDPB_NOCLICK=0,
       TDPF_NOCLICK=1

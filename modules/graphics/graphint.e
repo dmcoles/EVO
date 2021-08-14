@@ -1,7 +1,8 @@
-OPT MODULE
-OPT EXPORT
+  OPT MODULE
+  OPT EXPORT
+  OPT PREPROCESS
 
-MODULE 'exec/nodes'
+  MODULE 'exec/nodes'
 
 OBJECT isrvstr
   ln:ln
@@ -9,4 +10,5 @@ OBJECT isrvstr
   code:LONG
   ccode:LONG
   carg:LONG
-ENDOBJECT
+ENDOBJECT     /* SIZEOF=30 */
+

@@ -1,7 +1,8 @@
-OPT MODULE
-OPT EXPORT
+  OPT MODULE
+  OPT EXPORT
+  OPT PREPROCESS
 
-MODULE 'exec/io'
+  MODULE 'exec/io'
 
 CONST DEFPITCH=$6E,
       DEFRATE=$96,
@@ -38,13 +39,13 @@ CONST DEFPITCH=$6E,
       ND_UNIMPL=-7,
       ND_NOWRITE=-8,
       ND_EXPUNGED=-9,
-      ND_PHONERR=-20,
+      ND_PHONERR=-20,      
       ND_RATEERR=-21,
-      ND_PITCHERR=-22,
+      ND_PITCHERR=-22,   
       ND_SEXERR=-23,
       ND_MODEERR=-24,
       ND_FREQERR=-25,
-      ND_VOLERR=-26,
+      ND_VOLERR=-26,         
       ND_DCENTERR=-27,
       ND_CENTPHONERR=-28,
       NDB_NEWIORB=0,

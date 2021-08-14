@@ -13,9 +13,10 @@ OBJECT fontprefs
   frontpen:CHAR
   backpen:CHAR
   drawmode:CHAR
+  specialdrawmode:CHAR
   textattr:textattr
-  name[$80]:ARRAY
-ENDOBJECT     /* SIZEOF=155 */
+  name[128]:ARRAY OF CHAR
+ENDOBJECT     /* SIZEOF=156 */
 
 CONST FP_WBFONT=0,
       FP_SYSFONT=1,

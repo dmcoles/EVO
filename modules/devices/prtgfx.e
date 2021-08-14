@@ -1,7 +1,8 @@
-OPT MODULE
-OPT EXPORT
+  OPT MODULE
+  OPT EXPORT
+  OPT PREPROCESS
 
-MODULE 'graphics/rastport'
+  MODULE 'graphics/rastport','utility/hooks'
 
 CONST PCMYELLOW=0,
       PCMMAGENTA=1,
@@ -11,12 +12,18 @@ CONST PCMYELLOW=0,
       PCMGREEN=1,
       PCMRED=2,
       PCMWHITE=3
+      
 
 OBJECT colorentry
--> a) next four CHARs are unioned as "colorlong:LONG"
--> b) also unioned as "colorsbyte[4]:ARRAY", which is signed CHARs
-  colorbyte[4]:ARRAY
+  UNION
+  [colorlong:LONG]
+  [colorbyte[4]:ARRAY OF CHAR]
+  ENDUNION
 ENDOBJECT     /* SIZEOF=4 */
+
+OBJECT wordcolorentry
+  colorword[4]:ARRAY OF INT
+ENDOBJECT
 
 OBJECT prtinfo
   render:LONG
@@ -58,5 +65,10 @@ OBJECT prtinfo
   threshold:INT  -> This is unsigned
   tempwidth:INT  -> This is unsigned
   flags:INT  -> This is unsigned
-ENDOBJECT     /* SIZEOF=114 */
+  reducebuf:INT
+  reducebufsize:INT
+  sourcehook:PTR TO hook
+  inverthookbuf:PTR TO LONG
+ENDOBJECT     /* SIZEOF=126 */
+
 

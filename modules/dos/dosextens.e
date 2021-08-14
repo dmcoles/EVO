@@ -1,15 +1,8 @@
-OPT MODULE
-OPT EXPORT
+  OPT MODULE
+  OPT EXPORT
+  OPT PREPROCESS
 
-MODULE 'devices/timer',
-       'dos/dos',
-       'exec/libraries',
-       'exec/lists',
-       'exec/nodes',
-       'exec/ports',
-       'exec/semaphores',
-       'exec/tasks'
-
+  MODULE 'dos/dos','exec/ports','exec/semaphores','exec/nodes','exec/lists','exec/libraries','exec/tasks','devices/timer'
 OBJECT process
   task:tc
   msgport:mp
@@ -50,7 +43,9 @@ CONST PRB_FREESEGLIST=0,
       PRB_CLOSEOUTPUT=4,
       PRF_CLOSEOUTPUT=16,
       PRB_FREEARGS=5,
-      PRF_FREEARGS=$20
+      PRF_FREEARGS=$20,
+      PRB_CLOSEERROR=6,
+      PRF_CLOSEERROR=64
 
 OBJECT filehandle
   link:PTR TO mn
@@ -69,14 +64,21 @@ ENDOBJECT     /* SIZEOF=44 */
 OBJECT dospacket
   link:PTR TO mn
   port:PTR TO mp
--> a) next is unioned with "action:LONG"
-  type:LONG
--> a) next is unioned with "status:LONG"
+  UNION
+  [type:LONG
   res1:LONG
--> a) next is unioned with "status2:LONG"
   res2:LONG
--> a) next is unioned with "bufaddr:LONG"
-  arg1:LONG
+  ]
+  [action:LONG
+  status:LONG
+  status2:LONG
+  ]
+  ENDUNION
+
+  UNION
+  [bufaddr:LONG]
+  [arg1:LONG]
+  ENDUNION
   arg2:LONG
   arg3:LONG
   arg4:LONG
@@ -93,14 +95,12 @@ ENDOBJECT     /* SIZEOF=68 */
 CONST ACTION_NIL=0,
       ACTION_STARTUP=0,
       ACTION_GET_BLOCK=2,
-      ACTION_SET_MAP=4,
+      ACTION_SET_MAP=4,     
       ACTION_DIE=5,
       ACTION_EVENT=6,
       ACTION_CURRENT_VOLUME=7,
       ACTION_LOCATE_OBJECT=8,
       ACTION_RENAME_DISK=9,
-      ACTION_WRITE=$57,
-      ACTION_READ=$52,
       ACTION_FREE_LOCK=15,
       ACTION_DELETE_OBJECT=16,
       ACTION_RENAME_OBJECT=17,
@@ -121,20 +121,23 @@ CONST ACTION_NIL=0,
       ACTION_DISK_TYPE=$20,
       ACTION_DISK_CHANGE=$21,
       ACTION_SET_DATE=$22,
+      ACTION_SAME_LOCK=$28,
+      ACTION_READ=$52,
+      ACTION_WRITE=$57,
+      ACTION_UNDISK_INFO=513,     
       ACTION_SCREEN_MODE=$3E2,
+      ACTION_CHANGE_SIGNAL=$3E3,
       ACTION_READ_RETURN=$3E9,
       ACTION_WRITE_RETURN=$3EA,
-      ACTION_SEEK=$3F0,
       ACTION_FINDUPDATE=$3EC,
       ACTION_FINDINPUT=$3ED,
       ACTION_FINDOUTPUT=$3EE,
       ACTION_END=$3EF,
-      ACTION_SET_FILE_SIZE=$3FE,
-      ACTION_WRITE_PROTECT=$3FF,
-      ACTION_SAME_LOCK=$28,
-      ACTION_CHANGE_SIGNAL=$3E3,
+      ACTION_SEEK=$3F0,
       ACTION_FORMAT=$3FC,
       ACTION_MAKE_LINK=$3FD,
+      ACTION_SET_FILE_SIZE=$3FE,
+      ACTION_WRITE_PROTECT=$3FF,      
       ACTION_READ_LINK=$400,
       ACTION_FH_FROM_LOCK=$402,
       ACTION_IS_FILESYSTEM=$403,
@@ -143,12 +146,12 @@ CONST ACTION_NIL=0,
       ACTION_PARENT_FH=$407,
       ACTION_EXAMINE_ALL=$409,
       ACTION_EXAMINE_FH=$40A,
+      ACTION_EXAMINE_ALL_END=$40B,
+      ACTION_SET_OWNER=$40C,      
       ACTION_LOCK_RECORD=$7D8,
       ACTION_FREE_RECORD=$7D9,
       ACTION_ADD_NOTIFY=$1001,
       ACTION_REMOVE_NOTIFY=$1002,
-      ACTION_EXAMINE_ALL_END=$40B,
-      ACTION_SET_OWNER=$40C,
       ACTION_SERIALIZE_DISK=$1068
 
 OBJECT errorstring
@@ -209,7 +212,7 @@ OBJECT segment
   next:LONG
   uc:LONG
   seg:LONG
-  name[4]:ARRAY
+  name[4]:ARRAY OF CHAR
 ENDOBJECT     /* SIZEOF=16 */
 
 CONST CMD_SYSTEM=-1,
@@ -267,25 +270,32 @@ OBJECT doslist
   task:PTR TO mp
   lock:LONG
 
--> a) next 3 LONGs are unioned with "volumedate:datestamp"
--> b) next LONG is unioned with "handler:PTR TO CHAR"
-  assignname:PTR TO CHAR
--> b) next LONG is unioned with "stacksize:LONG"
-  list:PTR TO assignlist
+  UNION [
+  handler:PTR TO CHAR
+  stacksize:LONG
   priority:LONG
--> a) next LONG is unioned with "locklist:LONG"
   startup:LONG
--> a) next LONG is unioned with "disktype:LONG"
   seglist:LONG
-  globvec:LONG
+  globvec:LONG]
+  [
+  volumedate:datestamp
+  locklist:LONG
+  disktype:LONG
+  ]
+
+  [
+  assignname:PTR TO CHAR
+  list:PTR TO assignlist
+  ]
+  ENDUNION
   name:PTR TO CHAR
 ENDOBJECT     /* SIZEOF=44 */
 
--> Um, this object was missing
+
 OBJECT assignlist
   next:PTR TO assignlist
   lock:LONG
-ENDOBJECT
+ENDOBJECT     /* SIZEOF=8 */
 
 CONST DLT_DEVICE=0,
       DLT_DIRECTORY=1,

@@ -1,5 +1,6 @@
-OPT MODULE
-OPT EXPORT
+  OPT MODULE
+  OPT EXPORT
+  OPT PREPROCESS
 
 MODULE 'exec/libraries',
        'exec/ports'

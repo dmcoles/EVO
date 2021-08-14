@@ -1,5 +1,6 @@
-OPT MODULE
-OPT EXPORT
+  OPT MODULE
+  OPT EXPORT
+  OPT PREPROCESS
 
 MODULE 'exec/ports',
        'exec/tasks'
@@ -21,11 +22,15 @@ OBJECT notifyrequest
   fullname:PTR TO CHAR
   userdata:LONG
   flags:LONG
--> a) next LONG is unioned with "task:PTR TO tc"
-  port:PTR TO mp
-  signalnum:CHAR
-  pada:CHAR
-  padb[2]:ARRAY
+  UNION
+  
+  [task:PTR TO tc]
+  [port:PTR TO mp
+    signalnum:CHAR
+    pada:CHAR
+    padb[2]:ARRAY OF CHAR
+  ]
+  ENDUNION
   reserved[4]:ARRAY OF LONG
   msgcount:LONG
   handler:PTR TO mp

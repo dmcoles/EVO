@@ -1,0 +1,21 @@
+##base _TrackFileBase
+##bias 6
+trackfilePrivate1()()
+trackfilePrivate2()()
+trackfilePrivate3()()
+trackfilePrivate4()()
+trackfilePrivate5()()
+trackfilePrivate6()()
+##public
+TFStartUnitTagList(which_unit,tags)(d0/a0)
+TFStopUnitTagList(which_unit,tags)(d0/a0)
+TFInsertMediaTagList(which_unit,tags)(d0/a0)
+TFEjectMediaTagList(which_unit,tags)(d0/a0)
+TFGetUnitData(which_unit)(d0)
+TFFreeUnitData(tfud)(a0)
+*
+*--- functions in V2 or higher ---
+*
+TFChangeUnitTagList(which_unit,tags)(d0/a0)
+TFExamineFileSize(file_size)(d0)
+##end

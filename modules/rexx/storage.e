@@ -89,10 +89,12 @@ CONST ACTION=28,
       RXFB_STRING=18,
       RXFB_TOKEN=19,
       RXFB_NONRET=20,
+      RXFB_SCRIPT=21,
       RXFF_RESULT=$20000,
       RXFF_STRING=$40000,
       RXFF_TOKEN=$80000,
       RXFF_NONRET=$100000,
+      RXFF_SCRIPT=$200000,
       RXCODEMASK=$FF000000,
       RXARGMASK=15
 
@@ -158,3 +160,4 @@ OBJECT srcnode
   size:LONG
 ENDOBJECT     /* SIZEOF=16 */
 
+#define CHECKREXXMSG(msg) (rexxsysbase AND msg.libbase=rexxsysbase AND msg.taskblock AND IsRexxMsg(msg))

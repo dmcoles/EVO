@@ -54,7 +54,8 @@ OBJECT rxslib
   numpgm:INT
   tracecnt:INT  -> This is unsigned
   avail:INT
-ENDOBJECT     /* SIZEOF=252 */
+  utilitybase:LONG
+ENDOBJECT     /* SIZEOF=256 */
 
 CONST RLFB_TRACE=0,
       RLFB_HALT=1,

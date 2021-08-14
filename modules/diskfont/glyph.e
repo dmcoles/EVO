@@ -1,15 +1,15 @@
-OPT MODULE
-OPT EXPORT
+  OPT MODULE
+  OPT EXPORT
+  OPT PREPROCESS
 
-MODULE 'exec/libraries',
-       'exec/nodes'
+  MODULE 'exec/nodes','exec/libraries'
 
 CONST DISKFONT_GLYPH_I=1
 
 OBJECT glyphengine
   library:PTR TO lib
   name:LONG
-ENDOBJECT     /* SIZEOF=NONE !!! */
+ENDOBJECT     /* SIZEOF=8 */
 
 OBJECT glyphmap
   bmmodulo:INT  -> This is unsigned
@@ -34,3 +34,9 @@ OBJECT glyphwidthentry
   width:LONG
 ENDOBJECT     /* SIZEOF=14 */
 
+OBJECT glyphwidthentry32
+  node:mln
+  reserved:INT
+  width:LONG
+  code:LONG
+ENDOBJECT     /* SIZEOF=18 */

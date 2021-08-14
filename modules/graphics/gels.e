@@ -1,7 +1,7 @@
-OPT MODULE
-OPT EXPORT
+  OPT MODULE
+  OPT EXPORT
 
-OPT PREPROCESS
+  OPT PREPROCESS
 
 CONST SUSERFLAGS=$FF,
       VSF_VSPRITE=1,
@@ -48,7 +48,7 @@ OBJECT vs
   planepick:CHAR  -> This is signed
   planeonoff:CHAR  -> This is signed
   vuserext:LONG
-ENDOBJECT     /* SIZEOF=58 */
+ENDOBJECT     /* SIZEOF=62 */
 
 OBJECT bob
   bobflags:INT
@@ -60,7 +60,7 @@ OBJECT bob
   bobcomp:PTR TO ac
   dbuffer:PTR TO dbp
   buserext:LONG
-ENDOBJECT     /* SIZEOF=30 */
+ENDOBJECT     /* SIZEOF=34 */
 
 OBJECT ac
   compflags:INT
@@ -94,14 +94,13 @@ OBJECT ao
   animoroutine:LONG
   headcomp:PTR TO ac
   auserext:LONG
-ENDOBJECT     /* SIZEOF=40 */
+ENDOBJECT     /* SIZEOF=44 */
 
 OBJECT dbp
   bufy:INT
   bufx:INT
   bufpath:PTR TO vs
   bufbuffer:PTR TO INT
--> Um, 'bufplanes' not in .h file
   bufplanes:PTR TO LONG
 ENDOBJECT     /* SIZEOF=16 */
 
@@ -112,7 +111,7 @@ CONST B2NORM=0,
       B2SWAP=1,
       B2BOBBER=2
 
--> Um, this was in 'graphics/view'
 OBJECT colltable
   collptrs[16]:ARRAY OF LONG
-ENDOBJECT
+ENDOBJECT     /* SIZEOF=64 */
+

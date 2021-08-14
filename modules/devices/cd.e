@@ -1,8 +1,9 @@
-OPT MODULE
-OPT EXPORT
-
-MODULE 'exec/nodes'
-
+  OPT MODULE
+  OPT EXPORT
+  OPT PREPROCESS
+  
+  MODULE 'exec/nodes'
+  
 CONST CD_RESET=1,
       CD_READ=2,
       CD_WRITE=3,
@@ -44,7 +45,7 @@ CONST CD_RESET=1,
       CDERR_NOCMD=-3,
       CDERR_BADLENGTH=-4,
       CDERR_BADADDRESS=-5,
-      CDERR_UNITBUSY=-6,
+      CDERR_UNITBUSY=-6,     
       CDERR_SELFTEST=-7,
       CDERR_NOTSPECIFIED=20,
       CDERR_NOSECHDR=21,
@@ -85,7 +86,7 @@ OBJECT cdinfo
   audioprecision:INT  -> This is unsigned
   status:INT  -> This is unsigned
   reserved2[4]:ARRAY OF INT  -> Array is unsigned
-ENDOBJECT
+ENDOBJECT     /* SIZEOF=34 */
 
 CONST CDSTSB_CLOSED=0,
       CDSTSB_DISK=1,
@@ -114,12 +115,14 @@ OBJECT rmsf
   minute:CHAR
   second:CHAR
   frame:CHAR
-ENDOBJECT
+ENDOBJECT     /* SIZEOF=4 */
 
 OBJECT lsnmsf
--> a) next is unioned with "lsn:LONG"
-  msf:rmsf
-ENDOBJECT
+  UNION
+  [lsn:LONG]
+  [msf:rmsf]
+  ENDUNION
+ENDOBJECT     /* SIZEOF=4 */
 
 OBJECT cdxl
   node:mln
@@ -128,24 +131,25 @@ OBJECT cdxl
   actual:LONG
   intdata:LONG
   intcode:LONG
-ENDOBJECT
+ENDOBJECT     /* SIZEOF=28 */
 
 OBJECT tocsummary
   firsttrack:CHAR
   lasttrack:CHAR
   leadout:lsnmsf
-ENDOBJECT
+ENDOBJECT     /* SIZEOF=6 */
 
 OBJECT tocentry
   ctladr:CHAR
   track:CHAR
   position:lsnmsf
-ENDOBJECT
-
+ENDOBJECT     /* SIZEOF=6 */
 OBJECT cdtoc
--> a) next is unioned with "summary:tocsummary"
-  entry:tocentry
-ENDOBJECT
+  UNION 
+  [summary:tocsummary]
+  [entry:tocentry]
+  ENDUNION
+ENDOBJECT     /* SIZEOF=6 */
 
 OBJECT qcode
   ctladr:CHAR
@@ -154,7 +158,7 @@ OBJECT qcode
   zero:CHAR
   trackposition:lsnmsf
   diskposition:lsnmsf
-ENDOBJECT
+ENDOBJECT     /* SIZEOF=12 */
 
 CONST CTLADR_CTLMASK=$F0,
       CTL_CTLMASK=$D0,

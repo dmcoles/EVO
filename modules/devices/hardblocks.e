@@ -1,5 +1,6 @@
-OPT MODULE
-OPT EXPORT
+  OPT MODULE
+  OPT EXPORT
+  OPT PREPROCESS
 
 OBJECT rigiddiskblock
   id:LONG
@@ -31,13 +32,13 @@ OBJECT rigiddiskblock
   autoparkseconds:LONG
   highrdskblock:LONG
   reserved4:LONG
-  diskvendor[8]:ARRAY
-  diskproduct[16]:ARRAY
-  diskrevision[4]:ARRAY
-  controllervendor[8]:ARRAY
-  controllerproduct[16]:ARRAY
-  controllerrevision[4]:ARRAY
-  reserved5[10]:ARRAY OF LONG
+  diskvendor[8]:ARRAY OF CHAR
+  diskproduct[16]:ARRAY OF CHAR
+  diskrevision[4]:ARRAY OF CHAR
+  controllervendor[8]:ARRAY OF CHAR
+  controllerproduct[16]:ARRAY OF CHAR
+  controllerrevision[4]:ARRAY OF CHAR
+  driveinitname[40]:ARRAY OF CHAR
 ENDOBJECT     /* SIZEOF=256 */
 
 CONST IDNAME_RIGIDDISK=$5244534B,
@@ -54,7 +55,7 @@ CONST IDNAME_RIGIDDISK=$5244534B,
       RDBFF_DISKID=16,
       RDBFB_CTRLRID=5,
       RDBFF_CTRLRID=$20,
-      RDBFB_SYNCH=6,
+      RDBFB_SYNCH=6,     
       RDBFF_SYNCH=$40
 
 OBJECT badblockentry
@@ -70,7 +71,7 @@ OBJECT badblockblock
   next:LONG
   reserved:LONG
   blockpairs[61]:ARRAY OF badblockentry
-ENDOBJECT     /* SIZEOF=NONE !!! */
+ENDOBJECT     /* SIZEOF=512 */
 
 CONST IDNAME_BADBLOCK=$42414442
 
@@ -83,16 +84,15 @@ OBJECT partitionblock
   flags:LONG
   reserved1[2]:ARRAY OF LONG
   devflags:LONG
-  drivename[32]:ARRAY
+  drivename[32]:ARRAY OF CHAR
   reserved2[15]:ARRAY OF LONG
-  environment[17]:ARRAY OF LONG
-  ereserved[15]:ARRAY OF LONG
+  environment[20]:ARRAY OF LONG
+  ereserved[12]:ARRAY OF LONG
 ENDOBJECT     /* SIZEOF=256 */
-
 CONST IDNAME_PARTITION=$50415254,
-      PBFF_BOOTABLE=0,
+      PBFB_BOOTABLE=0,
       PBFF_BOOTABLE=1,
-      PBFF_NOMOUNT=1,
+      PBFB_NOMOUNT=1,
       PBFF_NOMOUNT=2
 
 OBJECT filesysheaderblock
@@ -116,7 +116,7 @@ OBJECT filesysheaderblock
   seglistblocks:LONG
   globalvec:LONG
   reserved2[23]:ARRAY OF LONG
-  reserved3[21]:ARRAY OF LONG
+  filesysname[84]:ARRAY OF CHAR
 ENDOBJECT     /* SIZEOF=256 */
 
 CONST IDNAME_FILESYSHEADER=$46534844
@@ -128,7 +128,6 @@ OBJECT loadsegblock
   hostid:LONG
   next:LONG
   loaddata[123]:ARRAY OF LONG
-ENDOBJECT     /* SIZEOF=NONE !!! */
-
+ENDOBJECT     /* SIZEOF=512 */
 CONST IDNAME_LOADSEG=$4C534547
 

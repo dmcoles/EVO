@@ -1,8 +1,9 @@
-OPT MODULE
-OPT EXPORT
-
+  OPT MODULE
+  OPT EXPORT
+  OPT PREPROCESS
+  
 OBJECT bb
-  id[4]:ARRAY
+  id[4]:ARRAY OF CHAR
   chksum:LONG
   dosblock:LONG
 ENDOBJECT     /* SIZEOF=12 */

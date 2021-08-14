@@ -4,39 +4,37 @@ OPT EXPORT
 CONST ID_LCLE=$4C434C45,
       ID_CTRY=$43545259
 
-OBJECT countryprefs
+OBJECT countryprefs NOALIGN 
   reserved[4]:ARRAY OF LONG
   countrycode:LONG
   telephonecode:LONG
   measuringsystem:CHAR
--> Um, have to fiddle alignment in .m file
-  datetimeformat[80]:ARRAY
-  dateformat[40]:ARRAY
-  timeformat[40]:ARRAY
-  shortdatetimeformat[80]:ARRAY
-  shortdateformat[40]:ARRAY
-  shorttimeformat[40]:ARRAY
-  decimalpoint[10]:ARRAY
-  groupseparator[10]:ARRAY
-  fracgroupseparator[10]:ARRAY
-  grouping[10]:ARRAY
-  fracgrouping[10]:ARRAY
-  mondecimalpoint[10]:ARRAY
-  mongroupseparator[10]:ARRAY
-  monfracgroupseparator[10]:ARRAY
-  mongrouping[10]:ARRAY
-  monfracgrouping[10]:ARRAY
+  datetimeformat[80]:ARRAY OF CHAR
+  dateformat[40]:ARRAY OF CHAR
+  timeformat[40]:ARRAY OF CHAR
+  shortdatetimeformat[80]:ARRAY OF CHAR
+  shortdateformat[40]:ARRAY OF CHAR
+  shorttimeformat[40]:ARRAY OF CHAR
+  decimalpoint[10]:ARRAY OF CHAR
+  groupseparator[10]:ARRAY OF CHAR
+  fracgroupseparator[10]:ARRAY OF CHAR
+  grouping[10]:ARRAY OF CHAR
+  fracgrouping[10]:ARRAY OF CHAR
+  mondecimalpoint[10]:ARRAY OF CHAR
+  mongroupseparator[10]:ARRAY OF CHAR
+  monfracgroupseparator[10]:ARRAY OF CHAR
+  mongrouping[10]:ARRAY OF CHAR
+  monfracgrouping[10]:ARRAY OF CHAR
   monfracdigits:CHAR
   monintfracdigits:CHAR
-  moncs[10]:ARRAY
-  monsmallcs[10]:ARRAY
-  monintcs[10]:ARRAY
-  monpositivesign[10]:ARRAY
+  moncs[10]:ARRAY OF CHAR
+  monsmallcs[10]:ARRAY OF CHAR
+  monintcs[10]:ARRAY OF CHAR
+  monpositivesign[10]:ARRAY OF CHAR
   monpositivespacesep:CHAR
   monpositivesignpos:CHAR
   monpositivecspos:CHAR
--> Um, have to fiddle alignment in .m file
-  monnegativesign[10]:ARRAY
+  monnegativesign[10]:ARRAY OF CHAR
   monnegativespacesep:CHAR
   monnegativesignpos:CHAR
   monnegativecspos:CHAR

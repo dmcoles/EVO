@@ -1,5 +1,6 @@
-OPT MODULE
-OPT EXPORT
+  OPT MODULE
+  OPT EXPORT
+  OPT PREPROCESS
 
 MODULE 'graphics/clip',
        'graphics/gels',
@@ -7,14 +8,14 @@ MODULE 'graphics/clip',
        'graphics/text',
        'graphics/view'
 
-OBJECT tmpras
-  rasptr:PTR TO CHAR
-  size:LONG
+OBJECT tmpras 
+  rasptr:PTR TO CHAR 
+  size:LONG 
 ENDOBJECT     /* SIZEOF=8 */
 
 OBJECT gelsinfo
   sprrsrvd:CHAR  -> This is signed
-  flags:CHAR
+  flags:CHAR 
   gelhead:PTR TO vs
   geltail:PTR TO vs
   nextline:PTR TO INT
@@ -67,7 +68,7 @@ OBJECT rastport
   lineptrn:INT  -> This is unsigned
   cp_x:INT
   cp_y:INT
-  minterms[8]:ARRAY
+  minterms[8]:ARRAY OF CHAR
   penwidth:INT
   penheight:INT
   font:PTR TO textfont
@@ -80,7 +81,7 @@ OBJECT rastport
   rp_user:PTR TO LONG
   longreserved[2]:ARRAY OF LONG
   wordreserved[7]:ARRAY OF INT  -> Array is unsigned
-  reserved[8]:ARRAY
+  reserved[8]:ARRAY OF CHAR
 ENDOBJECT     /* SIZEOF=100 */
 
 OBJECT areainfo

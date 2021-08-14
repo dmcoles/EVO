@@ -9,7 +9,7 @@ MODULE 'exec/lists',
 
 OBJECT msg
   methodid:LONG
-ENDOBJECT     /* SIZEOF=NONE !!! */
+ENDOBJECT     /* SIZEOF=4 */
 
 #define ROOTCLASS     'rootclass'
 #define IMAGECLASS    'imageclass'
@@ -41,28 +41,28 @@ CONST OM_NEW=$101,
 OBJECT opnew
   methodid:LONG
   attrlist:PTR TO tagitem
-  ginfo:PTR TO gadgetinfo  -> Always NIL
-ENDOBJECT     /* SIZEOF=NONE !!! */
+  ginfo:PTR TO gadgetinfo
+ENDOBJECT     /* SIZEOF=12 */
 
 OBJECT opset
   methodid:LONG
   attrlist:PTR TO tagitem
   ginfo:PTR TO gadgetinfo
-ENDOBJECT     /* SIZEOF=NONE !!! */
+ENDOBJECT     /* SIZEOF=12 */
 
 OBJECT opupdate
   methodid:LONG
   attrlist:PTR TO tagitem
   ginfo:PTR TO gadgetinfo
   flags:LONG
-ENDOBJECT     /* SIZEOF=NONE !!! */
+ENDOBJECT     /* SIZEOF=16 */
 
 OBJECT opnotify
   methodid:LONG
   attrlist:PTR TO tagitem
   ginfo:PTR TO gadgetinfo
   flags:LONG
-ENDOBJECT     /* SIZEOF=NONE !!! */
+ENDOBJECT     /* SIZEOF=16 */
 
 CONST OPUB_INTERIM=0,
       OPUF_INTERIM=1
@@ -71,24 +71,24 @@ OBJECT opget
   methodid:LONG
   attrid:LONG
   storage:PTR TO LONG
-ENDOBJECT     /* SIZEOF=NONE !!! */
+ENDOBJECT     /* SIZEOF=12 */
 
 OBJECT opaddtail
   methodid:LONG
   list:PTR TO lh
-ENDOBJECT     /* SIZEOF=NONE !!! */
+ENDOBJECT     /* SIZEOF=8 */
 
 OBJECT opmember
   methodid:LONG
   object:LONG
-ENDOBJECT     /* SIZEOF=NONE !!! */
+ENDOBJECT     /* SIZEOF=8 */
 
 OBJECT opaddmember
   methodid:LONG
   object:LONG
-ENDOBJECT     /* SIZEOF=NONE !!! */
+ENDOBJECT     /* SIZEOF=8 */
 
 OBJECT opremmember
   methodid:LONG
   object:LONG
-ENDOBJECT     /* SIZEOF=NONE !!! */
+ENDOBJECT     /* SIZEOF=8 */

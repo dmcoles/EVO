@@ -1,10 +1,12 @@
-OPT MODULE
-OPT EXPORT
+  OPT MODULE
+  OPT EXPORT
+  OPT PREPROCESS
 
 MODULE 'devices/keymap',
        'exec/ports',
        'graphics/text',
-       'intuition/intuition'
+       'intuition/intuition',
+       'libraries/keymap'
 
 CONST CONU_LIBRARY=-1,
       CONU_STANDARD=0,
@@ -16,7 +18,7 @@ CONST CONU_LIBRARY=-1,
       PMB_AWM=22,
       MAXTABS=$50
 
-OBJECT conunit
+OBJECT conunit NOALIGN
   mp:mp
   window:PTR TO window
   xcp:INT
@@ -42,7 +44,7 @@ OBJECT conunit
   drawmode:CHAR  -> This is signed
   obsolete1:CHAR
   obsolete2:LONG
-  minterms[8]:ARRAY
+  minterms[8]:ARRAY OF CHAR
   font:PTR TO textfont
   algostyle:CHAR
   txflags:CHAR
@@ -50,8 +52,7 @@ OBJECT conunit
   txwidth:INT  -> This is unsigned
   txbaseline:INT  -> This is unsigned
   txspacing:INT
-  modes[3]:ARRAY
--> Um, have to fiddle alignment in .m file
-  rawevents[3]:ARRAY
+  modes[3]:ARRAY OF CHAR
+  rawevents[3]:ARRAY OF CHAR
 ENDOBJECT     /* SIZEOF=296 */
 

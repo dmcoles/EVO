@@ -7,51 +7,51 @@ CONST CIAA_ADDR=$bfe001,
 OBJECT cia
   ciapra:CHAR
   pad0a:CHAR
-  pad0b[$fe]:ARRAY
+  pad0b[254]:ARRAY OF CHAR
   ciaprb:CHAR
   pad1a:CHAR
-  pad1b[$fe]:ARRAY
+  pad1b[254]:ARRAY OF CHAR
   ciaddra:CHAR
   pad2a:CHAR
-  pad2b[$fe]:ARRAY
+  pad2b[254]:ARRAY OF CHAR
   ciaddrb:CHAR
   pad3a:CHAR
-  pad3b[$fe]:ARRAY
+  pad3b[254]:ARRAY OF CHAR
   ciatalo:CHAR
   pad4a:CHAR
-  pad4b[$fe]:ARRAY
+  pad4b[254]:ARRAY OF CHAR
   ciatahi:CHAR
   pad5a:CHAR
-  pad5b[$fe]:ARRAY
+  pad5b[254]:ARRAY OF CHAR
   ciatblo:CHAR
   pad6a:CHAR
-  pad6b[$fe]:ARRAY
+  pad6b[254]:ARRAY OF CHAR
   ciatbhi:CHAR
   pad7a:CHAR
-  pad7b[$fe]:ARRAY
+  pad7b[254]:ARRAY OF CHAR
   ciatodlow:CHAR
   pad8a:CHAR
-  pad8b[$fe]:ARRAY
+  pad8b[254]:ARRAY OF CHAR
   ciatodmid:CHAR
   pad9a:CHAR
-  pad9b[$fe]:ARRAY
+  pad9b[254]:ARRAY OF CHAR
   ciatodhi:CHAR
   pad10a:CHAR
-  pad10b[$fe]:ARRAY
+  pad10b[254]:ARRAY OF CHAR
   unusedreg:CHAR
   pad11a:CHAR
-  pad11b[$fe]:ARRAY
+  pad11b[254]:ARRAY OF CHAR
   ciasdr:CHAR
   pad12a:CHAR
-  pad12b[$fe]:ARRAY
+  pad12b[254]:ARRAY OF CHAR
   ciaicr:CHAR
   pad13a:CHAR
-  pad13b[$fe]:ARRAY
+  pad13b[254]:ARRAY OF CHAR
   ciacra:CHAR
   pad14a:CHAR
-  pad14b[$fe]:ARRAY
+  pad14b[254]:ARRAY OF CHAR
   ciacrb:CHAR
-ENDOBJECT
+ENDOBJECT     /* SIZEOF=3842 */
 
 CONST CIAPRA=0,
       CIAPRB=$100,

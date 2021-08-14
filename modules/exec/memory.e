@@ -1,7 +1,8 @@
-OPT MODULE
-OPT EXPORT
+  OPT MODULE
+  OPT EXPORT
+  OPT PREPROCESS
 
-MODULE 'exec/nodes'
+  MODULE 'exec/nodes'
 
 OBJECT ml
   ln:ln
@@ -10,8 +11,10 @@ OBJECT ml
 ENDOBJECT     /* SIZEOF=16 */
 
 OBJECT me
--> a) next LONG is unioned with "reqs:LONG"
-  addr:LONG
+  UNION
+  [reqs:LONG]
+  [addr:LONG]
+  ENDUNION
   length:LONG
 ENDOBJECT     /* SIZEOF=8 */
 
@@ -53,6 +56,6 @@ ENDOBJECT     /* SIZEOF=32 */
 OBJECT mc
   next:PTR TO mc
   bytes:LONG
--> Um, 'size:LONG' was an error
-ENDOBJECT     /* SIZEOF=NONE !!! */
+ENDOBJECT     /* SIZEOF=8 */
+
 

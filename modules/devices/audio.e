@@ -1,12 +1,12 @@
-OPT MODULE
-OPT EXPORT
+  OPT MODULE
+  OPT EXPORT
 
-OPT PREPROCESS
-
+  OPT PREPROCESS
+  
 MODULE 'exec/io',
        'exec/ports'
 
-#define AUDIONAME 'audio.device'
+#define AUDIONAME 'audio.device'  
 
 CONST ADHARD_CHANNELS=4,
       ADALLOC_MINPREC=$FFFFFF80,

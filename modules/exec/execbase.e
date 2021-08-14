@@ -1,5 +1,6 @@
-OPT MODULE
-OPT EXPORT
+  OPT MODULE
+  OPT EXPORT
+  OPT PREPROCESS
 
 MODULE 'exec/lists',
        'exec/libraries',
@@ -90,6 +91,8 @@ CONST AFB_68010=0,
       AFB_68881=4,
       AFB_68882=5,
       AFB_FPU40=6,
+      AFB_68060=7,
+      AFB_FPGA=10,
       AFB_PRIVATE=15,
       AFF_68010=1,
       AFF_68020=2,
@@ -98,6 +101,8 @@ CONST AFB_68010=0,
       AFF_68881=16,
       AFF_68882=$20,
       AFF_FPU40=$40,
+      AFF_68060=$80,
+      AFF_FPGA=$400,
       AFF_PRIVATE=$8000,
       CACRF_ENABLEI=1,
       CACRF_FREEZEI=2,

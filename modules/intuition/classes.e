@@ -1,12 +1,8 @@
-OPT MODULE
-OPT EXPORT
+  OPT MODULE
+  OPT EXPORT
+  OPT PREPROCESS
 
-OPT PREPROCESS
-
-MODULE 'exec/libraries',
-       'exec/nodes',
-       'intuition/classusr',
-       'utility/hooks'
+  MODULE 'exec/libraries','exec/nodes','utility/hooks'
 
 OBJECT iclass
   dispatcher:hook
@@ -19,12 +15,12 @@ OBJECT iclass
   subclasscount:LONG
   objectcount:LONG
   flags:LONG
-ENDOBJECT     /* SIZEOF=NONE !!! */
+ENDOBJECT     /* SIZEOF=52 */
 
 CONST CLB_INLIST=0,
       CLF_INLIST=1
 
--> instoffset and instsize are unsigned so AND with $FFFF
+-> instoffset and instsize are unsigned so AND with $FFFF      
 #define INST_DATA(cl, o) ((o)+(cl::iclass.instoffset AND $FFFF))
 #define SIZEOF_INSTANCE(cl) ((cl::iclass.instoffset AND $FFFF)+(cl::iclass.instsize AND $FFFF)+SIZEOF object)
 
@@ -44,4 +40,5 @@ OBJECT classlibrary
   lib:lib
   pad:INT
   class:PTR TO iclass
-ENDOBJECT
+ENDOBJECT     /* SIZEOF=40 */
+

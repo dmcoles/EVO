@@ -1,11 +1,8 @@
-OPT MODULE
-OPT EXPORT
+  OPT MODULE
+  OPT EXPORT
+  OPT PREPROCESS
 
-MODULE 'devices/inputevent',
-       'graphics/rastport',
-       'intuition/cghooks',
-       'intuition/intuition',
-       'utility/tagitem'
+  MODULE 'intuition/intuition','intuition/cghooks','graphics/rastport','utility/tagitem','devices/inputevent'
 
 CONST GA_DUMMY=$80030000,
       GA_LEFT=$80030001,
@@ -49,9 +46,26 @@ CONST GA_DUMMY=$80030000,
       GA_RELSPECIAL=$80030027,
       GA_TEXTATTR=$80030028,
       GA_READONLY=$80030029,
+      GA_UNDERSCORE=$8003002A,
+      GA_ACTIVATEKEY=$8003002B,
+      GA_BACKFILL=$8003002C,
+      GA_GADGETHELPTEXT=$8003002D,
+      GA_USERINPUT=$8003002E,
+      GA_HIDDEN=$80030036,
+      GA_CUSTOMMOUSEPOINTER=$8003003C,
+      GA_POINTERTYPE=$8003003D,
+      GA_PARENTHIDDEN=$8003003E,
+      GM_DOMAIN=7,
+      GM_KEYTEST=8,
+      GM_KEYGOACTIVE=9,
+      GM_KEYGOINACTIVE=10,
+      GM_HANDLESCROLL=14,
+      GM_QUERYHOVERED=15,
+      GMR_KEYACTIVE=16,
+      GMR_KEYVERIFY=32,
       PGA_DUMMY=$80031000,
       PGA_FREEDOM=$80031001,
-      PGA_BORDERLESS=$80031002,
+      PGA_BORDERLESS=$80031002,     
       PGA_HORIZPOT=$80031003,
       PGA_HORIZBODY=$80031004,
       PGA_VERTPOT=$80031005,
@@ -60,6 +74,7 @@ CONST GA_DUMMY=$80030000,
       PGA_VISIBLE=$80031008,
       PGA_TOP=$80031009,
       PGA_NEWLOOK=$8003100A,
+      PGA_KNOBIMAGE=$8003100D,
       STRINGA_DUMMY=$80032000,
       STRINGA_MAXCHARS=$80032001,
       STRINGA_BUFFER=$80032002,
@@ -104,14 +119,34 @@ OBJECT gphittest
   ginfo:PTR TO gadgetinfo
   mousex:INT
   mousey:INT
-ENDOBJECT     /* SIZEOF=NONE !!! */
+ENDOBJECT     /* SIZEOF=12 */
 
 OBJECT gphelptest
   methodid:LONG
   ginfo:PTR TO gadgetinfo
   mousex:INT
   mousey:INT
-ENDOBJECT     /* SIZEOF=NONE !!! */
+ENDOBJECT     /* SIZEOF=12 */
+
+OBJECT gpkeytest
+  methodid:LONG
+  ginfo:PTR TO gadgetinfo
+  imsg:PTR TO intuimessage
+  vanillakey:LONG
+ENDOBJECT
+
+OBJECT gpkeyinput
+  methodid:LONG
+  ginfo:PTR TO gadgetinfo
+  ievent:PTR TO inputevent
+  termination:LONG
+ENDOBJECT
+
+OBJECT keygoinactive
+  methodid:LONG
+  ginfo:PTR TO gadgetinfo
+  abort:LONG
+ENDOBJECT
 
 CONST GMR_GADGETHIT=4,
       GMR_NOHELPHIT=0,
@@ -123,8 +158,7 @@ OBJECT gprender
   ginfo:PTR TO gadgetinfo
   rport:PTR TO rastport
   redraw:LONG
-ENDOBJECT     /* SIZEOF=NONE !!! */
-
+ENDOBJECT     /* SIZEOF=16 */
 CONST GREDRAW_UPDATE=2,
       GREDRAW_REDRAW=1,
       GREDRAW_TOGGLE=0
@@ -137,7 +171,8 @@ OBJECT gpinput
   mousex:INT
   mousey:INT
   tabletdata:PTR TO tabletdata
-ENDOBJECT     /* SIZEOF=NONE !!! */
+ENDOBJECT     /* SIZEOF=24 */
+
 
 OBJECT gpgoactive
   methodid:LONG
@@ -147,8 +182,7 @@ OBJECT gpgoactive
   mousex:INT
   mousey:INT
   tabletdata:PTR TO tabletdata
-ENDOBJECT     /* SIZEOF=NONE !!! */
-
+ENDOBJECT     /* SIZEOF=24 */
 CONST GMR_MEACTIVE=0,
       GMR_NOREUSE=2,
       GMR_REUSE=4,
@@ -170,13 +204,13 @@ OBJECT gpgoinactive
   methodid:LONG
   ginfo:PTR TO gadgetinfo
   abort:LONG
-ENDOBJECT     /* SIZEOF=NONE !!! */
+ENDOBJECT     /* SIZEOF=12 */
 
 OBJECT gplayout
   methodid:LONG
   ginfo:PTR TO gadgetinfo
   initial:LONG
-ENDOBJECT     /* SIZEOF=NONE !!! */
+ENDOBJECT     /* SIZEOF=12 */
 
 OBJECT gpdomain
   methodid:LONG
@@ -185,7 +219,7 @@ OBJECT gpdomain
   which:LONG
   domain:ibox
   attrs:PTR TO tagitem
-ENDOBJECT
+ENDOBJECT     /* SIZEOF=28 */
 
 CONST GDOMAIN_MINIMUM=0,
       GDOMAIN_NOMINAL=1,

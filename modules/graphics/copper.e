@@ -1,9 +1,9 @@
-OPT MODULE
-OPT EXPORT
+  OPT MODULE
+  OPT EXPORT
 
-OPT PREPROCESS
+  OPT PREPROCESS
 
-MODULE 'graphics/view'
+  MODULE 'graphics/view'
 
 CONST COPPER_MOVE=0,
       COPPER_WAIT=1,
@@ -14,11 +14,15 @@ CONST COPPER_MOVE=0,
 
 OBJECT copins
   opcode:INT
--> a) next two INTs are unioned with "nxtlist:PTR TO coplist"
--> b) next INT is unioned with "destaddr:INT"
+  UNION
+  [nxtlist:PTR TO coplist]
+  [
+  destaddr:INT
+  destdata:INT]
+  [
   vwaitpos:INT
--> b) next INT is unioned with "destdata:INT"
-  hwaitpos:INT
+  hwaitpos:INT]
+  ENDUNION
 ENDOBJECT     /* SIZEOF=6 */
 
 #define VWAITPOS vwaitpos
@@ -51,7 +55,7 @@ OBJECT coplist
 ->  cop5start:PTR TO INT
   slrepeat:INT  -> This is unsigned
   flags:INT  -> This is unsigned
-ENDOBJECT     /* SIZEOF=50 */
+ENDOBJECT     /* SIZEOF=38 */
 
 CONST EXACT_LINE=1,
       HALF_LINE=2

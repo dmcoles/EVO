@@ -1,7 +1,8 @@
-OPT MODULE
-OPT EXPORT
+  OPT MODULE
+  OPT EXPORT
+  OPT PREPROCESS
 
-MODULE 'graphics/gfx'
+  MODULE 'graphics/gfx'
 
 OBJECT bitscaleargs
   srcx:INT  -> This is unsigned

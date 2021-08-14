@@ -1,7 +1,8 @@
-OPT MODULE
-OPT EXPORT
+  OPT MODULE
+  OPT EXPORT
+  OPT PREPROCESS
 
-MODULE 'dos/dos'
+  MODULE 'dos/dos'
 
 OBJECT datetime
   stamp:datestamp
@@ -21,5 +22,6 @@ CONST LEN_DATSTRING=16,
       FORMAT_INT=1,
       FORMAT_USA=2,
       FORMAT_CDN=3,
+      FORMAT_DEF=4,
       FORMAT_MAX=3
 

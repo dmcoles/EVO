@@ -1,18 +1,8 @@
-OPT MODULE
-OPT EXPORT
+  OPT MODULE
+  OPT EXPORT
+  OPT PREPROCESS
 
-OPT PREPROCESS
-
-MODULE 'devices/keymap',
-       'exec/ports',
-       'graphics/clip',
-       'graphics/gfx',
-       'graphics/rastport',
-       'graphics/text',
-       'intuition/screens',
-       'intuition/sghooks',
-       'utility/tagitem'
-
+  MODULE 'exec/ports','intuition/screens','utility/tagitem','graphics/gfx','graphics/rastport','graphics/clip','graphics/text','intuition/sghooks','devices/keymap','libraries/keymap'
 OBJECT menu
   nextmenu:PTR TO menu
   leftedge:INT
@@ -51,12 +41,16 @@ CONST CHECKIT=1,
       COMMSEQ=4,
       MENUTOGGLE=8,
       ITEMENABLED=16,
+      SUBMENU=$200,
       HIGHFLAGS=$C0,
       HIGHIMAGE=0,
       HIGHCOMP=$40,
       HIGHBOX=$80,
       HIGHNONE=$C0,
       CHECKED=$100,
+      MIF_SHIFTCOMMSEQ=$800,
+      MIF_EXTENDE=$8000,
+      MIF_RESERVED=$400,
       ISDRAWN=$1000,
       HIGHITEM=$2000,
       MENUTOGGLED=$4000
@@ -75,11 +69,11 @@ OBJECT requester
   flags:INT  -> This is unsigned
   backfill:CHAR
   reqlayer:PTR TO layer
-  reqpad1[32]:ARRAY
+  reqpad1[32]:ARRAY OF CHAR
   imagebmap:PTR TO bitmap
   rwindow:PTR TO window
   reqimage:PTR TO image
-  reqpad2[32]:ARRAY
+  reqpad2[32]:ARRAY OF CHAR
 ENDOBJECT     /* SIZEOF=112 */
 
 CONST POINTREL=1,
@@ -188,6 +182,7 @@ CONST GFLG_GADGHIGHBITS=3,
       GTYP_WDOWNBACK=$60,
       GTYP_SDOWNBACK=$70,
       GTYP_CLOSE=$80,
+      GTYP_ICONIFY=$90,
       GTYP_BOOLGADGET=1,
       GTYP_GADGET0002=2,
       GTYP_PROPGADGET=3,
@@ -201,9 +196,13 @@ CONST GFLG_GADGHIGHBITS=3,
       GTYP_SUNUSED=$70,
       GMORE_BOUNDS=1,
       GMORE_GADGETHELP=2,
-      GMORE_SCROLLRASTER=4
+      GMORE_SCROLLRASTER=4,
+      GMORE_HIDDEN=$10,
+      GMORE_BOOPSIGADGET=$400,
+      GMORE_FREEIMAGE=$800,
+      GMORE_PARENTHIDDEN=$1000000
 
-OBJECT boolinfo
+  OBJECT boolinfo
   flags:INT  -> This is unsigned
   mask:PTR TO INT  -> Target is unsigned
   reserved:LONG
@@ -231,6 +230,7 @@ CONST AUTOKNOB=1,
       PROPBORDERLESS=8,
       KNOBHIT=$100,
       PROPNEWLOOK=16,
+      SMARTKNOBIMAGE=$20,
       KNOBHMIN=6,
       KNOBVMIN=4,
       MAXBODY=$FFFF,
@@ -305,7 +305,20 @@ ENDOBJECT     /* SIZEOF=52 */
 OBJECT extintuimessage
   intuimessage:intuimessage
   tabletdata:PTR TO tabletdata
-ENDOBJECT     /* SIZEOF=NONE !!! */
+ENDOBJECT     /* SIZEOF=56 */
+
+OBJECT intuiwheeldata
+  version:INT
+  reserved:INT
+  wheelx:INT
+  wheely:INT
+  hoveredgadget:PTR TO gadget
+ENDOBJECT
+
+CONST INTUIWHEELDATA_VERSION=2,
+      IMSGCODE_INTUIRAWKEYDATA=$8000,
+      IMSGCODE_INTUIWHEELDATA=$10000,
+      IMSGCODE_INTUIWHEELDATAREJECT=$4000
 
 CONST IDCMP_SIZEVERIFY=1,
       IDCMP_NEWSIZE=2,
@@ -334,9 +347,12 @@ CONST IDCMP_SIZEVERIFY=1,
       IDCMP_MENUHELP=$1000000,
       IDCMP_CHANGEWINDOW=$2000000,
       IDCMP_GADGETHELP=$4000000,
+      IDCMP_EXTENDEDMOUSE=$08000000,
       IDCMP_LONELYMESSAGE=$80000000,
       CWCODE_MOVESIZE=0,
       CWCODE_DEPTH=1,
+      CWCODE_HIDE=2,
+      CWCODE_SHOW=3,
       MENUHOT=1,
       MENUCANCEL=2,
       MENUWAITING=3,
@@ -434,6 +450,7 @@ CONST WFLG_SIZEGADGET=1,
       WFLG_VISITOR=$8000000,
       WFLG_ZOOMED=$10000000,
       WFLG_HASZOOM=$20000000,
+      WFLG_HASICONIFY=$40000000,
       SUPER_UNUSED=$FCFC0000,
       DEFAULTMOUSEQUEUE=5
 
@@ -537,7 +554,13 @@ CONST WA_LEFT=$80000064,
       WA_TABLETMESSAGES=$8000009A,
       WA_HELPGROUP=$8000009B,
       WA_HELPGROUPWINDOW=$8000009C,
-      HC_GADGETHELP=1
+      WA_HIDDEN=$8000009F,
+      WA_POINTERTYPE=$800000B3,
+      WA_ICONIFYGADGET=$800000C3,
+      HC_GADGETHELP=1,
+      ICTRL_DUMMY=$8001C000,
+      WINDOW_BACKMOST=0,
+      WINDOW_FRONTMOST=1
 
 OBJECT remember
   nextremember:PTR TO remember

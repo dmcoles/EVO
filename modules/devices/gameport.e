@@ -1,5 +1,5 @@
-OPT MODULE
-OPT EXPORT
+  OPT MODULE
+  OPT EXPORT
 
 CONST GPD_READEVENT=9,
       GPD_ASKCTYPE=10,
@@ -10,7 +10,7 @@ CONST GPD_READEVENT=9,
       GPTF_DOWNKEYS=1,
       GPTB_UPKEYS=1,
       GPTF_UPKEYS=2
-
+      
 OBJECT gameporttrigger
   keys:INT  -> This is unsigned
   timeout:INT  -> This is unsigned

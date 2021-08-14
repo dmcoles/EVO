@@ -1,7 +1,7 @@
-OPT MODULE
-OPT EXPORT
+  OPT MODULE
+  OPT EXPORT
 
-OPT PREPROCESS
+  OPT PREPROCESS
 
 #define DOSNAME 'dos.library'
 #define BADDR(x) (Shl((x),2))
@@ -25,7 +25,7 @@ CONST DOSTRUE=-1,
       ACCESS_READ=-2,
       EXCLUSIVE_LOCK=-1,
       ACCESS_WRITE=-1
-
+      
 OBJECT datestamp
   days:LONG
   minute:LONG
@@ -37,16 +37,16 @@ CONST TICKS_PER_SECOND=$32
 OBJECT fileinfoblock
   diskkey:LONG
   direntrytype:LONG
-  filename[108]:ARRAY
+  filename[108]:ARRAY OF CHAR
   protection:LONG
   entrytype:LONG
   size:LONG
   numblocks:LONG
   datestamp:datestamp
-  comment[80]:ARRAY
+  comment[80]:ARRAY OF CHAR
   owneruid:INT  -> This is unsigned
   ownergid:INT  -> This is unsigned
-  reserved[32]:ARRAY
+  reserved[32]:ARRAY OF CHAR
 ENDOBJECT     /* SIZEOF=260 */
 
 CONST FIBB_OTR_READ=15,
@@ -57,6 +57,7 @@ CONST FIBB_OTR_READ=15,
       FIBB_GRP_WRITE=10,
       FIBB_GRP_EXECUTE=9,
       FIBB_GRP_DELETE=8,
+      FIBB_HOLD=7,     
       FIBB_SCRIPT=6,
       FIBB_PURE=5,
       FIBB_ARCHIVE=4,
@@ -72,6 +73,7 @@ CONST FIBB_OTR_READ=15,
       FIBF_GRP_WRITE=$400,
       FIBF_GRP_EXECUTE=$200,
       FIBF_GRP_DELETE=$100,
+      FIBF_HOLD=$80,      
       FIBF_SCRIPT=$40,
       FIBF_PURE=$20,
       FIBF_ARCHIVE=16,
@@ -80,7 +82,7 @@ CONST FIBB_OTR_READ=15,
       FIBF_EXECUTE=2,
       FIBF_DELETE=1,
       FAULT_MAX=$52
-
+      
 
 OBJECT infodata
   numsofterrors:LONG
@@ -108,6 +110,9 @@ CONST ID_WRITE_PROTECTED=$50,
       ID_FASTDIR_FFS_DISK=$444F5305,
       ID_KICKSTART_DISK=$4B49434B,
       ID_MSDOS_DISK=$4D534400,
+      ID_LONG_DOS_DISK=$444F5306,
+      ID_LONG_FFS_DISK=$444F5307,
+      ID_COMPLONG_FFS_DISK=$444F5308,
       ERROR_NO_FREE_STORE=$67,
       ERROR_TASK_TABLE_FULL=$69,
       ERROR_BAD_TEMPLATE=$72,
@@ -149,7 +154,7 @@ CONST ID_WRITE_PROTECTED=$50,
       ERROR_OBJECT_LINKED=$EA,
       ERROR_BAD_HUNK=$EB,
       ERROR_NOT_IMPLEMENTED=$EC,
-      ERROR_RECORD_NOT_LOCKED=$F0,
+     ERROR_RECORD_NOT_LOCKED=$F0,
       ERROR_LOCK_COLLISION=$F1,
       ERROR_LOCK_TIMEOUT=$F2,
       ERROR_UNLOCK_ERROR=$F3,

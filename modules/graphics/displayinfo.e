@@ -1,5 +1,6 @@
-OPT MODULE
-OPT EXPORT
+  OPT MODULE
+  OPT EXPORT
+  OPT PREPROCESS
 
 MODULE 'graphics/gfx',
        'graphics/monitor'
@@ -26,12 +27,12 @@ OBJECT displayinfo
   numstdsprites:INT  -> This is unsigned
   paletterange:INT  -> This is unsigned
   spriteresolution:tpoint
-  pad[4]:ARRAY
+  pad[4]:ARRAY OF CHAR
   redbits:CHAR
   greenbits:CHAR
   bluebits:CHAR
   pad2a:CHAR
-  pad2b[4]:ARRAY
+  pad2b[4]:ARRAY OF CHAR
   reserved[2]:ARRAY OF LONG
 ENDOBJECT     /* SIZEOF=56 */
 
@@ -74,7 +75,7 @@ OBJECT dimensioninfo
   videooscan:rectangle
   txtoscan:rectangle
   stdoscan:rectangle
-  pad[14]:ARRAY
+  pad[14]:ARRAY OF CHAR
   reserved[2]:ARRAY OF LONG
 ENDOBJECT     /* SIZEOF=88 */
 
@@ -88,7 +89,7 @@ OBJECT monitorinfo
   totalcolorclocks:INT  -> This is unsigned
   minrow:INT  -> This is unsigned
   compatibility:INT
-  pad[32]:ARRAY
+  pad[32]:ARRAY OF CHAR
   mousetick:tpoint
   defaultviewposition:tpoint
   preferredmodeid:LONG
@@ -102,7 +103,7 @@ CONST MCOMPAT_MIXED=0,
 
 OBJECT nameinfo
   qh:qh
-  name[32]:ARRAY
+  name[32]:ARRAY OF CHAR
   reserved[2]:ARRAY OF LONG
 ENDOBJECT     /* SIZEOF=56 */
 

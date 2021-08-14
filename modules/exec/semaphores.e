@@ -1,5 +1,5 @@
-OPT MODULE
-OPT EXPORT
+  OPT MODULE
+  OPT EXPORT
 
 MODULE 'exec/lists',
        'exec/nodes',

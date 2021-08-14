@@ -3,8 +3,10 @@ OPT EXPORT
 
 CONST ID_PTXT=$50545854,
       ID_PUNT=$50554E54,
+      ID_PDEV=$50444556,
       DRIVERNAMESIZE=30,
-      DEVICENAMESIZE=$20
+      DEVICENAMESIZE=$20,
+      UNITNAMESIZE=32
 
 OBJECT printertxtprefs
   reserved[4]:ARRAY OF LONG
@@ -19,6 +21,12 @@ OBJECT printertxtprefs
   rightmargin:INT  -> This is unsigned
   quality:INT  -> This is unsigned
 ENDOBJECT     /* SIZEOF=63 */
+
+OBJECT printerdeviceunitprefs
+  reserved[4]:ARRAY OF LONG
+  unitnum:LONG
+  unitname[32]:ARRAY OF CHAR
+ENDOBJECT     /* SIZEOF=52 */
 
 CONST PP_PARALLEL=0,
       PP_SERIAL=1,

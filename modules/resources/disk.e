@@ -20,7 +20,7 @@ OBJECT discresource
   lib:lib
   current:PTR TO discresourceunit
   flags:CHAR
-  pad:CHAR
+  unitinit:CHAR
   syslib:PTR TO lib
   ciaresource:PTR TO lib
   unitid[4]:ARRAY OF LONG
@@ -37,11 +37,13 @@ CONST DRB_ALLOC0=0,
       DRB_ALLOC1=1,
       DRB_ALLOC2=2,
       DRB_ALLOC3=3,
+      DRB_DETECT0=4,
       DRB_ACTIVE=7,
       DRF_ALLOC0=1,
       DRF_ALLOC1=2,
       DRF_ALLOC2=4,
       DRF_ALLOC3=8,
+      DRF_DETECT0=16,
       DRF_ACTIVE=$80,
       DSKDMAOFF=$4000,
       DR_ALLOCUNIT=-6,

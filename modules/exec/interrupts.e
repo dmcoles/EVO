@@ -1,5 +1,6 @@
-OPT MODULE
-OPT EXPORT
+  OPT MODULE
+  OPT EXPORT
+  OPT PREPROCESS
 
 MODULE 'exec/lists',
        'exec/nodes'
@@ -16,7 +17,7 @@ OBJECT iv
   node:PTR TO ln
 ENDOBJECT     /* SIZEOF=12 */
 
-CONST SF_SAR=$8000,
+CONST SF_SAR=$8000,     
       SF_TQE=$4000,
       SF_SINT=$2000
 
@@ -29,4 +30,3 @@ CONST SIH_PRIMASK=$F0,
       SIH_QUEUES=5,
       INTB_NMI=15,
       INTF_NMI=$8000
-

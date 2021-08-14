@@ -1,7 +1,8 @@
-OPT MODULE
-OPT EXPORT
+  OPT MODULE
+  OPT EXPORT
+  OPT PREPROCESS
 
-MODULE 'exec/ports'
+  MODULE 'exec/ports'
 
 OBJECT dosenvec
   tablesize:LONG
@@ -46,7 +47,11 @@ CONST DE_TABLESIZE=0,
       DE_DOSTYPE=16,
       DE_BAUD=17,
       DE_CONTROL=18,
-      DE_BOOTBLOCKS=19
+      DE_BOOTBLOCKS=19,
+      ENVF_SCSIDIRECT=$10000,
+      ENVF_SUPERFLOPPY=$20000,
+      ENVF_DISABLENSD=$40000
+
 
 OBJECT filesysstartupmsg
   unit:LONG

@@ -1,0 +1,40 @@
+##base _RexxSysBase
+##bias 30
+*--- functions in V33 or higher (Release 1.2) ---
+*--- (16 function slots reserved here) ---
+##bias 126
+##public
+*
+CreateArgstring(string,length)(a0,d0)
+DeleteArgstring(argstring)(a0)
+LengthArgstring(argstring)(a0)
+CreateRexxMsg(port,extension,host)(a0/a1,d0)
+DeleteRexxMsg(packet)(a0)
+ClearRexxMsg(msgptr,count)(a0,d0)
+FillRexxMsg(msgptr,count,mask)(a0,d0/d1)
+IsRexxMsg(msgptr)(a0)
+*
+##private
+##bias 450
+##public
+*
+LockRexxBase(resource)(d0)
+UnlockRexxBase(resource)(d0)
+*
+##private
+##bias 480
+##public
+*--- function in V45 or higher (Release 3.9) ---
+*
+CreateRexxHostPort(basename)(a0)
+DeleteRexxHostPort(port)(a0)
+GetRexxVarFromMsg(var,msgptr,value)(a0/a2,a1)
+SetRexxVarFromMsg(var,msgptr,value)(a0/a2,a1)
+LaunchRexxScript(script,replyport,extension,input,output)(a0/a1/a2,d1/d2)
+FreeRexxMsg(msgptr)(a0)
+*
+*--- function in V47 or higher (Release 3.2) ---
+*
+GetRexxBufferFromMsg(var,msgptr,buffer,buffer_size)(a0/a2,a1,d0)
+*
+##end

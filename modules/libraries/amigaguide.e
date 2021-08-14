@@ -31,8 +31,7 @@ CONST APSH_TOOL_ID=$2AF8,
       AGA_RESERVED3=$80000008,
       AGA_AREXXPORT=$80000009,
       AGA_AREXXPORTNAME=$8000000A,
-      AGA_WORKPATH=$8000000B,
-      AGA_WORKNODE=$8000000C
+      AGA_SECURE=$8000000B
 
 OBJECT amigaguidemsg
   msg:mn
@@ -84,13 +83,13 @@ CONST HTF_LOAD_INDEX=1,
 
 OBJECT xref
   node:ln
-  pad:INT  -> This is unsigned
--> Umm, should be 'PTR TO docfile', but 'docfile' not defined
+  pad:INT
   df:LONG
   file:PTR TO CHAR
   name:PTR TO CHAR
   line:LONG
-ENDOBJECT     /* SIZEOF=32 */
+  reserved[2]:ARRAY OF LONG
+ENDOBJECT     /* SIZEOF=40 */
 
 CONST XR_GENERIC=0,
       XR_FUNCTION=1,
@@ -125,7 +124,7 @@ OBJECT opfindhost
   title:PTR TO CHAR
   next:PTR TO CHAR
   prev:PTR TO CHAR
-ENDOBJECT     /* SIZEOF=NONE !!! */
+ENDOBJECT     /* SIZEOF=28 */
 
 OBJECT opnodeio
   methodid:LONG
@@ -135,7 +134,7 @@ OBJECT opnodeio
   docbuffer:PTR TO CHAR
   bufflen:LONG
   flags:LONG
-ENDOBJECT     /* SIZEOF=NONE !!! */
+ENDOBJECT     /* SIZEOF=28 */
 
 CONST HTNF_KEEP=1,
       HTNF_RESERVED1=2,
@@ -153,4 +152,4 @@ CONST HTNF_KEEP=1,
 OBJECT opexpungenode
   methodid:LONG
   attrs:PTR TO tagitem
-ENDOBJECT     /* SIZEOF=NONE !!! */
+ENDOBJECT     /* SIZEOF=8 */
