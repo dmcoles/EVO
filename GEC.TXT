@@ -264,6 +264,7 @@ Fixed Bugs:
 
 Development restarted:
    (3.4.0)
+    - New version numbering 3.4.0
     - Add CONT command, similar to EXIT but continues the loop at the top
       instead of dropping out.
     - Make default cpu 68000
@@ -291,6 +292,9 @@ Development restarted:
       Chk, Eof, Fopen, Fclose, Alloc, Free, PutF, ReadB, WriteB, Size, Lsl, Lsr
       functions (all taken from CreativE)
     - We now have optimised versions of WriteF, PrintF, PutF when targetting OS 37
+    - Added SHOWFNAME command line parameter.
+    - Reverted order of efunctab back to how it was in E to restore compatibility
+      with pre-compiled E modules that are using Mul Div or WriteF.
     
 DATE HISTORY:
     3.3b    20.11.1999 -> 12.12.1999
