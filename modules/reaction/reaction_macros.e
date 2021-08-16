@@ -87,16 +87,16 @@
 /****************************************************************************
  * Window class method macros
  */
-#define RA_OpenWindow(win )       DoMethod(win, WM_OPEN, NIL)
-#define RA_CloseWindow(win )      DoMethod(win, WM_CLOSE, NIL)
-#define RA_HandleInput(win,code ) DoMethod(win, WM_HANDLEINPUT, code)
-#define RA_Iconify(win )          DoMethod(win, WM_ICONIFY, NIL)
+#define RA_OpenWindow(win )       doMethodA(win, [WM_OPEN, NIL])
+#define RA_CloseWindow(win )      doMethodA(win, [WM_CLOSE, NIL])
+#define RA_HandleInput(win,code ) doMethodA(win, [WM_HANDLEINPUT, code])
+#define RA_Iconify(win )          doMethodA(win, [WM_ICONIFY, NIL])
 #define RA_Uniconify(win )     RA_OpenWindow(win)
 /****************************************************************************
  * ARexx class method macros
  */
-#define RA_HandleRexx(obj)  DoMethod(obj, AM_HANDLEEVENT )
-#define RA_FlushRexx(obj)   DoMethod(obj, AM_FLUSH )
+#define RA_HandleRexx(obj)  doMethodA(obj, [AM_HANDLEEVENT] )
+#define RA_FlushRexx(obj)   doMethodA(obj, [AM_FLUSH] )
 /* Easy macro to set up a Hook for a string gadget, etc
  */
 #define RA_SetUpHook(apphook,func,data)  apphook.h_Entry = func \\

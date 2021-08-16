@@ -263,7 +263,7 @@ Fixed Bugs:
     - Small bug in reg exp
 
 Development restarted:
-   (3.4a)
+   (3.4.0)
     - Add CONT command, similar to EXIT but continues the loop at the top
       instead of dropping out.
     - Make default cpu 68000
@@ -299,7 +299,7 @@ DATE HISTORY:
     3.3e    05.04.2000 -> 22.06.2000
     3.3f    03.01.2001 -> 15.10.2001
     3.3g    04.01.2002 -> 16.06.2003
-    3.4a    09.06.2021 -> ??.??.????
+    3.4.0   09.06.2021 -> ??.??.????
 
 
 
