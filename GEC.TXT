@@ -1,4 +1,4 @@
-GEC v3.3g :
+GEC v3.4.0 :
 GRIO Amiga E Compiler !
 
 Changes maked from Amiga E v3.3a:
