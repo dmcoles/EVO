@@ -295,6 +295,10 @@ Development restarted:
     - Added SHOWFNAME command line parameter.
     - Reverted order of efunctab back to how it was in E to restore compatibility
       with pre-compiled E modules that are using Mul Div or WriteF.
+    - Added the following functions:
+        LowerChar(c), UpperChar(c) - takes a char and returns a char
+        StrAddChar(s,c) - Adds a single character to an estring
+        ListAddItem(l,i) - Adds a single item to an elist
     
 DATE HISTORY:
     3.3b    20.11.1999 -> 12.12.1999
