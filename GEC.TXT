@@ -299,6 +299,10 @@ Development restarted:
         LowerChar(c), UpperChar(c) - takes a char and returns a char
         StrAddChar(s,c) - Adds a single character to an estring
         ListAddItem(l,i) - Adds a single item to an elist
+    - Immediate assignments for values -256 to 254 for even numbers converted to MOVEQ followed by ADD.L D0,D0
+    - Optimised NEW [] list creation to remove duplicate moves into D0 eg. NEW [0,0,0,0]
+    - Added OPT PURE to check for non pure code (eg variables in static lists/objects and GetA4 call)
+    - Optimisation: Removed TST.L D0 after EXT.L D0 in IF/WHILE/REPEAT etc conditions.
     
 DATE HISTORY:
     3.3b    20.11.1999 -> 12.12.1999
