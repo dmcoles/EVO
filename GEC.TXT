@@ -314,6 +314,7 @@ Development restarted:
     - Optimisation for reg var assignments where moveq is used into a single
       MOVE instruction where possible.
     - Added warning when compiling a library that OPT PURE is recommended
+    - Optimisation for reg var assignments where moveq+add is used.
     
 DATE HISTORY:
     3.3b    20.11.1999 -> 12.12.1999
