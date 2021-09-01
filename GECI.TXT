@@ -1214,6 +1214,7 @@ has to become (ends with):      FOR/WHILE/UNTIL:        lab,jumpback,id
 78              value expected
 79              ")" expected
 80              this instruction works only in pool mode
+81              non-pure code not allowed
 
 WARNINGS:
 
@@ -1225,7 +1226,8 @@ bit     0       a4/a5 used
         5       var proc call
         6       code outside procs
         7       regs var used in handler
-
+        8       member used as method
+        9       OPT PURE recommended for libraries
 
 +---------------------------------------------------------------+
 |       REG_ALLOC factors                                       |
