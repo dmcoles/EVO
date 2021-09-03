@@ -315,6 +315,7 @@ Development restarted:
       MOVE instruction where possible.
     - Added warning when compiling a library that OPT PURE is recommended
     - Optimisation for reg var assignments where moveq+add is used.
+    - Optimisations with FOR loops to remove redundant move instructions.
     
 DATE HISTORY:
     3.3b    20.11.1999 -> 12.12.1999
