@@ -316,7 +316,14 @@ Development restarted:
     - Added warning when compiling a library that OPT PURE is recommended
     - Optimisation for reg var assignments where moveq+add is used.
     - Optimisations with FOR loops to remove redundant move instructions.
-    
+    - Added FATAL 'string' command which generates no code but will fail
+      the compilation (useful for use with #ifdef)
+    - Added WARN 'string' command which generates no code but will show
+    - a warning during compilation
+    - Added GEC_3_4_0 auto generated #define macro which will allow you
+      to check for a minimum version of the compiler. New defines will be
+      additionally created for each new version of the software.
+          
 DATE HISTORY:
     3.3b    20.11.1999 -> 12.12.1999
     3.3c    15.12.1999 -> 12.01.2000
