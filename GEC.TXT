@@ -323,7 +323,12 @@ Development restarted:
     - Added GEC_3_4_0 auto generated #define macro which will allow you
       to check for a minimum version of the compiler. New defines will be
       additionally created for each new version of the software.
-          
+    - Added #ELSE #ELIFDEF #ELIFNDEF preprocessor commands
+    - Added #UNDEF preprocessor command
+    - Added 020 optimised versions of Long, Int and Char functions
+    - Added StrIns(estring,estring,pos) - insert string function
+    - Added StrRem(estring,pos,len) - remove substring function
+        
 DATE HISTORY:
     3.3b    20.11.1999 -> 12.12.1999
     3.3c    15.12.1999 -> 12.01.2000
