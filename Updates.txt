@@ -1,8 +1,8 @@
-GEC v3.4.0 :
-GRIO Amiga E Compiler !
+E-vo v3.4.0 :
+
+Formerly : GRIO Amiga E Compiler !
 
 Changes maked from Amiga E v3.3a:
-
 
 Optimisations:
   (3.3b)
@@ -262,8 +262,9 @@ Fixed Bugs:
     - Problem with definition static OBJECT's and UNION's members.
     - Small bug in reg exp
 
-Development restarted:
+Development restarted as E-vo by Darren Coles
    (3.4.0)
+    - Name change to E-vo
     - New version numbering 3.4.0
     - Add CONT command, similar to EXIT but continues the loop at the top
       instead of dropping out.
@@ -337,6 +338,3 @@ DATE HISTORY:
     3.3f    03.01.2001 -> 15.10.2001
     3.3g    04.01.2002 -> 16.06.2003
     3.4.0   09.06.2021 -> ??.??.????
-
-
-
