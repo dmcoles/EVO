@@ -332,6 +332,13 @@ Development restarted as E-VO by Darren Coles
     - Store full path of source files when generating debug hunk (allows
       EDBG to find the files if they are not all located in the same
       folder).
+    - v47 (OS3.2) emodules, including all the new reaction interfaces
+    - ARRAY OF CHAR no longer word aligned in OBJECTS
+    - NOT operator works correctly with immediate values (eg "NOT 0" did not
+      work correctly.
+    - MUL/DIV optimisations also working for 020 generated code.
+    - NOALIGN now requires 020 as accessing unaligned INT or LONG will result
+      in exception if you don't have 020.
         
 DATE HISTORY:
     3.3b    20.11.1999 -> 12.12.1999
