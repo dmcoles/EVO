@@ -339,7 +339,9 @@ Development restarted as E-VO by Darren Coles
     - MUL/DIV optimisations also working for 020 generated code.
     - NOALIGN now requires 020 as accessing unaligned INT or LONG will result
       in exception if you don't have 020.
-        
+    - Fixed optimiser bug in library calls where IF function was used in
+      a parameter that prevented the correct value from being passed.
+      
 DATE HISTORY:
     3.3b    20.11.1999 -> 12.12.1999
     3.3c    15.12.1999 -> 12.01.2000

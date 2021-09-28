@@ -408,6 +408,8 @@ NOTE: in most cases you won't need to use any of these options
     - MUL/DIV optimisations also working for 020 generated code.
     - NOALIGN now requires 020 as accessing unaligned INT or LONG will result
       in exception if you don't have 020.
+    - Fixed optimiser bug in library calls where IF function was used in
+      a parameter that prevented the correct value from being passed.
  
  New features:
  (3.3g)
