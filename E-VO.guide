@@ -410,7 +410,8 @@ NOTE: in most cases you won't need to use any of these options
       in exception if you don't have 020.
     - Fixed optimiser bug in library calls where IF function was used in
       a parameter that prevented the correct value from being passed.
- 
+     - Fix: x AND 0 was returning incorrect value
+     
  New features:
  (3.3g)
     - Improved fake stack setting , now is more os compatible
