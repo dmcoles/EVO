@@ -77,7 +77,7 @@ Contents:
           @{"  A. proc definition and arguments (PROC)  " link CH_6A }
           @{"  B. local and global definitions: scope (DEF)  " link CH_6B }
           @{"  C. endproc/return  " link CH_6C }
-          @{"  D. the `main' function  " link CH_6D }
+          @{"  D. the 'main' function  " link CH_6D }
           @{"  E. built-in system variables  " link CH_6E }
           @{"  F. default arguments to functions  " link CH_6F }
           @{"  G. multiple return values  " link CH_6G }
@@ -90,7 +90,7 @@ Contents:
           @{"  D. built-in constants  " link CH_7D }
 
          8. types
-          @{"  A. about the `type' system  " link CH_8A }
+          @{"  A. about the 'type' system  " link CH_8A }
           @{"  B. the basic type (LONG/PTR)  " link CH_8B }
           @{"  C. the simple type (CHAR/INT/LONG)  " link CH_8C }
           @{"  D. the array type (ARRAY)  " link CH_8D }
@@ -245,13 +245,13 @@ Whatever happens, don't blame it on me.
 
 To install E-VO on your system, just copy the whole distribution to some
 place in your system, extend your path to the BIN directory, and assign
-EMODULES:  to the `Modules' directory.  If you're upgrading from a previous
+EMODULES:  to the 'Modules' directory.  If you're upgrading from a previous
 version, please reinstall this release which includes the latest OS 3.2
 modules and compiler.
 
 syntax of the compiler (2.04+):
 
-OURCE/A,REG=NUMREGALLOC/N/K,LARGE/S,SYM=SYMBOLHUNK/S,NOWARN/S
+SOURCE/A,REG=NUMREGALLOC/N/K,LARGE/S,SYM=SYMBOLHUNK/S,NOWARN/S
 QUIET/S,ASM/S,ERRLINE/S,ERRBYTE/S,SHOWBUF/S,ADDBUF/N/K,COMPILESTACK/N/K,
 IC=IGNORECACHE/S,HOLD/S,WB/S,LINEDEBUG/S,OPTI/S,DEBUG/S,NILCHECK/S,
 SHOWFNAME/S,DEFINE/M',0
@@ -715,8 +715,8 @@ Bugs fixed in v3.3a:
 
 New in v3.2i:
 - make sure you read about the bug in mathieeesingbas.library (see @{" 12D " link CH_12D }) (!)
-- You can explicitly assign registers in own libraries (e.g. `myfun(A0)').
-- `find' in EDBG
+- You can explicitly assign registers in own libraries (e.g. 'myfun(A0)').
+- 'find' in EDBG
 - Iconvert supports PhxAss (with "-p")
 - quite a few things in the distribution
 
@@ -828,12 +828,6 @@ Paolo Silvera, Sergio Ruocco, Jeroen Vermeulen, Jan van den Baard,
 Norman Kraft, Urban Mueller, Charles McCreary, Olivier Anh, Lionel
 Vintenat, Rob Nottage, Mirko Lalli, Jonas Tehler, Paul Nolan, Antonio J.
 Gomez Glez, Fabio Rotondo and many more...
-
-This compiler was programmed with great care towards reliability, and even
-more so the code it generates, additionally it has been tested and debugged
-for a long period.  However, it is not impossible that it contains bugs.  if
-you happen to find one, or have other comments/questions, write me at the
-address below:  I _strongly_ prefer E-mail above conventional mail.
 
 @endnode
 @node CH_1A
@@ -1394,7 +1388,7 @@ write things like
         NEW a.b[50]
         END a.b
 
-in the examples, the pointer `a' is not affected, the pointer `b' in the `a'
+in the examples, the pointer 'a' is not affected, the pointer 'b' in the 'a'
 object is used.
 
 NEW allocated lists are not to be used with the Link() functions (see @{" 9H " link CH_9H }).
@@ -2012,8 +2006,8 @@ PROC fac(n) IS IF n=1 THEN 1 ELSE fac(n-1)*n
 
 @endnode
 @node CH_6D
-@title "6D. the `main' function"
-6D. the `main' function
+@title "6D. the 'main' function"
+6D. the 'main' function
 -----------------------
 The PROC called main is only of importance because it is called as first
 function; it behaves exactly the same as other functions, and may also
@@ -2242,8 +2236,8 @@ STRLEN          Always has the value of the length of the last immediate
 
 @endnode
 @node CH_8A
-@title "8A. about the `type' system"
-8A. about the `type' system
+@title "8A. about the 'type' system"
+8A. about the 'type' system
 ---------------------------
 E doesn't have a rigid type-system like Pascal or Modula2, it's even more
 flexible than C's type system: you might as well call it a datatype-system.
@@ -3490,7 +3484,7 @@ yep. that's right. you thought LISP was fun, then try E now.
 Starting from v3, E has the cell datatype, almost identical to cells
 in the LISP language. more technically, E has:
 
-`Conservative Mark and Sweep Garbage-Collected Lisp-Cells'
+'Conservative Mark and Sweep Garbage-Collected Lisp-Cells'
 
 basically this amounts to being able to allocate LISP-cells,
 which are pairs of two values:
@@ -3905,7 +3899,7 @@ example:
 
 myfunc:=`x*x*x
 
-myfunc is now a pointer to a `function' that computes x^3 when evaluated.
+myfunc is now a pointer to a 'function' that computes x^3 when evaluated.
 These pointers to functions are very different from normal PROCs, and
 you should never mix the two up. The biggest differences are that a
 quoted expression is just a simple expression, and thus cannot have its
@@ -4672,7 +4666,7 @@ NEW a
 a.getx()           -> invoke method getx() on object a
 
 
-in this example, upon invocation `a' becomes the value of `self'
+in this example, upon invocation 'a' becomes the value of 'self'
 during the execution of getx().
 
 so far the use of methods has been nice, but hasn't show us its
@@ -5377,7 +5371,7 @@ the previous line (i.e. the cursor is always _after_ the error).
   not be overwritten.
 
 - 'no args'
-  "USAGE: evo [-opts] <sourcecodefilename> (`.e' is added)"
+  "USAGE: evo [-opts] <sourcecodefilename> ('.e' is added)"
   You get this by just typing 'evo' without any arguments.
 
 - 'unknown/illegal addressing mode'
@@ -6134,10 +6128,10 @@ variables: a, {a}
 operators: +, -, *, /, ()
 
 For example:
-- to check when variable `a' is modified, use `{a}' as a memory breakpoint.
-- to view the memory pointed to by array `a' (of LONGs) at offset `b', use
-  `a+(b*4)' with a memory view.
-- to change the contents of variable `a' into `b*2' click on the variable
+- to check when variable 'a' is modified, use '{a}' as a memory breakpoint.
+- to view the memory pointed to by array 'a' (of LONGs) at offset 'b', use
+  'a+(b*4)' with a memory view.
+- to change the contents of variable 'a' into 'b*2' click on the variable
   in the variable-view and select 'Modify'.
 
 Note that when raising exceptions, that the handler for the current PROC
@@ -6475,7 +6469,7 @@ for example:
 The function names are simply those of the PROCs (no methods!) you wish to
 make available as functions in the library.  The order in which they appear is
 important, because it denotes at which offsets they will be in the library
-(starting from -30). You can explicitly assign registers (e.g. `myfun(A0)').
+(starting from -30). You can explicitly assign registers (e.g. 'myfun(A0)').
 
 
 A source with a declaration like this is in many respects similar to a normal
@@ -6572,7 +6566,7 @@ features and problems/suggestions, hints and tips:
   otherwise debugging becomes particularly hard (you'll be using an old
   version: "didn't I just change that?"). Also close the library in all cases,
   otherwise you'll have to reboot to flush it. A trick to flush directly
-  after testing the library is writing `AllocMem(100000000,0)' or similar
+  after testing the library is writing 'AllocMem(100000000,0)' or similar
   directly after the CloseLibrary() call.
 - memory allocation like New() and NEW, and other resources that E startup
   code may arrange, are freed when the calling task closes your library,
@@ -7380,7 +7374,7 @@ Will E have...
 - Bitfields?
 - Startup code that doesn't open intuition etc.?
 - A feature to automatically include all modules used by a module?
-- Access to object members in methods without the `self.' prefix?
+- Access to object members in methods without the 'self.' prefix?
 - DEFs halfway PROCs or local to loops etc.?
 - Disassembly mixed mode for EDBG?
 - Sourcecode level #include?
@@ -7499,7 +7493,7 @@ me "when?" either.
 *       unreferenced check too conservative in some cases.
 *       doesn't detect two library functions with the same names.
 *       constant folding optimizer often misbehaves, disallowing
-        you to do things like `1+SIZEOF o' in constant expressions
+        you to do things like '1+SIZEOF o' in constant expressions
         or 1+a as list-elements.
 *       internal linker problem doesn't allow for private methods.
 *       strings in lists cannot be joined by "+" (optimizer problem).
