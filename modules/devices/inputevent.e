@@ -1,6 +1,5 @@
   OPT MODULE
   OPT EXPORT
-  OPT PREPROCESS
 
 MODULE 'devices/timer',
        'intuition/screens',

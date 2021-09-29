@@ -1,8 +1,8 @@
   OPT MODULE
   OPT EXPORT
-  OPT PREPROCESS
 
   MODULE 'dos/dos','exec/ports','exec/semaphores','exec/nodes','exec/lists','exec/libraries','exec/tasks','devices/timer'
+
 OBJECT process
   task:tc
   msgport:mp

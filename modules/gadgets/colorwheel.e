@@ -1,6 +1,5 @@
   OPT MODULE
   OPT EXPORT
-  OPT PREPROCESS
 
 OBJECT colorwheelhsb
   hue:LONG

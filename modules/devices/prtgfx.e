@@ -1,6 +1,5 @@
   OPT MODULE
   OPT EXPORT
-  OPT PREPROCESS
 
   MODULE 'graphics/rastport','utility/hooks'
 

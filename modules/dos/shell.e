@@ -1,6 +1,5 @@
   OPT MODULE
   OPT EXPORT
-  OPT PREPROCESS
 
   MODULE 'utility/hooks','exec/nodes'
 

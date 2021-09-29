@@ -1,6 +1,5 @@
   OPT MODULE
   OPT EXPORT
-  OPT PREPROCESS
 
 OBJECT csource
   buffer:PTR TO CHAR

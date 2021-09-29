@@ -1,8 +1,6 @@
 OPT MODULE
 OPT EXPORT
 
-OPT PREPROCESS
-
 OBJECT wmhandle
   methodid:LONG
   code:PTR TO INT

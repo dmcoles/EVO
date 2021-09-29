@@ -1,6 +1,5 @@
   OPT MODULE
   OPT EXPORT
-  OPT PREPROCESS
 
 OBJECT aslprefs
   reserved[4]:ARRAY OF LONG

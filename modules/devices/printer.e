@@ -1,6 +1,5 @@
   OPT MODULE
   OPT EXPORT
-  OPT PREPROCESS
 
   MODULE 'graphics/rastport','graphics/view','exec/io','utility/tagitem','utility/hooks','intuition/intuition','prefs/printertxt','prefs/printergfx'
 

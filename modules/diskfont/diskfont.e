@@ -1,6 +1,5 @@
   OPT MODULE
   OPT EXPORT
-  OPT PREPROCESS
 
   MODULE 'graphics/text','exec/nodes','exec/libraries','diskfont/glyph','utility/tagitem'
 

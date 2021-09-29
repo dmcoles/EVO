@@ -1,6 +1,5 @@
   OPT MODULE
   OPT EXPORT
-  OPT PREPROCESS
 
   MODULE 'utility/tagitem','intuition/cghooks','intuition/screens','utility/hooks','graphics/gfx','exec/nodes','graphics/rastport'
 

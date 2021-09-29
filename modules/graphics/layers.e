@@ -1,6 +1,5 @@
   OPT MODULE
   OPT EXPORT
-  OPT PREPROCESS
 
   MODULE 'exec/semaphores','exec/lists','graphics/clip','graphics/gfx','utility/hooks'
 

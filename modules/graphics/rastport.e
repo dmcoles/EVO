@@ -1,6 +1,5 @@
   OPT MODULE
   OPT EXPORT
-  OPT PREPROCESS
 
 MODULE 'graphics/clip',
        'graphics/gels',

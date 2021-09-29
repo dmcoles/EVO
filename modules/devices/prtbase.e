@@ -1,6 +1,5 @@
   OPT MODULE
   OPT EXPORT
-  OPT PREPROCESS
 
   MODULE 'exec/libraries','exec/ports','devices/parallel','devices/serial','devices/timer','exec/tasks','intuition/preferences','utility/tagitem'
 CONST DEVICES_PRTBASE_I=1

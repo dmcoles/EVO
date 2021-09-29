@@ -1,6 +1,5 @@
   OPT MODULE
   OPT EXPORT
-  OPT PREPROCESS
 
   MODULE 'exec/semaphores','graphics/layers','graphics/gfx','graphics/rastport','utility/hooks','graphics/regions','exec/lists'
 CONST NEWLOCKS=1

@@ -1,6 +1,5 @@
   OPT MODULE
   OPT EXPORT
-  OPT PREPROCESS
 
   MODULE 'graphics/rastport','intuition/screens','intuition/intuition','graphics/gfx'
 

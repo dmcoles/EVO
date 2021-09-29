@@ -1,8 +1,6 @@
 OPT MODULE
 OPT EXPORT
 
-OPT PREPROCESS
-
 OBJECT apexecute
   methodid:LONG
   commandstring:PTR TO CHAR

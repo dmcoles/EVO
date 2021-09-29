@@ -1,6 +1,5 @@
   OPT MODULE
   OPT EXPORT
-  OPT PREPROCESS
 
   MODULE 'exec/nodes','graphics/view','graphics/rastport','graphics/gfx','graphics/layers','exec/tasks','graphics/text','intuition/intuition','utility/tagitem','graphics/clip'
 
