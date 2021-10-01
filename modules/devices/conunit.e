@@ -1,6 +1,12 @@
   OPT MODULE
   OPT EXPORT
 
+  OPT PREPROCESS
+  
+#ifndef EVO_3_4_0
+  FATAL 'This module must only be compiled with E-VO v3.4.0 or higher'
+#endif
+
 MODULE 'devices/keymap',
        'exec/ports',
        'graphics/text',
@@ -17,7 +23,7 @@ CONST CONU_LIBRARY=-1,
       PMB_AWM=22,
       MAXTABS=$50
 
-OBJECT conunit NOALIGN
+OBJECT conunit
   mp:mp
   window:PTR TO window
   xcp:INT

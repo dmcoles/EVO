@@ -1,10 +1,16 @@
 OPT MODULE
 OPT EXPORT
+  
+OPT PREPROCESS
+  
+#ifndef EVO_3_4_0
+  FATAL 'This module must only be compiled with E-VO v3.4.0 or higher'
+#endif
 
 CONST ID_LCLE=$4C434C45,
       ID_CTRY=$43545259
 
-OBJECT countryprefs NOALIGN 
+OBJECT countryprefs
   reserved[4]:ARRAY OF LONG
   countrycode:LONG
   telephonecode:LONG
