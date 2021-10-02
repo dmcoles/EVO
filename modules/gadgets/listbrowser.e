@@ -55,10 +55,16 @@ ENDOBJECT
 
 OBJECT lbsortmsg
   typea:LONG
-  dataa:LONG
+  UNION
+  [integera:LONG]
+  [texta:LONG]
+  ENDUNION
   userdataa:LONG
   typeb:LONG
-  datab:LONG
+  UNION
+  [integerb:LONG]
+  [textb:LONG]
+  ENDUNION
   userdatab:LONG
 ENDOBJECT
 
