@@ -1,5 +1,10 @@
   OPT MODULE
   OPT EXPORT
+  OPT PREPROCESS
+  
+#ifndef EVO_3_4_0
+  FATAL 'This module must only be compiled with E-VO v3.4.0 or higher'
+#endif
 
 MODULE 'exec/ports',
        'exec/tasks'
@@ -26,8 +31,7 @@ OBJECT notifyrequest
   [task:PTR TO tc]
   [port:PTR TO mp
     signalnum:CHAR
-    pada:CHAR
-    padb[2]:ARRAY OF CHAR
+    pad[3]:ARRAY OF CHAR
   ]
   ENDUNION
   reserved[4]:ARRAY OF LONG

@@ -123,9 +123,9 @@ OBJECT inputevent
   code:INT  -> This is unsigned
   qualifier:INT  -> This is unsigned
   UNION
-  [eventaddress:LONG]
   [x:INT
   y:INT]
+  [eventaddress:LONG]
   [prev1downcode:CHAR
   prev1downqual:CHAR
   prev2downcode:CHAR
