@@ -299,3 +299,25 @@ fdtom exec_lib.fd
 delete #?_lvo.m
 copy #?.m /
 
+cd ram:emods
+
+delete ram:emods/classes/#?.e
+delete ram:emods/datatypes/#?.e
+delete ram:emods/devices/#?.e
+delete ram:emods/diskfont/#?.e
+delete ram:emods/dos/#?.e
+delete ram:emods/exec/#?.e
+delete ram:emods/gadgets/#?.e
+delete ram:emods/graphics/#?.e
+delete ram:emods/hardware/#?.e
+delete ram:emods/images/#?.e
+delete ram:emods/intuition/#?.e
+delete ram:emods/libraries/#?.e
+delete ram:emods/prefs/#?.e
+delete ram:emods/reaction/#?.e
+delete ram:emods/resources/#?.e
+delete ram:emods/rexx/#?.e
+delete ram:emods/utility/#?.e
+delete ram:emods/workbench/#?.e
+delete ram:emods/pragmas all
+delete ram:emods/make
