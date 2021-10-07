@@ -1,4 +1,4 @@
-# Compile ACP and EXPRESS and any dependencies
+# Compile EDBG
 
 options=OPTI
 compiler=EVO
