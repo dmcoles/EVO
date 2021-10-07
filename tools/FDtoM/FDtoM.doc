@@ -1,0 +1,139 @@
+
+
+                               FDtom
+                               ~~~~~
+
+                    A small utility for Amiga_E
+                        By Detlef Riekenberg
+                        Updated By Darren Coles
+
+                        Actual Version: 1.4
+
+                                 ---
+
+
+                            1. Legal Stuff
+                            ==============
+
+ FDtom is placed in the Public Domain for the Amiga.
+
+ Feel free to use it, but AT YOUR OWN RISK, as I cannot be considered
+ responsible for any damage caused to your system. Have Fun!
+
+
+                            2. What is it?
+                            ==============
+
+ - There was no Tool to Convert '.fd'-Files to MODULE's for Amiga_E,
+   so I write my own.
+
+ - FDtom is a Shell-only program for all Amiga's.
+ - FDtom converts a Standard '.fd'-File in the special Form, needed by
+   Amiga_E. (The Library-Function-File "libname.m" for Amiga_E, and  a
+   "libname_lvo.m" with all LVOFUNKTIONNAME's for the Inline-Assembler).
+ - FDtom also generates "libname_lvo.i" for any Assembler (ASM-Switch).
+
+
+                            3. How to use
+                            =============
+ OS < 2.0:
+ - FDtom ignores SPACE and TAB and take the Rest of the Commandline
+   as the only Filename.
+
+---
+ OS >= 2.0:
+
+ -FDtom uses the standard parser of OS 2.x. Start it with  a `?' as
+  argument and you will see the Pattern:
+
+    FILES/A/M,RESOURCE/S,DEVICE/S,ASM/S
+
+ -FILES/A/M:  You must put one or more Filename as Argument(s).
+
+ -RESOURCE/S: FDtom will write the correct LVO-File for the E-Assembler,
+              the Name in the MODULE-Header is now correct.
+
+ -DEVICE/S:   The Name in the MODULE-Header is now correct.
+
+ -ASM/S:      FDtom creates a "libname_lvo.i"-File for other Assemblers.
+
+
+---
+ ALL OS
+ - There is no Pattern-Matching for the Filename(s).
+ - The extensions '.fd' and '_lib.fd' are optional.
+ - The Output-Files are written to the Current Directory
+ - AmigaE is unable to use Funktion's with Offset: -6,-12,-18, and -24,
+   but the LVO-File for the Assembler is ok.
+
+
+
+
+                             4. Example
+                             ==========
+  
+; FDtom - Example :
+;
+;  Go to the Destination-Dir
+  CD EModules:
+
+;  Convert ( OS <2.0)
+  FDtom fd:arp
+  FDtom fd:exec
+  FDtom fd:dos
+
+
+;  Convert ( OS >=2.0)
+  FDtom fd:asl fd:exec fd:dos fd:misc
+
+; That's all :-))
+;
+
+---------
+
+ Dont't forget to add the new 'MODULE' to your Sources.
+
+ E-Usage:
+        MODULE 'libname'
+        NewFunction(newargs)
+
+ ASM-Usage:
+        MODULE 'libname_lvo'
+        JSR    LVONEWFUNCTION(A6)
+
+
+
+
+                           5. The Language
+                           ===============
+
+ I  have used Amiga_E to write FDtom.  What?  E ?!  Yea!  Go and
+ see the source !!!  :-)
+
+ The author of E language is:
+
+      Wouter van Oortmerssen ($#%!)
+      Levendaal 87
+      2311 JG  Leiden
+      HOLLAND
+  
+  If you have access to Email:
+
+      Wouter@alf.let.uva.nl    (E-programming support)
+  or: Wouter@mars.let.uva.nl   (personal)
+
+
+                            6. The Author
+                            =============
+
+
+ If you have bug-reports or suggestion's, please contact me:
+
+
+  Detlef Riekenberg
+  Otternhagener Strasse 73
+  31535 Neustadt
+  Germany
+
+  FIDO    : 2:241/78.18
+

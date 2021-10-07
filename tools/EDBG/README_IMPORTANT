@@ -1,0 +1,28 @@
+TERMS AND CONDITIONS FOR USING THE EDBG SOURCECODE
+
+* modifying or reusing part or whole of the EDBG code for your
+  own project is always allowed: giving credit is encouraged.
+* making new versions of EDBG public is discouraged in
+  general. if you still feel that need, try in this order:
+  - suggest the extension to the maintainer of the "official"
+    EDBG, currently Jason Hulance.
+  - cooperate with other people that may be working on a
+    custom EDBG (try discussing this on the E mailing list).
+  - the EDBG core (eexe.e) has been programmed to be
+    used by various different programs/user-interfaces.
+    Try making your own debugging tool that uses eexe.e
+    unmodified.
+  - if you HAVE to start your own spin-off project, make sure
+    your release is heavily marked as being different from the
+    official version while still giving credit. e.g.
+    "Harry's TurboDebug v1.0a featuring runtime type analysis,
+    based on Wouter and Jason's original EDBG v3.3a".
+    After you start your own version, don't come and
+    bother us about making it the official version.
+    Doing your own commercial version or anything else related
+    to money won't be tolerated at all.
+
+The purpose of this release is first and foremost educational.
+
+If you intend to do something with this code which doesn't
+seem to be covered by the above, ask me (Wouter) or Jason first.
