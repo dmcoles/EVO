@@ -23,4 +23,8 @@ If you want to assemble this code yourself you should use Asm-One. The
 source is all contained within a single source file and requires no additional
 resources.
 
+The program is released into the public domain for anyone to use however
+they wish with no restrictions apart from that the program should not be
+sold for profit.
+
 Darren Coles
