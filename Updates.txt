@@ -343,6 +343,11 @@ Development restarted as E-VO by Darren Coles
       a parameter that prevented the correct value from being passed.
     - Fix: x AND 0 was returning incorrect value
     
+   (3.4.1)
+    - Fix: Optimisation error where multiple variables set to the same value
+      were not set correctly.
+    - Made the select source file window wider in EDBG to account for the
+      full path being displayed.
       
 DATE HISTORY:
     3.3b    20.11.1999 -> 12.12.1999
@@ -352,3 +357,4 @@ DATE HISTORY:
     3.3f    03.01.2001 -> 15.10.2001
     3.3g    04.01.2002 -> 16.06.2003
     3.4.0   09.06.2021 -> 07.10.2021
+    3.4.1   19.10.2021 -> 23.10.2021

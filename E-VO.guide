@@ -332,6 +332,11 @@ NOTE: in most cases you won't need to use any of these options
 0D. changes / history / new features
 ------------------------------------
 
+ New in E-VO  (3.4.1)
+    - Fix: Optimisation error where multiple variables set to the same value
+      were not set correctly.
+    - Made the select source file window wider in EDBG to account for the
+      full path being displayed.
  New in E-VO  (3.4.0)
     - Name change to E-VO
     - New version numbering 3.4.0
@@ -795,6 +800,7 @@ v3.3e   05.04.2000 -> 22.06.2000
 v3.3f   03.01.2001 -> 15.10.2001
 v3.3g   04.01.2002 -> 16.06.2003
 v3.4.0  09.06.2021 -> 07.10.2021
+v3.4.1  19.10.2021 -> 23.10.2021
 
 @endnode
 @node CH_0E

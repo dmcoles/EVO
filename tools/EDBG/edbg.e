@@ -65,7 +65,7 @@ RAISE "MEM" IF String()=NIL
 PROC main() HANDLE
   DEF options:PTR TO LONG,rdargs=NIL,exename[100]:STRING,e:PTR TO dbgwin,
       pubconname[200]:STRING, i
-  title:='EDBG v3.3a, The E Debugger! © 1994-1997 Wouter (and Jason)'
+  title:='EDBG v3.4.1, The E Debugger! © 1994-1997 Wouter (and Jason), 2021 Darren Coles'
   reqtitle:='EDBG'
   vars:=newlist()
   options:=[0,0,0]
@@ -1244,7 +1244,7 @@ PROC choose_source() HANDLE
   ENDWHILE
   easyguiA(reqtitle,
     [EQROWS,
-       [LISTV,{sourcenum},'Select Source:',12,5,l,FALSE,0,0],
+       [LISTV,{sourcenum},'Select Source:',24,5,l,FALSE,0,0],
        [BAR],
        [COLS,[SPACEH],[BUTTON,0,'_Cancel',0,"c"],[SPACEH]]
     ],
@@ -1421,4 +1421,4 @@ EXCEPT DO
   IF rexxsysbase THEN CloseLibrary(rexxsysbase)
 ENDPROC
 
-CHAR 0, '$VER: EDBG 3.3a', 0, 0
+CHAR 0, '$VER: EDBG 3.4.1', 0, 0
