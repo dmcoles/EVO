@@ -1,9 +1,12 @@
 E-VO Amiga E Compiler is a derivative of the original Amiga E compiler written
-by Wouter van Oortmerssen. Formerly known as GEC (GRIO Amiga E Compiler) and 
-was originally developed by GRIO (ogrio at o2.pl) between 1999 and 2003.
+by Wouter van Oortmerssen. It adds many new features, bug fixes and
+optimisations including object UNIONs, string merging, non word-aligned
+objects and many more.
 
-It adds many new features, bug fixes and optimisations including object
-UNIONs, string merging, non word-aligned objects and many more.
+This version includes all the enhancements that were developed by GRIO
+(ogrio at o2.pl) between 1999 and 2003 for his GRIO E Compiler (GEC) plus
+some ideas from the creativE and YAEC compilers plus many more of my own
+improvements.
 
 E is an object oriented / procedural / unpure functional higher programming
 language, mainly influenced by languages such as C++, Ada, Lisp etc.  It is a
@@ -15,16 +18,12 @@ additional bug fixes and improvements including a CONT loop continue,
 ANDALSO and ORELSE operators that provide short circuit evaluation and
 displaying line numbers of unused variables/procedures.
 
-Since then I have added many more improvements including new commands and
-optimisations attempting to combine many of the enhancements found in the
-various E compilers available and some that I have thought up myself.
-
 If you want to assemble this code yourself you should use Asm-One. The
 source is all contained within a single source file and requires no additional
 resources.
 
-The program is released into the public domain for anyone to use however
-they wish with no restrictions apart from that the program should not be
-sold for profit.
+The program is released into the public domain for anyone to use however they
+wish with no restrictions apart from that the program should not be sold for
+profit.
 
 Darren Coles
