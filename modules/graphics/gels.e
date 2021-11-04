@@ -77,6 +77,26 @@ OBJECT ac
   animbob:PTR TO bob
 ENDOBJECT     /* SIZEOF=38 */
 
+->courtesy of Samuel D. Crow
+->added to allow long words to be 32 bit aligned
+->for speed optimisation on 020+
+->see http://aminet.net/package/dev/e/Gels020
+OBJECT ac020
+  pad:INT
+  compflags:INT
+  timer:INT
+  timeset:INT
+  nextcomp:PTR TO ac
+  prevcomp:PTR TO ac
+  nextseq:PTR TO ac
+  prevseq:PTR TO ac
+  animcroutine:LONG
+  ytrans:INT
+  xtrans:INT
+  headob:PTR TO ao
+  animbob:PTR TO bob
+ENDOBJECT     /* SIZEOF=40 */
+
 OBJECT ao
   nextob:PTR TO ao
   prevob:PTR TO ao
@@ -106,6 +126,12 @@ ENDOBJECT     /* SIZEOF=16 */
 
 #define InitAnimate(animKey) PutLong(animKey,NIL)
 #define RemBob(b)            PutInt(b, Int(b) OR BF_BOBSAWAY)
+
+->courtesy of Samuel D. Crow
+->added to allow long words to be 32 bit aligned
+->for speed optimisation on 020+
+->see http://aminet.net/package/dev/e/Gels020
+#define GET_AC(x)            {x.compflags}
 
 CONST B2NORM=0,
       B2SWAP=1,
