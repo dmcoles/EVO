@@ -50,7 +50,7 @@ DEF exe=NIL:PTR TO e_exe,frame:PTR TO stackframe,
     currentwin:PTR TO srcwin,		-> active intuition
     activewin:PTR TO srcwin,		-> where (pc) is
     lastsec=0,lastmic=0,findstr[100]:STRING,offstr[12]:STRING,
-    ocon=NIL,reqtitle,oldi,oldo,
+    casesensitivefind=TRUE,lastfind=-1,ocon=NIL,reqtitle,oldi,oldo,
     first_step_done=FALSE,unreachablea7,
     srcport=NIL,rexxport=NIL,rexxname,startExp=FALSE,oldvy=-1,
     fx=0,fy=0,fxs=0,fys=0,explorer[RXSTR_SIZE]:STRING,pubname[100]:STRING,
@@ -190,6 +190,7 @@ PROC createmenus()
       2,0,'Modify Variable',     0 ,0,0,0,
       2,0,'Refresh Views',      'V',0,0,0,
       2,0,'Find in Source',     'F',0,0,0,
+      2,0,'Find next',          'N',0,0,0,
       2,0,'Locate Offset',      'L',0,0,0,
     1,0,'Rexx',0,0,0,0,
       2,0,'Execute script 1',    0 ,0,0,0,
@@ -396,7 +397,7 @@ PROC actionvar(y)
           Remove(wv)
           varrefresh(vwin)
         ELSEIF r=2
-          StringF(s, IF (v>4096) OR (v<-4096) THEN '$\h' ELSE '\d', v)
+          StringF(s, IF (v>4096) OR (v<-4096) THEN '$\h' ELSE '\d',v)
           r:=easyguiA(reqtitle,
             [ROWS,
               [TEXT,'New contents of variable?',NIL,FALSE,3],
@@ -474,7 +475,7 @@ PROC constructvars()
     v,vptr,type:=getvarval(wv.v)
     IF type
       StrCopy(wv.name,wv.v)
-      StrAdd(wv.name,StringF(t,IF (v>-1000) AND (v<1000) THEN ' = \d  ' ELSE ' = $\h  ',v))
+      StrAdd(wv.name,StringF(t,' = \d ($\h) ',v,v))
       SELECT 8 OF type
         CASE 3 TO 7
           StrAdd(wv.name,StringF(t,'(local reg D\d)',type))
@@ -634,7 +635,7 @@ PROC evexp(rgad,s)
   DEF v,r,f[20]:STRING
   r,v:=extval(s)
   IF r
-    StringF(f,IF v<10000 THEN '\d' ELSE '$\h',v)
+    StringF(f,'\d ($\h)',v,v)
   ELSE
     StrCopy(f,'')
   ENDIF
@@ -654,13 +655,13 @@ PROC ehelp(p)
 ENDPROC
 
 PROC search()
-  DEF lines:PTR TO LONG,n,max,st:PTR TO scrolltext
-  max:=n:=ListLen(lines:=currentwin.src.lines())
+  DEF st:PTR TO scrolltext
   st:=currentwin.scwin
   IF easyguiA(reqtitle,
       [ROWS,
-        [TEXT,'Enter text to find (case sensitive)',NIL,FALSE,3],
+        [TEXT,'Enter text to find ',NIL,FALSE,3],
         [STR,1,'_Text:',findstr,100,10,0,0,"t"],
+        [CHECK,{mcasesensitive},'Case Sensitive?',casesensitivefind,TRUE,0,"c"],
         [BAR],
         [COLS,
           [BUTTON,1,'_Find',0,"f"],
@@ -669,15 +670,49 @@ PROC search()
         ]
       ],
       [EG_SCRN,scr,NIL])
-    WHILE n>0
-      EXIT InStr(lines[],findstr,0)<>-1
-      lines++
-      n--
-    ENDWHILE
-->    IF n THEN st.settop(max-n) ELSE request1('Could not find text','_Hmmm',"h")
-    IF n THEN st.active(max-n) ELSE request1('Could not find text','_Hmmm',"h")
+
+    runsearch(0)    
   ENDIF
 ENDPROC
+
+PROC searchnext()
+  IF lastfind=-1
+    search()
+  ELSE
+    runsearch(lastfind+1)
+  ENDIF
+ENDPROC
+
+PROC runsearch(start)
+  DEF n,max
+  DEF lines:PTR TO LONG
+  DEF st:PTR TO scrolltext
+  
+  st:=currentwin.scwin
+  n:=start
+  max:=ListLen(lines:=currentwin.src.lines())
+  lines:=lines+(n*4)
+  WHILE n<max
+     IF casesensitivefind
+       EXIT InStr(lines[],findstr,0)<>-1
+     ELSE 
+       EXIT InStri(lines[],findstr,0)<>-1
+     ENDIF
+    lines++
+    n++
+  ENDWHILE
+->    IF n THEN st.settop(max-n) ELSE request1('Could not find text','_Hmmm',"h")
+  IF n<max
+    st.active(n)
+    lastfind:=n
+  ELSE 
+    request1('Could not find text','_Hmmm',"h")
+    lastfind:=-1
+  ENDIF
+ENDPROC
+
+PROC mcasesensitive(p,x) IS casesensitivefind:=x
+
 
 PROC handlemenu(imsg:PTR TO intuimessage)
   DEF c,menu,item,sub
@@ -720,7 +755,8 @@ PROC handlemenu(imsg:PTR TO intuimessage)
         CASE 1; modifyvar()         -> Modify Variable
         CASE 2; dwins.refresh()     -> Refresh
         CASE 3; search()            -> Find in Source
-        CASE 4; offset()            -> Locate Offset
+        CASE 4; searchnext()        -> Find next
+        CASE 5; offset()            -> Locate Offset
       ENDSELECT
     CASE 4
       SELECT item
@@ -1421,4 +1457,4 @@ EXCEPT DO
   IF rexxsysbase THEN CloseLibrary(rexxsysbase)
 ENDPROC
 
-CHAR 0, '$VER: EDBG 3.4.1', 0, 0
+CHAR 0, '$VER: EDBG 3.5.0-dev', 0, 0
