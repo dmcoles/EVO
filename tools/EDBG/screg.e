@@ -19,7 +19,7 @@ PROC scrollreg(stackframe:PTR TO stackframe) OF scrollreg
   IF ForAll({x},m,`x)=FALSE THEN Raise("MEM")
   copyframe(stackframe,self.frame)
   pokeregs(m,stackframe,self.frame)
-  self.settext(m,13)
+  self.settext(m,NIL,13)
 ENDPROC
 
 PROC copyframe(st:PTR TO stackframe,old:PTR TO stackframe)

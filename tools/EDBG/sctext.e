@@ -10,14 +10,16 @@ EXPORT OBJECT scrolltext OF scrollwin PRIVATE
   font:PTR TO textfont
   lines, cols
   tlist:PTR TO LONG
+  bpoints:PTR TO CHAR
   ox,oy,oxs,oys
   current,ocurrent,curvis
 ENDOBJECT
 
-PROC settext(textlist,width) OF scrolltext
+PROC settext(textlist,bpointlist,width) OF scrolltext
   self.lines:=ListLen(textlist)
   self.cols:=width
   self.tlist:=textlist
+  self.bpoints:=bpointlist
   self.current:=-1
   self.ocurrent:=-1
   self.curvis:=FALSE
@@ -38,8 +40,20 @@ PROC active(cur,dorefresh=TRUE) OF scrolltext
   IF dorefresh THEN IF (cur<self.oy) OR (self.oy+self.oys<=cur) THEN self.settop(cur-(self.oys/2)) ELSE SUPER self.refreshwindow()
 ENDPROC
 
+PROC bpoint(n) OF scrolltext
+  DEF l:PTR TO CHAR
+  DEF i
+  IF self.bpoints<>NIL
+    l:=self.bpoints
+    RETURN l[n]
+  ENDIF
+ENDPROC FALSE
+
 PROC extra_refresh(x,y,xs,ys,xoff,yoff,win:PTR TO window) OF scrolltext
-  DEF fx,fy,a,b,yc,base,s,r:PTR TO rastport,ny,nys,bot,de=TRUE
+  DEF fx,fy,a,b,yc,base,s,r:PTR TO rastport,ny,nys,bot,de=TRUE,xo2,bp
+  DEF ai:areainfo
+  DEF pi[25]:ARRAY OF INT
+  
   r:=stdrast:=win.rport
   fx:=self.font.xsize
   fy:=self.font.ysize
@@ -47,9 +61,16 @@ PROC extra_refresh(x,y,xs,ys,xoff,yoff,win:PTR TO window) OF scrolltext
   base:=self.font.baseline
   bot:=win.height-win.borderbottom-1
   r.mask:=1
+
+  IF self.bpoints
+    xo2:=fx
+  ELSE
+    xo2:=0
+  ENDIF
+
   IF ((a:=self.ocurrent)>=0) AND self.curvis
     a:=a-self.oy*fy+yoff
-    ClipBlit(r,xoff,a,r,xoff,a,xs*fx,fy,$50)
+    ClipBlit(r,xoff+xo2,a,r,xoff+xo2,a,xs*fx-xo2,fy,$50)
     self.curvis:=FALSE
   ENDIF
   ny:=y; nys:=ys
@@ -74,19 +95,38 @@ PROC extra_refresh(x,y,xs,ys,xoff,yoff,win:PTR TO window) OF scrolltext
   ENDIF
   IF de
     Box(xoff,yoff,win.width-win.borderright-1,bot,0)
+    IF self.bpoints
+      Line(xoff+fx-1,yoff,xoff+fx-1,bot,1)
+    ENDIF
+    
     Colour(1)
     FOR a:=0 TO ys-1
       yc:=a*fy+yoff
-      s:=IF a+y<ListLen(self.tlist) THEN self.tlist[a+y] ELSE ''
+      IF a+y<ListLen(self.tlist)
+        s:=self.tlist[a+y]
+        bp:=self.bpoint(a+y)
+      ELSE
+        s:=''
+        bp:=FALSE
+      ENDIF
       IF x THEN FOR b:=1 TO x DO IF s[] THEN s++
-      Move(r,xoff,yc+base)
-      Text(r,s,Min(xs,StrLen(s)))
+      
+      IF bp 
+        InitArea( ai, pi, 5);
+        r.areainfo:=ai
+        AreaEllipse(r,xoff+(fx/2)-1,yc+base-(fy/2)+2,fx/4,fy/4)
+        AreaEnd(r)
+        r.areainfo:=NIL
+        ->DrawEllipse(r,xoff+(fx/2),yc+base-(fy/2),fx/4,fy/4)
+      ENDIF
+      Move(r,xoff+xo2,yc+base)
+      Text(r,s,Min(xs-(IF xo2 THEN 1 ELSE 0),StrLen(s)))
     ENDFOR
   ENDIF
   IF (a:=self.current)>=0
     IF (a>=ny) AND (ny+nys>a)
       a:=a-y*fy+yoff
-      ClipBlit(r,xoff,a,r,xoff,a,xs*fx,fy,$50)
+      ClipBlit(r,xoff+xo2,a,r,xoff+xo2,a,xs*fx-xo2,fy,$50)
       self.curvis:=TRUE
     ENDIF
   ENDIF

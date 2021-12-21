@@ -20,6 +20,7 @@ ENDOBJECT
 EXPORT OBJECT e_source PRIVATE
   next:PTR TO e_source
   lines:PTR TO LONG,numlines		-> of LINEDEBUG info
+  bpoints:PTR TO CHAR
   sourcename,source
   procs:PTR TO e_proc
   globs:PTR TO e_var
@@ -30,6 +31,7 @@ PROC sources() OF e_exe IS self.sources
 PROC next() OF e_source IS self.next
 PROC name() OF e_source IS self.sourcename
 PROC lines() OF e_source IS self.sourcelines
+PROC bpoints() OF e_source IS self.bpoints
 
 OBJECT e_proc PRIVATE
   next:PTR TO e_proc
@@ -45,6 +47,39 @@ PUBLIC
   regno:INT,offs:INT	-> if 0 then other
   type:PTR TO CHAR
 ENDOBJECT
+
+PROC setbreakpoint(vy,exe) OF e_source
+  DEF l:PTR TO CHAR
+  l:=self.bpoints
+  IF l
+    l[vy]:=TRUE
+  ENDIF
+  setbreak(self.findpc(vy,exe))
+ENDPROC
+
+PROC togglebreakpoint(vy,exe) OF e_source
+  DEF l:PTR TO CHAR
+  ->setbreak(self.findpc(vy,exe))
+  l:=self.bpoints
+  IF l
+    l[vy]:=Not(l[vy])
+  ENDIF
+  IF l[vy] THEN setbreak(self.findpc(vy,exe)) ELSE rembreak(self.findpc(vy,exe))
+ENDPROC
+
+PROC clearbreakpoints(exe) OF e_source
+  DEF l:PTR TO CHAR,i
+  
+  l:=self.bpoints
+  IF l
+    FOR i:=0 TO self.numlines-1
+      IF l[i]
+        rembreak(self.findpc(i,exe))
+        l[i]:=FALSE
+      ENDIF
+    ENDFOR
+  ENDIF
+ENDPROC
 
 PROC findsrc(name) OF e_source
   WHILE self
@@ -180,7 +215,7 @@ PROC collectvars(o:PTR TO INT,varlist,src:PTR TO e_source,pr:PTR TO e_proc,job)
 ENDPROC o,v
 
 PROC load(name) OF e_exe
-  DEF o:PTR TO LONG,l,cl,c,dbl,numrel,a,b:PTR TO LONG,src=NIL:PTR TO e_source,add
+  DEF o:PTR TO LONG,i,l,cl,c,dbl,numrel,a,b:PTR TO LONG,src=NIL:PTR TO e_source,add
 
   -> read exe
 
@@ -245,11 +280,13 @@ PROC load(name) OF e_exe
         src.sourcename:=o
         o:=a*4+o
         src.lines:=o
+        
         make_illegal(c,o,dbl,add)
         o:=dbl*4+o
         src.next:=self.sources
         self.sources:=src
         src.load()
+        src.bpoints:=New(ListLen(src.sourcelines))
         src.globs:=add_globs(src.globs)
       ENDIF
     ELSE
@@ -278,7 +315,7 @@ PROC add_globs(v)
   v:=new_var(v,'exceptioninfo',-$60)
 ENDPROC v
 
-CONST OPCODE_NOP=$4E71, OPCODE_ILLEGAL=$4AFC
+CONST OPCODE_NOP=$4E71, OPCODE_ILLEGAL=$4AFC, OPCODE_BKPT=$F000
 
 PROC make_illegal(code,dbg:PTR TO LONG,len,add)
   DEF a,b:PTR TO INT
@@ -314,6 +351,7 @@ PROC end() OF e_source
   n:=self.next
   IF self.source THEN freefile(self.source)
   END n
+  IF self.bpoints<>NIL THEN Dispose(self.bpoints)
 ENDPROC
 
 PROC findline(pc) OF e_exe
@@ -428,10 +466,16 @@ continue:
   ADDQ.L #2,D0
   MOVE.L D0,64(A7)			-> prepare return pc
 
-  MOVE.L breakpoint(PC),D0		-> check for breakpoint
-  BEQ.S nobreak
-  CMP.L	pcstore(PC),D0
+  ->MOVE.L breakpoint(PC),D0		-> check for breakpoint
+  ->BEQ.S nobreak
+  
+  MOVE.L	pcstore(PC),A0
+  ->MOVE.L D0,A0
+  MOVE.W (A0),D0
+  CMP.W #OPCODE_BKPT,D0
   BEQ.S stophere
+  ->CMP.L	pcstore(PC),D0
+  ->BEQ.S stophere
 
 nobreak:
   MOVE.L breakpointmem(PC),D0		-> check for breakpoint on mem
@@ -482,7 +526,7 @@ debuga4: LONG 0
 stepovera7: LONG 0
 stepovera5: LONG 0
 
-breakpoint: LONG 0			-> 0=no break, -1=run, other=break
+->breakpoint: LONG 0			-> 0=no break, -1=run, other=break
 breakpointmem: LONG 0			-> 0=no break, other=memaddress
 memval: LONG 0				-> value for breakpointmem
 
@@ -492,7 +536,16 @@ excinfo: LONG 0
 -> Last known PC
 lastpc: LONG 0
 
+PROC setbreak(a)
+  ->PutLong({breakpoint},a)
+  PutInt(a,OPCODE_BKPT)
+ENDPROC
+
+PROC rembreak(a)
+  ->PutLong({breakpoint},a)
+  PutInt(a,OPCODE_ILLEGAL)
+ENDPROC
+
 EXPORT PROC stepover(a7=NIL,a5=NIL) IS PutLong({stepovera7},a7) BUT PutLong({stepovera5},a5)
-EXPORT PROC setbreak(a) IS PutLong({breakpoint},a)
 EXPORT PROC setmembreak(a) IS PutLong({breakpointmem},a) BUT PutLong({memval},IF a THEN Long(a) ELSE NIL)
 EXPORT PROC setthrow(e,ei) IS PutLong({exc},e) BUT PutLong({excinfo},ei)

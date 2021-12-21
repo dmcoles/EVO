@@ -1,6 +1,6 @@
 # Compile EDBG
 
-options=OPTI
+options=
 compiler=EVO
 
 all:					edbg

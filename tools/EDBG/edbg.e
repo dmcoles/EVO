@@ -65,7 +65,7 @@ RAISE "MEM" IF String()=NIL
 PROC main() HANDLE
   DEF options:PTR TO LONG,rdargs=NIL,exename[100]:STRING,e:PTR TO dbgwin,
       pubconname[200]:STRING, i
-  title:='EDBG v3.4.1, The E Debugger! © 1994-1997 Wouter (and Jason), 2021 Darren Coles'
+  title:='EDBG v3.5.0, The E Debugger! © 1994-1997 Wouter (and Jason), 2021 Darren Coles'
   reqtitle:='EDBG'
   vars:=newlist()
   options:=[0,0,0]
@@ -233,7 +233,7 @@ PROC srcwin(src:PTR TO e_source) OF srcwin
   dwins:=self
   self.type:=T_SRC
   self.src:=src
-  self.scwin:=NEW x.settext(src.lines(),120)
+  self.scwin:=NEW x.settext(src.lines(),src.bpoints(),120)
   IF (fx>=xsize) OR (fy>=ysize) OR (fxs>=xsize) OR (fys>=ysize) OR (fxs<40) OR (fys<20)
     a:=(numsrc+1)*(font.ysize+3)+IF wrapsrc THEN 5 ELSE 0
     IF maxsrcs=0
@@ -346,7 +346,7 @@ PROC varwin() OF varwin
   self.type:=T_VAR
   IF varlist=NIL THEN IF (varlist:=List(MAX_WATCH))=NIL THEN Raise("MEM")
   constructvars()
-  self.scwin:=NEW x.settext(varlist,MAX_WLINE)
+  self.scwin:=NEW x.settext(varlist,NIL,MAX_WLINE)
   IF (fx>=xsize) OR (fy>=ysize) OR (fxs>=xsize) OR (fys>=ysize) OR (fxs<40) OR (fys<20)
     fx:=xsize/8
     fy:=ysize/2
@@ -371,7 +371,7 @@ ENDPROC
 
 PROC varrefresh(win:PTR TO varwin)
   constructvars()
-  win.scwin.settext(varlist,MAX_WLINE)
+  win.scwin.settext(varlist,NIL,MAX_WLINE)
   win.scwin.refreshwindow()
 ENDPROC
 
@@ -543,7 +543,26 @@ PROC breakpointvar()
 ENDPROC
 
 PROC clearbreakpoints()
-  setbreak(NIL)
+  DEF s:PTR TO e_source
+  DEF dw:PTR TO dbgwin
+  DEF sw:PTR TO srcwin
+  
+  s:=exe.sources()
+  WHILE s
+    s.clearbreakpoints(exe)
+    s:=s.next()
+  ENDWHILE
+
+  dw:=dwins
+  WHILE (dw)
+    IF dw.type=T_SRC
+      sw:=dw
+      sw.scwin.refreshwindow()
+    ENDIF
+    dw:=dw.next
+  ENDWHILE
+
+  ->setbreak(NIL)
   setmembreak(NIL)
 ENDPROC
 
@@ -891,15 +910,22 @@ ENDPROC SystemTagList(cmd,[SYS_ASYNCH,TRUE, SYS_INPUT,NIL, SYS_OUTPUT,NIL, NIL])
 
 PROC dovar(vx,vy,qual)
   DEF var[50]:STRING,v,vptr,reg=0
-  vy:=currentwin.src.locate(vx,vy,var)
+  vy:=currentwin.src.locate(Max(0,vx-1),vy,var)
   IF var[] THEN v,vptr,reg:=getvarval(var)
   IF reg
     addvar(var,qual AND 3)
   ELSEIF vy>=0
-    v:=request3('Put breakpoint here?','_OK','OK and _Run','_Cancel',"o","r","c")
-    IF v>0
-      setbreak(currentwin.src.findpc(vy,exe))
-      IF v>1 THEN whatstep:=STEP_RUN
+    IF vx=0
+      currentwin.src.togglebreakpoint(vy,exe)
+      currentwin.scwin.refreshwindow()
+    ELSE
+      v:=request3('Put breakpoint here?','_OK','OK and _Run','_Cancel',"o","r","c")
+      IF v>0
+        currentwin.src.setbreakpoint(vy,exe)
+        currentwin.scwin.refreshwindow()
+        ->setbreak(currentwin.src.findpc(vy,exe))
+        IF v>1 THEN whatstep:=STEP_RUN
+      ENDIF
     ENDIF
   ENDIF
 ENDPROC
@@ -1384,7 +1410,8 @@ PROC processcmd(s)
     ENDWHILE
   ELSEIF StrCmp(ts,'BREAKPOINT')
     s,a:=getexp(s)
-    setbreak(currentwin.src.findpc(a,exe))
+    currentwin.src.setbreakpoint(a,exe)
+    ->setbreak(currentwin.src.findpc(a,exe))
   ELSEIF StrCmp(ts,'EVAL')
     s,rc:=getexp(s)
   ELSEIF StrCmp(ts,'MEMORYBREAKPOINT')
