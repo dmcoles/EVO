@@ -10,7 +10,7 @@ MODULE 'tools/clonescreen', 'tools/macros', 'tools/arexx',
        'gadtools', 'libraries/gadtools',
        'intuition/intuition', 'intuition/screens', 'intuition/gadgetclass',
        'graphics/text', 'graphics/rastport',
-       'rexx/storage', 'rexxsyslib'
+       'rexx/storage', 'rexxsyslib', 'graphics/gfxbase'
 
 OBJECT dbgwin
   next:PTR TO dbgwin,type
@@ -51,10 +51,11 @@ DEF exe=NIL:PTR TO e_exe,frame:PTR TO stackframe,
     activewin:PTR TO srcwin,		-> where (pc) is
     lastsec=0,lastmic=0,findstr[100]:STRING,offstr[12]:STRING,
     casesensitivefind=TRUE,lastfind=-1,ocon=NIL,reqtitle,oldi,oldo,
-    first_step_done=FALSE,unreachablea7,
+    first_step_done=FALSE,stop_executing=FALSE,unreachablea7,
     srcport=NIL,rexxport=NIL,rexxname,startExp=FALSE,oldvy=-1,
     fx=0,fy=0,fxs=0,fys=0,explorer[RXSTR_SIZE]:STRING,pubname[100]:STRING,
-    rxs1[RXSTR_SIZE]:STRING,rxs2[RXSTR_SIZE]:STRING,rxs3[RXSTR_SIZE]:STRING
+    rxs1[RXSTR_SIZE]:STRING,rxs2[RXSTR_SIZE]:STRING,rxs3[RXSTR_SIZE]:STRING,
+    trap1, trap2
 
 ENUM STEP_NONE,STEP_IN,STEP_OVER,STEP_RUN,STEP_THROW,STEP_FOLLOW
 
@@ -65,14 +66,15 @@ RAISE "MEM" IF String()=NIL
 PROC main() HANDLE
   DEF options:PTR TO LONG,rdargs=NIL,exename[100]:STRING,e:PTR TO dbgwin,
       pubconname[200]:STRING, i
+  DEF gb:PTR TO gfxbase
   title:='EDBG v3.5.0, The E Debugger! © 1994-1997 Wouter (and Jason), 2021 Darren Coles'
   reqtitle:='EDBG'
   vars:=newlist()
-  options:=[0,0,0]
-  IF rdargs:=ReadArgs('EXECUTABLE/A,PUBSCREEN/K,ARG/K',options,NIL)
+  options:=[0,0,0,0]
+  IF rdargs:=ReadArgs('EXECUTABLE/A,NOTRAP/S,PUBSCREEN/K,ARG/K',options,NIL)
     StrCopy(exename,options[0])
-    IF options[2] THEN StrCopy(argstring,options[2])
-    IF options[1]
+    IF options[3] THEN StrCopy(argstring,options[3])
+    IF options[2]
       StrCopy(pubname,options[1])
       IF scr:=LockPubScreen(pubname) THEN font:=scr.rastport::rastport.font
     ENDIF
@@ -80,8 +82,16 @@ PROC main() HANDLE
   ELSE
     Raise("ARGS")
   ENDIF
+  IF options[1]=0
+    trap1:=AllocTrap(-1)
+    trap2:=AllocTrap(-1)
+  ELSE
+    trap1:=-1
+    trap2:=-1
+  ENDIF
+ 
   WriteF('\s.\nLoading "\s"...\n',title,exename)
-  NEW exe.load(exename)
+  NEW exe.load(exename,trap1,trap2)
   IF scr=NIL
     StrCopy(pubname,'EDBG')
     IF options[1] THEN StrAdd(pubname,options[1])
@@ -89,6 +99,8 @@ PROC main() HANDLE
     oscr:=scr
     PubScreenStatus(scr,0)       -> TEMP!!
   ENDIF
+  gb:=gfxbase
+  font:=gb.defaultfont
   rexxname:=IF oscr THEN pubname ELSE 'EDBG'
   depth,xsize,ysize:=getcloneinfo(scr)
   IF (gadtoolsbase:=OpenLibrary('gadtools.library',37))=NIL THEN Raise("GT")
@@ -105,7 +117,7 @@ PROC main() HANDLE
   ELSE
     Throw("OPEN",'CON:')
   ENDIF
-  exe.edebug({step},argstring)
+  exe.edebug(trap1,trap2,{step},{update},argstring)
 EXCEPT DO
   IF followgh OR repeatcount THEN Delay(6) BUT request1('Program completed execution','_OK',"o")
   IF startExp
@@ -144,13 +156,17 @@ EXCEPT DO
     UnlockPubScreen(NIL,scr)
   ENDIF
   END exe
+  IF trap1<>-1 THEN FreeTrap(trap1)
+  IF trap2<>-1 THEN FreeTrap(trap2)
+  
   SELECT exception
     CASE "MEM";  WriteF('Aaargh! no mem!\n')
     CASE "ARGS"; WriteF('Bad Args! (try "edbg ?")\n')
     CASE "OPEN"; WriteF('Failed to open "\s".\n',exceptioninfo)
     CASE "IN";   WriteF('Problems while reading file.\n')
     CASE "eexe"; WriteF('Not a valid E executable\n')
-    CASE "eexd"; WriteF('Try compiling with "EC DEBUG" first\n')
+    CASE "eexd"; WriteF('Try compiling with "DEBUG" first\n')
+    CASE "db50"; WriteF('Needs to be compiled with "DEBUG50"\n')
     CASE "SCR";  WriteF('no screen!\n')
     CASE "GT";   WriteF('no "gadtools.library"!\n')
     CASE "MENU"; WriteF('no menus!\n')
@@ -179,6 +195,7 @@ PROC createmenus()
       2,0,'Step Over (down)',   'O',0,0,0,
       2,0,'Step Follow',         0 ,0,0,0,
       2,0,'Repeat Step',         0 ,0,0,0,
+      2,0,'Pause',               0 ,0,0,0,
       2,0,'Watch Variable',      0 ,0,0,0,
       2,0,'Set Breakpoint',      0 ,0,0,0,
       2,0,'Memory Breakpoint',  'B',0,0,0,
@@ -277,7 +294,7 @@ PROC memwin(addr,type) OF memwin
   self.addr:=addr
   IF type=T_STACK THEN stackwin:=self
   self.scwin:=NEW x.setmem(addr)
-  a:=40*font.xsize+20
+  a:=40*font.xsize+24
   x.open(IF type=T_MEM THEN 'Memory View' ELSE 'Stack View',
          xsize-a,font.ysize+3,a,ysize/3,scr,IDCMP_MENUPICK,{handlesrc})
   IF SetMenuStrip(x.window,menu)=FALSE THEN Raise("MENU")
@@ -312,7 +329,7 @@ PROC regwin() OF regwin
   dwins:=self
   self.type:=T_REG
   self.scwin:=NEW x.scrollreg(frame)
-  a:=13*font.xsize+20
+  a:=13*font.xsize+24
   x.open('Register View',xsize-a,font.ysize+3,a,ysize/2,scr,IDCMP_MENUPICK,{handlesrc})
   IF SetMenuStrip(x.window,menu)=FALSE THEN Raise("MENU")
   rwin:=self
@@ -436,10 +453,10 @@ PROC addvar(var,shift=FALSE)
   IF openvarwin()
     IF shift THEN getvarval(var,TRUE)
     IF findtracedvar(var)
-      request1('You''re already watching this variable','_Indeed!',"i")
+      fastrequest('You''re already watching this variable')
     ELSE
       AddTail(vars,NEW wv)
-      wv.v:=StrCopy(String(EstrLen(var)),var)
+      wv.v:=StrCopy(String(StrLen(var)),var)
       wv.name:=String(MAX_WLINE)
       IF wv.name=NIL THEN Raise("MEM")
       varrefresh(vwin)
@@ -534,7 +551,27 @@ PROC openstackwin() IS IF stackwin=NIL THEN NEW stackwin.memwin(frame.stack,T_ST
 PROC openvarwin() IS IF vwin THEN (WindowToFront(vwin.scwin.window) BUT TRUE) ELSE NEW vwin.varwin()
 PROC dum(p,q) IS EMPTY
 PROC modifyvar() IS request13('You can modify a variable','by clicking on it','in the variable view','_Great!',"g")
-PROC watchvar() IS request13('You can watch a variable','by double-clicking on it','in a source-window','_Great!',"g")
+PROC watchvar()
+  DEF st:PTR TO scrolltext
+  DEF varname[100]:STRING
+  st:=currentwin.scwin
+  IF easyguiA(reqtitle,
+      [ROWS,
+        [TEXT,'Enter variable name to watch ',NIL,FALSE,3],
+        [STR,1,'_Text:',varname,100,10,0,0,"t"],
+        [BAR],
+        [COLS,
+          [BUTTON,1,'_Watch',0,"w"],
+          [SPACEH],
+          [BUTTON,0,'_Cancel',0,"c"]
+        ]
+      ],
+      [EG_SCRN,scr,NIL])
+
+    addvar(varname,0)
+  ENDIF
+ENDPROC
+
 PROC breakpoint() IS request13('You can set a breakpoint','by double-clicking on a line','in a source-window','_Great!',"g")
 
 PROC breakpointvar()
@@ -757,16 +794,17 @@ PROC handlemenu(imsg:PTR TO intuimessage)
       ENDSELECT
     CASE 2
       SELECT item
-        CASE 0; whatstep:=STEP_IN   -> Step In
-        CASE 1; whatstep:=STEP_OVER -> Step Over
-        CASE 2; whatstep:=STEP_FOLLOW -> Step Follow
-        CASE 3; repeatstep()        -> Repeat Step
-        CASE 4; watchvar()          -> Watch Variable
-        CASE 5; breakpoint()        -> Set Breakpoint on Sourceline
-        CASE 6; breakpointvar()     -> Set Breakpoint on Memory
-        CASE 7; clearbreakpoints()  -> Clear all Breakpoints
-        CASE 8; whatstep:=STEP_RUN  -> Run to Breakpoint
-        CASE 9; raiseexception()    -> Raise Exception
+        CASE 0; IF whatstep=STEP_NONE THEN whatstep:=STEP_IN   -> Step In
+        CASE 1; IF whatstep=STEP_NONE THEN whatstep:=STEP_OVER -> Step Over
+        CASE 2; IF whatstep=STEP_NONE THEN whatstep:=STEP_FOLLOW -> Step Follow
+        CASE 3; IF whatstep=STEP_NONE THEN repeatstep()        -> Repeat Step
+        CASE 4; IF whatstep<>STEP_NONE THEN stop_executing:=TRUE  -> Pause
+        CASE 5; watchvar()          -> Watch Variable
+        CASE 6; breakpoint()        -> Set Breakpoint on Sourceline
+        CASE 7; breakpointvar()     -> Set Breakpoint on Memory
+        CASE 8; clearbreakpoints()  -> Clear all Breakpoints
+        CASE 9; IF whatstep=STEP_NONE THEN whatstep:=STEP_RUN  -> Run to Breakpoint
+        CASE 10; raiseexception()    -> Raise Exception
       ENDSELECT
     CASE 3
       SELECT item
@@ -830,8 +868,8 @@ PROC handlesrc(data,imsg:PTR TO intuimessage)
     handlekey(imsg.code)
   ELSEIF cl=IDCMP_MOUSEBUTTONS
     IF imsg.code=SELECTUP
-      IF DoubleClick(lastsec,lastmic,imsg.seconds,imsg.micros)
-        vx,vy:=currentwin.scwin.where(imsg.mousex,imsg.mousey)
+      vx,vy:=currentwin.scwin.where(imsg.mousex,imsg.mousey)
+      IF (DoubleClick(lastsec,lastmic,imsg.seconds,imsg.micros)) OR (vx=0)
         IF vx<>-1 THEN dovar(vx,vy,imsg.qualifier)
       ELSE
         lastsec:=imsg.seconds
@@ -946,6 +984,13 @@ PROC removefollow()
   ENDIF
 ENDPROC
 
+PROC update(fr:PTR TO stackframe)
+  srcmessage()
+  IF dwins THEN dwins.message()
+  rexxmessage()
+  toolmessage()
+ENDPROC stop_executing
+
 PROC step(fr:PTR TO stackframe)
   DEF pc,src,i
   IF repeatcount
@@ -958,7 +1003,7 @@ PROC step(fr:PTR TO stackframe)
   ELSE
     frame:=fr
     IF stackwin THEN stackwin.addr:=fr.stack
-    pc:=fr.returnpc-2
+    pc:=fr.returnpc-IF (trap1>=0) AND (trap1<=15) AND (trap2>=0) AND (trap2<=15) THEN 2 ELSE 6
     src,i,pc:=exe.findline(pc)
     IF src=NIL
       removefollow()
@@ -991,11 +1036,13 @@ PROC step(fr:PTR TO stackframe)
       ENDIF
       REPEAT
         Wait(-1)
-        srcmessage()
-        IF dwins THEN dwins.message()
-        rexxmessage()
-        toolmessage()
+        update(fr)
+        ->srcmessage()
+        ->IF dwins THEN dwins.message()
+        ->rexxmessage()
+        ->toolmessage()
       UNTIL whatstep
+      stop_executing:=FALSE
       SELECT whatstep
         CASE STEP_IN;    stepover()
         CASE STEP_OVER;  stepover(fr,fr.regs[13])
@@ -1105,6 +1152,16 @@ PROC about()
 ENDPROC
 
 /*-----------------------------------------------------------------*/
+
+PROC fastrequest(message)
+  DEF window:PTR TO window,screen:PTR TO screen
+
+  window:=currentwin.scwin.window
+  screen:=window.wscreen
+  SetWindowTitles(window,TRUE,message)
+  WaitPort(window.userport)
+  SetWindowTitles(window,TRUE,title)
+ENDPROC
 
 PROC request1(body,gadget,key) IS easyguiA(reqtitle,[ROWS,[TEXT,body,NIL,FALSE,3],[BAR],[BUTTON,0,gadget,0,key]],[EG_SCRN,scr,NIL])
 PROC request13(b1,b2,b3,gadget,key) IS easyguiA(reqtitle,[ROWS,[TEXT,b1,NIL,FALSE,3],[TEXT,b2,NIL,FALSE,3],[TEXT,b3,NIL,FALSE,3],[BAR],[BUTTON,0,gadget,0,key]],[EG_SCRN,scr,NIL])

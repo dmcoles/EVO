@@ -89,7 +89,8 @@ from offset IOFF
   72    UNION             73    ENDUNION          74    SAFE
   75    RUNBG             76    OLD               77    EXTRA
   78    CONT              79    ANDALSO           80    ORELSE
-  81    POOL
+  81    POOL              82    PURE              83    FATAL
+  84    WARN
 
 |       = significant for idents
 
@@ -149,6 +150,8 @@ OBJECT ident_lex_parse
   info:INT                      10
   lineNUM:INT                   12 (VARLINENO)
   heavy:LONG                    VARHEAVY
+  ptrrepcount                   VAR_PTRREPCOUNT used to count ptr to ptr
+  dimdata                       VAR_DIMDATA used to track multi-dimensional arrays
 ENDOBJECT
 
             0/1  1/2     2/4        3/8 4/16
@@ -159,6 +162,8 @@ info = [if_arg_then_offset,0,lab=-1 | proc=-2 | -3/-4 code in other module]
 offset = +arg, -localvar
 lineNUM = line number of declaration used in reporting unused variables
 heavy: only for local+reg_alloc | labels from module [NIL|PTR TO procclass]
+ptrrepcount - used to track number of PTR TO PTR references
+dimdata - ptr to dim data used to track the dimensions of an array
 
 OBJECT ident_parse_compile
   next:LONG                     -4
@@ -519,6 +524,8 @@ store = set to current variables
 80      end job
 81      end job
 82      fill CONT label
+83      do fatal error
+84      do warn error
 
 +---------------------------------------------------------------+
 |       OPT bits and cli-flags                                  |
@@ -649,6 +656,7 @@ OBJECT emodule
           cpubitsets[3]:ARRAY OF INT    10, see elsewhere
           modversion:INT                16 [ 0(=1),2,3,4,... ]
           reserved:LONG                 18
+          icodeprefs                    22, if version>10 (creative)
         ENDOBJECT
 
         version         0  = no sysparams available, v2.1(b) with newer:
@@ -663,6 +671,7 @@ OBJECT emodule
                         8  = v3.0c+ (debuginfos)
                         9  = v3.1a+ (more debuginfos)
                         10 = v3.1b+ (fix opersize globals)
+                        11 = creative
 
 
 6       LIBDEF
@@ -869,12 +878,17 @@ ESTACKBUF:      lex .. start compile    code/addr. buf
 |       default args                                            |
 +---------------------------------------------------------------+
 
-StrCmp/Add/Copy         -1      MidStr                  -1
-Val                     0       InStr                   0
-ListCmp/Add/Copy        -1      Plot/Line/Box           1
-Colour                  0       SetTopaz                8
-CleanUp                 0       Raise                   0
-OpenS/OpenW             0
+OpenS/OpenW             -1      Plot/Line/Box           1
+Colour                  -1      CleanUp                    -1
+SetTopaz                8       StrCmp/Add/Copy         $FF
+MidStr                  $FF
+Val                     -1      InStr                   -1
+ListCmp/Add/Copy        $FF
+Raise                   -1      OstrCmp                 $FF
+AstrCopy                $FF     StriCmp                 $FF
+InStri                  -1      StrIns                  -1
+StrRem                  -1
+
 
 real longword used in funtab:
 
@@ -1215,6 +1229,10 @@ has to become (ends with):      FOR/WHILE/UNTIL:        lab,jumpback,id
 79              ")" expected
 80              this instruction works only in pool mode
 81              non-pure code not allowed
+82              Too many user warnings
+83              "[" expected
+84              dim workspace full
+85              array too large
 
 WARNINGS:
 

@@ -214,7 +214,7 @@ PROC collectvars(o:PTR TO INT,varlist,src:PTR TO e_source,pr:PTR TO e_proc,job)
   ENDFOR
 ENDPROC o,v
 
-PROC load(name) OF e_exe
+PROC load(name,trap1,trap2) OF e_exe
   DEF o:PTR TO LONG,i,l,cl,c,dbl,numrel,a,b:PTR TO LONG,src=NIL:PTR TO e_source,add
 
   -> read exe
@@ -281,7 +281,7 @@ PROC load(name) OF e_exe
         o:=a*4+o
         src.lines:=o
         
-        make_illegal(c,o,dbl,add)
+        make_illegal(c,o,dbl,add,trap1,trap2)
         o:=dbl*4+o
         src.next:=self.sources
         self.sources:=src
@@ -315,17 +315,25 @@ PROC add_globs(v)
   v:=new_var(v,'exceptioninfo',-$60)
 ENDPROC v
 
-CONST OPCODE_NOP=$4E71, OPCODE_ILLEGAL=$4AFC, OPCODE_BKPT=$F000
+CONST OPCODE_NOP=$4E71, OPCODE_TRAP0=$4E40,OPCODE_JSR=$4EB9
 
-PROC make_illegal(code,dbg:PTR TO LONG,len,add)
-  DEF a,b:PTR TO INT
+PROC make_illegal(code,dbg:PTR TO LONG,len,add,trap1,trap2)
+  DEF a,b:PTR TO INT,c:PTR TO LONG
   IF len
     FOR a:=1 TO len STEP 2
       dbg++
       dbg[]++:=b:=dbg[]+add
       b:=b+code
       IF b[]<>OPCODE_NOP THEN Raise("eexd")
-      b[]:=OPCODE_ILLEGAL
+      IF (trap1>=0) AND (trap1<=15) AND (trap2>=0) AND (trap2<=15)
+        b[]:=OPCODE_TRAP0 OR trap1
+      ELSE
+        c:=b+2
+        IF b[]<>OPCODE_NOP THEN Raise("eexd")
+        IF (b[1]<>OPCODE_NOP) OR (b[2]<>OPCODE_NOP) THEN Raise("db50")
+        b[]:=OPCODE_JSR
+        c[]:={tcode_jsr1}
+      ENDIF
     ENDFOR
   ENDIF
 ENDPROC
@@ -412,13 +420,19 @@ PROC findpc(line,exe:PTR TO e_exe) OF e_source
   FOR a:=0 TO num STEP 2 DO IF dbg[]++-1=line THEN RETURN dbg[]+c ELSE dbg++
 ENDPROC NIL
 
-PROC edebug(do_at_break,cli_arg) OF e_exe
+PROC edebug(trap1,trap2,do_at_break,do_at_refresh,cli_arg) OF e_exe
   DEF mytask:PTR TO tc,code,alen
+  
+  PutInt({opcodetrap1},OPCODE_TRAP0 OR trap1)
+  PutInt({opcodetrap2},OPCODE_TRAP0 OR trap2)
+  
   alen:=StrLen(cli_arg)+1
   mytask:=FindTask(NIL)
   mytask.trapcode:={tcode}
   LEA codejmp(PC),A0
   MOVE.L do_at_break,(A0)
+  LEA refreshjmp(PC),A0
+  MOVE.L do_at_refresh,(A0)
   LEA debuga4(PC),A0
   MOVE.L A4,(A0)
   code:=self.code
@@ -463,8 +477,10 @@ continue:
   LEA continue(PC),A0			-> pc,sr on the stack
   MOVE.L -(A0),D0
   MOVE.L -(A0),-(A7)
-  ADDQ.L #2,D0
   MOVE.L D0,64(A7)			-> prepare return pc
+  LEA pcstore(PC),A0
+  SUBQ.L #2,D0
+  MOVE.L D0,(A0)
 
   ->MOVE.L breakpoint(PC),D0		-> check for breakpoint
   ->BEQ.S nobreak
@@ -472,7 +488,7 @@ continue:
   MOVE.L	pcstore(PC),A0
   ->MOVE.L D0,A0
   MOVE.W (A0),D0
-  CMP.W #OPCODE_BKPT,D0
+  CMP.W opcodetrap2(PC),D0
   BEQ.S stophere
   ->CMP.L	pcstore(PC),D0
   ->BEQ.S stophere
@@ -501,8 +517,18 @@ stophere:
   ADDQ.L #4,A7
   TST.L D0				-> see if we need to raise an exception
   BNE.S raise
+  BRA.S norefresh
 
 dontstop:
+  MOVE.L debuga4(PC),A4			-> restore A4
+  MOVE.L A7,-(A7)
+  MOVE.L refreshjmp(PC),A0
+  JSR (A0)				-> call E func with frame
+  ADDQ.L #4,A7
+  TST.L D0
+  BNE stophere
+
+norefresh:  
   MOVE.L pcstore(PC), D0
   LEA lastpc(PC), A0
   MOVE.L D0, (A0)
@@ -520,11 +546,87 @@ raise:
   MOVE.L excinfo(PC),-96(A4)
   ReThrow()
 
+tcode_jsr1:
+ MOVEM.L A0/D0,-(A7)
+ INT $42C0           -> MOVE.W CCR,D0
+ LEA brkflag(PC),A0
+ CLR.B (A0)
+ BRA.S continue2      -> Ends up at same place.
+
+tcode_jsr2:
+ MOVEM.L A0/D0,-(A7)
+ INT $42C0           -> MOVE.W CCR,D0
+ LEA brkflag(PC),A0
+ ST.B (A0)
+
+continue2:
+ LEA pcstore(PC),A0
+ MOVE.L 8(A7),(A0)
+ SUBQ.L #6,(A0)      -> Skip back to PC of our "ILLEGAL" command
+ MOVE.W D0,-(A0)
+ MOVEM.L (A7)+,A0/D0
+
+->  SUBQ.L #4,A7       -> make space for return  -> Already taken car of with above routine
+  MOVEM.L D0-D7/A0-A6,-(A7)
+  LEA continue(PC),A0      -> pc,sr on the stack
+  MOVE.L -(A0),D0
+  MOVE.L -(A0),-(A7)
+  ADDQ.L #6,D0                     -> Used to cross over ILLEGAL. JSR already sticks next IP on stack for us. So skip over JSR now.
+  MOVE.L D0,64(A7)     -> prepare return pc
+
+  LEA brkflag(PC),A0
+  TST.B (A0)
+  BNE.S stophere2
+
+nobreak2:
+  MOVE.L breakpointmem(PC),D0    -> check for breakpoint on mem
+  BEQ.S nomembreak2
+  MOVE.L D0,A0
+  MOVE.L (A0),D0
+  CMP.L  memval(PC),D0
+  BNE.S stophere2
+
+nomembreak2:
+  MOVE.L stepovera7(PC),D0   -> check for step over
+  BEQ.S stophere2
+  CMPA.L stepovera5(PC),A5
+  BEQ.S stophere2
+  CMPA.L D0,A7       -> we compare TOP of frame, not actual A7
+  BMI.S dontstop2
+
+stophere2:
+  MOVE.L debuga4(PC),A4      -> restore A4
+  MOVE.L A7,-(A7)
+  MOVE.L codejmp(PC),A0
+  JSR (A0)       -> call E func with frame
+  ADDQ.L #4,A7
+  TST.L D0       -> see if we need to raise an exception
+  BNE raise
+
+dontstop2:
+  MOVE.L pcstore(PC), D0
+  LEA lastpc(PC), A0
+  MOVE.L D0, (A0)
+  MOVE.L (A7)+,D0
+->  MOVEQ #-1,D1               -> This no longer functions anymore
+->  MOVE.L $4.W,A6
+->  JSR -144(A6)       -> SetSr(orig_sr,$FF)
+  INT $44C0   -> MOVE D0,CCR         -> So we do this. Since we have no need nor should we be looking at the system SR bits
+                         -> CCR is fine for the job. I doubt calling Supervisor in E would work on classic.
+  MOVEM.L (A7)+,D0-D7/A0-A6    -> hold SR!
+  RTS          -> retpc is on top!
+
+                         -> That'a sll for the OS4 modifcations.
+brkflag: INT 0
 codejmp: LONG 0
+refreshjmp: LONG 0
 debuga4: LONG 0
 
 stepovera7: LONG 0
 stepovera5: LONG 0
+
+opcodetrap1: INT 0
+opcodetrap2: INT 0
 
 ->breakpoint: LONG 0			-> 0=no break, -1=run, other=break
 breakpointmem: LONG 0			-> 0=no break, other=memaddress
@@ -538,12 +640,20 @@ lastpc: LONG 0
 
 PROC setbreak(a)
   ->PutLong({breakpoint},a)
-  PutInt(a,OPCODE_BKPT)
+  IF Int(a)=OPCODE_JSR
+    PutLong(a+2,{tcode_jsr2})
+  ELSE
+    PutInt(a,Int({opcodetrap2}))
+  ENDIF
 ENDPROC
 
 PROC rembreak(a)
   ->PutLong({breakpoint},a)
-  PutInt(a,OPCODE_ILLEGAL)
+  IF Int(a)=OPCODE_JSR
+    PutLong(a+2,{tcode_jsr1})
+  ELSE
+    PutInt(a,Int({opcodetrap1}))
+  ENDIF
 ENDPROC
 
 EXPORT PROC stepover(a7=NIL,a5=NIL) IS PutLong({stepovera7},a7) BUT PutLong({stepovera5},a5)
