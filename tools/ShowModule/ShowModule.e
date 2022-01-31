@@ -25,7 +25,7 @@ ENUM JOB_DONE,JOB_CONST,JOB_OBJ,JOB_CODE,JOB_PROCS,
 ENUM ER_NONE,ER_FILE,ER_MEM,ER_USAGE,ER_JOBID,
      ER_BREAK,ER_FILETYPE,ER_TOONEW
 
-CONST MODVERS=11,     -> upto which version we understand , MODVER = 11 for Creative
+CONST MODVERS=12,     -> upto which version we understand , MODVER = 11 for Creative, MODVER=12 for Evo 3.5.0
       SKIPMARK=$FFFF8000
 
 DEF flen,o:PTR TO INT,mem,handle=NIL,file[250]:STRING,thisvers=0,cmode=FALSE
@@ -34,7 +34,8 @@ DEF flen,o:PTR TO INT,mem,handle=NIL,file[250]:STRING,thisvers=0,cmode=FALSE
 PROC main() HANDLE
   DEF a,b,ae
   PutF('ShowModule v1.\d (c) 1992 $#%!\n'+
-       'Update by grio 2001 (4 Kick V\d)\n',MODVERS,KICK)
+       'Update by grio 2001 (4 Kick V\d)\n'+
+       'and by Darren Coles 2022 for E-vo\n',MODVERS,KICK)
   IF StrCmp(arg,'',1) OR StrCmp(arg,'?',2)
     Raise(ER_USAGE)
   ELSE
@@ -84,6 +85,7 @@ ENDPROC
 
 PROC process()
   DEF end,job,len,val,f,off,types:PTR TO LONG,c,r,c2,l,narg,priv,darg:PTR TO LONG
+  DEF dimscount,ptrrep,ptrRepText[255]:STRING,dimsText[255]:STRING,tempstr[10]:STRING,d
   o:=mem
   end:=o+flen
   types:=['substructure','CHAR','INT','','LONG']
@@ -120,16 +122,49 @@ PROC process()
           ELSE
             IF priv++=0 THEN PutS('(----)   /* private member(s) here */\n')
           ENDIF
+          StrCopy(ptrRepText,'')
+          StrCopy(dimsText,'')
+          dimscount:=0
+          IF thisvers>=12
+            ptrrep:=o[]++
+            WHILE (ptrrep>0)
+              StrAdd(ptrRepText,'PTR TO ')
+              ptrrep--
+            ENDWHILE
+            dimscount:=o[]++
+            d:=1
+            WHILE dimscount>0
+              StringF(tempstr,'[\d]',Div(o[],d))
+              d:=o[]++
+              StrAdd(dimsText,tempstr)
+              dimscount--
+            ENDWHILE
+          ENDIF
           IF thisvers>=6
             IF (c:=o[]++)>=0
               IF c=0
                 PutF(':\s\n',types[val])
               ELSE
-                PutF(IF val THEN '\s:PTR TO \s\n' ELSE '[\d]:ARRAY OF \s\n',IF val THEN '' ELSE Int(o+IF o[] THEN 4 ELSE 2)-off/c,ListItem(['','CHAR','INT','','LONG'],c))
+                IF val
+                  PutF(
+                    '\s:\sPTR TO \s\n',
+                    '',
+                    ptrRepText,
+                    ListItem(['','CHAR','INT','','LONG'],c)
+                  )
+                ELSE
+                  IF EstrLen(dimsText)=0 THEN StringF(dimsText,'[\d]',Int(o+IF o[] THEN 4 ELSE 2)-off/c,)
+                  PutF(
+                    '\s:ARRAY OF \s\n',
+                    dimsText,
+                    ListItem(['','CHAR','INT','','LONG'],c)
+                  )
+                ENDIF
               ENDIF
             ELSE
               l:=o[]++
-              PutF(IF val THEN ':PTR TO \s\n' ELSE ':\s (or ARRAY OF \s)\n',o,o)
+              ->PutF(IF val THEN ':PTR TO \s\n' ELSE ':\s (or ARRAY OF \s)\n',o,o)
+              IF val THEN PutF(':\sPTR TO \s\n',ptrRepText,o) ELSE PutF(':\s (or ARRAY OF \s)\n',o,o)
               o:=o+l
             ENDIF
           ELSE

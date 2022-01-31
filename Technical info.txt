@@ -53,6 +53,20 @@ num             type                    parameters
 47      *       ">>"                    shift right
 48      *       "<<"                    shift left
 
+49              ?
+50              :=:                     swap
+51              +=,-=,*=,/=,<<=,>>=
+
+creative
+47
+48
+49              <<
+50              >>
+51
+52              ?
+53              :=:                     swap
+54                                      library function
+55                                      ?
 
 *       = never end of stat
 .       = next token to decide if ">" is part of a LISP-cell
@@ -90,7 +104,7 @@ from offset IOFF
   75    RUNBG             76    OLD               77    EXTRA
   78    CONT              79    ANDALSO           80    ORELSE
   81    POOL              82    PURE              83    FATAL
-  84    WARN
+  84    WARN              85    WITH              86    NOREGS
 
 |       = significant for idents
 
@@ -136,6 +150,7 @@ those with "" are actual addressable variables
 -120    "thistask"                              [sys]
 -124    pool
 -128    opened files list
+-132    utilitybase
 
 +---------------------------------------------------------------+
 |       structures                                              |
@@ -188,7 +203,7 @@ ENDOBJECT
 OBJECT proc
   next:PTR TO proc              -4
   nrargs:INT                    0
-  flags:CHAR                    2, SET COMPILE_RTD,METHOD,NO_REGALLOC,HAS_TAB,SAFEPROC
+  flags:CHAR                    2, SET COMPILE_RTD,METHOD,NO_REGALLOC,HAS_TAB,SAFEPROC,NOREGS
   numregvars:CHAR               3, 0..3
   nrloc:INT                     4, -(nrloc*4)
   defargs:PTR TO vallist        6
@@ -212,11 +227,13 @@ OBJECT member
   ooff:INT                      0, offset
   oflags:CHAR                   2, SET PRIVATE,EXTRA_TYPED
   dummy:CHAR                    3, _empty_spot_
-  osize:INT                     4, fieldsize [1,2,4,0=array]
+  osize:INT   m                   4, fieldsize [1,2,4,0=array]
   oid:INT                       6, object ID
   oascii:PTR TO STR             8, NIL if PRIVATE
-  optrtype                      12, if EXTRA_TYPED  -+ asciiname ___ 0
-  info                          16, if ptr_to_obj   -+ next
+  ptrrepcount                   12 - PTRREPCOUNT used to count ptr to ptr
+  dimdata                       14 - DIMDATA used to track multi-dimensional arrays
+  optrtype                      18, if EXTRA_TYPED  -+ asciiname ___ 0
+  info                          22?, if ptr_to_obj   -+ next
 ENDOBJECT
 
 types in OBJECT
@@ -563,14 +580,51 @@ bit     flags           opt             clear   set
 25 1    -  -            RUNBG
 26 2    -  -            POOL            -       enable pool (v39+ only)
 27 3    -  -                            -       auto close files
-28 4    
-29 5    
-30 6    
-31 7    
+28 4    -  -            NOSTARTUP       -       stripped down startup
+29 5    -  -            FPEXT           -       fpu    
+30 6    -  -            INLINE          -       enable inline functions
+31 7    -  -            UTILLIB         -       uses utillib
 
 SOURCE/A
 REG/N/K
 OPTI/S (REG=5)
+
+ICODEPREFS (creative additional code prefs)
+
+bit     flags           opt             clear   set
+
+0    +3                 SMALL
+1                       FAST
+2                                               ? not sure
+3                                               ? not sure
+4                       RUNBG
+5       OPTI/S
+6                                               ? not sure - cleanup
+7       -  -            INLINE          -       enable inline functions
+8  0 +2 
+9  1    
+10 2    
+11 3    
+12 4    
+13 5    
+14 6    
+15 7    
+16 0 +1 
+17 1    
+18 2    
+19 3    
+20 4    
+21 5    
+22 6    
+23 7    
+24 0 +0 
+25 1    
+26 2    
+27 3    
+28 4    
+29 5    
+30 6    
+31 7    
 
 +---------------------------------------------------------------+
 |       module format                                           |
@@ -597,6 +651,7 @@ OBJECT emodule
           size:INT                      either membersize or -1 if objhead
           offset:INT                    zero for objhead
           id[len]:ARRAY
+            ptrrepcount                 if version>=12 (count of PTR TO PTR)
             ptrtype:INT                 if vers>=6
                                         [0=none,1=char,2=int,4=long,-1=obj]
               len:INT                   if ptrtype=obj
