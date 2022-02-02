@@ -56,6 +56,7 @@ num             type                    parameters
 49              ?
 50              :=:                     swap
 51              +=,-=,*=,/=,<<=,>>=
+52              expsizeof
 
 creative
 47
@@ -105,7 +106,9 @@ from offset IOFF
   78    CONT              79    ANDALSO           80    ORELSE
   81    POOL              82    PURE              83    FATAL
   84    WARN              85    WITH              86    NOREGS
-
+  76    FPEXP             88    NOSTARTUP         89    UTILLIB
+  90    INLINE            91    ELSEWHILE         92    ALWAYS
+  
 |       = significant for idents
 
 to change: INSTABLE, INSJOBTAB, PARSEUPPER, HEAVYTABLE,
@@ -589,17 +592,32 @@ SOURCE/A
 REG/N/K
 OPTI/S (REG=5)
 
-ICODEPREFS (creative additional code prefs)
+ICODEPREFS (ours)
 
 bit     flags           opt             clear   set
 
 0    +3                 SMALL
 1                       FAST
-2                                               ? not sure
-3                                               ? not sure
+2                                               inline IF or ? operator in use
+3                                               lastval is set
 4                       RUNBG
 5       OPTI/S
-6                                               ? not sure - cleanup
+6                       CLEANUP                 cleanup
+7       -  -            INLINE          -       enable inline functions
+
+
+
+ICODEPREFS (creative - additional code prefs)
+
+bit     flags           opt             clear   set
+
+0    +3                 SMALL
+1                       FAST
+2                                               inline IF or ? operator in use
+3                                               lastval is set
+4                       RUNBG
+5       OPTI/S
+6                       CLEANUP                 cleanup
 7       -  -            INLINE          -       enable inline functions
 8  0 +2 
 9  1    
