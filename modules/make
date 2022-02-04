@@ -2,217 +2,217 @@ failat 1
 copy #? all ram:emods
 flushcache
 
-evo ram:emods/exec/nodes.e
-evo ram:emods/exec/lists.e
-evo ram:emods/exec/ports.e
-evo ram:emods/exec/libraries.e
-evo ram:emods/exec/io.e
-evo ram:emods/exec/interrupts.e
-evo ram:emods/exec/devices.e
-evo ram:emods/exec/types.e
-evo ram:emods/exec/tasks.e
-evo ram:emods/exec/strings.e
-evo ram:emods/exec/semaphores.e
-evo ram:emods/exec/resident.e
-evo ram:emods/exec/memory.e
-evo ram:emods/exec/execbase.e
-evo ram:emods/exec/errors.e
-evo ram:emods/exec/alerts.e
-evo ram:emods/hardware/intbits.e
-evo ram:emods/hardware/dmabits.e
-evo ram:emods/hardware/custom.e
-evo ram:emods/hardware/cia.e
-evo ram:emods/hardware/blit.e
-evo ram:emods/hardware/adkbits.e
-evo ram:emods/utility/utility.e
-evo ram:emods/utility/tagitem.e
-evo ram:emods/utility/pack.e
-evo ram:emods/utility/hooks.e
-evo ram:emods/utility/date.e
-evo ram:emods/utility/name.e
-evo ram:emods/graphics/collide.e
-evo ram:emods/graphics/coerce.e
-evo ram:emods/graphics/display.e
-evo ram:emods/graphics/gels.e
-evo ram:emods/graphics/gfx.e
-evo ram:emods/graphics/gfxmacros.e
-evo ram:emods/graphics/graphint.e
-evo ram:emods/graphics/modeid.e
-evo ram:emods/graphics/regions.e
-evo ram:emods/graphics/rpattr.e
-evo ram:emods/graphics/sprite.e
-evo ram:emods/graphics/text.e
-evo ram:emods/graphics/videocontrol.e
-evo ram:emods/graphics/displayinfo.e
-evo ram:emods/graphics/scale.e
-evo ram:emods/graphics/gfxnodes.e
-evo ram:emods/graphics/monitor.e
-evo ram:emods/graphics/view.e
-evo ram:emods/graphics/copper.e
-evo ram:emods/graphics/gfxbase.e
-evo ram:emods/graphics/rastport.e
-evo ram:emods/graphics/clip.e
-evo ram:emods/graphics/layers.e
-evo ram:emods/intuition/pointerclass.e
-evo ram:emods/intuition/imaevolass.e
-evo ram:emods/intuition/sghooks.e
-evo ram:emods/intuition/screens.e
-evo ram:emods/intuition/preferences.e
-evo ram:emods/intuition/iobsolete.e
-evo ram:emods/intuition/intuitionbase.e
-evo ram:emods/intuition/intuition.e
-evo ram:emods/intuition/icclass.e
-evo ram:emods/intuition/gadgetclass.e
-evo ram:emods/intuition/classusr.e
-evo ram:emods/intuition/classes.e
-evo ram:emods/intuition/cghooks.e
-evo ram:emods/dos/shell.e
-evo ram:emods/dos/var.e
-evo ram:emods/dos/record.e
-evo ram:emods/dos/rdargs.e
-evo ram:emods/dos/notify.e
-evo ram:emods/dos/filehandler.e
-evo ram:emods/dos/exall.e
-evo ram:emods/dos/dos_lib.e
-evo ram:emods/dos/dostags.e
-evo ram:emods/dos/doshunks.e
-evo ram:emods/dos/dosextens.e
-evo ram:emods/dos/dosasl.e
-evo ram:emods/dos/dos.e
-evo ram:emods/dos/datetime.e
-evo ram:emods/dos/stdio.e
-evo ram:emods/gadgets/layout.e
-evo ram:emods/gadgets/listbrowser.e
-evo ram:emods/gadgets/clicktab.e
-evo ram:emods/gadgets/virtual.e
-evo ram:emods/gadgets/texteditor.e
-evo ram:emods/gadgets/tapedeck.e
-evo ram:emods/gadgets/tabs.e
-evo ram:emods/gadgets/string.e
-evo ram:emods/gadgets/speedbar.e
-evo ram:emods/gadgets/space.e
-evo ram:emods/gadgets/slider.e
-evo ram:emods/gadgets/sketchboard.e
-evo ram:emods/gadgets/scroller.e
-evo ram:emods/gadgets/radiobutton.e
-evo ram:emods/gadgets/palette.e
-evo ram:emods/gadgets/page.e
-evo ram:emods/gadgets/integer.e
-evo ram:emods/gadgets/gradientslider.e
-evo ram:emods/gadgets/getscreenmode.e
-evo ram:emods/gadgets/getfont.e
-evo ram:emods/gadgets/getfile.e
-evo ram:emods/gadgets/getcolor.e
-evo ram:emods/gadgets/fuelgauge.e
-evo ram:emods/gadgets/datebrowser.e
-evo ram:emods/gadgets/colorwheel.e
-evo ram:emods/gadgets/chooser.e
-evo ram:emods/gadgets/checkbox.e
-evo ram:emods/gadgets/calendar.e
-evo ram:emods/gadgets/button.e
-evo ram:emods/workbench/icon.e
-evo ram:emods/workbench/startup.e
-evo ram:emods/workbench/workbench.e
-evo ram:emods/resources/potgo.e
-evo ram:emods/resources/misc.e
-evo ram:emods/resources/mathresource.e
-evo ram:emods/resources/filesysres.e
-evo ram:emods/resources/disk.e
-evo ram:emods/resources/cia.e
-evo ram:emods/resources/card.e
-evo ram:emods/resources/battmembitsshared.e
-evo ram:emods/resources/battmembitsamiga.e
-evo ram:emods/resources/battmem.e
-evo ram:emods/resources/battclock.e
-evo ram:emods/diskfont/oterrors.e
-evo ram:emods/diskfont/diskfonttag.e
-evo ram:emods/diskfont/diskfont.e
-evo ram:emods/diskfont/glyph.e
-evo ram:emods/devices/scsidisk.e
-evo ram:emods/devices/clipboard.e
-evo ram:emods/devices/hardblocks.e
-evo ram:emods/devices/trackfile.e
-evo ram:emods/devices/trackdisk.e
-evo ram:emods/devices/timer.e
-evo ram:emods/devices/serial.e
-evo ram:emods/devices/prtgfx.e
-evo ram:emods/devices/prtbase.e
-evo ram:emods/devices/parallel.e
-evo ram:emods/devices/narrator.e
-evo ram:emods/devices/keymap.e
-evo ram:emods/devices/keyboard.e
-evo ram:emods/devices/inputevent.e
-evo ram:emods/devices/input.e
-evo ram:emods/devices/gameport.e
-evo ram:emods/devices/console.e
-evo ram:emods/devices/cd.e
-evo ram:emods/devices/bootblock.e
-evo ram:emods/devices/audio.e
-evo ram:emods/devices/newstyle.e
-evo ram:emods/devices/printer.e
-evo ram:emods/devices/conunit.e
-evo ram:emods/prefs/screenmode.e
-evo ram:emods/prefs/printergfx.e
-evo ram:emods/prefs/workbench.e
-evo ram:emods/prefs/wbpattern.e
-evo ram:emods/prefs/sound.e
-evo ram:emods/prefs/serial.e
-evo ram:emods/prefs/reaction.e
-evo ram:emods/prefs/printertxt.e
-evo ram:emods/prefs/printerps.e
-evo ram:emods/prefs/prefhdr.e
-evo ram:emods/prefs/pointer.e
-evo ram:emods/prefs/palette.e
-evo ram:emods/prefs/overscan.e
-evo ram:emods/prefs/locale.e
-evo ram:emods/prefs/input.e
-evo ram:emods/prefs/icontrol.e
-evo ram:emods/prefs/font.e
-evo ram:emods/prefs/asl.e
-evo ram:emods/libraries/amigaguide.e
-evo ram:emods/libraries/translator.e
-evo ram:emods/libraries/realtime.e
-evo ram:emods/libraries/nonvolatile.e
-evo ram:emods/libraries/mathresource.e
-evo ram:emods/libraries/mathlibrary.e
-evo ram:emods/libraries/mathieeesp.e
-evo ram:emods/libraries/lowlevel.e
-evo ram:emods/libraries/locale.e
-evo ram:emods/libraries/keymap.e
-evo ram:emods/libraries/iffparse.e
-evo ram:emods/libraries/gadtools.e
-evo ram:emods/libraries/expansionbase.e
-evo ram:emods/libraries/expansion.e
-evo ram:emods/libraries/configvars.e
-evo ram:emods/libraries/configregs.e
-evo ram:emods/libraries/commodities.e
-evo ram:emods/libraries/asl.e
-evo ram:emods/datatypes/pictureclass.e
-evo ram:emods/datatypes/animationclass.e
-evo ram:emods/datatypes/textclass.e
-evo ram:emods/datatypes/soundclass.e
-evo ram:emods/datatypes/datatypesclass.e
-evo ram:emods/datatypes/datatypes.e
-evo ram:emods/classes/requester.e
-evo ram:emods/classes/arexx.e
-evo ram:emods/classes/window.e
-evo ram:emods/rexx/storage.e
-evo ram:emods/rexx/rxslib.e
-evo ram:emods/rexx/rexxio.e
-evo ram:emods/rexx/errors.e
-evo ram:emods/reaction/reaction_prefs.e
-evo ram:emods/reaction/reaction_macros.e
-evo ram:emods/reaction/reaction_class.e
-evo ram:emods/reaction/reaction_author.e
-evo ram:emods/reaction/reaction.e
-evo ram:emods/reaction/reaction_lib.e
-evo ram:emods/images/penmap.e
-evo ram:emods/images/led.e
-evo ram:emods/images/glyph.e
-evo ram:emods/images/drawlist.e
-evo ram:emods/images/bitmap.e
-evo ram:emods/images/bevel.e
-evo ram:emods/images/label.e
+evo legacy showfname ram:emods/exec/nodes.e
+evo legacy showfname ram:emods/exec/lists.e
+evo legacy showfname ram:emods/exec/ports.e
+evo legacy showfname ram:emods/exec/libraries.e
+evo legacy showfname ram:emods/exec/io.e
+evo legacy showfname ram:emods/exec/interrupts.e
+evo legacy showfname ram:emods/exec/devices.e
+evo legacy showfname ram:emods/exec/types.e
+evo legacy showfname ram:emods/exec/tasks.e
+evo legacy showfname ram:emods/exec/strings.e
+evo legacy showfname ram:emods/exec/semaphores.e
+evo legacy showfname ram:emods/exec/resident.e
+evo legacy showfname ram:emods/exec/memory.e
+evo legacy showfname ram:emods/exec/execbase.e
+evo legacy showfname ram:emods/exec/errors.e
+evo legacy showfname ram:emods/exec/alerts.e
+evo legacy showfname ram:emods/hardware/intbits.e
+evo legacy showfname ram:emods/hardware/dmabits.e
+evo legacy showfname ram:emods/hardware/custom.e
+evo legacy showfname ram:emods/hardware/cia.e
+evo legacy showfname ram:emods/hardware/blit.e
+evo legacy showfname ram:emods/hardware/adkbits.e
+evo legacy showfname ram:emods/utility/utility.e
+evo legacy showfname ram:emods/utility/tagitem.e
+evo legacy showfname ram:emods/utility/pack.e
+evo legacy showfname ram:emods/utility/hooks.e
+evo legacy showfname ram:emods/utility/date.e
+evo legacy showfname ram:emods/utility/name.e
+evo legacy showfname ram:emods/graphics/collide.e
+evo legacy showfname ram:emods/graphics/coerce.e
+evo legacy showfname ram:emods/graphics/display.e
+evo legacy showfname ram:emods/graphics/gels.e
+evo legacy showfname ram:emods/graphics/gfx.e
+evo legacy showfname ram:emods/graphics/gfxmacros.e
+evo legacy showfname ram:emods/graphics/graphint.e
+evo legacy showfname ram:emods/graphics/modeid.e
+evo legacy showfname ram:emods/graphics/regions.e
+evo legacy showfname ram:emods/graphics/rpattr.e
+evo legacy showfname ram:emods/graphics/sprite.e
+evo legacy showfname ram:emods/graphics/text.e
+evo legacy showfname ram:emods/graphics/videocontrol.e
+evo legacy showfname ram:emods/graphics/displayinfo.e
+evo legacy showfname ram:emods/graphics/scale.e
+evo legacy showfname ram:emods/graphics/gfxnodes.e
+evo legacy showfname ram:emods/graphics/monitor.e
+evo legacy showfname ram:emods/graphics/view.e
+evo legacy showfname ram:emods/graphics/copper.e
+evo legacy showfname ram:emods/graphics/gfxbase.e
+evo legacy showfname ram:emods/graphics/rastport.e
+evo legacy showfname ram:emods/graphics/clip.e
+evo legacy showfname ram:emods/graphics/layers.e
+evo legacy showfname ram:emods/intuition/pointerclass.e
+evo legacy showfname ram:emods/intuition/imaevolass.e
+evo legacy showfname ram:emods/intuition/sghooks.e
+evo legacy showfname ram:emods/intuition/screens.e
+evo legacy showfname ram:emods/intuition/preferences.e
+evo legacy showfname ram:emods/intuition/iobsolete.e
+evo legacy showfname ram:emods/intuition/intuitionbase.e
+evo legacy showfname ram:emods/intuition/intuition.e
+evo legacy showfname ram:emods/intuition/icclass.e
+evo legacy showfname ram:emods/intuition/gadgetclass.e
+evo legacy showfname ram:emods/intuition/classusr.e
+evo legacy showfname ram:emods/intuition/classes.e
+evo legacy showfname ram:emods/intuition/cghooks.e
+evo legacy showfname ram:emods/dos/shell.e
+evo legacy showfname ram:emods/dos/var.e
+evo legacy showfname ram:emods/dos/record.e
+evo legacy showfname ram:emods/dos/rdargs.e
+evo legacy showfname ram:emods/dos/notify.e
+evo legacy showfname ram:emods/dos/filehandler.e
+evo legacy showfname ram:emods/dos/exall.e
+evo legacy showfname ram:emods/dos/dos_lib.e
+evo legacy showfname ram:emods/dos/dostags.e
+evo legacy showfname ram:emods/dos/doshunks.e
+evo legacy showfname ram:emods/dos/dosextens.e
+evo legacy showfname ram:emods/dos/dosasl.e
+evo legacy showfname ram:emods/dos/dos.e
+evo legacy showfname ram:emods/dos/datetime.e
+evo legacy showfname ram:emods/dos/stdio.e
+evo legacy showfname ram:emods/gadgets/layout.e
+evo legacy showfname ram:emods/gadgets/listbrowser.e
+evo legacy showfname ram:emods/gadgets/clicktab.e
+evo legacy showfname ram:emods/gadgets/virtual.e
+evo legacy showfname ram:emods/gadgets/texteditor.e
+evo legacy showfname ram:emods/gadgets/tapedeck.e
+evo legacy showfname ram:emods/gadgets/tabs.e
+evo legacy showfname ram:emods/gadgets/string.e
+evo legacy showfname ram:emods/gadgets/speedbar.e
+evo legacy showfname ram:emods/gadgets/space.e
+evo legacy showfname ram:emods/gadgets/slider.e
+evo legacy showfname ram:emods/gadgets/sketchboard.e
+evo legacy showfname ram:emods/gadgets/scroller.e
+evo legacy showfname ram:emods/gadgets/radiobutton.e
+evo legacy showfname ram:emods/gadgets/palette.e
+evo legacy showfname ram:emods/gadgets/page.e
+evo legacy showfname ram:emods/gadgets/integer.e
+evo legacy showfname ram:emods/gadgets/gradientslider.e
+evo legacy showfname ram:emods/gadgets/getscreenmode.e
+evo legacy showfname ram:emods/gadgets/getfont.e
+evo legacy showfname ram:emods/gadgets/getfile.e
+evo legacy showfname ram:emods/gadgets/getcolor.e
+evo legacy showfname ram:emods/gadgets/fuelgauge.e
+evo legacy showfname ram:emods/gadgets/datebrowser.e
+evo legacy showfname ram:emods/gadgets/colorwheel.e
+evo legacy showfname ram:emods/gadgets/chooser.e
+evo legacy showfname ram:emods/gadgets/checkbox.e
+evo legacy showfname ram:emods/gadgets/calendar.e
+evo legacy showfname ram:emods/gadgets/button.e
+evo legacy showfname ram:emods/workbench/icon.e
+evo legacy showfname ram:emods/workbench/startup.e
+evo legacy showfname ram:emods/workbench/workbench.e
+evo legacy showfname ram:emods/resources/potgo.e
+evo legacy showfname ram:emods/resources/misc.e
+evo legacy showfname ram:emods/resources/mathresource.e
+evo legacy showfname ram:emods/resources/filesysres.e
+evo legacy showfname ram:emods/resources/disk.e
+evo legacy showfname ram:emods/resources/cia.e
+evo legacy showfname ram:emods/resources/card.e
+evo legacy showfname ram:emods/resources/battmembitsshared.e
+evo legacy showfname ram:emods/resources/battmembitsamiga.e
+evo legacy showfname ram:emods/resources/battmem.e
+evo legacy showfname ram:emods/resources/battclock.e
+evo legacy showfname ram:emods/diskfont/oterrors.e
+evo legacy showfname ram:emods/diskfont/diskfonttag.e
+evo legacy showfname ram:emods/diskfont/diskfont.e
+evo legacy showfname ram:emods/diskfont/glyph.e
+evo legacy showfname ram:emods/devices/scsidisk.e
+evo legacy showfname ram:emods/devices/clipboard.e
+evo legacy showfname ram:emods/devices/hardblocks.e
+evo legacy showfname ram:emods/devices/trackfile.e
+evo legacy showfname ram:emods/devices/trackdisk.e
+evo legacy showfname ram:emods/devices/timer.e
+evo legacy showfname ram:emods/devices/serial.e
+evo legacy showfname ram:emods/devices/prtgfx.e
+evo legacy showfname ram:emods/devices/prtbase.e
+evo legacy showfname ram:emods/devices/parallel.e
+evo legacy showfname ram:emods/devices/narrator.e
+evo legacy showfname ram:emods/devices/keymap.e
+evo legacy showfname ram:emods/devices/keyboard.e
+evo legacy showfname ram:emods/devices/inputevent.e
+evo legacy showfname ram:emods/devices/input.e
+evo legacy showfname ram:emods/devices/gameport.e
+evo legacy showfname ram:emods/devices/console.e
+evo legacy showfname ram:emods/devices/cd.e
+evo legacy showfname ram:emods/devices/bootblock.e
+evo legacy showfname ram:emods/devices/audio.e
+evo legacy showfname ram:emods/devices/newstyle.e
+evo legacy showfname ram:emods/devices/printer.e
+evo legacy showfname ram:emods/devices/conunit.e
+evo legacy showfname ram:emods/prefs/screenmode.e
+evo legacy showfname ram:emods/prefs/printergfx.e
+evo legacy showfname ram:emods/prefs/workbench.e
+evo legacy showfname ram:emods/prefs/wbpattern.e
+evo legacy showfname ram:emods/prefs/sound.e
+evo legacy showfname ram:emods/prefs/serial.e
+evo legacy showfname ram:emods/prefs/reaction.e
+evo legacy showfname ram:emods/prefs/printertxt.e
+evo legacy showfname ram:emods/prefs/printerps.e
+evo legacy showfname ram:emods/prefs/prefhdr.e
+evo legacy showfname ram:emods/prefs/pointer.e
+evo legacy showfname ram:emods/prefs/palette.e
+evo legacy showfname ram:emods/prefs/overscan.e
+evo legacy showfname ram:emods/prefs/locale.e
+evo legacy showfname ram:emods/prefs/input.e
+evo legacy showfname ram:emods/prefs/icontrol.e
+evo legacy showfname ram:emods/prefs/font.e
+evo legacy showfname ram:emods/prefs/asl.e
+evo legacy showfname ram:emods/libraries/amigaguide.e
+evo legacy showfname ram:emods/libraries/translator.e
+evo legacy showfname ram:emods/libraries/realtime.e
+evo legacy showfname ram:emods/libraries/nonvolatile.e
+evo legacy showfname ram:emods/libraries/mathresource.e
+evo legacy showfname ram:emods/libraries/mathlibrary.e
+evo legacy showfname ram:emods/libraries/mathieeesp.e
+evo legacy showfname ram:emods/libraries/lowlevel.e
+evo legacy showfname ram:emods/libraries/locale.e
+evo legacy showfname ram:emods/libraries/keymap.e
+evo legacy showfname ram:emods/libraries/iffparse.e
+evo legacy showfname ram:emods/libraries/gadtools.e
+evo legacy showfname ram:emods/libraries/expansionbase.e
+evo legacy showfname ram:emods/libraries/expansion.e
+evo legacy showfname ram:emods/libraries/configvars.e
+evo legacy showfname ram:emods/libraries/configregs.e
+evo legacy showfname ram:emods/libraries/commodities.e
+evo legacy showfname ram:emods/libraries/asl.e
+evo legacy showfname ram:emods/datatypes/pictureclass.e
+evo legacy showfname ram:emods/datatypes/animationclass.e
+evo legacy showfname ram:emods/datatypes/textclass.e
+evo legacy showfname ram:emods/datatypes/soundclass.e
+evo legacy showfname ram:emods/datatypes/datatypesclass.e
+evo legacy showfname ram:emods/datatypes/datatypes.e
+evo legacy showfname ram:emods/classes/requester.e
+evo legacy showfname ram:emods/classes/arexx.e
+evo legacy showfname ram:emods/classes/window.e
+evo legacy showfname ram:emods/rexx/storage.e
+evo legacy showfname ram:emods/rexx/rxslib.e
+evo legacy showfname ram:emods/rexx/rexxio.e
+evo legacy showfname ram:emods/rexx/errors.e
+evo legacy showfname ram:emods/reaction/reaction_prefs.e
+evo legacy showfname ram:emods/reaction/reaction_macros.e
+evo legacy showfname ram:emods/reaction/reaction_class.e
+evo legacy showfname ram:emods/reaction/reaction_author.e
+evo legacy showfname ram:emods/reaction/reaction.e
+evo legacy showfname ram:emods/reaction/reaction_lib.e
+evo legacy showfname ram:emods/images/penmap.e
+evo legacy showfname ram:emods/images/led.e
+evo legacy showfname ram:emods/images/glyph.e
+evo legacy showfname ram:emods/images/drawlist.e
+evo legacy showfname ram:emods/images/bitmap.e
+evo legacy showfname ram:emods/images/bevel.e
+evo legacy showfname ram:emods/images/label.e
 
 flushcache
 cd ram:emods/pragmas

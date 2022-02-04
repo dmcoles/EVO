@@ -50,8 +50,8 @@ num             type                    parameters
 44              dummy (skip)            [only after $04xx tokens]
 45      X       objectheadascii         a:PTR TO STR (mutrec PTR TO in objs)
 46      .       "|"
-47      *       ">>"                    shift right
-48      *       "<<"                    shift left
+47      *       "<<"                    shift left
+48      *       ">>"                    shift right
 
 49              ?
 50              :=:                     swap
@@ -63,7 +63,7 @@ creative
 48
 49              <<
 50              >>
-51
+51                                      <<=, >>=, +=, -=, *= /= expression
 52              ?
 53              :=:                     swap
 54                                      library function
@@ -108,6 +108,9 @@ from offset IOFF
   84    WARN              85    WITH              86    NOREGS
   76    FPEXP             88    NOSTARTUP         89    UTILLIB
   90    INLINE            91    ELSEWHILE         92    ALWAYS
+  93    SECTION           94    CODE              95    DATA
+  96    CHIP              97    FAST
+
   
 |       = significant for idents
 
@@ -546,6 +549,7 @@ store = set to current variables
 82      fill CONT label
 83      do fatal error
 84      do warn error
+85      start new section
 
 +---------------------------------------------------------------+
 |       OPT bits and cli-flags                                  |
@@ -601,7 +605,7 @@ bit     flags           opt             clear   set
 2                                               inline IF or ? operator in use
 3                                               lastval is set
 4                       RUNBG
-5       OPTI/S
+5       LEGACY/S                                produce old module version format 10 and no new system constants
 6                       CLEANUP                 cleanup
 7       -  -            INLINE          -       enable inline functions
 
@@ -669,7 +673,9 @@ OBJECT emodule
           size:INT                      either membersize or -1 if objhead
           offset:INT                    zero for objhead
           id[len]:ARRAY
-            ptrrepcount                 if version>=12 (count of PTR TO PTR)
+            ptrrepcount:INT                 if version>=12 (count of PTR TO PTR)
+            dimdatacount:INT                if version>=12 (number of array dimensions)
+              dimoffset:INT                 if version>=12 array dimension offset (repeated for each dimension above)
             ptrtype:INT                 if vers>=6
                                         [0=none,1=char,2=int,4=long,-1=obj]
               len:INT                   if ptrtype=obj
@@ -1306,6 +1312,11 @@ has to become (ends with):      FOR/WHILE/UNTIL:        lab,jumpback,id
 83              "[" expected
 84              dim workspace full
 85              array too large
+86              only RTR and RTE allowed
+87              unknown HEX value after \x
+88              illegal section definition
+89              not enough memory for reloc buffer
+90              not allowed in legacy mode
 
 WARNINGS:
 
