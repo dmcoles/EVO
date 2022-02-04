@@ -28,7 +28,7 @@ ENUM ER_NONE,ER_FILE,ER_MEM,ER_USAGE,ER_JOBID,
 CONST MODVERS=12,     -> upto which version we understand , MODVER = 11 for Creative, MODVER=12 for Evo 3.5.0
       SKIPMARK=$FFFF8000
 
-DEF flen,o:PTR TO INT,mem,handle=NIL,file[250]:STRING,thisvers=0,cmode=FALSE
+DEF flen,o:PTR TO INT,mem,handle=NIL,file[250]:STRING,thisvers=0,cmode=FALSE,emode=FALSE
 
 
 PROC main() HANDLE
@@ -44,13 +44,18 @@ PROC main() HANDLE
       WHILE arg[]=" " DO arg++
       cmode:=TRUE
     ENDIF
+    IF (arg[]="-") AND (arg[1]="e") AND (arg[2]=" ")
+      arg:=arg+3
+      WHILE arg[]=" " DO arg++
+      emode:=TRUE
+    ENDIF    
     ae:=arg+StrLen(arg)
     WHILE (ae[-1]=" ") AND (ae>arg) DO ae[]--:=0
     StrCopy(file,arg)
     LowerStr(file)
     IF (file[EstrLen(file)-2]<>".") OR (file[EstrLen(file)-1]<>"m") THEN StrAdd(file,'.m')
-    PutF('now showing: "\s"\n',file)
-    PutS('NOTE: don\at use this output in your code, use the module instead.\n\n')
+    IF emode=FALSE THEN PutF('now showing: "\s"\n',file)
+    IF emode=FALSE THEN PutS('NOTE: don\at use this output in your code, use the module instead.\n\n')
     flen:=FileLength(file)
     handle:=Open(file,OLDFILE)
     IF (flen<8) OR (handle=NIL)
@@ -90,6 +95,7 @@ PROC process()
   end:=o+flen
   types:=['substructure','CHAR','INT','','LONG']
   IF ^o++<>"EMOD" THEN Raise(ER_FILETYPE)
+  IF emode THEN PutS('  OPT MODULE\n  OPT EXPORT\n  OPT PREPROCESS\n\n')
   WHILE o<end
     IF CtrlC() THEN Raise(ER_BREAK)
     job:=o[]++
@@ -110,17 +116,21 @@ PROC process()
         IF thisvers>=6 THEN o:=o+4
         priv:=0
         l:=o[]++;
-        PutF('(----) \s \s\s\n',IF cmode THEN 'struct' ELSE 'OBJECT',o+4,IF cmode THEN ' {' ELSE '')
+        PutF('\s\s \s\s\n',IF emode THEN '' ELSE '(----) ',IF cmode THEN 'struct' ELSE 'OBJECT',o+4,IF cmode THEN ' {' ELSE '')
         o:=o+4+l
         WHILE l:=o[]++
           val:=o[]++
           off:=o[]++
           IF l>0
-            PutF('(\d[4])   \s',off,o)
+            IF emode
+              PutF('  \s',o)
+            ELSE
+              PutF('(\d[4])   \s',off,o)
+            ENDIF
             o:=o+l
             priv:=0
           ELSE
-            IF priv++=0 THEN PutS('(----)   /* private member(s) here */\n')
+            IF priv++=0 THEN PutF('\s  /* private member(s) here */\n',IF emode THEN '' ELSE '(----) ')
           ENDIF
           StrCopy(ptrRepText,'')
           StrCopy(dimsText,'')
@@ -164,6 +174,13 @@ PROC process()
             ELSE
               l:=o[]++
               ->PutF(IF val THEN ':PTR TO \s\n' ELSE ':\s (or ARRAY OF \s)\n',o,o)
+              IF emode
+                IF val THEN PutF(':\sPTR TO \s\n',ptrRepText,o) ELSE PutF(':\s\n',o)
+              ELSE
+                IF val THEN PutF(':\sPTR TO \s\n',ptrRepText,o) ELSE PutF(':\s (or ARRAY OF \s)\n',o,o)
+              ENDIF
+              
+              
               IF val THEN PutF(':\sPTR TO \s\n',ptrRepText,o) ELSE PutF(':\s (or ARRAY OF \s)\n',o,o)
               o:=o+l
             ENDIF
@@ -214,7 +231,7 @@ PROC process()
             WHILE o[]++<>-1 DO o:=o+4
           ENDIF
         ENDIF
-        PutF('(----) \s     /* SIZEOF=',IF cmode THEN '}' ELSE 'ENDOBJECT')
+        PutF('\s\s     /* SIZEOF=',IF emode THEN '' ELSE '(----) ',IF cmode THEN '}' ELSE 'ENDOBJECT')
         PutF(IF val<>-1 THEN '\d */\n\n' ELSE 'NONE !!! */\n\n',val)
       CASE JOB_CODE
         l:=^o++*4
@@ -274,6 +291,9 @@ PROC process()
         ENDIF
         o:=o+2
         IF (thisvers:=o[]++)>MODVERS THEN Raise(ER_TOONEW)
+        IF f=FALSE THEN PutS('/* ')
+        f:=TRUE
+        PutF('\n   module format version: \d\n',thisvers)
         IF thisvers>10 THEN o:=o+4  -> for CreativE
         o:=o+4
         IF f THEN PutS('*/\n\n')
