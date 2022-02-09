@@ -213,6 +213,7 @@ evo legacy showfname ram:emods/images/drawlist.e
 evo legacy showfname ram:emods/images/bitmap.e
 evo legacy showfname ram:emods/images/bevel.e
 evo legacy showfname ram:emods/images/label.e
+evo legacy showfname ram:emods/other/scanf.e
 
 flushcache
 cd ram:emods/pragmas
