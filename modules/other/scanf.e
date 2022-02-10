@@ -68,6 +68,7 @@ OBJECT scanspec PRIVATE
 ENDOBJECT
 
 EXPORT OBJECT scanf
+  estrings:INT     -> treat output strings as E STRINGS (otherwise treat as array of char)
   read_count:LONG -> Total number of characters read
   converted:LONG-> Total number of specifiers processed
   error_state:LONG   -> The most recently flagged error
@@ -80,6 +81,7 @@ EXPORT PROC create() OF scanf  ->constructor
   self.converted:=0
   self.error_state:=0
   self.offset:=0
+  self.estrings:=TRUE
 
   self.locale.thousands_sep:=","
   self.locale.decimal_point:="."
@@ -134,7 +136,11 @@ PROC setIntVar(var:PTR TO LONG,value) OF scanf
 ENDPROC
 
 PROC setStrVar(var:PTR TO LONG,value:PTR TO CHAR,len) OF scanf
-  IF len>0 THEN AstrCopy(var[],value,len) ELSE var[]:=0
+  IF self.estrings
+    IF len>0 THEN StrCopy(var[],value,len) ELSE StrCopy(var[],'')
+  ELSE
+    IF len>0 THEN AstrCopy(var[],value,len) ELSE var[]:=0
+  ENDIF
 ENDPROC
 
 /*
@@ -555,10 +561,8 @@ brk4:
       CASE "c"
         spec.type:=SPEC_CHAR
         spec.skipws:=0
-
         /* Default to 1 character */
         IF (spec.field_width = 0) THEN spec.field_width:=1
-
       CASE "s"
         spec.type:=SPEC_STRING
       CASE "["
@@ -786,7 +790,7 @@ Example of use
 PROC main()
 
   DEF a=0,b=0,c=0
-  DEF d[100]:ARRAY OF CHAR
+  DEF d[100]:STRING
   DEF s[100]:STRING
   DEF e,f
   DEF res
