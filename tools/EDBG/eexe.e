@@ -215,7 +215,7 @@ PROC collectvars(o:PTR TO INT,varlist,src:PTR TO e_source,pr:PTR TO e_proc,job)
 ENDPROC o,v
 
 PROC load(name,trap1,trap2) OF e_exe
-  DEF o:PTR TO LONG,i,l,cl,c,dbl,numrel,a,b:PTR TO LONG,src=NIL:PTR TO e_source,add
+  DEF o:PTR TO LONG,i,l,cl,c,dbl,numrel,a,b:PTR TO LONG,src=NIL:PTR TO e_source,add,h
 
   -> read exe
 
@@ -236,16 +236,35 @@ PROC load(name,trap1,trap2) OF e_exe
 
   -> eat and digest reloc
 
-  IF o[]++<>HUNK_RELOC32 THEN Raise("eexe")
-  numrel:=o[]++
-  IF o[]++<>0 THEN Raise("eexe")
-  IF numrel
-    FOR a:=1 TO numrel				-> do own reloc!
-      b:=c+o[]++
-      b[]:=b[]+c
-    ENDFOR
-  ENDIF
-  IF o[]++<>0 THEN Raise("eexe")
+  h:=o[]
+  WHILE (h=HUNK_RELOC32) OR (h=HUNK_DREL32) OR (h=HUNK_RELOC32SHORT)
+    o[]++
+    IF h=HUNK_RELOC32
+      numrel:=o[]++
+      IF o[]++<>0 THEN Raise("eexe")
+      IF numrel
+        FOR a:=1 TO numrel				-> do own reloc!
+          b:=c+o[]++
+          b[]:=b[]+c
+        ENDFOR
+      ENDIF
+      IF o[]++<>0 THEN Raise("eexe")
+    ELSE
+      numrel:=Int(o)
+      o:=o+2
+      IF Int(o)<>0 THEN Raise("eexe")
+      o:=o+2
+      IF numrel
+        FOR a:=1 TO numrel				-> do own reloc!
+          b:=c+Int(o)
+          o:=o+2
+          b[]:=b[]+c
+        ENDFOR
+      ENDIF
+      IF o[]++<>0 THEN Raise("eexe")
+    ENDIF
+    h:=o[]
+  ENDWHILE
 
   -> skip symbol hunk if necessary
 
