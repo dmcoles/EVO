@@ -104,11 +104,24 @@ PROC process()
         IF thisvers>=6 THEN o:=o+4
         len:=o[]++; f:=TRUE
         WHILE len
-          val:=^o++
-          PutS(IF cmode THEN '#define ' ELSE IF f THEN 'CONST ' ELSE '      ')
-          PutF(IF cmode THEN '\s ' ELSE '\s=',o)
-          IF (val>=-$20) AND (val<$20) THEN PutF('\d',val) ELSE PutF(IF cmode THEN '0x\h' ELSE '$\h',val)
-          o:=o+len; len:=o[]++; f:=FALSE
+          IF len=$ffffff00
+            len:=o[]++
+
+            PutS(IF cmode THEN '#define ' ELSE IF f THEN 'CONST ' ELSE '      ')
+            PutF(IF cmode THEN '\s ' ELSE '\s=',o)
+            o:=o+len
+            len:=o[]++
+            PutF('''\s''',o)
+            o:=o+len+1
+            IF (o & 1) = 1 THEN o:=o+1
+          ELSE
+            val:=^o++
+            PutS(IF cmode THEN '#define ' ELSE IF f THEN 'CONST ' ELSE '      ')
+            PutF(IF cmode THEN '\s ' ELSE '\s=',o)
+            IF (val>=-$20) AND (val<$20) THEN PutF('\d',val) ELSE PutF(IF cmode THEN '0x\h' ELSE '$\h',val)
+            o:=o+len
+          ENDIF
+          len:=o[]++; f:=FALSE
           PutS(IF len THEN (IF cmode THEN '\n' ELSE ',\n') ELSE '\n\n')
           IF CtrlC() THEN Raise(ER_BREAK)
         ENDWHILE
