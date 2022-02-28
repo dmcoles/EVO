@@ -317,8 +317,8 @@ PROC load(name,trap1,trap2) OF e_exe
           src.sourcename:=String(StrLen(o))
           StrCopy(src.sourcename,o)
           o:=a*4+o
-          src.lines:=List(src.numlines)
-          FOR i:=0 TO src.numlines-1 DO ListAdd(src.lines,[o[i]])         
+          src.lines:=New(src.numlines*4)
+          FOR i:=0 TO src.numlines-1 DO src.lines[i]:=o[i]
           
           FOR a:=1 TO src.numlines STEP 2
             src.lines[a]:=src.lines[a]+add
@@ -441,7 +441,7 @@ ENDPROC
 PROC end() OF e_source
   DEF n:PTR TO e_source
   IF self.sourcename THEN DisposeLink(self.sourcename)
-  IF self.lines THEN DisposeLink(self.lines)
+  IF self.lines THEN Dispose(self.lines)
   n:=self.next
   IF self.source THEN freefile(self.source)
   END n
