@@ -410,6 +410,9 @@ Development restarted as E-VO by Darren Coles
     - Allow float CONST definitions
     - Remove some unused startup code when OPT ASM in use.
     - ShowModule: Added support for string CONSTs
+    - Added OFFSETOF to get the offset of a member of an object
+    - Added MemFill, AstrClone, ListInsItem, ListRemItem, ListSwapItem functions     
+    - EDBG: Support for sections
       
 DATE HISTORY:
     3.3b    20.11.1999 -> 12.12.1999

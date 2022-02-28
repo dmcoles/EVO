@@ -7,9 +7,15 @@
 ;     in 2021
 ; ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, ;
 
+;debug=1
+
   ifd __VASM
 	output EVO
-  opt d-,s-,o-,w+
+    ifd debug
+      opt o-,w+
+    else
+      opt d-,s-,o-,w+
+    endif
 	machine mc68000
   else
   SETCPU 000
@@ -11267,6 +11273,9 @@ SYMEND:
 
 
       INSTALLHANDLER:
+    ifd debug
+      BRA.S .1
+    endif
 	;rts
 	;TST.W	CONOUT			; DON'T INSTALL IF IN ASMONE
 	;BNE.S	.1
@@ -11278,6 +11287,9 @@ SYMEND:
 .1:	RTS
 
       SETOLDHANDLER:
+    ifd debug
+      BRA.S .1
+    endif
 	MOVE.L	4.W,A6
 	MOVE.L	276(A6),A0
 	MOVE.L	OLDTRAP,D0
@@ -15450,6 +15462,12 @@ DESTR:	MOVE.W	ODESTR(A6),D2		; GETS OBJ=A6, OSIZE=D0
     BTST        #2,CODEPREFS+3
     BEQ         ERROR44
     MOVE.L      HunkList,A0
+    MOVE.L      A4,D0
+    CLR.W       (A4)
+    ADDQ.L      #3,D0
+    AND.L       #$fffffffc,D0
+    MOVE.L      D0,A4
+    
     MOVE.L      A4,H_END(A0)
     move.l      a0,d0
 
@@ -24649,7 +24667,7 @@ CLINT:	MOVE.L	-36(A4),D4
       INITINTUI:	DC.B	"intuition.library",0
       INITGFX:		DC.B	"graphics.library",0
       ZEROSPOT:		DC.B	0
-      ENDC:
+      ENDC    :
 
       SWAPSTACK:
       	CMP.W	#37,20(A6)
@@ -26335,6 +26353,7 @@ INLINETAB:
     DC.L    .E,.E,.E,.E,.E,.E,.E,.E,.E,.E   ; 151-160
     DC.L    .E,.E,INL_LSL,INL_LSR,.E,.E,.E,.E,.E,.E   ; 161-170
     DC.L    INL_MUL020,INL_DIV020,INL_LONG,INL_INT,INL_CHAR,INL_MOD020,.E,.E,.E,.E   ; 171-180
+    DC.L    .E,.E,.E,.E,.E,.E,.E,.E,.E,.E   ; 181-190
 
 ;; ERROR
 .E:
@@ -26995,6 +27014,7 @@ INL_OPTI:
 	DC.B	0,0,16,16,4,4,0,0,0,0	; 151-160
 	DC.B	0,0,64,64,0,0,0,0,0,0	; 161-170
 	DC.B	64,64,64,64,64,64,0,0,0,0	; 171-180
+	DC.B	0,0,0,0,0,0,0,0,0,0	; 181-190
 
 ; BITS: 0 = USES MATHBAS
 ;       1 = USES MATHTRANS
@@ -27006,7 +27026,7 @@ INL_OPTI:
 ;
 
 FOFF		= $100
-NREFUNC		= 175
+NREFUNC		= 181
 
       EFUNCTAB:
 	DC.L	.1,I_WRITEF,-1,0	; = WRITEF SPECIAL ARGS
@@ -27186,6 +27206,11 @@ NREFUNC		= 175
   DC.L	.174,   I_INT020,1,0
   DC.L	.175,   I_CHAR020,1,0
   DC.L	.176,   I_MOD020,2,0   ;I_MOD020
+  DC.L	.177,   I_MEMFILL,3,0
+  DC.L	.178,   I_ASTRCLONE,2,$FF
+  DC.L	.179,   I_LISTINSITEM,3,0
+  DC.L	.180,   I_LISTREMITEM,2,0
+  DC.L	.181,   I_LISTSWAPITEM,3,0
   DC.L	0,I_CODEEND,0,0
 
 .1:	DC.B	'WriteF',0
@@ -27364,6 +27389,11 @@ NREFUNC		= 175
 .174: DC.B    'Int',0   ;020 variant
 .175: DC.B    'Char',0   ;020 variant
 .176: DC.B    'Mod',0   ;020 variant
+.177: DC.B    'MemFill',0
+.178: DC.B    'AstrClone',0
+.179: DC.B    'ListInsItem',0
+.180: DC.B    'ListRemItem',0
+.181: DC.B    'ListSwapItem',0
 
 GETA4NR = 136
 WRITEF = 1
@@ -31670,6 +31700,176 @@ I_MOD020:
 	MOVE.L	D1,D0
 	RTS
 	CPU000
+
+I_MEMFILL:
+	MOVE.L	12(A7),A0  ;addr
+	MOVE.L	8(A7),D1  ;len
+	MOVE.L	4(A7),D0 ;char
+	MOVE.L  D1,D2
+	AND.L #3,D1
+	LSR.L #2,D2
+	BEQ .do
+
+	MOVE.L D3,A3
+	MOVE.B D0,D3
+	LSL.W #8,D3
+	OR.B D0,D3
+	MOVE.W D3,D0
+	SWAP D0
+	OR.W D3,D0
+	MOVE.L A3,D3
+
+	SUBQ.W #1,D2
+.long:
+	MOVE.L D0,(a0)+
+	DBF D2,.long
+	BRA .do
+
+.byte:
+	MOVE.B D0,(a0)+
+.do:
+	DBF D1,.byte
+.done:
+	RTS
+
+I_ASTRCLONE:
+ 	MOVEQ	#0,D0
+	MOVE.L	8(A7),D1
+	BEQ.S	.1
+	MOVEA.L	D1,A2
+	CLR.L D0
+	MOVE.W	6(A7),D0
+	CMP.W #-1,D0
+	BNE.S .lenspecified
+	MOVEQ #-1,D0
+	SUB.L A2,D0 
+.findlen:
+	TST.B (A2)+
+	BNE .findlen
+	ADD.L A2,D0
+.lenspecified
+	MOVE.L D7,A3
+	MOVE.L D0,D7
+	MOVEQ	#17,D1			; 8 (LIST) + 4 (LINK) + 4 (LENGTHS) + 1 (ZERO)
+	ADD.L	D1,D0
+	MOVEQ	#0,D1
+	MOVE.L	D0,D2
+	MOVE.L	4.W,A6
+	JSR	-198(A6)
+	TST.L	D0
+	BEQ.S	.1
+	MOVE.L	D0,A0
+  
+	MOVE.L	-20(A4),(A0)+
+	MOVE.L	D2,(A0)+
+	CLR.L	(A0)+
+	MOVE.W	D7,(A0)+
+	ADDQ.L	#2,A0
+	MOVEA.L A0,A1		    ; ESTR
+	MOVE.L	D0,-20(A4)
+
+	MOVEA.L	A1,A2
+	MOVE.W	D7,D1		; LEN
+	MOVEA.L 8(A7),A0		; STR
+
+	MOVE.W	-4(A1),D0   ; MAXLEN
+	CMP.W	D1,D0
+	BCC.B	.1
+	MOVE.W	D0,D1
+.1:	SUBQ.W	#1,D1
+	BMI.B	.3
+	MOVE.W	D1,D0
+.2:	MOVE.B	(A0)+,(A1)+
+	DBEQ	D0,.2
+	CLR.B	(A1)
+	SUB.W	D0,D1
+	MOVE.W	D1,-2(A2)
+.3:	MOVE.L	A2,D0
+	MOVE.L A3,D7
+	RTS
+
+;; ListInsItem
+I_LISTINSITEM:
+	MOVE.L	4(A7),D2		; POS
+	BMI.S .1
+	MOVE.L	8(A7),D0		; SRC
+	MOVE.L	12(A7),A1		; DEST
+	MOVE.L	A1,A2
+	CLR.L D1
+	MOVE.W	-2(A1),D1 ;length
+	CMP.W	-4(A1),D1 ;max
+	BEQ.S .1
+	CMP.W D1,D2
+	BGT.S .1
+
+	ADD.W #1,-2(A1)
+	LSL.L #2,D1
+	ADD.L	D1,A1 ;end
+	LSR.L #2,D1
+	SUB.L  D2,D1
+	BRA .doins
+.ins
+	MOVE.L -(A1),4(A1)
+.doins
+	DBF D1,.ins
+	MOVE.L	D0,(A1)
+.1:	MOVE.L	A2,D0
+	RTS
+;*-*
+
+;; ListRemItem
+I_LISTREMITEM:
+	MOVE.L	4(A7),D2		; POS
+	BMI.S .1
+	MOVE.L	8(A7),A1		; DEST
+	MOVE.L	A1,A2
+	CLR.L D1
+	MOVE.W	-2(A1),D1 ;length
+	BEQ.S .1
+	CMP.W D1,D2
+	BGE.S .1
+
+	SUB.W #1,-2(A1)
+	LSL.L #2,D2
+	ADD.L	D2,A1 ;end
+	LSR.L #2,D2
+	SUB.L  D2,D1
+	BRA .dodel
+.del
+	MOVE.L 4(A1),(A1)+
+.dodel
+	DBF D1,.del
+.1:	MOVE.L	A2,D0
+	RTS
+;*-*
+
+;; ListSwapItem
+I_LISTSWAPITEM:
+	MOVE.L	4(A7),D2		; POS 1
+	BMI.S .1
+	MOVE.L	8(A7),D0		; POS 2
+	BMI.S .1
+	MOVE.L	12(A7),A1		; SRC
+	MOVE.L A1,A2
+	CLR.L D1
+	MOVE.W	-2(A1),D1 ;length
+	CMP.W	-4(A1),D1 ;max
+	BEQ.S .1
+	CMP.W D1,D2
+	BGE.S .1
+	CMP.W D1,D0
+	BGE.S .1
+
+	LSL.L #2,D0
+	ADD.L D0,A1
+	LSL.L #2,D2
+	ADD.L D2,A2
+	MOVE.L (A1),D1
+	MOVE.L (A2),(A1)
+	MOVE.L D1,(A2)
+.1:	MOVE.L	A2,D0
+	RTS
+;*-*
 I_CODEEND:
 
 DOARGMACROS:

@@ -59,8 +59,8 @@ num             type                    parameters
 52              expsizeof
 
 creative
-47
-48
+47              PPC
+48              PPC
 49              <<
 50              >>
 51                                      <<=, >>=, +=, -=, *= /= expression
@@ -109,7 +109,7 @@ from offset IOFF
   76    FPEXP             88    NOSTARTUP         89    UTILLIB
   90    INLINE            91    ELSEWHILE         92    ALWAYS
   93    SECTION           94    CODE              95    DATA
-  96    CHIP              97    FAST
+  96    CHIP              97    FAST              98    OFFSETOF
 
   
 |       = significant for idents
@@ -592,6 +592,8 @@ bit     flags           opt             clear   set
 30 6    -  -            INLINE          -       enable inline functions
 31 7    -  -            UTILLIB         -       uses utillib
 
+STRMERGE - uses string merging
+
 SOURCE/A
 REG/N/K
 OPTI/S (REG=5)
@@ -600,14 +602,14 @@ ICODEPREFS (ours)
 
 bit     flags           opt             clear   set
 
-0    +3                 SMALL
-1                       FAST
+0    +3                 
+1
 2                                               inline IF or ? operator in use
-3                                               lastval is set
-4                       RUNBG
+3
+4
 5       LEGACY/S                                produce old module version format 10 and no new system constants
-6                       CLEANUP                 cleanup
-7       -  -            INLINE          -       enable inline functions
+6
+7
 
 
 
@@ -1317,6 +1319,18 @@ has to become (ends with):      FOR/WHILE/UNTIL:        lab,jumpback,id
 88              illegal section definition
 89              not enough memory for reloc buffer
 90              not allowed in legacy mode
+91              illegal scale factor
+92              address/pc register expected
+93              value does not fit in 16 bit
+94              value does not fit in 8 bit
+95              address/data register expected
+96              illegal size
+97              ":" expected
+98              fpu register expected
+99              mmu register expected
+100             control register expected
+101             cpu register expected
+102             sorry, feature is not available yet
 
 WARNINGS:
 

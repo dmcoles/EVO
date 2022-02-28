@@ -13,8 +13,14 @@ MODULE 'tools/file'
 
 /*---------------load-e-exe-functions------------------*/
 
+EXPORT OBJECT e_code PRIVATE
+  code,codelen
+ENDOBJECT
+
 EXPORT OBJECT e_exe PRIVATE
-  file,code,codelen,sources:PTR TO e_source
+  codeList:PTR TO LONG
+  file,sources:PTR TO e_source
+  seg
 ENDOBJECT
 
 EXPORT OBJECT e_source PRIVATE
@@ -215,8 +221,14 @@ PROC collectvars(o:PTR TO INT,varlist,src:PTR TO e_source,pr:PTR TO e_proc,job)
 ENDPROC o,v
 
 PROC load(name,trap1,trap2) OF e_exe
-  DEF o:PTR TO LONG,i,l,cl,c,dbl,numrel,a,b:PTR TO LONG,src=NIL:PTR TO e_source,add,h
+  DEF o:PTR TO LONG,i,l,cl,dbl,numrel,a,b:PTR TO LONG,src=NIL:PTR TO e_source,add,h
+  DEF code:PTR TO e_code,c
+  DEF hcurr,hcount
+  DEF segptr=0:PTR TO LONG
+  DEF d=FALSE
 
+  self.seg:=NIL
+  self.codeList:=List(100)
   -> read exe
 
   o,l:=readfile(name,0)
@@ -224,97 +236,133 @@ PROC load(name,trap1,trap2) OF e_exe
 
   -> eat header
 
-  IF (o[]++<>HUNK_HEADER) OR (o[]++<>0) OR (o[]++<>1) OR (o[]++<>0) OR (o[]++<>0) THEN Raise("eexe")
-  o++
+  IF (o[]++<>HUNK_HEADER) OR (o[]++<>0) THEN Raise("eexe")
+  hcount:=o[]++
+
+  IF (o[]++<>0) OR (o[]++<>(hcount-1)) THEN Raise("eexe")
+  o:=o+(4*hcount)
+  hcurr:=0
 
   -> eat code hunk
 
-  IF o[]++<>HUNK_CODE THEN Raise("eexe")
-  self.codelen:=cl:=o[]++*4
-  self.code:=c:=o
-  o:=o+cl
-
-  -> eat and digest reloc
-
   h:=o[]
-  WHILE (h=HUNK_RELOC32) OR (h=HUNK_DREL32) OR (h=HUNK_RELOC32SHORT)
+  IF h<>HUNK_CODE THEN Raise("eexe")
+  WHILE ((h=HUNK_CODE) OR (h=HUNK_DATA) OR (h=HUNK_BSS)) AND (hcurr<hcount)
     o[]++
-    IF h=HUNK_RELOC32
-      numrel:=o[]++
-      IF o[]++<>0 THEN Raise("eexe")
-      IF numrel
-        FOR a:=1 TO numrel				-> do own reloc!
-          b:=c+o[]++
-          b[]:=b[]+c
-        ENDFOR
-      ENDIF
-      IF o[]++<>0 THEN Raise("eexe")
-    ELSE
-      numrel:=Int(o)
-      o:=o+2
-      IF Int(o)<>0 THEN Raise("eexe")
-      o:=o+2
-      IF numrel
-        FOR a:=1 TO numrel				-> do own reloc!
-          b:=c+Int(o)
-          o:=o+2
-          b[]:=b[]+c
-        ENDFOR
-      ENDIF
-      IF o[]++<>0 THEN Raise("eexe")
-    ENDIF
+    code:=NEW code
+    ListAdd(self.codeList,[code])
+    code.codelen:=cl:=o[]++*4
+    o:=o+cl
     h:=o[]
-  ENDWHILE
 
-  -> skip symbol hunk if necessary
-
-  IF o[]=HUNK_SYMBOL
-    o++
-    WHILE a:=o[]++ DO o:=a*4+o+4
-  ENDIF
-
-  -> eat debug hunks
-
-  IF o[]<>HUNK_DEBUG THEN Raise("eexd")
-
-  WHILE (a:=o[]++)<>HUNK_END
-    IF a=HUNK_DEBUG
-      IF o[2]="EVAR"
-        IF src=NIL THEN Raise("eexe")
-        dbl:=o[]++
-        grabvarinfo(src,o+8,o:=dbl*4+o)
-      ELSE
-        NEW src
-        dbl:=o[]++
-        IF (o[]++<>0) THEN Raise("eexe")
-        IF o[]="LINE"
-          add:=0
-        ELSEIF Char(o)="L"
-          add:=o[] AND $FFFFFF
-        ELSE
-          Raise("eexe")
+    -> eat and digest reloc
+    WHILE (h=HUNK_RELOC32) OR (h=HUNK_DREL32) OR (h=HUNK_RELOC32SHORT)
+      o[]++
+      IF h=HUNK_RELOC32
+        numrel:=o[]++
+        IF numrel>0
+          REPEAT
+            h:=o[]++
+            o:=o+(4*numrel)
+            numrel:=o[]++
+          UNTIL numrel=0
         ENDIF
-        o++
-        src.numlines:=dbl:=dbl-(a:=o[]++)-3
-        src.sourcename:=o
-        o:=a*4+o
-        src.lines:=o
-        
-        make_illegal(c,o,dbl,add,trap1,trap2)
-        o:=dbl*4+o
-        src.next:=self.sources
-        self.sources:=src
-        src.load()
-        src.bpoints:=New(ListLen(src.sourcelines))
-        src.globs:=add_globs(src.globs)
+      ELSE
+        numrel:=Int(o)
+        o:=o+2
+        IF numrel>0
+          REPEAT
+            h:=Int(o)
+            o:=o+2
+            o:=o+(2*numrel)
+            numrel:=Int(o)
+            o:=o+2
+          UNTIL numrel=0
+        ENDIF
       ENDIF
-    ELSE
-      Raise("eexe")
+      h:=o[]
+    ENDWHILE
+
+    -> skip symbol hunk if necessary
+
+    IF o[]=HUNK_SYMBOL
+      o++
+      WHILE a:=o[]++ DO o:=a*4+o+4
     ENDIF
+
+    -> eat debug hunks
+
+    WHILE (a:=o[]++)<>HUNK_END
+      IF a=HUNK_DEBUG
+        d:=TRUE
+        IF o[2]="EVAR"
+          IF src=NIL THEN Raise("eexe")
+          dbl:=o[]++
+          grabvarinfo(src,o+8,o:=dbl*4+o)
+        ELSE
+          NEW src
+          src.sourcename:=NIL
+          src.lines:=NIL
+          dbl:=o[]++
+          IF (o[]++<>0) THEN Raise("eexe")
+          IF o[]="LINE"
+            add:=0
+          ELSEIF Char(o)="L"
+            add:=o[] AND $FFFFFF
+          ELSE
+            Raise("eexe")
+          ENDIF
+          o++
+          src.numlines:=dbl:=dbl-(a:=o[]++)-3
+          src.sourcename:=String(StrLen(o))
+          StrCopy(src.sourcename,o)
+          o:=a*4+o
+          src.lines:=List(src.numlines)
+          FOR i:=0 TO src.numlines-1 DO ListAdd(src.lines,[o[i]])         
+          
+          FOR a:=1 TO src.numlines STEP 2
+            src.lines[a]:=src.lines[a]+add
+          ENDFOR
+          
+          o:=dbl*4+o
+          src.next:=self.sources
+          self.sources:=src
+          src.load()
+          src.bpoints:=New(ListLen(src.sourcelines))
+          src.globs:=add_globs(src.globs)
+        ENDIF
+      ELSE
+        Raise("eexe")
+      ENDIF
+    ENDWHILE
+    h:=o[]
+    hcurr++
   ENDWHILE
 
-  CacheClearU()					-> important!
+  IF self.file THEN freefile(self.file)
+  self.file:=NIL
 
+  self.seg:=LoadSeg(name)
+  IF self.seg=0 THEN Raise("eexe")
+  
+  segptr:=self.seg*4
+  hcurr:=0
+  WHILE (segptr<>NIL)
+    code:=self.codeList[hcurr]
+    hcurr++
+    code.code:=segptr+4
+    segptr:=segptr[]*4
+  ENDWHILE
+
+  src:=self.sources
+  WHILE (src<>NIL)
+    make_illegal(self.codeList,src.lines,src.numlines,trap1,trap2)
+    src:=src.next
+  ENDWHILE
+
+  IF d=FALSE THEN Raise("eexd")
+  
+  CacheClearU()					-> important!
 ENDPROC
 
 PROC new_var(v,s,off,type=NIL) IS NEW [v,s,0,off,type]:e_var
@@ -336,13 +384,22 @@ ENDPROC v
 
 CONST OPCODE_NOP=$4E71, OPCODE_TRAP0=$4E40,OPCODE_JSR=$4EB9
 
-PROC make_illegal(code,dbg:PTR TO LONG,len,add,trap1,trap2)
-  DEF a,b:PTR TO INT,c:PTR TO LONG
+PROC make_illegal(codeList:PTR TO LONG,dbg:PTR TO LONG,len,trap1,trap2)
+  DEF a,b:PTR TO INT,c:PTR TO LONG,i,p
+  DEF code:PTR TO e_code
   IF len
     FOR a:=1 TO len STEP 2
       dbg++
-      dbg[]++:=b:=dbg[]+add
-      b:=b+code
+      b:=dbg[]
+      i:=0
+      p:=0
+      WHILE (i<ListLen(codeList)) AND (p<b)
+        code:=codeList[i]
+        p:=p+code.codelen
+        i++
+      ENDWHILE
+      b:=b-(p-code.codelen)+code.code
+      dbg[]++:=b
       IF b[]<>OPCODE_NOP THEN Raise("eexd")
       IF (trap1>=0) AND (trap1<=15) AND (trap2>=0) AND (trap2<=15)
         b[]:=OPCODE_TRAP0 OR trap1
@@ -358,10 +415,18 @@ PROC make_illegal(code,dbg:PTR TO LONG,len,add,trap1,trap2)
 ENDPROC
 
 PROC end() OF e_exe
-  DEF p:PTR TO e_source
+  DEF p:PTR TO e_source,i
+  DEF code:PTR TO e_code
+  
   IF self.file THEN freefile(self.file)
   p:=self.sources
   END p
+  FOR i:=0 TO ListLen(self.codeList)-1
+    code:=self.codeList[i]
+    END code
+  ENDFOR
+  DisposeLink(self.codeList)
+  IF self.seg THEN UnLoadSeg(self.seg)
 ENDPROC	
 
 PROC load() OF e_source
@@ -375,6 +440,8 @@ ENDPROC
 
 PROC end() OF e_source
   DEF n:PTR TO e_source
+  IF self.sourcename THEN DisposeLink(self.sourcename)
+  IF self.lines THEN DisposeLink(self.lines)
   n:=self.next
   IF self.source THEN freefile(self.source)
   END n
@@ -382,15 +449,15 @@ PROC end() OF e_source
 ENDPROC
 
 PROC findline(pc) OF e_exe
-  DEF l:PTR TO e_source,a,b,dbg:PTR TO LONG,num,c
+  DEF l:PTR TO e_source,a,b,dbg:PTR TO LONG,num
+
   l:=self.sources
-  c:=self.code
   WHILE l
     dbg:=l.lines
     num:=l.numlines-1
     FOR a:=0 TO num STEP 2
       b:=dbg[]++-1
-      IF dbg[]+++c=pc THEN RETURN l,b
+      IF dbg[]++=pc THEN RETURN l,b
     ENDFOR
     l:=l.next
   ENDWHILE
@@ -400,8 +467,20 @@ ENDPROC NIL,NIL,a
 CONST STARTUP_SIZE=$196
 
 PROC findoffset(off) OF e_exe
-  DEF l:PTR TO e_source,a,b,dbg:PTR TO LONG,num,best=0,src=NIL,line,start=0,largest=0
-  IF (off<0) OR (off>=self.codelen) THEN RETURN NIL
+  DEF l:PTR TO e_source,a,b,dbg:PTR TO LONG,num,best=$7fffffff,src=NIL,line,start=0,largest=0,i,e
+  DEF code:PTR TO e_code,s
+
+  IF (off<0) THEN RETURN NIL
+  e:=0
+  i:=0
+  WHILE (i<ListLen(self.codeList)) AND (off>=e)
+    code:=self.codeList[i]
+    e:=e+code.codelen
+    i++
+  ENDWHILE
+  IF (off>e) THEN RETURN NIL
+  off:=off-(e-code.codelen)+code.code
+  
   l:=self.sources
   WHILE l
     dbg:=l.lines
@@ -412,9 +491,8 @@ PROC findoffset(off) OF e_exe
     ENDIF
     FOR a:=0 TO num STEP 2
       b:=dbg[]++-1
-    EXIT off<dbg[]
-      IF dbg[]>best
-        best:=dbg[]
+      IF ((dbg[]-off)<best) AND (dbg[]>=off)
+        best:=dbg[]-off
         line:=b
         src:=l
       ENDIF
@@ -433,15 +511,18 @@ ENDPROC src,line,best
 
 PROC findpc(line,exe:PTR TO e_exe) OF e_source
   DEF a,dbg:PTR TO LONG,num,c
-  c:=exe.code
+  
   dbg:=self.lines
   num:=self.numlines-1
-  FOR a:=0 TO num STEP 2 DO IF dbg[]++-1=line THEN RETURN dbg[]+c ELSE dbg++
+  FOR a:=0 TO num STEP 2 DO IF dbg[]++-1=line THEN RETURN dbg[] ELSE dbg++
 ENDPROC NIL
 
 PROC edebug(trap1,trap2,do_at_break,do_at_refresh,cli_arg) OF e_exe
-  DEF mytask:PTR TO tc,code,alen
+  DEF mytask:PTR TO tc,cptr:PTR TO e_code,code,alen
   
+  cptr:=self.codeList[0]
+  code:=cptr.code
+
   PutInt({opcodetrap1},OPCODE_TRAP0 OR trap1)
   PutInt({opcodetrap2},OPCODE_TRAP0 OR trap2)
   
@@ -454,7 +535,6 @@ PROC edebug(trap1,trap2,do_at_break,do_at_refresh,cli_arg) OF e_exe
   MOVE.L do_at_refresh,(A0)
   LEA debuga4(PC),A0
   MOVE.L A4,(A0)
-  code:=self.code
   MOVEM.L D0-D7/A0-A6,-(A7)
   MOVE.L cli_arg,A0
   MOVE.L alen,D0
@@ -475,7 +555,7 @@ tcode:
   MOVEM.L A0,(A7)		-> yeah! keep flags!
   BGT.S noadjust
   MOVE.L $4.W,A0
-  BTST #0,297(A0)
+  BTST.B  #0,297(A0)
   BNE.S noadjust
   MOVE.L (A7),8(A7)		-> for 68000 long-format frames
   ADDQ.L #8,A7
