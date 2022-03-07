@@ -1,10 +1,11 @@
 ; ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' ;
+; ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' ;
 ;	Amiga E Compiler/Assembler/Linker by $#%! in 1991/92/93/94/95	;
 ;									;
 ;	GRIO Amiga E Compiler/Assembler/Linker by grio	 		;
 ;			in 1999-2003					;
 ;	E-VO Amiga E Compiler/Assembler/Linker by Darren Coles	 		;
-;     in 2021
+;     in 2021/2022
 ; ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, ;
 
 ;debug=1
@@ -9743,13 +9744,13 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.5.0-dev',160
-			DC.B	'(24.01.2022)'
+			DC.B	'(07.03.2022)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
 			DC.B	'''1999/2003',160,'by grio',10
 			DC.B	'developing as "E-VO"',160
-			DC.B	'''2021',160,'by Darren Coles',10
+			DC.B	'''2021-22',160,'by Darren Coles',10
 	TITLEEND:	DC.B	0
   FNPRE: DC.B '-> '
   FNPREEND:
@@ -16091,15 +16092,17 @@ ESYMS:
 	BEQ.S	NOSYM
 	CLR.L	(A4)+
     MOVE.L  A4,SYMEND
-
+    
     BSR SETHUNKSYMPTRS
+
+NOSYM:
 
     ADD.L    #1,hunknum
     MOVE.L   hunknum,D2
     CMP.L   NumHunks,d2
     BNE     nexthunk
 
-    NOSYM:	MOVEM.L	(A7)+,D0-D7/A0-A3/A5/A6
+    MOVEM.L	(A7)+,D0-D7/A0-A3/A5/A6
 	RTS
 
 hunknum    DC.L 0
@@ -16751,7 +16754,12 @@ PLB:
 	TST.B	.TDRF
 	BEQ.S	.NDR1
 	MOVE.W	.SAVA0(PC),(A4)+
-.NDR1:	MOVE.L	.SPEC(PC),-(A7)
+.NDR1:
+	MOVE.L	.SSPEC1,-(A7)
+	MOVE.L	.SPEC1,-(A7)
+	MOVE.L	.SSPEC,-(A7)
+	MOVE.L	.SPEC(PC),-(A7)
+	MOVE.L	TYPERF_XXX,-(A7)
 	MOVE.L	.TDRF(PC),-(A7)
 	CMP.W	#-1,D5
 	BEQ.S	.31
@@ -16805,12 +16813,15 @@ PLB:
 
 .first4
 	ADD.L #2,DIMSPTR
-
 .nodp4
 	MOVE.W	.30(PC),(A4)+
 .32:	MOVE.L	(A7)+,.TDRF
+
+	MOVE.L	(A7)+,TYPERF_XXX
 	MOVE.L	(A7)+,.SPEC
-    MOVE.L .SPEC,.SPEC1
+	MOVE.L	(A7)+,.SSPEC
+	MOVE.L	(A7)+,.SPEC1
+	MOVE.L	(A7)+,.SSPEC1
 	TST.B	.TDRF
 	BEQ.S	.NDR2
 	MOVE.W	.RETA0(PC),(A4)+
@@ -23306,7 +23317,7 @@ ODONE:	GETM	A3			; GOT VAR IN D2, NOW HANG IN CODEREM LIST
       FIXPROCCODE:			; RESOLVE ADDRESSES OF CODE IN MODULES
 	MOVEM.L	A0-A3/D0-D4/A5,-(A7)	; EXPECTS CODE IN A4
 	LEA	CODELIST(PC),A0		; A0=CODEREM
-	MOVE.L	LABM+8(PC),A2		; A2=LABELS
+	MOVE.L	LABM+8,A2		; A2=LABELS
 .L:	MOVE.L	(A0),A0
 	MOVE.L	A0,D0
 	BEQ	.E
