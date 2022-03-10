@@ -3,7 +3,9 @@
   OPT PREPROCESS,OSVERSION=44
 
 CONST FUELGAUGE_LEVEL=$D0012003
+#ifndef EVO_3_5_0
 CONST TAG_DONE=0
+#endif
 
 MODULE 'dos/dos','exec/ports','intuition/intuition','intuition/gadgetclass',
        'gadgets/layout','gadgets/fuelgauge','images/bevel','images/label','utility/tagitem',
