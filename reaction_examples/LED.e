@@ -90,8 +90,8 @@ PROC main()
           DrawImageState(win.rport, im, 0, 0, IDS_NORMAL, drawInfoPtr)
           anykey()
 
-          DisposeObject(winObject)
         ENDIF
+        DisposeObject(winObject)
       ENDIF
     ENDIF
   ENDIF
