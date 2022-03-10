@@ -54,7 +54,26 @@ CONST DAY_1=1,
       TODAYSTR=$30,
       TOMORROWSTR=$31,
       FUTURESTR=$32,
-      MAXSTRMSG=$33
+      ALTDAY_1=52,
+      ALTDAY_2=53,
+      ALTDAY_3=54,
+      ALTDAY_4=55,
+      ALTDAY_5=56,
+      ALTDAY_6=57,
+      ALTDAY_7=58,
+      ALTMON_1=59,
+      ALTMON_2=60,
+      ALTMON_3=61,
+      ALTMON_4=62,
+      ALTMON_5=63,
+      ALTMON_6=64,
+      ALTMON_7=65,
+      ALTMON_8=66,
+      ALTMON_9=67,
+      ALTMON_10=68,
+      ALTMON_11=69,
+      ALTMON_12=70,
+      MAXSTRMSG=71
 
 OBJECT localebase
   lib:lib

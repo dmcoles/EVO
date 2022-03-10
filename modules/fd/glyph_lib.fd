@@ -1,0 +1,6 @@
+##base _GlyphBase
+##bias 30
+##public
+*--- functions in V40 or higher (Release 3.1) ---
+Glyph_GetClass()()
+##end

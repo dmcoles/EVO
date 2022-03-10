@@ -1,0 +1,12 @@
+##base _ChooserBase
+##bias 30
+##public
+*--- functions in V40 or higher (Release 3.1) ---
+Chooser_GetClass()()
+AllocChooserNodeA(tags)(a0)
+FreeChooserNode(node)(a0)
+SetChooserNodeAttrsA(node,tags)(a0/a1)
+GetChooserNodeAttrsA(node,tags)(a0/a1)
+ShowChooser(o,w,xpos,ypos)(a0/a1,d0/d1)
+HideChooser(o,w)(a0/a1)
+##end

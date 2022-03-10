@@ -10,6 +10,9 @@ OBJECT gsmrequest
 ENDOBJECT
 
 #define RequestScreenMode(obj, win)	DoMethod(obj, GSM_REQUEST, win)
+#ifndef GetScreenModeEnd
+#define GetScreenModeEnd TAG_END)
+#endif
 
   CONST GETSCREENMODE_DUMMY=$85041000,
         GETSCREENMODE_TITLETEXT=$85041001,

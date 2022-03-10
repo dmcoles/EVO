@@ -1,0 +1,5 @@
+##base _ListViewBase
+##bias 30
+##public
+ListView_GetClass()()
+##end

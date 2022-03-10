@@ -28,7 +28,7 @@
 #define SafeSetWriteMask(w,m)  (IF KickVersion(39) THEN SetWriteMask((w),(m)) \
                                ELSE SetWrMsk(w,m))
 
-#define GetOutlinePen(rp) GetOPen((rp))
+->#define GetOutlinePen(rp) GetOPen((rp))
 
 #define BNDRYOFF(w)  PutInt((w)+RP_FLAGS,Int((w)+RP_FLAGS) AND Not(RPF_AREAOUTLINE))
 

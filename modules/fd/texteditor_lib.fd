@@ -1,0 +1,8 @@
+##base _TextFieldBase
+##bias 30
+##public
+*--- functions in V40 or higher (Release 3.1) ---
+TextEditor_GetClass()()
+*--- functions in V47 or higher (Release 3.2) ---
+HighlightSetFormat(object,pos,end,style)(a0,d0/d1/d2)
+##end

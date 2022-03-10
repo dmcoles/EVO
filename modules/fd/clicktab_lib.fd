@@ -1,0 +1,10 @@
+##base _ClickTabBase
+##bias 30
+##public
+*--- functions in V40 or higher (Release 3.1) ---
+ClickTab_GetClass()()
+AllocClickTabNodeA(tags)(a0)
+FreeClickTabNode(node)(a0)
+SetClickTabNodeAttrsA(node,tags)(a0/a1)
+GetClickTabNodeAttrsA(node,tags)(a0/a1)
+##end

@@ -104,7 +104,7 @@ CONST ASLFR_WINDOW=$80080002,
       ASLFRSORTORDER_DESCEND=1
 
 OBJECT fontrequester
-  reserved0[7]:ARRAY OF CHAR
+  reserved0[8]:ARRAY OF CHAR
   attr:textattr
   frontpen:CHAR
   backpen:CHAR

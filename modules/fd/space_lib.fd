@@ -1,0 +1,6 @@
+##base _SpaceBase
+##bias 30
+##public
+*--- functions in V40 or higher (Release 3.1) ---
+Space_GetClass()()
+##end

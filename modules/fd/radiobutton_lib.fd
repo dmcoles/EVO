@@ -1,0 +1,10 @@
+##base _RadioButtonBase
+##bias 30
+##public
+*--- functions in V40 or higher (Release 3.1) ---
+RadioButton_GetClass()()
+AllocRadioButtonNodeA(columns,tags)(d0/a0)
+FreeRadioButtonNode(node)(a0)
+SetRadioButtonNodeAttrsA(node,tags)(a0/a1)
+GetRadioButtonNodeAttrsA(node,tags)(a0/a1)
+##end

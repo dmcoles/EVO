@@ -17,6 +17,9 @@ ENDOBJECT
 #define gfRequestFile(obj, win)		DoMethod(obj, GFILE_REQUEST, win)
 #define gfRequestDir(obj, win)		DoMethod(obj, GFILE_REQUEST, win)
 #define gfFreeFilelist(obj, list)	DoMethod(obj, GFILE_FREELIST, list)
+#ifndef GetFileEnd
+#define GetFileEnd TAG_END)
+#endif
 
   CONST GETFILE_DUMMY=$85060000,
         GETFILE_TITLETEXT=$85060001,
@@ -42,5 +45,8 @@ ENDOBJECT
         GETFILE_LBNODESTRUCTS=$85060015,
         GETFILE_READONLY=$85060016,
         GETFILE_FILEPARTONLY=$85060017,
+        GETFILE_ALLOWEMPTYFILESELECTION=$85060018, -> OS4ONLY
+        GETFILE_FILTERHOOK=$85060019, -> OS4ONLY
+        GETFILE_INITIALSHOWVOLUMES=$8506001A, -> OS4ONLY
         GFILE_REQUEST=$620001,
         GFILE_FREELIST=$620002
