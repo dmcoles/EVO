@@ -8,7 +8,7 @@
 ;     in 2021/2022
 ; ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, ;
 
-;debug=1
+debug=1
 
   ifd __VASM
 	output EVO
@@ -18435,8 +18435,13 @@ MOVED0FP0: MACRO
 	JSR newchkmoveq
 	CMP.B	#$70,D0			; MOVEQ  #x,D0
 	BEQ.S	.TJOB
-	CMP.B	#$20,D0			; MOVE.L Dx,D0
+	MOVE.W	-2(A4),D0
+	CMP.B #2,D0
+	BLE.S  .VS1
+	AND.W #$FF08,D0
+	CMP.W	#$2000,D0			; MOVE.L Dx,D0
 	BEQ.S	.TJOB
+.VS1:
 	JSR newchkmovei
 	CMPI.W	#$203C,-6(A4)		; MOVE.L #xxxxxx,D0
 	BEQ.S	.TJOB
@@ -19811,7 +19816,7 @@ SD0:
     rts
 ;*-*
 
-poprawka=1
+poprawka=0
   IFeq poprawka
 ;; new imm list
 EXPIMMLIST:

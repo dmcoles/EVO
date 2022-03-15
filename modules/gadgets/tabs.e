@@ -1,5 +1,6 @@
   OPT MODULE
   OPT EXPORT
+  OPT PREPROCESS
 
   MODULE 'utility/tagitem'
 
@@ -7,7 +8,10 @@ ENUM TL_TEXTPEN, TL_BACKGROUNDPEN, TL_FILLTEXTPEN, TL_FILLPEN, MAX_TL_PENS
 
 OBJECT tablabel
   label:PTR TO CHAR
-  pens[4]:ARRAY OF INT
+  pen1:INT
+  pen2:INT
+  pen3:INT
+  pen4:INT
   attrs:PTR TO tagitem
 ENDOBJECT     /* SIZEOF=16 */
 
