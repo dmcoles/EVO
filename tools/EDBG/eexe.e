@@ -268,24 +268,27 @@ PROC load(name,trap1,trap2) OF e_exe
       IF h=HUNK_RELOC32
         numrel:=o[]++
         IF numrel>0
+          o:=o+4
           REPEAT
-            h:=o[]++
             o:=o+(4*numrel)
             numrel:=o[]++
+            IF numrel>0 THEN o:=o+4
           UNTIL numrel=0
         ENDIF
+        o:=(o+3) AND $FFFFFFFC
       ELSE
         numrel:=Int(o)
         o:=o+2
         IF numrel>0
+          o:=o+2
           REPEAT
-            h:=Int(o)
-            o:=o+2
             o:=o+(2*numrel)
             numrel:=Int(o)
             o:=o+2
+            IF numrel>0 THEN o:=o+2
           UNTIL numrel=0
         ENDIF
+        o:=(o+3) AND $FFFFFFFC
       ENDIF
       h:=o[]
     ENDWHILE
