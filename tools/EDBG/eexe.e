@@ -56,21 +56,28 @@ ENDOBJECT
 
 PROC setbreakpoint(vy,exe) OF e_source
   DEF l:PTR TO CHAR
-  l:=self.bpoints
-  IF l
-    l[vy]:=TRUE
+  DEF pc
+  pc:=self.findpc(vy,exe)
+  IF pc<>NIL
+    l:=self.bpoints
+    IF l
+      l[vy]:=TRUE
+      setbreak(pc)
+    ENDIF
   ENDIF
-  setbreak(self.findpc(vy,exe))
 ENDPROC
 
 PROC togglebreakpoint(vy,exe) OF e_source
   DEF l:PTR TO CHAR
-  ->setbreak(self.findpc(vy,exe))
-  l:=self.bpoints
-  IF l
-    l[vy]:=Not(l[vy])
+  DEF pc
+  pc:=self.findpc(vy,exe)
+  IF pc<>NIL
+    l:=self.bpoints
+    IF l
+      l[vy]:=Not(l[vy])
+    ENDIF
+    IF l[vy] THEN setbreak(pc) ELSE rembreak(pc)
   ENDIF
-  IF l[vy] THEN setbreak(self.findpc(vy,exe)) ELSE rembreak(self.findpc(vy,exe))
 ENDPROC
 
 PROC clearbreakpoints(exe) OF e_source
@@ -78,7 +85,7 @@ PROC clearbreakpoints(exe) OF e_source
   
   l:=self.bpoints
   IF l
-    FOR i:=0 TO self.numlines-1
+    FOR i:=0 TO ListLen(self.sourcelines)-1
       IF l[i]
         rembreak(self.findpc(i,exe))
         l[i]:=FALSE
@@ -738,6 +745,7 @@ excinfo: LONG 0
 lastpc: LONG 0
 
 PROC setbreak(a)
+  IF a=NIL THEN RETURN
   ->PutLong({breakpoint},a)
   IF Int(a)=OPCODE_JSR
     PutLong(a+2,{tcode_jsr2})
@@ -747,6 +755,7 @@ PROC setbreak(a)
 ENDPROC
 
 PROC rembreak(a)
+  IF a=NIL THEN RETURN
   ->PutLong({breakpoint},a)
   IF Int(a)=OPCODE_JSR
     PutLong(a+2,{tcode_jsr1})

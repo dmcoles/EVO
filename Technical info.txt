@@ -209,7 +209,7 @@ ENDOBJECT
 OBJECT proc
   next:PTR TO proc              -4
   nrargs:INT                    0
-  flags:CHAR                    2, SET COMPILE_RTD,METHOD,NO_REGALLOC,HAS_TAB,SAFEPROC,NOREGS
+  flags:CHAR                    2, SET COMPILE_RTD,METHOD,NO_REGALLOC,HAS_TAB,SAFEPROC,NOREGS,FROMMOD
   numregvars:CHAR               3, 0..3
   nrloc:INT                     4, -(nrloc*4)
   defargs:PTR TO vallist        6

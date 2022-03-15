@@ -192,9 +192,6 @@ PROC process()
               ELSE
                 IF val THEN PutF(':\sPTR TO \s\n',ptrRepText,o) ELSE PutF(':\s (or ARRAY OF \s)\n',o,o)
               ENDIF
-              
-              
-              IF val THEN PutF(':\sPTR TO \s\n',ptrRepText,o) ELSE PutF(':\s (or ARRAY OF \s)\n',o,o)
               o:=o+l
             ENDIF
           ELSE
