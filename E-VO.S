@@ -9744,7 +9744,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.5.0-dev',160
-			DC.B	'(07.03.2022)'
+			DC.B	'(16.03.2022)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -27058,7 +27058,7 @@ INL_OPTI:
 ;
 
 FOFF		= $100
-NREFUNC		= 181
+NREFUNC		= 182
 
       EFUNCTAB:
 	DC.L	.1,I_WRITEF,-1,0	; = WRITEF SPECIAL ARGS
@@ -27133,7 +27133,7 @@ NREFUNC		= 181
 	DC.L	.70,I_LINK,2,0
 	DC.L	.71,I_NEXT,1,0
 	DC.L	.72,I_FORWARD,2,0
-	DC.L	.73,I_SETSTR,2,0
+	DC.L	.73,I_SETSTR,2,$FF
 	DC.L	.74,I_SETLIST,2,0
 	DC.L	.75,I_WAITMSG,1,0
 	DC.L	.76,I_MSGCODE,0,0
@@ -27243,6 +27243,7 @@ NREFUNC		= 181
   DC.L	.179,   I_LISTINSITEM,3,0
   DC.L	.180,   I_LISTREMITEM,2,0
   DC.L	.181,   I_LISTSWAPITEM,3,0
+  DC.L	.182,   I_ENDSWITH,2,0
   DC.L	0,I_CODEEND,0,0
 
 .1:	DC.B	'WriteF',0
@@ -27426,6 +27427,7 @@ NREFUNC		= 181
 .179: DC.B    'ListInsItem',0
 .180: DC.B    'ListRemItem',0
 .181: DC.B    'ListSwapItem',0
+.182: DC.B    'EndsWith',0
 
 GETA4NR = 136
 WRITEF = 1
@@ -29883,11 +29885,21 @@ BIN:	ADDQ.L	#1,A2
       I_SETSTR:
 	MOVE.W	6(A7),D0
 	MOVE.L	8(A7),A0
+  CMP.W #-1,D0
+  BEQ .2
+.3:
 	CMP.W	-4(A0),D0
 	BHI.S	.1
 	MOVE.W	D0,-2(A0)
 	CLR.B	0(A0,D0.W)
 .1:	RTS
+.2: MOVE.L A0,A1
+.L:    TST.B (A1)+
+    BNE.S .L
+    SUB.L A0,A1
+    MOVE.L A1,D0
+    SUBQ.L #1,D0
+    BRA.S .3
 
       I_SETLIST:
 	MOVE.W	6(A7),D0
@@ -31902,6 +31914,35 @@ I_LISTSWAPITEM:
 .1:	MOVE.L	A2,D0
 	RTS
 ;*-*
+;; EndsWith
+I_ENDSWITH:
+	MOVE.L	4(A7),A1		; STRING TO TEST
+	MOVE.L	8(A7),A0		; THE STRING
+
+  MOVE.L A0,A2
+  MOVE.L A1,A3
+.L1:
+  TST.B (A2)+
+  BNE .L1
+
+.L2:
+  TST.B (A3)+
+  BNE .L2
+  MOVEQ #-1,D0
+.L3:
+  MOVE.B -(A2),D1
+  CMP.B -(A3),D1
+  BNE.S .F
+  
+  CMP.L A1,A3
+  BEQ.S .T
+  CMP.L A0,A2
+  BNE.S .L3
+
+.F MOVEQ #0,D0
+.T:
+  RTS
+  
 I_CODEEND:
 
 DOARGMACROS:

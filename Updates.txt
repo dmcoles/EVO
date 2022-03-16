@@ -1,4 +1,4 @@
-E-VO v3.4.0 :
+E-VO v3.5.0 :
 
 Formerly : GRIO Amiga E Compiler !
 
@@ -413,6 +413,12 @@ Development restarted as E-VO by Darren Coles
     - Added OFFSETOF to get the offset of a member of an object
     - Added MemFill, AstrClone, ListInsItem, ListRemItem, ListSwapItem functions     
     - EDBG: Support for sections
+    - FindModule: Coded new FindModule application from scratch with support
+      for latest module format.
+    - Make second parameter of SetStr optional and if not specified it will
+      set the calculate the string length automatically
+    - Added EndsWith function eg EndsWith(s,'A') returns TRUE if a string1 ends
+      with string2
       
 DATE HISTORY:
     3.3b    20.11.1999 -> 12.12.1999
