@@ -264,7 +264,11 @@ PROC search(mem,flen,filename:PTR TO CHAR) HANDLE
                  ELSE
                     l:=o
                     FOR off:=1 TO narg
-                        WHILE l[]>"0" DO WriteF('\c',l[]++)
+                        IF match2
+                          WHILE l[]>"0" DO WriteF('\c',l[]++)
+                        ELSE
+                          WHILE l[]>"0" DO l[]++
+                        ENDIF
                         IF narg-off<r THEN IF match2 THEN WriteF('=\d',darg[]++) ELSE darg++
                         IF match2 THEN IF off<narg THEN WriteF(',')
                         l++
