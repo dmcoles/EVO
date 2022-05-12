@@ -2610,10 +2610,10 @@ HEAVYTABLE:
 .T0:lsr.w   #1,d0
     move.w  d0,(a1)+
     move.w  (a2)+,d0
-    subq.l  #1,d0
+    bra.s .T2
 .TST:
     move.b  (a2)+,(a1)+
-    dbf     d0,.TST
+.T2:dbf     d0,.TST
     clr.b   (a1)+
     move.l  a1,d0
     btst    #0,d0
@@ -3191,9 +3191,9 @@ CONTINUEKEY:
     move.w  (a3)+,d1
     lsl.w   #1,d1
     sub.l   d0,d1
-    subq.l  #1,d0
+    bra.s .CS
 .C: move.b  (a3)+,(a4)+
-    dbf     d0,.C
+.CS:dbf     d0,.C
     add.l   d1,a3
     cmp.w   #7,(a3)+
     beq     .LP
@@ -4806,7 +4806,7 @@ CPUTAB:
 	MOVE.L	A1,D0
 	SUB.L	A4,D0
 	ASR.L	#1,D0
-	MOVE.W	D0,-2(A4)
+	MOVE.W	D0,-2(A4)		; WORD LEN
 	MOVE.W	D1,-4(A4)		; REAL LEN
 	MOVE.L	STRLENADR,A3
 	MOVE.L	D1,(A3)
@@ -9744,7 +9744,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.5.0-dev',160
-			DC.B	'(16.03.2022)'
+			DC.B	'(12.05.2022)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -13476,9 +13476,9 @@ DOCHAR:               ; 41
     BNE ERROR30
     MOVE.W  (A3)+,D1        ; =REAL LEN
     MOVE.W  (A3)+,D0        ; =WORD LEN
-    SUBQ.L  #1,D1
+    BRA.S .7
 .4: MOVE.B  (A3)+,(A4)+
-    DBRA    D1,.4
+.7: DBRA    D1,.4
     ADDQ.L  #1,A3
     MOVE.L  A3,D0
     BTST    #0,D0
