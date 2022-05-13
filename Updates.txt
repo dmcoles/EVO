@@ -420,6 +420,7 @@ Development restarted as E-VO by Darren Coles
     - Added EndsWith function eg EndsWith(s,'A') returns TRUE if a string1 ends
       with string2
     - Fix: CHAR '' or CONST STR='' would cause memory corruption
+    - Fix "3*SIZEOF LONG" error, added AstpCopy and StackUsed functions
       
 DATE HISTORY:
     3.3b    20.11.1999 -> 12.12.1999

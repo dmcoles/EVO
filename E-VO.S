@@ -8243,28 +8243,60 @@ ASM_GRABVALUE:
 .XB:
     MOVE.W  (A3)+,D0
     CMP.W   #11,D0
-    BPL.S   .X3
+    BPL.W   .X3
     CMP.W   #7,D0
-    BMI.S   .X3         ; SEE IF AND/OR, ELSE QUIT
+    BMI.W   .X3         ; SEE IF AND/OR, ELSE QUIT
 .AOB:
     BRA.S   .XL
 .X2:
     SUBQ.L  #4,A3
     CMP.W   #-1,D0
-    BEQ.S   .5
+    BEQ.W   .5
     SUBQ.L  #2,A3
     RTS
 .X: CMp.W   #LIBC,D3
     BEQ .LIB
     CMP.W   #IOFF+50,D3     ; check for sizeof
     BNE.S   .XNS
+
+    CMP.W   #IOFF+20,(A3) ;LONG,INT or CHAR
+    BPL.S   .LONGINTCHAR
+.LONGINTCHARBACK:
+    
+    CMP.W   #IDENT,(A3)       
+    BEQ.S .sizeofident
+    
     CMP.W   #31,(A3)+       ; OBJECT
     BNE iERROR40
     MOVE.L  (A3)+,A0        ; WE USE A0=OBJ
     MOVE.W  4(A0),-(A3)
     BEQ iERROR40         ; NO SIZEOF IN CONST DECL. (SOB..)
     CLR.W   -(A3)
-    BRA.S   .2
+    BRA.W   .2
+.sizeofident:
+    ADDQ.L #2,A3
+    MOVE.L  (A3)+,A0
+    CMP.L   #4,(A0)
+    BLE.S   .PTRTOLONGINTCHAR
+    MOVE.L  (A0),A0
+    MOVE.W  OSIZE(A0),-(A3)
+    CLR.W -(A3)
+    BRA.W .2
+.PTRTOLONGINTCHAR:
+    MOVE.L (A0),-(A3)
+    BRA.W .2
+.LONGINTCHAR:
+    CMP.W   #IOFF+23,(A3)
+    BPL.S .LONGINTCHARBACK
+    MOVEM.L D0/D3,-(A7)
+    MOVE.W (A3)+,D3
+    SUB.W #IOFF+20,D3
+    MOVEQ.L #4,D0
+    LSR.L D3,D0
+    MOVE.L D0,-(A3)
+    MOVEM.L  (A7)+,D0/D3
+    BRA.W   .2
+
 .LIB:
     ADDQ.L  #2,A3
     MOVE.L  D3,-(A7)
@@ -8296,9 +8328,9 @@ ASM_GRABVALUE:
     RTS
 .AO:
     SUB.W   #IOFF+18,D0
-    BRA.S   .AOB
+    BRA.W   .AOB
 .SHIF:	SUB.W	#34,D0
-    BRA.S   .AOB
+    BRA.W   .AOB
 
 .MOVE:
     MOVE.L  (A3)+,D1
@@ -9744,7 +9776,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.5.0-dev',160
-			DC.B	'(12.05.2022)'
+			DC.B	'(13.05.2022)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -27058,7 +27090,7 @@ INL_OPTI:
 ;
 
 FOFF		= $100
-NREFUNC		= 182
+NREFUNC		= 184
 
       EFUNCTAB:
 	DC.L	.1,I_WRITEF,-1,0	; = WRITEF SPECIAL ARGS
@@ -27244,6 +27276,8 @@ NREFUNC		= 182
   DC.L	.180,   I_LISTREMITEM,2,0
   DC.L	.181,   I_LISTSWAPITEM,3,0
   DC.L	.182,   I_ENDSWITH,2,0
+  DC.L	.183,   I_ASTPCOPY,3,$FF
+  DC.L	.184,   I_STACKUSED,0,0
   DC.L	0,I_CODEEND,0,0
 
 .1:	DC.B	'WriteF',0
@@ -27428,6 +27462,8 @@ NREFUNC		= 182
 .180: DC.B    'ListRemItem',0
 .181: DC.B    'ListSwapItem',0
 .182: DC.B    'EndsWith',0
+.183: DC.B    'AstpCopy',0
+.184: DC.B    'StackUsed',0
 
 GETA4NR = 136
 WRITEF = 1
@@ -31941,6 +31977,30 @@ I_ENDSWITH:
 
 .F MOVEQ #0,D0
 .T:
+  RTS
+;*-*
+;; ASTPCOPY
+I_ASTPCOPY:
+	MOVE.L	12(A7),A0
+	MOVE.W	6(A7),D0
+	BEQ.S	.x2
+	MOVE.L	8(A7),A1
+	ADDQ.W	#1,D0
+.al:	SUBQ.W	#1,D0
+	BEQ.S	.x
+	MOVE.B	(A1)+,(A0)+
+	BNE.S	.al
+  MOVE.L A0,D0
+  SUBQ.L #1,D0
+	RTS
+.x:	CLR.B	-(A0)
+.x2: MOVE.L A0,D0
+	RTS
+;*-*
+;; STACKUSED
+I_STACKUSED:
+  MOVE.L A4,D0
+  SUB.L A7,D0
   RTS
   
 I_CODEEND:
