@@ -9776,7 +9776,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.5.0-dev',160
-			DC.B	'(13.05.2022)'
+			DC.B	'(17.05.2022)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -24090,9 +24090,6 @@ i2ERROR39:
 .1:	NEG.L	D2
 	MOVE.L	AFTERDELEGATESLEA(PC),A0
 	MOVE.L	D2,-4(A0)
-	LEA stackusedpoke,A0
-	MOVE.L #$28,2(A0)
-	SUB.L D2,2(A0)
   
 	MOVE.L	MINSTACK,D0		; GLOBAL + ALL_LOCAL + DELEGATES
 	ADD.L	GLOBSTACK,D0
@@ -24120,8 +24117,6 @@ i2ERROR39:
 	MOVE.L	(A0)+,A1
 	MOVE.L	D0,(A1)
 	MOVE.L	(A0),A1
-	MOVE.L	D0,(A1)
-	LEA I_STACKSIZE+2,A1
 	MOVE.L	D0,(A1)
 .EX:	RTS
 
@@ -27096,7 +27091,7 @@ INL_OPTI:
 ;
 
 FOFF		= $100
-NREFUNC		= 185
+NREFUNC		= 186
 
       EFUNCTAB:
 	DC.L	.1,I_WRITEF,-1,0	; = WRITEF SPECIAL ARGS
@@ -27284,7 +27279,8 @@ NREFUNC		= 185
   DC.L	.182,   I_ENDSWITH,2,0
   DC.L	.183,   I_ASTPCOPY,3,$FF
   DC.L	.184,   I_STACKUSED,0,0
-  DC.L	.185,   I_STACKSIZE,0,0
+  DC.L	.185,   I_STACKFREE,0,0
+  DC.L	.186,   I_STACKSIZE,0,0
   DC.L	0,I_CODEEND,0,0
 
 .1:	DC.B	'WriteF',0
@@ -27471,7 +27467,8 @@ NREFUNC		= 185
 .182: DC.B    'EndsWith',0
 .183: DC.B    'AstpCopy',0
 .184: DC.B    'StackUsed',0
-.185: DC.B    'StackSize',0
+.185: DC.B    'StackFree',0
+.186: DC.B    'StackSize',0
 
 GETA4NR = 136
 WRITEF = 1
@@ -32007,17 +32004,32 @@ I_ASTPCOPY:
 ;*-*
 ;; STACKUSED
 I_STACKUSED:
-  MOVE.L A4,D0
-;dont change this line as it is updated in makeexitcode with the correct stack size
-stackusedpoke:
-  ADD.L #$28,D0
+	MOVE.L	4.W,A6
+	SUBA.L	A1,A1
+	JSR	-294(A6)  		; findtask
+  MOVE.L D0,A1
+  MOVE.L 62(A1),D0  ;stack top
   SUB.L A7,D0
+  RTS  
+;*-*
+;; STACKFREE
+I_STACKFREE
+	MOVE.L	4.W,A6
+	SUBA.L	A1,A1
+	JSR	-294(A6)  		; findtask
+  MOVE.L D0,A1
+  MOVE.L A7,D0
+  SUB.L 58(A1),D0   ;stack bottom
   RTS  
 ;*-*
 ;; STACKSIZE
 I_STACKSIZE:
-;dont change this line as it is updated in makeexitcode with the correct stack size
-  MOVE.L #0,D0
+	MOVE.L	4.W,A6
+	SUBA.L	A1,A1
+	JSR	-294(A6)  		; findtask
+  MOVE.L D0,A1
+  MOVE.L 62(A1),D0  ;stack top
+  SUB.L 58(A1),D0   ;stack bottom
   RTS
 
 I_CODEEND:

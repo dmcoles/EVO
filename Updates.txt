@@ -421,7 +421,7 @@ Development restarted as E-VO by Darren Coles
       with string2
     - Fix: CHAR '' or CONST STR='' would cause memory corruption
     - Fix "3*SIZEOF LONG" error
-    - added AstpCopy and StackUsed and StackSize functions
+    - added AstpCopy and StackUsed, StackFree and StackSize functions
       
 DATE HISTORY:
     3.3b    20.11.1999 -> 12.12.1999
