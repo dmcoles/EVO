@@ -9776,7 +9776,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.5.0-dev',160
-			DC.B	'(17.05.2022)'
+			DC.B	'(14.06.2022)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -27091,7 +27091,7 @@ INL_OPTI:
 ;
 
 FOFF		= $100
-NREFUNC		= 186
+NREFUNC		= 185
 
       EFUNCTAB:
 	DC.L	.1,I_WRITEF,-1,0	; = WRITEF SPECIAL ARGS
@@ -27278,9 +27278,8 @@ NREFUNC		= 186
   DC.L	.181,   I_LISTSWAPITEM,3,0
   DC.L	.182,   I_ENDSWITH,2,0
   DC.L	.183,   I_ASTPCOPY,3,$FF
-  DC.L	.184,   I_STACKUSED,0,0
-  DC.L	.185,   I_STACKFREE,0,0
-  DC.L	.186,   I_STACKSIZE,0,0
+  DC.L	.184,   I_USEDSTACK,0,0
+  DC.L	.185,   I_STACKSIZE,0,0
   DC.L	0,I_CODEEND,0,0
 
 .1:	DC.B	'WriteF',0
@@ -27466,9 +27465,8 @@ NREFUNC		= 186
 .181: DC.B    'ListSwapItem',0
 .182: DC.B    'EndsWith',0
 .183: DC.B    'AstpCopy',0
-.184: DC.B    'StackUsed',0
-.185: DC.B    'StackFree',0
-.186: DC.B    'StackSize',0
+.184: DC.B    'UsedStack',0
+.185: DC.B    'StackSize',0
 
 GETA4NR = 136
 WRITEF = 1
@@ -29616,16 +29614,13 @@ BIN:	ADDQ.L	#1,A2
 	RTS
 
       I_FREESTACK:
-	MOVEQ	#-125,D0
-	LSL.L	#3,D0
-	ADD.L	A7,D0
-	SUB.L	-64(A4),D0
-	RTS
-;	MOVE.L	A7,D0
-;	SUB.L	-64(A4),D0
-;	SUB.L	#1000,D0
-;	RTS
-
+	MOVE.L	4.W,A6
+	SUBA.L	A1,A1
+	JSR	-294(A6)  		; findtask
+  MOVE.L D0,A1
+  MOVE.L A7,D0
+  SUB.L 58(A1),D0   ;stack bottom
+  RTS  
       I_CTRLC:
 	MOVEQ	#0,D0
 	MOVEQ	#0,D1
@@ -32002,24 +31997,14 @@ I_ASTPCOPY:
 .x2: MOVE.L A0,D0
 	RTS
 ;*-*
-;; STACKUSED
-I_STACKUSED:
+;; USEDSTACK
+I_USEDSTACK:
 	MOVE.L	4.W,A6
 	SUBA.L	A1,A1
 	JSR	-294(A6)  		; findtask
   MOVE.L D0,A1
   MOVE.L 62(A1),D0  ;stack top
   SUB.L A7,D0
-  RTS  
-;*-*
-;; STACKFREE
-I_STACKFREE
-	MOVE.L	4.W,A6
-	SUBA.L	A1,A1
-	JSR	-294(A6)  		; findtask
-  MOVE.L D0,A1
-  MOVE.L A7,D0
-  SUB.L 58(A1),D0   ;stack bottom
   RTS  
 ;*-*
 ;; STACKSIZE

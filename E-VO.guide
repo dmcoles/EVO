@@ -46,7 +46,7 @@ Contents:
           @{"  A. math (+ - * /)  " link CH_4A }
           @{"  B. comparison (= <> > < >= <=)  " link CH_4B }
           @{"  C. logical and bitwise (AND OR NOT << and >>)  " link CH_4C }
-          @{"  D. unary (SIZEOF ` ^ {} ++ -- -)  " link CH_4D }
+          @{"  D. unary (SIZEOF OFFSETOF ` ^ {} ++ -- -)  " link CH_4D }
           @{"  E. triple (IF THEN ELSE)  " link CH_4E }
           @{"  F. structure (.)  " link CH_4F }
           @{"  G. array ([])  " link CH_4G }
@@ -56,6 +56,9 @@ Contents:
           @{"  K. dynamic memory allocation (NEW)  " link CH_4K }
           @{"  L. unification (<=>)  " link CH_4L }
           @{"  M. pointer typing (::)  " link CH_4M }
+          @{"  N. swap (:=:)  " link CH_4N }
+          @{"  O. quick compare (==)  " link CH_4O }
+          @{"  P. increment decrement etc (+= -= etc)  " link CH_4P }
 
          5. statements
           @{"  A. format (;)  " link CH_5A }
@@ -71,7 +74,8 @@ Contents:
           @{"  K. increase statement (INC/DEC)  " link CH_5K }
           @{"  L. void expressions (VOID)  " link CH_5L }
           @{"  M. memory deallocation (END)  " link CH_5M }
-          @{"  O. Generate an error or warning (FATAL/WARN)  " link CH_5N }
+          @{"  N. generate an error or warning (FATAL/WARN)  " link CH_5N }
+          @{"  O. code and data sections (SECTION)  " link CH_5O }
 
          6. function definitions and declarations
           @{"  A. proc definition and arguments (PROC)  " link CH_6A }
@@ -253,7 +257,7 @@ syntax of the compiler (2.04+):
 
 SOURCE/A,REG=NUMREGALLOC/N/K,LARGE/S,SYM=SYMBOLHUNK/S,NOWARN/S
 QUIET/S,ASM/S,ERRLINE/S,ERRBYTE/S,SHOWBUF/S,ADDBUF/N/K,COMPILESTACK/N/K,
-IC=IGNORECACHE/S,HOLD/S,WB/S,LINEDEBUG/S,OPTI/S,DEBUG/S,NILCHECK/S,
+IC=IGNORECACHE/S,HOLD/S,WB/S,LINEDEBUG/S,OPTI/S,LEGACY/S,DEBUG/S,DEBUG50/S,NILCHECK/S,
 SHOWFNAME/S,DEFINE/M',0
 
 for 1.2 to 2.03:
@@ -314,7 +318,9 @@ IGNORECACHE     -c      don't use the module-cache in any way
 HOLD            -h      wait for a <return> on the commandline before
                         exiting E-VO.
 OPTI                    enable all optimisations (currently equals REG=5 and STRMERGE on)
+LEGACY                  enable legacy mode - outputs module files in version 10 format
 DEBUG                   attach debug infos to executable/module (see @{" 17K " link CH_17K })
+DEBUG50                 attach debug infos to executable/module in a way that allows debugging under OS 4.x (see @{" 17K " link CH_17K })
 NILCHECK                insert code at every "." or "[]" dereference to check
                         for a NIL pointer. Will throw an exception of the form
                         Throw("NIL",source_line_number)
@@ -1144,12 +1150,14 @@ a:=128 >> 3  /* bitwise shift right */
 
 @endnode
 @node CH_4D
-@title "4D. unary (SIZEOF ^ {} ++ -- `)"
-4D. unary (SIZEOF ^ {} ++ -- `)
+@title "4D. unary (SIZEOF OFFSETOF ^ {} ++ -- `)"
+4D. unary (SIZEOF OFFSETOF ^ {} ++ -- `)
 ---------------------------------
-- SIZEOF <objectident>
+- SIZEOF <objectident> or SIZEOF <var>
   simply returns the size of a certain object or CHAR/INT/LONG.
   Example: SIZEOF newscreen + SIZEOF INT
+- OFFSETOF <member>
+  returns the offset from the base address of the object for that member
 - {<var>}
   Returns the address of a variable or label. This is the operator
   you would use to give a variable as argument to a function by
@@ -1195,7 +1203,7 @@ a:=128 >> 3  /* bitwise shift right */
 -------------------------
 The IF operator has quite the same function as the IF statement, only
 it selects between two expressions instead of two statements or blocks
-of statements. It equals the x?y:z operator in C.
+of statements.
 
 IF <boolexp> THEN <exp1> ELSE <exp2>
 
@@ -1208,6 +1216,11 @@ write:
 
 b:=IF a<1 THEN 2 ELSE 3
 WriteF(IF x=3 THEN 'x is 3\\n' ELSE 'x is something else\\n')
+
+You can also use the (less readable but more concise) C style syntax - x?y:z
+eg.
+
+b:= a<1 ? 2 : 3
 
 The bitwise AND, OR can be used in IF THEN ELSE constructs and will work as
 you might expect
@@ -1519,8 +1532,99 @@ mywindow.userport::mp.sigbit
 here the window OBJECT has userport defined as LONG, so you wouldn't
 be able to dereference it normally.
 
+@endnode
+@node CH_4N
+@title "4N. swap (:=:)"
+4N. swap (:=:)
+--------------
+using the swap operator you can exchange the contents of two variables
+without needing to use an interim variable.
 
+DEF a,b
 
+a:=1
+b:=2
+
+a:=:b
+
+will swap the contents of a and b.
+
+The results will be stored in the last-used variables (i.e.
+in a+b/c*d, "d" is the last one). Multiple use of it is possible
+but the variables are set after each two (i.e. when You write sth like:
+
+    a:=:b:=:c
+
+  first a is swapped with b and then b is swapped with c)
+
+IMPORTANT NOTE!
+
+This "thing" is only for variables, NOT for objects and members. SO! If you
+do sth. like:
+
+  a.b.c:=:d.e.f
+
+then ONLY POINTERS are set with expression values! In this case it is equal
+to sth. like:
+
+  t:=a
+  a:=d.e.f
+  d:=t.b.c
+
+@endnode
+@node CH_4O
+@title "4O. quick compare (==)"
+4O. quick compare (==)
+--------------------
+
+This sequence lets You compare a single expression against any bounds or
+values [or even expressions, if needed] in a very fast way. The main use
+is:
+
+   <exp> == [<exp>, <lower> TO <upper>,...]
+
+What is a good thing about it? Well, I think it's the speed. The output
+code is much shorter and the check procedure exits as soon as one comparison
+is true [for example, if an array has 100 entries and the first entry
+matches the given expression, it exits immediately with TRUE]. It might be
+very useful together with IF sentence.
+
+    Example use:
+    PROC checkrange(value)
+        IF value*16-2 == [2, 10 TO 20, xyz()-blah+3] THEN
+            DisplayBeep(NIL)
+    ENDPROC
+
+    is equivalent to:
+
+    PROC checkrange(value)
+        IF (value*16-2=2) OR ((value*16-2>10) AND (value*16-2<20)) OR
+           (value*16-2=(xyz()-blah+3)) THEN DisplayBeep(NIL)
+    ENDPROC
+
+@endnode
+@node CH_4P
+@title "4P. increment decrement etc (+= -= etc)"
+4P. increment decrement etc (+= -= etc)
+---------------------------------------
+That works mostly same as in C. You can easily omit the sequence such as
+
+    x:=x....
+
+and start it without writing the above. It is especially useful when You want to perform an action on some long-named fields in Your object identifier or the variables with quite big names. The main sequence is:
+
+    <function>=
+
+where <function> may be one of those: +, -, *, /, AND, &, OR, ||, <<, >>
+
+example use:
+
+DEF object:objectname
+...
+PROC increase(value)
+    object.member+=value
+    // same as: object.member:=object.member+value
+ENDPROC
 
 @endnode
 @node CH_5A
@@ -1683,6 +1787,52 @@ the one-line/one-statement version and the multiple line version.
 
 WHILE may also contain CONT and EXIT statements, like FOR.
 
+This great idea was brought by Martin Kuchinka - author of PowerD compiler. The WHILE-ENDWHILE loop is expanded with following keywords:
+
+ELSEWHILE
+
+Alternative loop part. Any number of ELSEWHIlE keywords can be used in each WHILE loop. Usage is same as for WHILE:
+
+ELSEWHILE <condition>
+
+with only one exception from the rule. As for now it DOESN'T support "DO" kword (it means: You cannot write ELSEWHILE x DO y as it will cause an error)
+
+Every time the WHILE loop is executed, program searches for a condition that returns true and executes proper part of program. In other case it returns the loop
+
+ALWAYS
+
+This keyword is designed especially to be used together with ELSEWHILE. It declares part of program that will be called every time the loop is executed and at last one condition is true.
+
+Sample code (as short as possible :):
+
+PROC main()
+
+    DEF a=10
+
+    WHILE a=10
+        a:=a+1
+        WriteF('Incrementing "a" by 1\\n');
+    ELSEWHILE a=11
+        a:=0
+        WriteF('Setting "a" to zero\\n');
+    ALWAYS
+        WriteF('Loop is called again now\\n');
+    ENDWHILE
+
+    WriteF('a=\\d\\n',a)
+ENDPROC
+
+will return:
+
+Incrementing "a" by 1
+Loop is called again now
+Setting "a" to zero
+Loop is called again now
+a=0
+
+NOTES
+- The infinite loops are much easier to create :))
+- Please don't use ALWAYS keyword without ELSEWHILE
 
 @endnode
 @node CH_5H
@@ -1726,7 +1876,7 @@ builds an infinite loop (unless you use EXIT to break the loop)
 ---------------------------------
 SELECT, CASE, DEFAULT, ENDSELECT
 
-syntax:         SELECT <var>
+syntax:         SELECT <exp>
                 [ CASE <exp>
                   <statements> ]
                 [ CASE <exp>
@@ -1748,7 +1898,7 @@ SELECT character
     WriteF('Do you know this one: "\\c" ?\\n',character)
 ENDSELECT
 
-next to the old SELECT <var> which works on expressions in the CASE
+next to the old SELECT <exp> which works on expressions in the CASE
 statements, E has a SELECT <maxrange> OF <exp> which works with constants
 and or ranges of constants in a CASE. not only is this for many applications
 more powerful, it is also much faster for large numbers of cases (>5
@@ -1886,6 +2036,40 @@ display an error or warning when using the wrong E compiler.
   #endif
 
 @endnode
+@node CH_5O
+@title "5O. code and data sections (SECTION)"
+5O. code and data sections (SECTION)
+------------------------------------
+
+USAGE
+  SECTION type,mem
+
+PARAMETERS
+  Second parameter is optional. First one decides about the section type [CODE/DATA], second - memory type [none=PUBLIC, FAST or CHIP]
+
+ABOUT
+  This keyword allows a programmer creating programs splitted up to more than one hunk
+
+NOTE
+  - OPT LARGE should be set if You want to use it.
+  - Although SECTION DATA allows storing code, please don't do it.
+  - it is allowed only in executable files, not in modules
+
+  and a small example - don't blame me for it, I want to make it as simple as possible ;)
+
+  MODULE 'tools/pt', 'dos/dos'
+
+  PROC main()
+      pt_play({module})
+      Wait(SIGBREAKF_CTRL_C)
+      pt_stop()
+  ENDPROC
+
+      SECTION DATA,CHIP
+  module:
+      INCBIN 'pt_module'
+
+@endnode
 
 
 @node CH_6A
@@ -1926,6 +2110,13 @@ write your own ASM code however you may want tell E to store the
 registers on the stack - of course you can do this in your own ASM code
 but this is an easier way.
 
+There is also an extension of the ENDPROC command that allows you to
+control what assembly instruction is used to return from the routine.
+
+ENDPROC WITH RTR or ENDPROC WITH RTE
+
+If you don't understand what this is for then you will never need this.
+It is used to return from a system exception handler.
 
 @endnode
 @node CH_6B
@@ -2059,6 +2250,8 @@ exceptioninfo   additional information used in exception handling
 thistask        address of this task
 __pool          address of the memory pool (OS 3.0+ only and when pooling is
                 in use).
+utilitybase     base reference for utility.library (only initialised if
+                OPT UTILIB is in use).
 
 @endnode
 @node CH_6F
@@ -2170,6 +2363,9 @@ treated as <value>. Example:
 
 CONST MAX_LINES=100, ER_NOMEM=1, ER_NOFILE=2
 
+CONST STR='test'
+CONST F=3.5
+
 You cannot declare constants in terms of others that are being
 declared in the same CONST statement: put these in the next.
 
@@ -2236,8 +2432,13 @@ STRLEN          Always has the value of the length of the last immediate
                 string used. Example:
 
                 Write(handle,'hi folks!',STRLEN)      /* =9 */
-
-
+                
+                The following built in constants are new and not active if you are using LEGACY mode.
+TAG_DONE,TAG_END,TAG_IGNORE,
+TAG_MORE,TAG_SKIP,TAG_USER
+                Used with tag lists
+OFFSET_BEGINNING,OFFSET_CURRENT,OFFSET_END
+                Used with the dos.library Seek function
 
 
 @endnode
@@ -2346,6 +2547,19 @@ and not from 1 to n.
 Note that ARRAY OF <type> is compatible with PTR TO <type>, with the
 only difference that the variable that is an ARRAY is already
 initialised.
+
+Multi-dimensional arrays are also allowed and declared as follows:
+
+DEF f[5][8][10]:ARRAY OF CHAR
+
+The number of dimensions is not limited however the maximum size of the array
+is 32767 elements in total (eg when all the dimensions are multiplied
+together).
+
+Accessing a multi-dimensional array is done using the same syntax:
+
+f[1][3][5]:="a"
+
 
 
 @endnode
@@ -2497,6 +2711,12 @@ PTR TO LONG and PTR TO <object>, where <object> is a name of a previously
 defined OBJECT. When a variable (or an object member, as we'll see later)
 is declared as being of this type, It means that if the variable contains
 a value that is a legal pointer, this is how it should be dereferenced.
+
+It is also possible to declare something as a PTR to a PTR. So for example
+
+DEF c: PTR TO PTR TO CHAR
+
+So c or c[n] would be a PTR but c[n][n] would be a CHAR
 
 LONG, ARRAY etc.
 All other types one may see in a DEF declaration are not really types, as
@@ -2802,6 +3022,10 @@ Same as InStr but with a case insensitive comparison.
 returns the *address* of the first character in a string, i.e., after
 leading spaces, tabs etc.
 
+        res:=EndsWith(string1,string2)
+
+returns TRUE if a string1 ends with string2 otherwise returns FALSE
+      
         UpperStr(string)     and      LowerStr(string)
 
 changes the case of a string.
@@ -2825,13 +3049,16 @@ Also note that, like Inp() Out(), etc. this function makes use
 of unbuffered 1.3 style IO, and thus may be slow. The dos.library
 Fgets() function forms a nice alternative.
 
-        SetStr(estring,newlen)
+        SetStr(estring,newlen=ALL)
 
 manually sets the length of a string. This is only handy when you read
 data into the estring by a function other then an E string function,
-and want to continue using it as an Estring. For example, after
+and want to continue using it as an Estring.
+
+The second parameter is optional and defaults to ALL which will automatically
+calculate the length of a zero-terminated string.  For example, after
 using a function that just puts a zero-terminated string at the
-address of estring, use   SetStr(mystr,StrLen(mystr))  to make
+address of estring, use   SetStr(mystr)  to make
 it manipulatable again. If the string is too long, SetStr does nothing
 (this should always be prevented).
 
@@ -2841,12 +3068,28 @@ Creates a new estring that is a copy of the estring passed in. This is a
 shorthand way of creating a new string and copying the contents of the
 original estring.
 
+        newstr:=AstrClone(string,len=ALL)
+  
+Similar to StrClone but creates a new estring that is a copy of the
+string passed in. A partial string copy can be performed by passing in a
+len value. This is a shorthand way of creating a new estring from an
+existing string.
+ 
         AstrCopy(string1,string2,size)
 
 'Array String Copy' copies string2 into the memory area denoted by string1.
 string1 is typically not an estring but an ARRAY. size is the total #of chars
 string1 can hold, i.e. if you write 5 and string2='helloworld', string1 will
 be 'hell' + 0termination.
+
+        AstpCopy(string1,string2,size)
+
+This is based on the C stpcpy function. It is very similar to AstrCopy except
+that AstpCopy() returns the address of the  end of the string dest (that is,
+the address of the terminating zero byte) rather than the beginning.
+
+It is therefore optimised for concatenating several strings tgogether using
+multiple calls to the function.
 
         order:=OstrCmp(string1,string2,max=ALL)
 
@@ -2975,6 +3218,21 @@ returns listvar.
         ListAddItem(listvar,value)
 
 Adds a single item to the tail of listvar.
+returns listvar.
+
+        ListInsItem(listvar,value,pos)
+
+Inserts a single item in a specific position of listvar.
+returns listvar.
+
+        ListRemItem(listvar,pos)
+
+Remove a single item at a specific position of listvar.
+returns listvar.
+
+        ListSwapItem(listvar,pos1,pos2)
+
+Swaps a two single itemd at specific positiond of listvar.
 returns listvar.
 
         ListCmp(list,list,num=ALL)
@@ -3257,6 +3515,14 @@ returns the amount of free stack space left. This should always be 1000 or
 more. (see @{" 16C " link CH_16C } on how E organizes its stack. If you don't do heavy recursion,
 you need not worry about your free stack space.
 
+Stack space can also be monitored further using these calls
+
+        amount:=UsedStack()
+        amount:=StackSize()
+
+which will give details of the total stack space available and used by the
+current task.
+
         bool:=CtrlC()
 
 Returns TRUE if Ctrl-C was pressed since you last checked, else FALSE.
@@ -3335,6 +3601,10 @@ in the OPT POOL command.
         Free(mem)
   
 Releases memory allocated with the Alloc command back to the pool.
+
+        MemFill(addr,size,value)
+        
+Fills the memory at addr to addr+size-1 with value. The value can be 0-255.
 
 @endnode
 @node CH_9G
@@ -5116,23 +5386,37 @@ MODULE          denotes this source to be a module. (see @{" 10C " link CH_10C }
 EXPORT          automatically export all declarations in a module
 RTD             generates RTD's instead of RTS in the main source.
                 020+ only. [experimental optimisation]
-020,881,040     generate code for these CPUs. Currently only opmises for 020
-    so fpu and higher CPU's have no additional effect.
+020,881,882,040,060
+                generate code for these CPUs. Currently only opmises for 020
+                so fpu and higher CPU's have no additional effect (except in
+                the case of FPEXP below).
 REG=n           use n register for register-allocation.
 RUNBG           Compiles the program with a modified startup code that detactes
                 from the current shell process
-PURE            Checks to make sure the code generated is pure (re-entrant) so no
-                Use of variables in immedate lists is allowed and no use of GetA4().
-                Doing either of these will result in an error. Library code should be
-                pure since it may be held in memory and called from multiple applications
-                at the same time.
-STRMERGE        Add an extra step into the compilation process where all constant
-                strings values are de-duped.
+PURE            Checks to make sure the code generated is pure (re-entrant) so
+                no use of variables in immedate lists is allowed and no use of
+                GetA4(). Doing either of these will result in an error.
+                Library code should be pure since it may be held in memory
+                and called from multiple applications at the same time.
+STRMERGE        Add an extra step into the compilation process where all
+                constant strings values are de-duped.
 POOL(memtype, puddlesize, threshsize)
                 create pool that can be used later in
-                your program using Alloc() and Free(). Parameters are optional and default
-                to $10001 (MEMF_CLEAR|MEMF_PUBLIC),10240 and 256. Pools are only available
-                in OS v39 and above.
+                your program using Alloc() and Free(). Parameters are optional
+                and default to $10001 (MEMF_CLEAR|MEMF_PUBLIC),10240 and 256.
+                Pools are only availablein OS v39 and above.
+FPEXP           Tells the compiler to generate FPU based floating point math
+                code. You also need to specify either the cpu like 040/060
+                or the fpu like 881/882 to switch this on.
+INLINE          The compiler will create inline code for many of the smaller
+                E-VO functions each time they are used instaad of calling a
+                subroutine each time. This results in larger code that will
+                run slightly faster.
+NOSTARTUP       Disables as much of the startup code as possible. No libraries
+                will be automatically opened.                
+UTILLIB         Automatically opens UTILITY.LIBRARY in addition to the
+                usual libraries that E-VO will open. The library pointer will
+                be placed in UTILBASE
 
 example:
 
@@ -5736,6 +6020,8 @@ any point by <ctrlc>.
 when given the option -c, ShowModule will output modules with library
 declarations in .fd format, constants in #define format.
 
+The -e option will make ShowModule format the output as an E file that
+can be recompiled.
 
 @endnode
 @node CH_17B
@@ -6051,6 +6337,16 @@ described in its own documentation in the Bin/Tools directory.
 @title "17K. EDBG"
 17K. EDBG
 ---------
+
+Updates to v3.5.0:
+- Added case insensitive searches
+- Added search next option
+- Display variables in both hex and decimal
+- Multiple breakpoints
+- Support for debugging while the code is running
+- Add watch variables by name
+- Support for debugging under OS 4.x without using CPU exceptions
+- Section support
 
 bugs fixed for v3.3a:
 - Double-clicking on window frames no longer sets breakpoints, etc.
@@ -6414,6 +6710,7 @@ version of E-VO.
 The currently defined version macro's are
 
         EVO_3_4_0
+        EVO_3_5_0
     
 So if this is not defined then you are not compiling under E-VO. Further
 defines will be added for each new revision of the E-VO compiler so you can
@@ -7388,8 +7685,7 @@ Will E have...
 - Multiple statements in macros?
 - Multiple error messages?
 - Dereferenced variables in lefthandsides of assignment expressions,
-  multiple returnvalue assignments, and the {} operator?
-- Inlined code for small functions (e.g. Shl())?
+- multiple returnvalue assignments, and the {} operator?
 
 No. Or atleast very unlikely.
 
@@ -7412,10 +7708,7 @@ No. Or atleast very unlikely.
 
 - multidimensional arrays?
 
-  Not likely either. In E there isn't really something like an array, just
-  pointers that point to a large amounts of equally sized objects. To have
-  twodimensional arrays, one needs to have the concept of 'size' of an array,
-  which E doesn't have.
+  Included in E-VO 3.5.0
 
 - Overloading
 
