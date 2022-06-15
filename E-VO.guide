@@ -2110,6 +2110,17 @@ write your own ASM code however you may want tell E to store the
 registers on the stack - of course you can do this in your own ASM code
 but this is an easier way.
 
+NOREGS - This is an extra option you can add on the end of a proc statement
+
+eg.
+
+PROC sub1() NOREGS
+
+This will override the OPT REG in use and ensure that no registers are used
+as variable storage during the duratioon of the procedure definition. This
+may be useful if you have inline asm code that needs the registers to be
+available.
+
 There is also an extension of the ENDPROC command that allows you to
 control what assembly instruction is used to return from the routine.
 
@@ -3518,10 +3529,12 @@ you need not worry about your free stack space.
 Stack space can also be monitored further using these calls
 
         amount:=UsedStack()
-        amount:=StackSize()
+        amount:=TotalStack()
 
 which will give details of the total stack space available and used by the
-current task.
+current task. The total stack will not match the value specified in the code
+exactly as some stack space is reserved automatically on top of the size
+requested.
 
         bool:=CtrlC()
 

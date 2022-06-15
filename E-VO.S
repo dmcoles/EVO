@@ -27466,7 +27466,7 @@ NREFUNC		= 185
 .182: DC.B    'EndsWith',0
 .183: DC.B    'AstpCopy',0
 .184: DC.B    'UsedStack',0
-.185: DC.B    'StackSize',0
+.185: DC.B    'TotalStack',0
 
 GETA4NR = 136
 WRITEF = 1
