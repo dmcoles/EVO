@@ -7472,11 +7472,7 @@ Compiler/Linking/Executables
 
 - E should have a CHIP keyword or somesuch, to put data areas in chip memory.
 
-  I don't find this worth it. If the amount of data is small (a gadget image),
-  it's no waste doing a CopyMem(). If it's large (an iff picture, a sample),
-  what's it doing in the executable in the first place? load it directly to
-  chip mem from disk.
-
+  E-VO does now have a SECTION command which allows this.
 
 Resources
 
@@ -7798,8 +7794,6 @@ me "when?" either.
         Bugs still not fixed:
 *       dereferencing an untyped OBJECT member is not properly interpreted
         as "PTR TO CHAR". Easy workaround: Give the member a type.
-*       debug hunks don't contain directory information for projects
-        split up over sub directories.
 *       error reports can sometimes be off by several lines.
 *       error reports for inline assembly often doesn't work.
 *       unreferenced check too conservative in some cases.
