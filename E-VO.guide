@@ -6919,8 +6919,7 @@ link feature. If a lot of people require this feature I will build it in.
 
 
 This is a grammar of E for those who are interested. Don't expect
-it to be up to date or otherwise complete/correct though (it should
-be quite ok for E upto v2.1b atleast).
+it to be up to date or otherwise complete/correct though.
 
 lex syntax: regular expressions
 parse syntax: own ASF/SDF adaption;
@@ -6981,11 +6980,11 @@ constdecl       = "CONST" { ( constant "=" constexp ) "," }+ |
                   "ENUM" { ( constant | constant "=" constexp ) "," }+ |
                   "SET" { constant "," }+
 procdecl        = [ "EXPORT" ] "PROC" [ "SAFE" ] ident "(" argdecllist ")"
-                  [ "OF" ident ] [ "HANDLE" ]
+                  [ "OF" ident ] ["NOREGS"] [ "HANDLE" ]
                   ( ( "RETURN" | "IS" ) { exp "," }* |
                      eol defstat* stats 
                      [ "EXCEPT" eol stats ]
-                     "ENDPROC" { exp "," }* eol )
+                     "ENDPROC" { exp "," }* [WITH ("RTR" | "RTE" ]eol )
 raisedecl       = "RAISE" { ( constant "IF" builtin "()" compop num ) "," }+
 opts            = ( "OPT" { setting "," }+ )*           ; machine dependant
 
@@ -7010,6 +7009,7 @@ stats           = ( ( onelinestat | multlinestat ) eol )*
 onelinestat     = exp |
                   lval ":=" exp |
                   { var "," }+ ":=" exp |
+                  lval :=: lval
                   "IF" exp "THEN" onelinestat "ELSE" onelinestat |
                   "FOR" var ":=" exp "TO" exp [ "STEP" num ]
                      "DO" onelinestat |
@@ -7020,6 +7020,7 @@ onelinestat     = exp |
                   "CONT" exp |
                   "WARN" stringconst |
                   "FATAL" stringconst |
+                  "SECTION" ("CODE" | "DATA") ["CHIP"] ["FAST"] | 
                   ( "INC" | "DEC" ) var [ "," num]|               ; nearly obsolete
                   asm_mnemonic { operand "," }* |       ; machine dependant
                   "INCBIN" stringconst |                ; inline asm support
@@ -7031,7 +7032,7 @@ multlinestat    = "IF" exp eol stats
                      "ENDIF" |
                   "FOR" var ":=" exp "TO" exp [ "STEP" num ] eol
                      stats "ENDPROC" |
-                  "WHILE" exp eol stats "ENDWHILE" |
+                  "WHILE" exp eol stats ["ELSEWHILE" exp eol stats] ["ALWAYS" eol stats] "ENDWHILE" |
                   "REPEAT" eol stats "UNTIL" exp |
                   "SELECT" var eol
                      ( "CASE" exp eol stats )+
@@ -7044,14 +7045,17 @@ exp             = [ "-" ] { [ "NOT" ] item binop }+ |
                   exp "BUT" exp
 item            = num | fnum | lval | stringconst | charconst |
                   "SIZEOF" objident |
+                  "OFFSETOF objident.ident |
                   "IF" exp "THEN" exp "ELSE" exp |
+                  exp ? exp : exp |
+                  exp == [ { (exp | exp "TO" exp) ","}+]
                   "[" explist "]" [ ":" ptrtype ] |
                   ( builtin | ident ) "(" explist ")" |
                   var ":=" exp |
                   "{" ident "}" |
                   "`" exp |
 binop           = mathop | compop | logop
-mathop          = "+" | "-" | "*" | "/"
+mathop          = "+" | "-" | "*" | "/" | "<<" | ">>" | "+=" | "-=" | "*=" | "/=" | "AND=" | "OR=" | "||=" | ">>=" | "<<="
 compop          = "=" | "<>" | ">" | "<" | ">=" | "<=" | "=>" | "=<"
 logop           = "AND" | "OR" | "ANDALSO" | "ORELSE" | "
 constexp        = [ "-" ] { num ( "+" | "-" | "*" | "/" ) }+
