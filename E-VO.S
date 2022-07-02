@@ -9775,8 +9775,8 @@ SRCFN: DC.L 0
 	EROBJLINE:	DC.B	'WITH: %s',10,0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
-			DC.B	'/Assembler/Linker/PP',160,'v3.5.0-dev',160
-			DC.B	'(14.06.2022)'
+			DC.B	'/Assembler/Linker/PP',160,'v3.5.0',160
+			DC.B	'(02.07.2022)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -19848,7 +19848,7 @@ SD0:
     rts
 ;*-*
 
-poprawka=0
+poprawka=1
   IFeq poprawka
 ;; new imm list
 EXPIMMLIST:
@@ -24732,7 +24732,7 @@ CLINT:	MOVE.L	-36(A4),D4
       INITINTUI:	DC.B	"intuition.library",0
       INITGFX:		DC.B	"graphics.library",0
       ZEROSPOT:		DC.B	0
-      ENDC    :
+      ENDC:
 
       SWAPSTACK:
       	CMP.W	#37,20(A6)
@@ -27473,6 +27473,7 @@ WRITEF = 1
 PRINTF = 87
 
 ;;ERROR
+	EVEN
 
 fatalerr: DC.L 0
 
