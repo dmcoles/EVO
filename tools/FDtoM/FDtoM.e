@@ -15,6 +15,9 @@
 ---------
  * Updated By Darren Coles
  *
+ * 1.5 (2.7.22)
+ *     Minor code change to allow compiling with E-VO 3.5.0
+ *
  * 1.4 (3.10.94)
  *     Some Code-Cleanup : Much faster by using dos/FGets() [v36+]
  *     Added ASM-Switch and 3.Output-File: libname_lvo.i
@@ -125,7 +128,7 @@ PROC getline()
   NOT.B		D1					/* Max-len = 255 */
 getline_find0:
   TST.B	(A0)+
-  DBEQ.S	D1,getline_find0
+  DBEQ	D1,getline_find0
   CLR.B		-2(A0)				/* Remove Linefeed */
 
   ADDQ.L	#1,line
@@ -137,7 +140,7 @@ ENDPROC
 /* Version-String */
 
 version_txt:
-CHAR	0,'$VER: FDtoM 1.4 (07.10.21) by Detlef Riekenberg & Darren Coles',0
+CHAR	0,'$VER: FDtoM 1.5 (02.07.22) by Detlef Riekenberg & Darren Coles',0
 
 /*#################################################*/
 

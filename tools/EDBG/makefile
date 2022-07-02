@@ -1,7 +1,7 @@
 # Compile EDBG
 
 options=
-compiler=EVO
+compiler=evo
 
 all:					edbg
 

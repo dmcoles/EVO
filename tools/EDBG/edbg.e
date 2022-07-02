@@ -740,7 +740,7 @@ PROC searchnext()
 ENDPROC
 
 PROC runsearch(start)
-  DEF n,max
+  DEF n,max,r
   DEF lines:PTR TO LONG
   DEF st:PTR TO scrolltext
   
@@ -750,10 +750,11 @@ PROC runsearch(start)
   lines:=lines+(n*4)
   WHILE n<max
      IF casesensitivefind
-       EXIT InStr(lines[],findstr,0)<>-1
+       r:=InStr(lines[],findstr,0)<>-1
      ELSE 
-       EXIT InStri(lines[],findstr,0)<>-1
+       r:=InStr(lines[],findstr,0)<>-1
      ENDIF
+	EXIT r
     lines++
     n++
   ENDWHILE
@@ -1541,4 +1542,4 @@ EXCEPT DO
   IF rexxsysbase THEN CloseLibrary(rexxsysbase)
 ENDPROC
 
-CHAR 0, '$VER: EDBG 3.5.0-dev', 0, 0
+CHAR 0, '$VER: EDBG 3.5.0', 0, 0
