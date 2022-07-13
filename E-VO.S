@@ -9688,6 +9688,14 @@ PORTCOOKIE	= $DEADBEEF
 .12:	TST.L	.LEGACY
 	BEQ.S	.13
 	BSET	#5,ICODEPREFS+3
+  
+	;put end marker before new function calls to disable them
+	LEA EFUNCTAB,A0
+	ADD.L #NRLEGEFUNC*EFUNCENTRYSIZE,A0
+	CLR.L (A0)+
+	MOVE.L #I_CODEEND,(A0)+
+	CLR.L (A0)+
+	CLR.L (A0)+
 .13:
 	MOVE.L	.ABUF(PC),D0
 	BEQ.S	.14
@@ -27092,6 +27100,8 @@ INL_OPTI:
 
 FOFF		= $100
 NREFUNC		= 185
+NRLEGEFUNC = 131
+EFUNCENTRYSIZE=16   ;size of efunctab entry (eg 4 LONGWORD entries)
 
       EFUNCTAB:
 	DC.L	.1,I_WRITEF,-1,0	; = WRITEF SPECIAL ARGS
