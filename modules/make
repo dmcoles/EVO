@@ -54,7 +54,7 @@ evo legacy showfname ram:emods/graphics/rastport.e
 evo legacy showfname ram:emods/graphics/clip.e
 evo legacy showfname ram:emods/graphics/layers.e
 evo legacy showfname ram:emods/intuition/pointerclass.e
-evo legacy showfname ram:emods/intuition/imaevolass.e
+evo legacy showfname ram:emods/intuition/imageclass.e
 evo legacy showfname ram:emods/intuition/sghooks.e
 evo legacy showfname ram:emods/intuition/screens.e
 evo legacy showfname ram:emods/intuition/preferences.e
@@ -316,10 +316,12 @@ delete ram:emods/hardware/#?.e
 delete ram:emods/images/#?.e
 delete ram:emods/intuition/#?.e
 delete ram:emods/libraries/#?.e
+delete ram:emods/other/#?.e
 delete ram:emods/prefs/#?.e
 delete ram:emods/reaction/#?.e
 delete ram:emods/resources/#?.e
 delete ram:emods/rexx/#?.e
+delete ram:emods/tools/TextEdit/#?.e
 delete ram:emods/utility/#?.e
 delete ram:emods/workbench/#?.e
 delete ram:emods/fd all

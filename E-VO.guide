@@ -319,6 +319,8 @@ HOLD            -h      wait for a <return> on the commandline before
                         exiting E-VO.
 OPTI                    enable all optimisations (currently equals REG=5 and STRMERGE on)
 LEGACY                  enable legacy mode - outputs module files in version 10 format
+                        and disable the new constants and build in functions that may cause
+												naming clashes with older code.
 DEBUG                   attach debug infos to executable/module (see @{" 17K " link CH_17K })
 DEBUG50                 attach debug infos to executable/module in a way that allows debugging under OS 4.x (see @{" 17K " link CH_17K })
 NILCHECK                insert code at every "." or "[]" dereference to check
