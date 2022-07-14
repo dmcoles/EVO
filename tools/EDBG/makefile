@@ -1,12 +1,15 @@
 # Compile EDBG
 
-options=
+options=SHOWFNAME
 compiler=evo
 
-all:					edbg
+all:					EDBG
 
-edbg:					edbg.e sctext.m screg.m schex.m eexe.m
-							$(compiler) edbg $(options)
+debug:        options = DEBUG SHOWFNAME
+debug:				EDBG
+
+EDBG:					EDBG.e sctext.m screg.m schex.m eexe.m
+							$(compiler) EDBG $(options)
 
 sctext.m:			sctext.e
 							$(compiler) sctext $(options)
@@ -22,4 +25,4 @@ screg.m:			screg.e sctext.m eexe.m
 
 
 clean:  			
-							delete edbg sctext.m screg.m schex.m eexe.m
+							-delete EDBG sctext.m screg.m schex.m eexe.m
