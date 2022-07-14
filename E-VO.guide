@@ -1,14 +1,14 @@
 @database "e.guide"
 @node MAIN
-@title "Amiga E-VO v3.4.0"
+@title "Amiga E-VO v3.5.0"
 
                 +-----------------------------------------------+
                 |                                               |
-                |               Amiga E-VO v3.4.0               |
+                |               Amiga E-VO v3.5.0               |
                 |          Compiler for The E Language          |
                 |     Originally By Wouter van Oortmerssen      |
                 |           Updates By GRIO 1999-2003           |
-                |             and Darren Coles 2021             |
+                |             and Darren Coles 2022             |
                 |                                               |
                 +-----------------------------------------------+
 
@@ -340,6 +340,80 @@ NOTE: in most cases you won't need to use any of these options
 0D. changes / history / new features
 ------------------------------------
 
+ New in E-VO  (3.5.0)
+    - Added ac020 object with pad int to allow optimised 32 bit writes on
+      020+ courtesy of Samuel D. Crow
+    - When compiling in debug, disable the optimisation that removes LINK,
+      UNLK in procs where not needed (EDBG doesnt step properly when these
+      aren't present)
+    - EDBG: Add case insensitive search
+    - EDBG: Added search next
+    - EDBG: Display variable values in both hex and decimal
+    - Fixed: Clears an extra byte in the String() initialisation causing
+      memory corruption in the case of String(0)
+    - EDBG: Enhanced breakpoints - multiple can now be set and can be
+      seen/set in a column next to the code
+    - EDBG: Support for multiple breakpoints and debugging while code is
+      running.
+    - EDBG: Added support for debugging under OS4.x (eg without using CPU
+      exceptions)
+    - EDBG: Added support for adding watch variables by entering name
+    - Added support for DEBUG50 mode which allows debugging using JSR
+      instructions instead of causing cpu exceptions which allows debugging
+      under OS 4.x
+    - Added support for multi-dimensional arrays
+    - Added support for PTR TO PTR variables
+    - Added EVO_3_5_0 define
+    - Added ? operator (ported from CreativE)
+    - Added OPT FPEXP (fpu floating point support - ported from CreativE)
+    - Added :=: swap operator (ported form CreativE)
+    - Added OPT INLINE (ported from CreativE)
+    - Added OPT NOSTARTUP (ported form CreativE)
+    - Added OPT UTILLIB (ported from CreativE)
+    - Added NOREGS option (ported from CreativE)
+    - Updated module format (now version 12) to account for multi-dimension
+      arrays and PTR TO PTR type in object members
+    - Ported some optimisation code from CreativE
+    - Added ENDPROC WITH function (ported from CreativE)
+    - Added == operator (range check - ported from CreativE)
+    - Added new system constants TAG_DONE, TAG_END, TAG_INORE, TAG_MORE,
+      TAG_SKIP, TAG_USER, OFFSET_BEGINNING, OFFSET_BEGINING, OFFSET_CURRENT,
+      OFFSET_END (ported from CreativE)
+    - Added new utilitybase variable
+    - Added 020+ optimised MOD function
+    - Added support for += -= etc operators (ported from CreativE)
+    - ShowModule: Added support for new module format (version 12)
+    - Added improved LONG,INT,CHAR routines from CreativE which allow
+      expressions
+    - Added improved SIZEOF command that allows SIZEOF objectvar
+    - Allow \xNN for hex char in strings
+    - Add ELSEWHILE and ALWAYS extension to WHILE LOOP (from CreativE)
+    - Improvements to SELECT x to allow expressions (from CreativE)
+    - Added LEGACY option to output module format version 10 and disable newer
+      features
+    - Fix: 2 << obj.val was generating corrupt code
+    - Add SECTION (code and data) support
+    - Fix: ReadStr return value was not completely compatible with EC (fix
+      Pragma2Module bug)
+    - ShowModule: Add -e parameter which will force output into a form that
+      can be directly recompiled
+    - Added a scanf module in the other folder
+    - Allow string consts in modules
+    - Allow float CONST definitions
+    - Remove some unused startup code when OPT ASM in use.
+    - ShowModule: Added support for string CONSTs
+    - Added OFFSETOF to get the offset of a member of an object
+    - Added MemFill, AstrClone, ListInsItem, ListRemItem, ListSwapItem functions     
+    - EDBG: Support for sections
+    - FindModule: Coded new FindModule application from scratch with support
+      for latest module format.
+    - Make second parameter of SetStr optional and if not specified it will
+      set the calculate the string length automatically
+    - Added EndsWith function eg EndsWith(s,'A') returns TRUE if a string1 ends
+      with string2
+    - Fix: CHAR '' or CONST STR='' would cause memory corruption
+    - Fix "3*SIZEOF LONG" error
+    - added AstpCopy and UsedStack and StackSize functions
  New in E-VO  (3.4.1)
     - Fix: Optimisation error where multiple variables set to the same value
       were not set correctly.
@@ -809,6 +883,8 @@ v3.3f   03.01.2001 -> 15.10.2001
 v3.3g   04.01.2002 -> 16.06.2003
 v3.4.0  09.06.2021 -> 07.10.2021
 v3.4.1  19.10.2021 -> 23.10.2021
+v3.5.0  04.11.2021 -> 14.07.2022
+
 
 @endnode
 @node CH_0E
