@@ -793,9 +793,17 @@ OBJECT emodule
                 access[num]:ARRAY OF [LONG,INT]
         ENDOBJECT
 
-10      OBJECT debug
-          -> any #of hunks until $3F1=0 (same as hunk, i.e. 10:INT, $3F1, ...)
+10      OBJECT debugvars
+					lineNum: INT
+					len:INT
+					regoffs[len]:INT
         ENOBJECT
+
+        OBJECT selfdef
+				  len:INT
+					lineNum:INT
+					regoffs:INT
+			  ENDOBJECT
 
         OBJECT debug_hunk
           $3F1:LONG
@@ -805,9 +813,11 @@ OBJECT emodule
             line -> len_name_in_longs:LONG
                     name[len]:ARRAY OF LONG
                     linedebug:ARRAY OF (linenum:LONG,offs:LONG)
-            evar -> job:INT (0..4)
-                    4: len:INT, name[len]:ARRAY
-                    1,2,3: (see OBJECT debug)
+            evar -> job:INT (1..5)
+                    1,2: local variables (see OBJECT debugvars)
+										3 global variables (see OBJECT debugvars)
+                    4: len:INT, name[len]:ARRAY - proc definition
+										5: self definition (see object selfdef)
         ENDOBJECT
 
 11      OBJECT macros
