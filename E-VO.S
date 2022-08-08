@@ -9783,8 +9783,8 @@ SRCFN: DC.L 0
 	EROBJLINE:	DC.B	'WITH: %s',10,0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
-			DC.B	'/Assembler/Linker/PP',160,'v3.5.0',160
-			DC.B	'(14.07.2022)'
+			DC.B	'/Assembler/Linker/PP',160,'v3.5.1-dev',160
+			DC.B	'(08.08.2022)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -12247,6 +12247,7 @@ ERROR103:	MOVEQ	#103,D0
 	MOVE.L	D1,(A0)+
 	MOVE.W	D0,(A0)+
 	MOVE.W	LINENUM(PC),(A0)+
+	CLR.W   (A0)+  
 	DONEM	A0
 	RTS
 
@@ -12260,6 +12261,7 @@ ERROR103:	MOVEQ	#103,D0
 	MOVE.L	D1,(A0)+
 	MOVE.W	D0,(A0)+
 	MOVE.W	LINENUM(PC),(A0)+
+	CLR.W   (A0)+  
 	DONEM	A0
 	RTS
 ;; ADD BRANCH PCREL 32
@@ -12272,6 +12274,7 @@ ADDBRANCHPCREL32:
     ADDQ.L  #4,A0
     MOVE.L  D1,(A0)+
     MOVE.W  D0,(A0)+
+    MOVE.W	LINENUM(PC),(A0)+
     CLR.W   (A0)+
     DONEM   A0
     RTS
@@ -12286,6 +12289,7 @@ ADDBRANCHPCREL16E:
     ADDQ.L  #4,A0
     MOVE.L  D1,(A0)+
     MOVE.W  D0,(A0)+
+    MOVE.W	LINENUM(PC),(A0)+
     MOVE.W  #1,(A0)+
     DONEM   A0
     RTS
@@ -12300,6 +12304,7 @@ ADDBRANCHPCREL32E:
     ADDQ.L  #4,A0
     MOVE.L  D1,(A0)+
     MOVE.W  D0,(A0)+
+    MOVE.W	LINENUM(PC),(A0)+
     MOVE.W  #1,(A0)+
     DONEM   A0
     RTS
@@ -15716,7 +15721,7 @@ APPEND:
     BNE     ERROR44
     
 	SUB.L	A0,D2
-    CMP.W   #1,10(A5)
+    CMP.W   #1,12(A5)
     BNE .1
     ADDQ.L  #2,D2
 ;    ADDQ.L  #2,A0
@@ -15796,19 +15801,19 @@ XLONG:
     BTST    #1,1(A0)
     BNE     .XRELOC
     SUB.L   A0,D2
-    CMP.W   #1,10(A5)
+    CMP.W   #1,12(A5)
     BNE .1
     ADDQ.L  #2,D2
 .1:
     MOVE.L  D2,(A0)
     BRA     BRLOOP
 .XRELOC:
-    MOVE.L  10(A5),D2
+    MOVE.L  12(A5),D2
     ADD.L   D7,D2
     BSR     FINDNFIX
     BRA     BRLOOP
 
-;    MOVE.L  10(a5),(a0)
+;    MOVE.L  12(a5),(a0)
 ;    BSR INCRELOC
 ;    SUB.L   D7,A0
 ;    MOVE.L  A0,(A4)+
