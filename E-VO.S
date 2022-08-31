@@ -3311,6 +3311,10 @@ CONTINUEKEY:
 	BNE	.16
  	CMP.W	#39,OSVERSION
 	BMI	ERROR77
+  
+	BTST #5,ICODEPREFS+3        ;LEGACY MODE
+	BNE  ERROR90
+
 	BSET	#2,CODEPREFS
 
 	CMP.W   #17,(A3)
@@ -3349,6 +3353,10 @@ CONTINUEKEY:
     BNE.S   .19
     CMP.W   #37,OSVERSION
     BLT     ERROR77
+
+    BTST #5,ICODEPREFS+3        ;LEGACY MODE
+    BNE  ERROR90
+
     BSET    #7,CODEPREFS
     JSR     SETUPUTIL
 	BRA.S	.5
@@ -9784,7 +9792,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.5.1-dev',160
-			DC.B	'(08.08.2022)'
+			DC.B	'(31.08.2022)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -19869,6 +19877,22 @@ EXPIMMLIST:
     cmp.w   #-1,d5
     bne     ERROR0
     addq.l  #4,a3       ; skip ] off
+
+    CMP.W	#30,(A3)
+    BNE.S .L0
+	ADDQ.L	#2,A3
+	LEA	.EL(PC),A0
+	MOVE.L	(A0)+,(A4)+
+	MOVE.L	(A0)+,(A4)+
+	MOVE.W	(A0)+,(A4)+
+	MOVEQ	#1,D5
+	BRA	EXPLOOP
+
+.EL:	MOVE.W	#0,D0
+	LEA	.EL+4(PC),A0
+	MOVE.L	A0,D0
+    
+.L0 
     move.l  a5,-(a7)
     moveq   #0,d5
 .L1:CHESTB  A5,D1,20,ERROR46
@@ -20117,6 +20141,21 @@ EXPIMMLIST:
     cmp.w   #-1,d5
     bne     ERROR0
     addq.l  #4,a3       ; skip ] off
+    CMP.W	#30,(A3)
+    BNE.S .L0
+	ADDQ.L	#2,A3
+	LEA	.EL(PC),A0
+	MOVE.L	(A0)+,(A4)+
+	MOVE.L	(A0)+,(A4)+
+	MOVE.W	(A0)+,(A4)+
+	MOVEQ	#1,D5
+	BRA	EXPLOOP
+
+.EL:	MOVE.W	#0,D0
+	LEA	.EL+4(PC),A0
+	MOVE.L	A0,D0
+    
+.L0    
     move.l  a5,-(a7)
     moveq   #0,d5
 .L1:CHESTB  A5,D1,20,ERROR46
@@ -25577,9 +25616,16 @@ NSENDC:
 	RTS
 .C:	GETML	A5
 	LEA	GLOBVARTAB(PC),A4
+
+	BTST #5,ICODEPREFS+3        ;LEGACY MODE
+	BEQ.S .1
+
+	CLR.L 96(A4) ;last entry is EXCEPTIONINO in legacy mode
+	CLR.L 100(A4) ;last entry is EXCEPTIONINO in legacy mode
+
 .1:	MOVE.L	(A4)+,D7
 	MOVE.L	(A4)+,D6
-	BEQ.S	.2
+	BEQ.S	.2 
 	CMP.L	#GLOBVARTAB+24,A4
 	BNE.S	.NARG
 	LEA	9(A5),A1
@@ -25679,9 +25725,9 @@ STRLENADR:	DC.L	0
 	DC.L	.11,-84
 	DC.L	.12,-92
 	DC.L	.13,-96
-	DC.L	.14,-120
-	DC.L	.15,-124
-    DC.L	.16,-132
+	DC.L	.14,-120    ;excluded in legacy mode
+	DC.L	.15,-124    ;excluded in legacy mode
+	DC.L	.16,-132    ;excluded in legacy mode
 	DC.L	0,0
 
 .1:	DC.B	"stdout",0
@@ -25697,9 +25743,9 @@ STRLENADR:	DC.L	0
 .11:	DC.B	"exception",0
 .12:	DC.B	"stdin",0
 .13:	DC.B	"exceptioninfo",0
-.14:	DC.B	"thistask",0
-.15:    DC.B    "__pool",0
-.16:    DC.B    "utilitybase",0
+.14:	DC.B	"thistask",0           ;excluded in legacy mode
+.15:    DC.B    "__pool",0         ;excluded in legacy mode
+.16:    DC.B    "utilitybase",0    ;excluded in legacy mode
 	EVEN
 
       PATCHFUNCLIST:
