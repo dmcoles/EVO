@@ -1,16 +1,16 @@
 ##base _MathIeeeDoubBasBase
 ##bias 30
 ##public
-IEEEDPFix(parm)(d0/d1)
-IEEEDPFlt(integer)(d0)
-IEEEDPCmp(leftParm,rightParm)(d0/d1/d2/d3)
-IEEEDPTst(parm)(d0/d1)
-IEEEDPAbs(parm)(d0/d1)
-IEEEDPNeg(parm)(d0/d1)
-IEEEDPAdd(leftParm,rightParm)(d0/d1/d2/d3)
-IEEEDPSub(leftParm,rightParm)(d0/d1/d2/d3)
-IEEEDPMul(factor1,factor2)(d0/d1/d2/d3)
-IEEEDPDiv(dividend,divisor)(d0/d1/d2/d3)
+IeeeDPFix(parm)(d0/d1)
+IeeeDPFlt(integer)(d0)
+IeeeDPCmp(leftParm,rightParm)(d0/d1/d2/d3)
+IeeeDPTst(parm)(d0/d1)
+IeeeDPAbs(parm)(d0/d1)
+IeeeDPNeg(parm)(d0/d1)
+IeeeDPAdd(leftParm,rightParm)(d0/d1/d2/d3)
+IeeeDPSub(leftParm,rightParm)(d0/d1/d2/d3)
+IeeeDPMul(factor1,factor2)(d0/d1/d2/d3)
+IeeeDPDiv(dividend,divisor)(d0/d1/d2/d3)
 *--- functions in V33 or higher (Release 1.2) ---
 IEEEDPFloor(parm)(d0/d1)
 IEEEDPCeil(parm)(d0/d1)
