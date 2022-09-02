@@ -9792,7 +9792,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.5.1-dev',160
-			DC.B	'(31.08.2022)'
+			DC.B	'(02.09.2022)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -14618,10 +14618,6 @@ ALIGN:	DC.W	0
 	BEQ.S	.2
 	CMP.W	#$2010,D7			; MOVE.L (Ax),D0
 	BEQ.S	.2
-	CMP.W	#$1010,D7			; MOVE.B (Ax),D0
-	BEQ.S	.2
-	CMP.W	#$3010,D7			; MOVE.W (Ax),D0
-	BEQ.S	.2
 .5A:	MOVE.W	-4(A4),D7
 	AND.W	#%1111000111111111,D7		; MOVE.L D0,Dx
 	CMP.W	#$2000,D7
@@ -15644,11 +15640,11 @@ APPEND:
     MOVE.l      D0,A0
     move.w      4(a0),d0
     MOVE.L      A0,-(a7)
-    addq.l      #2,a4       ; look below
+    addq.l      #4,a4       ; look below
     bsr         ADDLABEL
     move.l      (a7)+,a0
     move.l      a4,-(a7)
-    subq.l      #2,a4       ; look above
+    subq.l      #4,a4       ; look above
     move.l      6(a0),a1
     move.l      10(a0),d0
     subq.l      #1,d0
@@ -19873,23 +19869,23 @@ poprawka=1
   IFeq poprawka
 ;; new imm list
 EXPIMMLIST:
-    CLR.L   LAST_CMD_ADR
-    cmp.w   #-1,d5
-    bne     ERROR0
-    addq.l  #4,a3       ; skip ] off
+	CLR.L   LAST_CMD_ADR
+	cmp.w   #-1,d5
+	bne     ERROR0
+	addq.l  #4,a3       ; skip ] off
 
-    CMP.W	#30,(A3)
-    BNE.S .L0
+	CMP.W	#30,(A3)
+	BNE.S .L0
 	ADDQ.L	#2,A3
 	LEA	.EL(PC),A0
 	MOVE.L	(A0)+,(A4)+
 	MOVE.L	(A0)+,(A4)+
-	MOVE.W	(A0)+,(A4)+
+	MOVE.L	(A0)+,(A4)+
 	MOVEQ	#1,D5
 	BRA	EXPLOOP
 
-.EL:	MOVE.W	#0,D0
-	LEA	.EL+4(PC),A0
+.EL:	MOVE.L	#0,D0
+	LEA	.EL+6(PC),A0
 	MOVE.L	A0,D0
     
 .L0 
@@ -19993,7 +19989,7 @@ EXPIMMLIST:
     move.l  (a7)+,a0
     move.w  d0,(a0)+
     move.l  (a7)+,d1
-    addq.l  #2,d1
+    addq.l  #4,d1
     move.l  d1,d0
     JSR     NEW
     move.l  d0,(a0)+
@@ -20010,6 +20006,7 @@ EXPIMMLIST:
     move.l  (a7)+,a0
     move.l  6(a0),a0
     move.w  d5,(a0)
+    move.w  d5,2(a0)
 
     move.l  (a7),a1
     move.w  #-1,-(a7)
@@ -20030,11 +20027,11 @@ EXPIMMLIST:
     cmp.w   #2,d2
     blt     .Fb
     beq     .Fi
-    move.l  d0,2(a0,d5)
+    move.l  d0,4(a0,d5)
     bra     .F
-.Fb:move.b  d0,2(a0,d5)
+.Fb:move.b  d0,4(a0,d5)
     bra     .F
-.Fi:move.w  d0,2(a0,d5)
+.Fi:move.w  d0,4(a0,d5)
     bra     .F
 .F2:cmp.w   #2,d0
     bne     .F3
@@ -20137,22 +20134,22 @@ STRLH:
   ifne poprawka
 ;; new imm list
 EXPIMMLIST:
-    CLR.L   LAST_CMD_ADR
-    cmp.w   #-1,d5
-    bne     ERROR0
-    addq.l  #4,a3       ; skip ] off
-    CMP.W	#30,(A3)
-    BNE.S .L0
+	CLR.L   LAST_CMD_ADR
+	cmp.w   #-1,d5
+	bne     ERROR0
+	addq.l  #4,a3       ; skip ] off
+	CMP.W	#30,(A3)
+	BNE.S .L0
 	ADDQ.L	#2,A3
 	LEA	.EL(PC),A0
 	MOVE.L	(A0)+,(A4)+
 	MOVE.L	(A0)+,(A4)+
-	MOVE.W	(A0)+,(A4)+
+	MOVE.L	(A0)+,(A4)+
 	MOVEQ	#1,D5
 	BRA	EXPLOOP
 
-.EL:	MOVE.W	#0,D0
-	LEA	.EL+4(PC),A0
+.EL:	MOVE.L	#0,D0
+	LEA	.EL+6(PC),A0
 	MOVE.L	A0,D0
     
 .L0    
@@ -20256,7 +20253,7 @@ EXPIMMLIST:
     move.l  (a7)+,a0
     move.w  d0,(a0)+
     move.l  (a7)+,d1
-    addq.l  #2,d1
+    addq.l  #4,d1
     move.l  d1,d0
     JSR     NEW
     move.l  d0,(a0)+
@@ -20273,6 +20270,7 @@ EXPIMMLIST:
     move.l  (a7)+,a0
     move.l  6(a0),a0
     move.w  d5,(a0)
+    move.w  d5,2(a0)
 
     move.l  (a7),a1
     move.w  #-1,-(a7)
@@ -20304,11 +20302,11 @@ EXPIMMLIST:
     cmp.w   #2,d2
     blt     .Fb
     beq     .Fi
-    move.l  d0,2(a0,d5)
+    move.l  d0,4(a0,d5)
     bra     .Fc
-.Fb:move.b  d0,2(a0,d5)
+.Fb:move.b  d0,4(a0,d5)
     bra     .Fc
-.Fi:move.w  d0,2(a0,d5)
+.Fi:move.w  d0,4(a0,d5)
 .Fc:add.l   d2,d5
     bra     .F
 .F2:cmp.w   #2,d0
@@ -29700,9 +29698,7 @@ BIN:	ADDQ.L	#1,A2
 	RTS
 
       I_LIST:
-      	MOVEQ	#0,D0
 	MOVE.L	4(A7),D1
-	BEQ.S	.1
 	MOVEA.L	D1,A2			; LEN
 	CMPA.W	#$7FF0,A2
 	BHS.S	.1
