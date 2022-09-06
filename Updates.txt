@@ -348,6 +348,7 @@ Development restarted as E-VO by Darren Coles
       were not set correctly.
     - Made the select source file window wider in EDBG to account for the
       full path being displayed.
+
    (3.5.0)
     - Added ac020 object with pad int to allow optimised 32 bit writes on
       020+ courtesy of Samuel D. Crow
@@ -422,7 +423,22 @@ Development restarted as E-VO by Darren Coles
     - Fix: CHAR '' or CONST STR='' would cause memory corruption
     - Fix "3*SIZEOF LONG" error
     - added AstpCopy and UsedStack and StackSize functions
-      
+
+   (3.5.1)
+    - fix issue with short jump calculations being done incorrect in certain
+      circumstances, causing crashes.
+    - fix casing of math ieee functions to match original E modules
+    - disable OPT POOL and OPT UTILLIB in legacy mode
+    - disable THISTASK, __POOL and UTILITYBASE in legacy mode
+    - reinstate [] in immediate list to previous E functionality (a blank
+      0 item list)
+    - fix optimisation issue where MOVE.B (A0),D0 and MOVE.W (A0),D0 followed
+      by TST.L would be optimised incorrectly.
+    - fix issue with immediate lists, ListMax() could not be used as the max
+      size was not populated.
+    - allow 0 length lists to be created eg List(0)
+	- add showhunk source
+   
 DATE HISTORY:
     3.3b    20.11.1999 -> 12.12.1999
     3.3c    15.12.1999 -> 12.01.2000
@@ -433,3 +449,4 @@ DATE HISTORY:
     3.4.0   09.06.2021 -> 07.10.2021
     3.4.1   19.10.2021 -> 23.10.2021
     3.5.0   04.11.2021 -> 14.07.2022
+	3.5.1   08.08.2022 -> 06.09.2222
