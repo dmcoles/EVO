@@ -105,7 +105,7 @@ PROC process()
       CASE HUNK_HEADER;      PutStr('\thunk_header\n'); head()
       CASE HUNK_OVERLAY;     PutStr('\thunk_overlay\n'); overlay()
       CASE HUNK_BREAK;       PutStr('\thunk_break\n'); hunknr:=1; f:=TRUE
-      CASE HUNK_DRELOC32;    PutStr('\thunk_data-reloc32\n'); reloc(4)
+      CASE HUNK_DRELOC32;    PutStr('\thunk_data-reloc32\n'); reloc(2)
       CASE HUNK_DRELOC16;    PutStr('\thunk_data-reloc16\n'); reloc(4)
       CASE HUNK_DRELOC8;     PutStr('\thunk_data-reloc8\n'); reloc(4)
       CASE HUNK_LIB;         PrintF('\tlibrary_hunk: \d bytes\n',Mul(o[]++,4)); hunknr:=0
@@ -170,13 +170,25 @@ ENDPROC
 PROC reloc(size)
   DEF a
   noreloc:=FALSE
-  a:=o[]++
+  IF size=2
+    a:=Int(o)
+  ELSE
+    a:=o[]
+  ENDIF
+  o:=o+size;
+  
   WHILE a
     IF CtrlC() THEN error(ER_BREAK)
     PrintF('\t  \d reloc entr\s for hunk #\d\n',a,
-           IF a=1 THEN 'y' ELSE 'ies',o[]++)
+           IF a=1 THEN 'y' ELSE 'ies',IF size=2 THEN Int(o) ELSE o[])
+    o:=o+size
     o:=a*size+o
-    a:=o[]++
+    IF size=2
+      a:=Int(o)
+    ELSE
+      a:=o[]
+    ENDIF
+    o:=o+size;
   ENDWHILE
 ENDPROC
 
