@@ -293,35 +293,41 @@ PROC load(name,trap1,trap2) OF e_exe
       h:=o[]
     ENDWHILE
 
-    -> skip symbol hunk if necessary
-
-    IF o[]=HUNK_SYMBOL
-      o++
-      WHILE a:=o[]++ DO o:=a*4+o+4
-    ENDIF
-
     -> eat debug hunks
 
     WHILE (a:=o[]++)<>HUNK_END
-      IF a=HUNK_DEBUG
+      -> skip symbol hunk if necessary
+      IF a=HUNK_SYMBOL
+        WHILE a:=o[]++ DO o:=a*4+o+4
+      ELSEIF a=HUNK_DEBUG
         d:=TRUE
         IF o[2]="EVAR"
           IF src=NIL THEN Raise("eexe")
           dbl:=o[]++
           grabvarinfo(src,o+8,o:=dbl*4+o)
         ELSE
+          dbl:=o[]++
+          IF o[]="VDBG"
+            o:=o+(dbl*4)
+            CONT TRUE
+          ELSEIF o[]="LDBG"
+            o++
+            add:=0
+          ELSE
+            IF (o[]++<>0) THEN Raise("eexe")
+            IF o[]="LINE"
+              add:=0
+            ELSEIF Char(o)="L"
+              add:=o[] AND $FFFFFF
+            ELSE
+              Raise("eexe")
+            ENDIF
+          ENDIF
+
           NEW src
           src.sourcename:=NIL
           src.lines:=NIL
-          dbl:=o[]++
-          IF (o[]++<>0) THEN Raise("eexe")
-          IF o[]="LINE"
-            add:=0
-          ELSEIF Char(o)="L"
-            add:=o[] AND $FFFFFF
-          ELSE
-            Raise("eexe")
-          ENDIF
+
           o++
           src.numlines:=dbl:=dbl-(a:=o[]++)-3
           src.sourcename:=String(StrLen(o))
@@ -401,24 +407,26 @@ PROC make_illegal(codeList:PTR TO LONG,dbg:PTR TO LONG,len,trap1,trap2)
     FOR a:=1 TO len STEP 2
       dbg++
       b:=dbg[]
-      i:=0
-      p:=0
-      WHILE (i<ListLen(codeList)) AND (p<b)
-        code:=codeList[i]
-        p:=p+code.codelen
-        i++
-      ENDWHILE
-      b:=b-(p-code.codelen)+code.code
-      dbg[]++:=b
-      IF b[]<>OPCODE_NOP THEN Raise("eexd")
-      IF (trap1>=0) AND (trap1<=15) AND (trap2>=0) AND (trap2<=15)
-        b[]:=OPCODE_TRAP0 OR trap1
-      ELSE
-        c:=b+2
+      IF b
+        i:=0
+        p:=0
+        WHILE (i<ListLen(codeList)) AND (p<b)
+          code:=codeList[i]
+          p:=p+code.codelen
+          i++
+        ENDWHILE
+        b:=b-(p-code.codelen)+code.code
+        dbg[]++:=b
         IF b[]<>OPCODE_NOP THEN Raise("eexd")
-        IF (b[1]<>OPCODE_NOP) OR (b[2]<>OPCODE_NOP) THEN Raise("db50")
-        b[]:=OPCODE_JSR
-        c[]:={tcode_jsr1}
+        IF (trap1>=0) AND (trap1<=15) AND (trap2>=0) AND (trap2<=15)
+          b[]:=OPCODE_TRAP0 OR trap1
+        ELSE
+          c:=b+2
+          IF b[]<>OPCODE_NOP THEN Raise("eexd")
+          IF (b[1]<>OPCODE_NOP) OR (b[2]<>OPCODE_NOP) THEN Raise("db50")
+          b[]:=OPCODE_JSR
+          c[]:={tcode_jsr1}
+        ENDIF
       ENDIF
     ENDFOR
   ENDIF
