@@ -67,7 +67,7 @@ PROC main() HANDLE
   DEF options:PTR TO LONG,rdargs=NIL,exename[100]:STRING,e:PTR TO dbgwin,
       pubconname[200]:STRING, i
   DEF gb:PTR TO gfxbase
-  title:='EDBG v3.5.0, The E Debugger! © 1994-1997 Wouter (and Jason), 2021 Darren Coles'
+  title:='EDBG v3.6.0, The E Debugger! © 1994-1997 Wouter (and Jason), 2021-2022 Darren Coles'
   reqtitle:='EDBG'
   vars:=newlist()
   options:=[0,0,0,0]
@@ -907,7 +907,7 @@ PROC getvarval(var,send=FALSE)
       IF type:=evar.regno
         v:=frame.regs[type]
         vptr:=0
-      ELSEIF evar.offs
+      ELSEIF isglob OR evar.offs
         v:=Long(vptr:=frame.regs[IF isglob THEN 12 ELSE 13]+evar.offs)
         type:=IF isglob THEN 2 ELSE 1
       ENDIF
@@ -1542,4 +1542,4 @@ EXCEPT DO
   IF rexxsysbase THEN CloseLibrary(rexxsysbase)
 ENDPROC
 
-CHAR 0, '$VER: EDBG 3.5.0', 0, 0
+CHAR 0, '$VER: EDBG 3.6.0-dev', 0, 0

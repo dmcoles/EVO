@@ -54,6 +54,19 @@ PUBLIC
   type:PTR TO CHAR
 ENDOBJECT
 
+OBJECT vardbg PRIVATE -> changed again v50
+   name:LONG -> name of variable
+   inproc:LONG -> name of procedure
+   ofobject:LONG -> name of methods object, if variable of method
+   scope:CHAR -> 0:internglob, 1:relocglob, 2:xrefglob, 3:global
+   varsize:CHAR ->  0/1/2/4/8/16
+   varesize:CHAR -> 0/1/2/4/8/16/255
+   varreg:CHAR    -> D0-D7:0-7 / A0-A7:8-15 / R0-R31:0-31
+   varofs:INT     -> -1:variable is register, else ofs(reg).
+   varflags:INT   -> MEMBF_SIGNED, MEMBF_FLOAT, MEMBF_VECTOR, or NIL
+   varobject:LONG -> if type.esize=255, else NIL
+ENDOBJECT /* SIZEOF = 24 */
+
 PROC setbreakpoint(vy,exe) OF e_source
   DEF l:PTR TO CHAR
   DEF pc
@@ -120,14 +133,46 @@ ENDPROC vy
 
 PROC isalnum(c) IS ((c>="A") AND (c<="Z")) OR ((c>="_") AND (c<="z")) OR ((c>="0") AND (c<="9"))
 
-PROC findproc(linenum) OF e_source
+PROC findprocdef(name,objname) OF e_source
+  DEF l,i,p
+  DEF tempstr[255]:STRING
+  DEF tempstr2[255]:STRING
+  StringF(tempstr,'PROC \s(',name)
+  IF objname THEN StringF(tempstr2,') OF \s',objname)
+
+  FOR i:=0 TO ListLen(self.sourcelines)
+    IF (p:=InStr(self.sourcelines[i],tempstr))>=0
+      IF (objname=NIL) OR (InStr(self.sourcelines[i],tempstr2)>p) THEN RETURN i
+    ENDIF
+  ENDFOR
+ENDPROC -1
+
+PROC findprocbyname(name) OF e_source
   DEF pr:PTR TO e_proc
   pr:=self.procs
   WHILE pr
-    EXIT IF pr.vars THEN pr.firstvarline<=linenum ELSE FALSE
+    EXIT StrCmp(pr.name,name)
     pr:=pr.next
   ENDWHILE
 ENDPROC pr
+
+PROC findproc(linenum) OF e_source
+  DEF pr:PTR TO e_proc
+  DEF nearpr=NIL:PTR TO e_proc
+  DEF nearline=-1
+  pr:=self.procs
+  WHILE pr   
+    IF pr.vars 
+      IF pr.firstvarline<=linenum
+        IF pr.firstvarline>nearline
+          nearline:=pr.firstvarline
+          nearpr:=pr
+        ENDIF
+      ENDIF
+    ENDIF
+    pr:=pr.next
+  ENDWHILE
+ENDPROC nearpr
 
 PROC findvar(name,pr=NIL:PTR TO e_proc) OF e_source
   DEF var=NIL:PTR TO e_var,isglob=FALSE
@@ -141,6 +186,50 @@ PROC lookupvar(v:PTR TO e_var,name)
     v:=v.next
   ENDWHILE
 ENDPROC NIL
+
+PROC grabvdbginfo(sources,o:PTR TO LONG,end)
+  DEF namelongs,strtablongs,numdebugs
+  DEF name:PTR TO CHAR
+  DEF strtab:PTR TO CHAR
+  DEF vdbgs
+  DEF vdbg: PTR TO vardbg
+  DEF v:PTR TO e_var
+  DEF pr:PTR TO e_proc
+  DEF i
+  DEF src:PTR TO e_source
+  
+  REPEAT
+  namelongs:=o[]++
+  strtablongs:=o[]++
+  numdebugs:=o[]++
+  o++
+  name:=o
+  o+=namelongs*4
+  strtab:=o
+  o+=strtablongs*4
+  vdbgs:=o
+  src:=sources
+  src:=src.findsrc(name)
+  IF src=NIL THEN Raise("eexe")
+
+  FOR i:=0 TO numdebugs-1
+    vdbg:=vdbgs+(SIZEOF vardbg*i)
+    pr:=src.findprocbyname(strtab+vdbg.inproc)
+    IF pr=NIL
+      NEW pr
+      pr.name:=AstrClone(strtab+vdbg.inproc)
+      pr.firstvarline:=src.findprocdef(pr.name,IF vdbg.ofobject THEN vdbg.ofobject+strtab ELSE 0)
+      pr.next:=src.procs	-> in reverse order, for line-search
+      src.procs:=pr
+    ENDIF
+    
+    IF vdbg.scope==[3,0] THEN v:=src.globs ELSE v:=pr.vars
+    v:=NEW [v,AstrClone(strtab+vdbg.name),IF vdbg.varofs=-1 THEN vdbg.varreg ELSE 0,IF vdbg.varofs=-1 THEN 0 ELSE vdbg.varofs,NIL]:e_var    
+    IF vdbg.scope==[3,0] THEN src.globs:=v ELSE pr.vars:=v
+  ENDFOR
+  o:=vdbgs+(numdebugs*SIZEOF vardbg)
+  UNTIL o[]++<>"VDBG"
+ENDPROC
 
 PROC grabvarinfo(src:PTR TO e_source,o:PTR TO INT,end)
   DEF pr=NIL:PTR TO e_proc,job,v
@@ -156,7 +245,7 @@ PROC grabvarinfo(src:PTR TO e_source,o:PTR TO INT,end)
         NEW pr
         v:=o[]++
 ->WriteF('\nPROC \s:',o)
-        pr.name:=o
+        pr.name:=AstrClone(o)
         pr.firstvarline:=-1
         pr.next:=src.procs	-> in reverse order, for line-search
         src.procs:=pr
@@ -233,6 +322,9 @@ PROC load(name,trap1,trap2) OF e_exe
   DEF hcurr,hcount
   DEF segptr=0:PTR TO LONG
   DEF d=FALSE
+  DEF tpr:PTR TO e_proc
+  DEF tv:PTR TO e_var
+  DEF e,ldbg
 
   self.seg:=NIL
   self.codeList:=List(100)
@@ -307,45 +399,61 @@ PROC load(name,trap1,trap2) OF e_exe
           grabvarinfo(src,o+8,o:=dbl*4+o)
         ELSE
           dbl:=o[]++
+          e:=o+(dbl*4)
           IF o[]="VDBG"
-            o:=o+(dbl*4)
+            grabvdbginfo(self.sources,o+4,o:=o+(dbl*4))
             CONT TRUE
-          ELSEIF o[]="LDBG"
-            o++
-            add:=0
-          ELSE
-            IF (o[]++<>0) THEN Raise("eexe")
-            IF o[]="LINE"
-              add:=0
-            ELSEIF Char(o)="L"
-              add:=o[] AND $FFFFFF
-            ELSE
-              Raise("eexe")
-            ENDIF
           ENDIF
 
-          NEW src
-          src.sourcename:=NIL
-          src.lines:=NIL
+          REPEAT
+            
+            IF o[]="LDBG"
+              o++
+              add:=0
+              ldbg:=TRUE
+            ELSE
+              ldbg:=FALSE
+              IF (o[]++<>0) THEN Raise("eexe")
+              IF o[]="LINE"
+                add:=0
+                
+              ELSEIF Char(o)="L"
+                add:=o[] AND $FFFFFF
+              ELSE
+                Raise("eexe")
+              ENDIF
+            ENDIF
 
-          o++
-          src.numlines:=dbl:=dbl-(a:=o[]++)-3
-          src.sourcename:=String(StrLen(o))
-          StrCopy(src.sourcename,o)
-          o:=a*4+o
-          src.lines:=New(src.numlines*4)
-          FOR i:=0 TO src.numlines-1 DO src.lines[i]:=o[i]
+            NEW src
+            src.sourcename:=NIL
+            src.lines:=NIL
+
+
+            IF ldbg
+              src.numlines:=2*o[]++
+              a:=o[]++
+            ELSE
+              o++
+              src.numlines:=dbl:=dbl-(a:=o[]++)-3
+            ENDIF
           
-          FOR a:=1 TO src.numlines STEP 2
-            src.lines[a]:=src.lines[a]+add
-          ENDFOR
-          
-          o:=dbl*4+o
-          src.next:=self.sources
-          self.sources:=src
-          src.load()
-          src.bpoints:=New(ListLen(src.sourcelines))
-          src.globs:=add_globs(src.globs)
+            src.sourcename:=String(StrLen(o))
+            StrCopy(src.sourcename,o)
+            o:=a*4+o
+            src.lines:=New(src.numlines*4)
+            FOR i:=0 TO src.numlines-1 DO src.lines[i]:=o[]++
+            
+            FOR a:=1 TO src.numlines STEP 2
+              src.lines[a]:=src.lines[a]+add
+            ENDFOR
+            
+            src.next:=self.sources
+            self.sources:=src
+            src.load()
+            src.bpoints:=New(ListLen(src.sourcelines))
+            src.globs:=add_globs(src.globs)
+          UNTIL (o=e) OR (o[]=0)
+          o:=e
         ENDIF
       ELSE
         Raise("eexe")
