@@ -9791,8 +9791,8 @@ SRCFN: DC.L 0
 	EROBJLINE:	DC.B	'WITH: %s',10,0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
-			DC.B	'/Assembler/Linker/PP',160,'v3.5.1',160
-			DC.B	'(06.09.2022)'
+			DC.B	'/Assembler/Linker/PP',160,'v3.5.2-dev',160
+			DC.B	'(03.11.2022)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -31843,6 +31843,18 @@ I_MEMFILL:
 	MOVE.L	12(A7),A0  ;addr
 	MOVE.L	8(A7),D1  ;len
 	MOVE.L	4(A7),D0 ;char
+  
+	MOVE.L A0,D2
+	LSR.L #1,D2
+	BCC.S .iseven
+
+	TST.L D1
+	BEQ.S .done
+
+	MOVE.B D0,(a0)+
+	SUBQ.L #1,D1
+
+.iseven:
 	MOVE.L  D1,D2
 	AND.L #3,D1
 	LSR.L #2,D2
