@@ -110,7 +110,10 @@ from offset IOFF
   90    INLINE            91    ELSEWHILE         92    ALWAYS
   93    SECTION           94    CODE              95    DATA
   96    CHIP              97    FAST              98    OFFSETOF
-
+  99    TRY              100    CATCH            101    ENDTRY
+ 102    UNTILN           103    WHILEN           104    ELSEWHILEN
+ 105    IFN              106    ELSEIFN          107    EXITN
+ 108    CONTN
   
 |       = significant for idents
 
@@ -233,7 +236,7 @@ OBJECT member
   ooff:INT                      0, offset
   oflags:CHAR                   2, SET PRIVATE,EXTRA_TYPED
   dummy:CHAR                    3, _empty_spot_
-  osize:INT   m                   4, fieldsize [1,2,4,0=array]
+  osize:INT                     4, fieldsize [1,2,4,0=array]
   oid:INT                       6, object ID
   oascii:PTR TO STR             8, NIL if PRIVATE
   ptrrepcount                   12 - PTRREPCOUNT used to count ptr to ptr
@@ -475,7 +478,7 @@ store = set to current variables
 8       unstore, make branch {6,21}
 9       copy 2 bytes of jobcode to (a4)
 10      as [9], for 4
-11      as [9], for <n>
+11      as [9], for <n+1>*2 bytes
 12      as [9], for 6
 13      as [9], for 8
 14      as [9], for 10
@@ -550,6 +553,8 @@ store = set to current variables
 83      do fatal error
 84      do warn error
 85      start new section
+86      set iflag if statement matches following jobcode or clear iflag otherwise
+87      invert immediately previous branch (eg beq becomes bne) if iflag is set
 
 +---------------------------------------------------------------+
 |       OPT bits and cli-flags                                  |
@@ -1229,6 +1234,7 @@ id:     construct:              exit  cont   frame: (top..bottom)
 6       REPEAT/UNTIL            *     *      _lab_, jumbacklab, id:INT
 7       LOOP/ENDLOOP            *     *      _lab_, jumbacklab, id:INT
 8       SELECT_OF
+9       TRY/CATCH/FINALLY
 
 has to become (ends with):      FOR/WHILE/UNTIL:        lab,jumpback,id
 
