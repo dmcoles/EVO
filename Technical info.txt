@@ -113,7 +113,7 @@ from offset IOFF
   99    TRY              100    CATCH            101    ENDTRY
  102    UNTILN           103    WHILEN           104    ELSEWHILEN
  105    IFN              106    ELSEIFN          107    EXITN
- 108    CONTN
+ 108    CONTN            109    BYTE             110    WORD
   
 |       = significant for idents
 
@@ -178,8 +178,8 @@ OBJECT ident_lex_parse
   dimdata                       VAR_DIMDATA used to track multi-dimensional arrays
 ENDOBJECT
 
-            0/1  1/2     2/4        3/8 4/16
-flags = SET USED,SYS_VAR,EXPORT (*),REG,REAL|METHOD
+            0/1  1/2     2/4        3/8 4/16          5/32             6/64
+flags = SET USED,SYS_VAR,EXPORT (*),REG,REAL|METHOD,FORCEUNSIGNED,FORCESIGNED
 (*) = in mainsource var komt uit module, variable coalescing
 etype = PTR TO [1,2,4] | PTR TO <object>
 info = [if_arg_then_offset,0,lab=-1 | proc=-2 | -3/-4 code in other module]
@@ -234,7 +234,7 @@ ENDOBJECT
 OBJECT member
   onext:PTR TO member           -4
   ooff:INT                      0, offset
-  oflags:CHAR                   2, SET PRIVATE,EXTRA_TYPED
+  oflags:CHAR                   2, SET PRIVATE,EXTRA_TYPED,UNION,FORCESIGNED,FORCEUNSIGNED
   dummy:CHAR                    3, _empty_spot_
   osize:INT                     4, fieldsize [1,2,4,0=array]
   oid:INT                       6, object ID

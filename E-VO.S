@@ -1757,7 +1757,9 @@ COOKIE	= $BE
 	BRA.S	.X
 .1:	BRA.S	.L
 .X:	TST.W	BUFSPOT
-	BNE	DAMAGEDCOOKIES
+	BEQ.S	.R
+	JMP DAMAGEDCOOKIES
+.R:
 	RTS
 
       SWAPVALUES:
@@ -2273,11 +2275,11 @@ CURBRACK:	DC.L	0
 	MOVE.B	D7,(A2)+		; IDENT
 	CMP.B	#123,D6
 	BPL.S	.4
-	CMP.B	#97,D6
+	CMP.B	#97,D6 
 	BPL	.2
 	CMP.B	#91,D6
 	BPL.S	.5
-	CMP.B	#65,D6
+	CMP.B	#65,D6 
 	BPL	.2
 	CMP.B	#58,D6
 	BPL.S	.4
@@ -2348,7 +2350,7 @@ CURBRACK:	DC.L	0
 	DC.L	.DONE,.DONE,.DONE,.DONE,.DONE,.DONE ; 90 INLINE .. DATA
 	DC.L	.DONE,.DONE,.DONE,.DONE,.DONE,.DONE ; 96 CHIP .. ENDTRY
 	DC.L  .DONE,.DONE,.DONE,.DONE,.DONE,.DONE ; 102 UNTILN .. EXITN
-	DC.L  .DONE; 108 CONTN
+	DC.L  .DONE,.DONE,.DONE ; 108 CONTN .. WORD
   
 
 .SAFE:
@@ -2974,8 +2976,15 @@ HEAVYTABLE:
       PARSEENDLINE:
 	CMP.L	ENDECODE(PC),A0
 	BPL.W	.SKIP
+  
+	CMP.W	#IOFF+109,D4
+	BEQ .NSKIP
+	CMP.W	#IOFF+110,D4
+ 	BEQ .NSKIP
+
 	CMP.W	#IOFF+65,D4
 	BPL.W	.SKIP
+.NSKIP:
 	TST.W	D4
 	BMI.W	.SKIP
 	CMP.L	#BRACKETSBUF,CURBRACK		; OPEN [ ( COUNT
@@ -3854,6 +3863,10 @@ PURECHECK: DC.W 0
 .S3:	RTS
 .S1:	CMP.W	#IOFF+39,(A3)+		; PTR TO
 	BNE	ERROR33
+	CMP.W	#IOFF+109,(A3)
+	BEQ.S .SX
+	CMP.W	#IOFF+110,(A3)
+	BEQ.S .SX
 	CMP.W	#IOFF+20,(A3)
 	BPL.S	.S2
 	CMP.W	#31,(A3)+
@@ -3862,6 +3875,8 @@ PURECHECK: DC.W 0
 	RTS
 .S2:	CMP.W	#IOFF+23,(A3)+
 	BPL	ERROR33
+	RTS
+.SX:  ADDQ.L #2,A3
 	RTS
 .CNT:	DC.W	0
 .A6ST:	DC.L	0
@@ -8270,8 +8285,12 @@ ASM_GRABVALUE:
 .X: CMp.W   #LIBC,D3
     BEQ .LIB
     CMP.W   #IOFF+50,D3     ; check for sizeof
-    BNE.S   .XNS
+    BNE   .XNS
 
+    CMP.W   #IOFF+109,(A3) ;BYTE
+    BEQ.S   .BYTEWORD
+    CMP.W   #IOFF+110,(A3) ;WORD
+    BEQ.S   .BYTEWORD
     CMP.W   #IOFF+20,(A3) ;LONG,INT or CHAR
     BPL.S   .LONGINTCHAR
 .LONGINTCHARBACK:
@@ -8298,6 +8317,13 @@ ASM_GRABVALUE:
 .PTRTOLONGINTCHAR:
     MOVE.L (A0),-(A3)
     BRA.W .2
+.BYTEWORD:
+    MOVEM.L D0/D3,-(A7)
+    MOVE.W (A3)+,D3
+    SUB.W #IOFF+109,D3
+    MOVEQ.L #1,D0
+    LSR.L D3,D0
+    BRA.S .CONT
 .LONGINTCHAR:
     CMP.W   #IOFF+23,(A3)
     BPL.S .LONGINTCHARBACK
@@ -8306,6 +8332,7 @@ ASM_GRABVALUE:
     SUB.W #IOFF+20,D3
     MOVEQ.L #4,D0
     LSR.L D3,D0
+.CONT:
     MOVE.L D0,-(A3)
     MOVEM.L  (A7)+,D0/D3
     BRA.W   .2
@@ -9797,13 +9824,13 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.6.0-dev',160
-			DC.B	'(19.12.2022)'
+			DC.B	'(01.02.2023)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
 			DC.B	'''1999/2003',160,'by grio',10
 			DC.B	'developing as "E-VO"',160
-			DC.B	'''2021-22',160,'by Darren Coles',10
+			DC.B	'''2021-23',160,'by Darren Coles',10
 	TITLEEND:	DC.B	0
   FNPRE: DC.B '-> '
   FNPREEND:
@@ -11891,6 +11918,10 @@ ERROR103:	MOVEQ	#103,D0
 	BEQ	PTRCOMPLEX
 	BTST	#3,CODEPREFS+3
 	BEQ.S	.1
+	CMP.W	#IOFF+109,D7
+	BEQ.S .1
+	CMP.W	#IOFF+110,D7
+	BEQ.S .1
 	CMP.W	#IOFF+20,D7
 	BMI	ERROR32
 	CMP.W	#IOFF+23,D7
@@ -11910,7 +11941,7 @@ ERROR103:	MOVEQ	#103,D0
 	BEQ	DOJOB
 	BRA	ERROR35
 .DH:	CMP.W	#IOFF+17,D7
-	BEQ.S	.DHB
+	BEQ	.DHB
 	CLR.W	DEFFLAG			; FIRST STATEMENT AFTER DEF'S
 	TST.W	HANDLEFLAG
 	BEQ	.DHB
@@ -13021,6 +13052,10 @@ LDEF:	MACRO
 	BEQ .3A
 	CMP.W   #IOFF+22,D1	;CHAR
 	BEQ .3A
+	CMP.W   #IOFF+109,D1	;BYTE
+	BEQ .3A
+	CMP.W   #IOFF+110,D1	;WORD
+	BEQ .3A
 	CMP.W	#31,D1
 	BEQ	.3A
 	BRA .SK2
@@ -13199,7 +13234,7 @@ LDEF:	MACRO
 
 .SETT:	MOVE.W	(A3)+,D1
 	CMP.W	#31,D1
-	BEQ.S	.W3
+	BEQ.S	.W5
 	CMP.W	#IOFF+20,D1		; "OF LONG"
 	BNE.S	.W1
 	LSL.L	#2,D2
@@ -13211,9 +13246,21 @@ LDEF:	MACRO
 	MOVE.W	#2,2(A0)
 	BRA.S	.SK
 .W2:	CMP.W	#IOFF+22,D1		; "OF CHAR"
+	BNE.S .W3
+	BRA.S	.SK
+.W3:  
+	CMP.W	#IOFF+109,D1		; "OF BYTE"
+	BNE.S	.W4
+	BSET #5,5(A0)
+	BRA.S	.SK
+.W4:  
+	CMP.W	#IOFF+110,D1		; "OF WORD"
 	BNE	ERROR33
+	LSL.L	#1,D2
+	MOVE.W	#2,2(A0)
+	BSET #6,5(A0)
 .SK:	RTS
-.W3:	MOVE.L	A4,-(A7)		; "OF <object>"
+.W5:	MOVE.L	A4,-(A7)		; "OF <object>"
 	MOVE.L	(A3)+,A4
 	MOVE.L	A4,(A0)
 	MULU	OSIZE(A4),D2
@@ -14015,8 +14062,18 @@ CHECKPR:	MACRO			; \1=TR.DX
 	MOVEQ	#2,D2			; INT
 	BRA.S	.O
 .2:	CMP.W	#IOFF+22,D0
-	BNE.S	.SOBJ
+	BNE.S	.3
 	MOVEQ	#1,D2			; CHAR
+	BRA.S	.O
+.3: CMP.W	#IOFF+109,D0
+	BNE.S	.4
+	MOVEQ	#1,D2			; BYTE
+	BSET #3,OFLAGS(A0)
+	BRA.S	.O
+.4: CMP.W	#IOFF+110,D0
+	BNE.S	.SOBJ
+	MOVEQ	#2,D2			; WORD
+	BSET #4,OFLAGS(A0)
 .O:	MOVE.L	D2,D3
 .O2:	MOVE.W	OBJCOUNT(PC),6(A0)
 	MOVE.W	D3,4(A0)
@@ -14168,6 +14225,10 @@ CHECKPR:	MACRO			; \1=TR.DX
 
 	CMP.W	#31,(A3)
 	BEQ.S	.DG
+	CMP.W #IOFF+109,(A3)
+	BEQ.S .DG
+	CMP.W #IOFF+110,(A3)
+	BEQ.S .DG
 	CMP.W	#IOFF+23,(A3)
 	BPL.S	.DS
 	CMP.W	#IOFF+20,(A3)
@@ -14219,8 +14280,18 @@ CHECKPR:	MACRO			; \1=TR.DX
 	MOVEQ	#2,D0
 	BRA.S	.GTE
 .GT3:	CMP.W	#IOFF+22,D0		; CHAR
-	BNE.S	.MUT
+	BNE.S	.GT4
 	MOVEQ	#1,D0
+	BRA.S	.GTE
+.GT4: CMP.W	#IOFF+109,D0		; BYTE
+	BNE.S	.GT5
+	MOVEQ	#1,D0
+	BSET	#3,OFLAGS(A0)
+	BRA.S	.GTE
+.GT5: CMP.W	#IOFF+110,D0		; WORD
+	BNE.S	.MUT
+	MOVEQ	#2,D0
+	BSET	#4,OFLAGS(A0)
 .GTE:	MOVE.L	D0,OPTRTYPE(A0)
 	BSET	#1,OFLAGS(A0)
 	RTS
@@ -14310,8 +14381,18 @@ ALIGN:	DC.W	0
 	MOVEQ	#2,D2			; INT
 	BRA.S	.O
 .2:	CMP.W	#IOFF+22,D0
-	BNE.S	.SOBJ
+	BNE.S	.3
 	MOVEQ	#1,D2			; CHAR
+	BRA.S	.O
+.3: CMP.W	#IOFF+109,D0
+	BNE.S	.4
+	MOVEQ	#1,D2			; BYTE
+	BSET	#3,OFLAGS(A0)
+	BRA.S	.O
+.4: CMP.W	#IOFF+110,D0
+	BNE.S	.SOBJ
+	MOVEQ	#2,D2			; WORD
+	BSET	#4,OFLAGS(A0)
 .O:	MOVE.L	D2,D3
 .O2:	MOVE.W	OBJCOUNT(PC),6(A0)
 	MOVE.W	D3,4(A0)
@@ -14333,20 +14414,20 @@ ALIGN:	DC.W	0
 	ADDQ.W	#1,(A0)
 	ADDQ.L	#1,D1
 .1:	MOVE.W	(A3)+,D0
-	BNE.S	.4
+	BNE.S	.5
 	CMP.W	#21,(A3)+
 	BNE	ERROR72
 	MOVE.W	(A3)+,LINENUM
 	MOVE.W	(A3)+,D0
-.4:	CMP.W	#COM,D0
+.5:	CMP.W	#COM,D0
 	BEQ	.UL
 	CMP.W	#IOFF+72,D0		; UNION
-	BEQ.S	.6
+	BEQ.S	.7
 	CMP.W	#39,D0			; objhead
-	BNE.S	.5
-.6:	SUBQ.L	#2,A3
+	BNE.S	.6
+.7:	SUBQ.L	#2,A3
 	BRA.W	.UL
-.5:	CMP.W	#30,D0
+.6:	CMP.W	#30,D0
 	BNE	ERROR34
 	RTS
 
@@ -14452,6 +14533,10 @@ ALIGN:	DC.W	0
 	BNE	ERROR0
 	CMP.W	#31,(A3)
 	BEQ.S	.DG
+	CMP.W #IOFF+109,(A3)
+	BEQ.S .DG
+	CMP.W #IOFF+110,(A3)
+	BEQ.S .DG
 	CMP.W	#IOFF+23,(A3)
 	BPL.S	.DS
 	CMP.W	#IOFF+20,(A3)
@@ -14503,8 +14588,18 @@ ALIGN:	DC.W	0
 	MOVEQ	#2,D0
 	BRA.S	.GTE
 .GT3:	CMP.W	#IOFF+22,D0		; CHAR
-	BNE.S	.MUT
+	BNE.S	.GT4
 	MOVEQ	#1,D0
+	BRA.S	.GTE
+.GT4:	CMP.W	#IOFF+109,D0		; BYTE
+	BNE.S	.GT5
+	MOVEQ	#1,D0
+	BSET	#3,OFLAGS(A0)
+	BRA.S	.GTE
+.GT5:	CMP.W	#IOFF+110,D0		; WORD
+	BNE.S	.MUT
+	MOVEQ	#2,D0
+	BSET	#4,OFLAGS(A0)
 .GTE:	MOVE.L	D0,OPTRTYPE(A0)
 	BSET	#1,OFLAGS(A0)
 	RTS
@@ -15316,9 +15411,9 @@ SAVEDREGSPTR:	DC.L	0
 .NUKEV:	MOVE.W	.ISM(PC),D0
 	BPL.S	.INUKE
 	MOVE.W	.NUKE(PC),(A4)+
-	BRA	GVA0D1_0
+	JMP	GVA0D1_0
 .INUKE:	MOVE.W	.NUKE2(PC),(A4)+
-	BSR	GVA0D1_0
+	JSR	GVA0D1_0
 	MOVE.W	.NUKE3(PC),(A4)+
 	MOVE.W	D0,(A4)+
 	RTS
@@ -16694,12 +16789,19 @@ dval2:  DC.L 0
 	CMP.B	#LAB,4(A0)
 	BEQ	ERROR6
 
+	BTST #5,5(A0)
+	SNE D1
+	MOVE.W D1,FORCEUNSIGNED
+	BTST #6,5(A0)
+	SNE D1
+	MOVE.W D1,FORCESIGNED
+
 	MOVE.L VAR_DIMDATA(A0),D1
 	BEQ .nodimdata
 	MOVE.L D1,A1
 	MOVE.W (A1),D1
 	MOVE.L A1,DIMSPTR
-    MOVE.L A1,FIRSTPTR
+  MOVE.L A1,FIRSTPTR
 	SUBQ.W #1,D1
 	MOVE.W D1,ARRAY_DIMS
   
@@ -17082,9 +17184,18 @@ PLB:
 .NXA5:	BTST	#1,CODEPREFS+3
 	BEQ.S	.NNCH
 	BSR	NILCHECK
-.NNCH:	MOVEQ	#0,D4
+.NNCH:
+	MOVEQ	#0,D4
 	CMP.L	D4,A1
 	BEQ.S	.16
+	BTST #3,OFLAGS(A1)
+	SNE D4
+	MOVE.W D4,FORCEUNSIGNED
+
+	BTST #4,OFLAGS(A1)
+	SNE D4
+	MOVE.W D4,FORCESIGNED
+
 	MOVE.W	OSIZE(A1),D4		; D4=READSIZE
 	CMP.W	#4,D4
 	BNE.S	.111
@@ -17308,15 +17419,23 @@ PLB:
 	ADD.W	D0,D7
 	MOVE.W	.24(PC,D7.W),(A4)+
 .E1_B:
+	MOVE.L	A4,.tmpA4
 	BSR	.EXTL
 	CMP.W	#2,D4
 	BEQ.W	.21
 	BPL.S	.25
 	TST.W	D4
     BEQ     .DO         ; SKIP MOVE.X SET
-	BCLR	#5,-2(A4)
+    MOVE.L A4,-(A7)
+    MOVE.L .tmpA4,A4
+    BCLR	#5,-2(A4)
+    MOVE.L (A7)+,A4
     BRA     .21
-.25:	BCLR	#4,-2(A4)
+.tmpA4: DC.L 0
+.25:	MOVE.L A4,-(A7)
+    MOVE.L .tmpA4,A4
+    BCLR	#4,-2(A4)
+    MOVE.L (A7)+,A4
     BRA     .21
 ;; Enhance1 (:=)
 .ENHANCE1:
@@ -17367,17 +17486,23 @@ PLB:
     ADD.W   D0,D7
     ADD.W   D0,D7
     MOVE.W  .24(PC,D7.W),(A4)+      ;
-
+    MOVE.L	A4,.tmpA4
     BSR     .EXTL
     CMP.W   #2,D4
     BEQ.S   .EXP_C1_2
     BPL.S   .EXP_C1_1
     TST.W   D4
     BEQ     ERROR0                  ; compiler shouldn't use this code, anyway..
+    MOVE.L A4,-(A7)
+    MOVE.L .tmpA4,A4
     BCLR    #5,-2(A4)               ; .B/.L size
+    MOVE.L (A7)+,A4
     BRA.S   .EXP_C1_2
 .EXP_C1_1:
+    MOVE.L A4,-(A7)
+    MOVE.L .tmpA4,A4
     BCLR    #4,-2(A4)               ; same here
+    MOVE.L (A7)+,A4
 .EXP_C1_2:
     MOVE.L  D4,-(A7)
     MOVE.W  .EXP_ST,(A4)+
@@ -17621,14 +17746,21 @@ PLB:
 	LSL.L	#3,D2
 	LSL.L	#4,D2
 .30:	MOVE.L	D0,D2
+.19C:	EXT.W	D0
+	EXT.W	D1
 
 
 .MOVEQ:	CMP.W	#4,D4			; see if we need a "moveq #0,D0/D1"
 	BEQ.S	.MOVEX
 	CMP.W	#2,D0
 	BPL.S	.MOVEX
+	TST.W FORCESIGNED
+	BNE.S .DOMOVEX
 	CMP.W	#2,D4
 	BEQ.S	.MOVEX
+	TST.W FORCEUNSIGNED
+	BNE.S .MOVEX
+.DOMOVEX:
 	LSL.L	#1,D0
 	MOVE.W	.19(PC,D0.W),(A4)+
 	LSR.L	#1,D0
@@ -17638,13 +17770,25 @@ PLB:
 	BEQ.S	.EXTX
 	CMP.W	#2,D0
 	BPL.S	.EXTX
+	TST.W FORCESIGNED
+	BNE.S .EXTX
+	TST.W FORCEUNSIGNED
+	BNE.S .force
 	CMP.W	#1,D4
 	BEQ.S	.EXTX
+.fdone:
 	LSL.L	#1,D0
 	MOVE.L A4,lastextl
 	MOVE.W	.19B(PC,D0.W),(A4)+
 	LSR.L	#1,D0
 .EXTX:	RTS
+.force:
+	CMP.W	#1,D4
+	BNE.S	.fdone
+	LSL.L	#1,D0
+	MOVE.W	.19C(PC,D0.W),(A4)+
+	LSR.L	#1,D0
+	BRA.S .fdone
 
 .EADDRMETHOD2:
 	MOVE.L	(A3),A6
@@ -17667,6 +17811,8 @@ PLB:
 	ADDQ.L	#4,A7			; FLUSH RTS
 	BRA	EXPLOOP
 LASTMEMBER:	DC.L	0
+FORCEUNSIGNED: DC.W 0
+FORCESIGNED: DC.W 0
 
 PLX:	CMP.W	#35,D1			; p++  p--
 	BPL	PLB
@@ -17852,6 +17998,10 @@ XIT:	MOVEM.L	(A7)+,D3-D5/A1
     BCLR    #2,ICODEPREFS+3
     MOVE.L  #0,LASTVAR
 	MOVEM.L	D3-D5/A1/A2,-(A7)	; WE DO HEAVY RECURSION
+	MOVE.W FORCESIGNED,-(A7)
+	CLR.W FORCESIGNED
+	MOVE.W FORCEUNSIGNED,-(A7)
+	CLR.W FORCEUNSIGNED
 	MOVE.W	andalsoflag,-(A7)
 	CLR.W	andalsoflag
 	MOVE.W	FLTFLAG(PC),-(A7)
@@ -17965,6 +18115,8 @@ XIT:	MOVEM.L	(A7)+,D3-D5/A1
 	MOVE.W	(A7)+,NOTEXP
 	MOVE.W	(A7)+,FLTFLAG
 	MOVE.W	(A7)+,andalsoflag
+	MOVE.W	(A7)+,FORCEUNSIGNED
+	MOVE.W	(A7)+,FORCESIGNED
 	MOVEM.L	(A7)+,D3-D5/A1/A2
 	RTS
 	CPU040
@@ -18171,6 +18323,16 @@ GTYPE:	MACRO				; \1=TRASH.AX, \2=RESULT.DX
 	CMP.W	#19,(\1)+
 	BNE.S	.GTOUT
 	MOVE.W	(\1)+,\2
+	CMP.W	#IOFF+109,\2
+	BNE.S .GTN1
+	MOVEQ #1,\2
+	BRA.S	.GTOUT
+.GTN1:
+	CMP.W	#IOFF+110,\2
+	BNE.S .GTN2
+  MOVEQ #2,\2
+	BRA.S	.GTOUT
+.GTN2:
 	CMP.W	#IOFF+20,\2
 	BMI.S	.GT1
 	CMP.W	#IOFF+23,\2
@@ -18195,6 +18357,10 @@ GEAT:	MACRO				; \1=THRASH.DX
 	BNE.S	.GTDONE
 	ADDQ.L	#2,A3
 	MOVE.W	(A3)+,\1
+	CMP.W	#IOFF+109,\1
+	BEQ.S .GTDONE
+	CMP.W	#IOFF+110,\1
+	BEQ.S .GTDONE
 	CMP.W	#IOFF+20,\1
 	BMI.S	.GT9
 	CMP.W	#IOFF+23,\1
@@ -19275,8 +19441,12 @@ EXPQMARK:
       EXPSIZEOF:
     CLR.L   LAST_CMD_ADR
     MOVE.W  (A3),D0
+    CMP.W   #IOFF+109,D0
+    BEQ .0
+    CMP.W   #IOFF+110,D0
+    BEQ .0
     CMP.W   #IOFF+20,D0 ;LONG,INT or CHAR
-    BPL.S   .1
+    BPL   .1
     CMP.W   #IDENT,D0
     BEQ     .4
     CMP.W   #31,D0
@@ -19284,14 +19454,55 @@ EXPQMARK:
     MOVE.W  #52,-2(A3)
     MOVE.W  #VALUE,(A3)+
     MOVE.L  (A3),A0
+    CMP.W #35,4(A3)
+    BEQ.S .MB
+
     MOVE.W  4(A0),2(A3)
     BEQ ERROR40
     CLR.W   (A3)
     BRA EXPVALUE
+.MB:
+    ADDQ.L	#6,A3 
+    CMP.W	#39,(A3)+
+    BNE	ERROR40
+    MOVE.L  -8(A3),A6
+    MOVEM.L A1/D1,-(A7)
+    MOVE.L	(A3)+,A1		; A1=MEMBER
+    BSR	FINDMEMBER		; D1=TRASH,a1=first->REAL,a6=obj
+    CLR.L D0
+    MOVE.W	OSIZE(A1),D0
+    BEQ.S .z
+    CMP.W #4,D0
+    BNE.S .s
+.z:
+    MOVE.L OPTRTYPE(A1),D0
+    CMP.L #5,D0
+    BMI.S .s
+    
+    MOVE.L D0,A1
+    MOVEQ #0,D0
+    MOVE.W OSIZE(A1),D0
+.s:
+
+    MOVEM.L (A7)+,A1/D1
+    
+    LEA -12(A3),A3
+    MOVE.L D0,(A3)
+    MOVE.W #52,4(A3)
+    MOVE.W #52,6(A3)
+    MOVE.W #52,8(A3)
+    MOVE.W #52,10(A3)
+    BRA EXPVALUE
+.0: ADDQ.L  #2,A3
+    SUB.W   #IOFF+109,D0
+    EOR.W   #1,D0
+    ADD.W   #1,D0
+    BRA.S .C
 .1: CMP.W   #IOFF+23,D0
     BPL ERROR0
     ADDQ.L  #2,A3
     SUB.W   #IOFF+20,D0
+.C:
     CMP.W   #1,D5
     BEQ ERROR0
     MOVE.L LABLOG,-(A7)
@@ -19304,13 +19515,21 @@ EXPQMARK:
     BRA EXPLOOP
 .4: ADDQ.L  #2,A3
     MOVE.L  (A3)+,A0
+
+    TST.B	4(A0)
+    BEQ	ERROR22
+    
     MOVE.L  (A0),D0
+
+    CMP.W #35,(A3)
+    BEQ.S .MB2
+      
     CMP.L   #4,D0
-    BLE     .5
+    BLE.S     .5
     MOVE.L  D0,A0
     MOVE.W  OSIZE(A0),D0
 .5: CMP.W   #126,D0
-    BGT     .6
+    BGT.S     .6
     BSR SD0
     MOVE.B  .3(PC),(A4)+
     MOVE.B  D0,(A4)+
@@ -19328,6 +19547,32 @@ EXPQMARK:
 .2: DC.B    4,2,1,0
 .3: MOVEQ   #0,D0
 .7: MOVE.L  #0,D0
+
+.MB2:
+    ADDQ.L	#2,A3 
+    CMP.W	#39,(A3)+
+    BNE	ERROR40
+    MOVE.L  D0,A6
+    MOVEM.L A1/D1,-(A7)
+    MOVE.L	(A3)+,A1		; A1=MEMBER
+    BSR	FINDMEMBER		; D1=TRASH,a1=first->REAL,a6=obj
+    CLR.L D0
+    MOVE.W	OSIZE(A1),D0
+    BEQ.S .z1
+    CMP.W #4,D0
+    BNE.S .s1
+.z1:
+    MOVE.L OPTRTYPE(A1),D0
+    CMP.L #5,D0
+    BMI.S .s1
+    
+    MOVE.L D0,A1
+    MOVEQ #0,D0
+    MOVE.W OSIZE(A1),D0
+.s1:
+
+    MOVEM.L (A7)+,A1/D1
+    BRA.S .5
 ;*-*
 
       EXPIF:
@@ -19991,15 +20236,20 @@ EXPIMMLIST:
     move.l  d5,d1
     lsl.w   #2,d1
     bra     .CNT
-.C1:cmp.w   #IOFF+20,d0
+.C1:  cmp.w  #IOFF+109,d0
+    beq.s   .CHR
+    cmp.w  #IOFF+110,d0
+    beq.s   .WORD
+    cmp.w   #IOFF+20,d0
     bmi     ERROR40
     cmp.w   #IOFF+22,d0
     bgt     ERROR40
     cmp.w   #IOFF+21,d0
-    bmi     .CNT
-    bgt     .CHR
+    bmi.s     .CNT
+    bgt.s     .CHR
+.WORD:
     moveq   #2,d2
-    bra     .CNT
+    bra.s     .CNT
 .CHR:
     moveq   #1,d2
 .CNT:
@@ -20255,15 +20505,20 @@ EXPIMMLIST:
     move.l  d5,d1
     lsl.w   #2,d1
     bra     .CNT
-.C1:cmp.w   #IOFF+20,d0
+.C1:  cmp.w #IOFF+109,d0
+    beq.s   .CHR
+    cmp.w #IOFF+110,d0
+    beq.s   .WORD
+    cmp.w   #IOFF+20,d0
     bmi     ERROR40
     cmp.w   #IOFF+22,d0
     bgt     ERROR40
     cmp.w   #IOFF+21,d0
-    bmi     .CNT
-    bgt     .CHR
+    bmi.s     .CNT
+    bgt.s     .CHR
+.WORD:
     moveq   #2,d2
-    bra     .CNT
+    bra.s     .CNT
 .CHR:
     moveq   #1,d2
 .CNT:
@@ -22215,7 +22470,9 @@ NUMRECSAVE = 8
 
       EXPLIBCALL:
   CMP.W	#1,D5
-	BEQ	ERROR0
+	BNE .NOERR
+	JMP ERROR0
+.NOERR:
 	LEA	EXPLCHECK(PC),A0	; HERE WE CHECK LOOPED CALLS!
 	TST.W	(A0)
 	BEQ.S	.1			; NO NEED TO
@@ -22258,7 +22515,9 @@ NUMRECSAVE = 8
 	MOVE.B	#-1,(A0)+
 	MOVE.W	D0,EXPLNUM
 	CMP.W	#17,(A3)+		; CHECK INCOMING (
-	BNE	ERROR23
+	BEQ.S .noerr
+	JMP	ERROR23
+.noerr
 	MOVE.L LABLOG,-(A7)
 	BSR	SD0
 	TST.W	EXPLNUM
@@ -23247,7 +23506,7 @@ VREF:	MOVE.L	A1,A3			; SEARCH FOR VAR
 	SUBQ.L	#4,D2
 	DONEM	A5
 	;BRA	ODONE
-ODONE:	GETM	A3			; GOT VAR IN D2, NOW HANG IN CODEREM LIST
+ODONE:	GETML	A3			; GOT VAR IN D2, NOW HANG IN CODEREM LIST
 	MOVE.L	CODELIST(PC),D1
 	BNE.S	.NN
 	MOVE.L	A3,CODELIST
@@ -23259,7 +23518,7 @@ ODONE:	GETM	A3			; GOT VAR IN D2, NOW HANG IN CODEREM LIST
 	MOVE.W	#4,(A3)+
 	MOVE.L	A2,(A3)+
 	MOVE.L	D2,(A3)+
-	MOVE.W	LOADEDVERSION(PC),(A3)+
+	MOVE.W	LOADEDVERSION,(A3)+
 	DONEM	A3
 	BRA	ADDGLOBS
 
@@ -23267,7 +23526,7 @@ ODONE:	GETM	A3			; GOT VAR IN D2, NOW HANG IN CODEREM LIST
 	MOVE.L	(A0)+,D7
 	CMP.W	#1,D1
 	BEQ.S	.SKIP
-	GETM	A2
+	GETML	A2
 	MOVE.L	CODELIST(PC),D0
 	BNE.S	.NN
 	MOVE.L	A2,CODELIST
@@ -23294,7 +23553,7 @@ ODONE:	GETM	A3			; GOT VAR IN D2, NOW HANG IN CODEREM LIST
 	MOVE.L	(A0)+,D7
 	CMP.W	#1,D1
 	BEQ.S	.SKIP
-	GETM	A2
+	GETML	A2
 	MOVE.L	CODELIST(PC),D0
 	BNE.S	.NN
 	MOVE.L	A2,CODELIST
@@ -23361,7 +23620,7 @@ ODONE:	GETM	A3			; GOT VAR IN D2, NOW HANG IN CODEREM LIST
 .L:	MOVE.W	(A0)+,D0
 	CMP.W	#-1,D0
 	BEQ	DOMODULEJOB
-	GETM	A4
+	GETML	A4
 	EXT.L	D0
 	MOVE.L	A0,A1
 	HASH	A1,D1,D2
@@ -23381,7 +23640,7 @@ ODONE:	GETM	A3			; GOT VAR IN D2, NOW HANG IN CODEREM LIST
 	LEA	16(A4),A3		; note: 16
 	MOVE.L	A3,(A4)+		; PROC
 	MOVE.W	#-2,(A4)+
-	MOVE.W LINENUM(PC),(A4)+
+	MOVE.W LINENUM,(A4)+
 	CLR.L	(A4)+			; EXTRA!!
 	MOVE.L	PROCLIST,(A4)+
 	MOVE.L	A4,PROCLIST
@@ -23419,7 +23678,7 @@ ODONE:	GETM	A3			; GOT VAR IN D2, NOW HANG IN CODEREM LIST
     
 .LAB:	CLR.L	(A4)+			; LABEL
 	MOVE.W	#-1,(A4)+
-	MOVE.W LINENUM(PC),(A4)+
+	MOVE.W LINENUM,(A4)+
 	CLR.L	(A4)+			; EXTRA!!
 .CODE:	CMP.W	#1,MMODE		; CHECK IF MOD IN MOD
 	BEQ.S	.1
@@ -25781,6 +26040,8 @@ STRLENADR:	DC.L	0
 	DC.L  1,I_LONG,I_LONG020    ;replace I_LONG with I_LONG020 for 020+
 	DC.L  1,I_INT,I_INT020      ;replace I_INT with I_INT020 for 020+
 	DC.L  1,I_CHAR,I_CHAR020    ;replace I_CHAR with I_CHAR020 for 020+
+	DC.L  1,I_WORD,I_WORD020    ;replace I_WORD with I_WORD020 for 020+
+	DC.L  1,I_BYTE,I_BYTE020    ;replace I_BYTE with I_BYTE020 for 020+
 	DC.L  2,I_WRITEF,I_WRITEF37 ;replace I_WRITEF with I_WRITEF37 for V37+
 	DC.L  2,I_PRINTF,I_WRITEF37 ;replace I_PRINTF with I_WRITEF37 for V37+
 	DC.L  2,I_PUTF,I_PUTF37     ;replace I_PUTF with I_PUTF37 for V37+
@@ -26225,6 +26486,7 @@ UTIL:
     DC.L    .ELSEWHILE,.ALWAYS,.SECTION,.ERROR,.ERROR,.ERROR    ; 91-96
     DC.L    .ERROR,.ERROR,.TRY,.CATCH,.ENDTRY,.UNTIL,.WHILE     ; 97-102
     DC.L    .WHILE,.ELSEWHILE,.IF,.ELSEIF,.EXIT,.JCONT			; 103 - 108
+    DC.L    .ERROR,.ERROR
 
 .PROC:		DC.W	50,19,17,36,33,1,37,10
 		LINK	A5,#-27*4
@@ -26417,7 +26679,7 @@ UTIL:
 	DC.L	.72,0,.73,0,.74,0,.75,0,.76,0,.77,0,.78,0,.79,0,.80,0,.81,0
 	DC.L    .82,0,.83,0,.84,0,.85,0,.86,0,.87,0,.88,0,.89,0,.90,0,.91,0
 	DC.L    .92,0,.93,0,.94,0,.95,0,.96,0,.97,0,.98,0,.99,0,.100,0,.101,0
-	DC.L    .102,0,.103,0,.104,0,.105,0,.106,0,.107,0,.108,0
+	DC.L    .102,0,.103,0,.104,0,.105,0,.106,0,.107,0,.108,0,.109,0,.110,0
 	DC.L	0,0
 
 .0:	DC.B	'PROC',0
@@ -26529,6 +26791,8 @@ UTIL:
 .106:  DC.B  'ELSEIFN',0
 .107:  DC.B  'EXITN',0
 .108:  DC.B  'CONTN',0
+.109:  DC.B  'BYTE',0
+.110:  DC.B  'WORD',0
 
 	EVEN
 
@@ -26553,8 +26817,8 @@ INLINETAB:
     DC.L    .E,.E,.E,.E,.E,.E,.E,.E,.E,.E   ; 151-160
     DC.L    .E,.E,INL_LSL,INL_LSR,.E,.E,.E,.E,.E,.E   ; 161-170
     DC.L    INL_MUL020,INL_DIV020,INL_LONG,INL_INT,INL_CHAR,INL_MOD020,.E,.E,.E,.E   ; 171-180
-    DC.L    .E,.E,.E,.E,.E,.E,.E,.E,.E,.E   ; 181-190
-
+    DC.L    .E,.E,.E,.E,.E,INL_BYTE,INL_WORD,INL_BYTE020,INL_WORD,INL_PCHAR   ; 181-190
+    DC.L    INL_PINT,.E,.E,.E,.E,.E,.E,.E,.E,.E   ; 191-200
 ;; ERROR
 .E:
     JMP     ERROR0
@@ -26645,8 +26909,11 @@ INL_LONG:
 INL_INT:
     MOVEQ   #$40,D0
     BSR     EA_GETEXP
-    move.w  #$7000,(A4)+
+    ;INT SHOULD REALLY SIGN EXTEND - do we fix it?
+    ;that means remove the #$7000 line below and add the commented out line instead
+    move.w  #$7000,(A4)+  
     MOVE.W  #$3010,(a4)+
+    ;MOVE.W  #$48c0,(a4)+
     RTS
 ;*-*
 ;; Char
@@ -26787,7 +27054,7 @@ INL_ODD:
     JSR     EXP
     move.l  #$02000001,(a4)+
     move.w  #$56c0,(a4)+        ; SNE       D0
-    bsr     DOEXTL
+    jsr     DOEXTL
     RTS
 ;*-*
 ;; Abs
@@ -27181,6 +27448,30 @@ INL_LSR:
     MOVE.W  #$E2A8,(A4)+        ; LSR.L     D1,D0
     RTS
 ;*-*
+;; Byte
+INL_BYTE:
+    MOVEQ   #$40,D0
+    BSR     EA_GETEXP
+    MOVE.W  #$1010,(a4)+
+    MOVE.L  #$488048c0,(a4)+
+    RTS
+;*-*
+;; WORD
+INL_WORD:
+    MOVEQ   #$40,D0
+    BSR     EA_GETEXP
+    move.w  #$7000,(A4)+
+    MOVE.W  #$3010,(a4)+
+    RTS
+;*-*
+;; Byte
+INL_BYTE020:
+    MOVEQ   #$40,D0
+    BSR     EA_GETEXP
+    MOVE.W  #$1010,(a4)+
+    MOVE.W	#$49C0,(A4)+
+    RTS
+;*-*
 ;; Inline - optimized version end
 INL_OPTI:
     move.l  a0,a4
@@ -27214,7 +27505,8 @@ INL_OPTI:
 	DC.B	0,0,16,16,4,4,0,0,0,0	; 151-160
 	DC.B	0,0,64,64,0,0,0,0,0,0	; 161-170
 	DC.B	64,64,64,64,64,64,0,0,0,0	; 171-180
-	DC.B	0,0,0,0,0,0,0,0,0,0	; 181-190
+	DC.B	0,0,0,0,0,64,64,64,64,64	; 181-190
+	DC.B	64,0,0,0,0,0,0,0,0,0	; 191-200
 
 ; BITS: 0 = USES MATHBAS
 ;       1 = USES MATHTRANS
@@ -27226,7 +27518,7 @@ INL_OPTI:
 ;
 
 FOFF		= $100
-NREFUNC		= 185
+NREFUNC		= 191
 NRLEGEFUNC = 131
 EFUNCENTRYSIZE=16   ;size of efunctab entry (eg 4 LONGWORD entries)
 
@@ -27417,6 +27709,12 @@ EFUNCENTRYSIZE=16   ;size of efunctab entry (eg 4 LONGWORD entries)
   DC.L	.183,   I_ASTPCOPY,3,$FF
   DC.L	.184,   I_USEDSTACK,0,0
   DC.L	.185,   I_STACKSIZE,0,0
+  DC.L  .186,   I_BYTE,1,0
+  DC.L  .187,   I_WORD,1,0
+  DC.L  .188,   I_BYTE020,1,0
+  DC.L  .189,   I_WORD020,1,0
+  DC.L	.190,   I_PUTCHAR,2,0
+  DC.L	.191,   I_PUTINT,2,0
   DC.L	0,I_CODEEND,0,0
 
 .1:	DC.B	'WriteF',0
@@ -27604,6 +27902,13 @@ EFUNCENTRYSIZE=16   ;size of efunctab entry (eg 4 LONGWORD entries)
 .183: DC.B    'AstpCopy',0
 .184: DC.B    'UsedStack',0
 .185: DC.B    'TotalStack',0
+.186: DC.B    'Byte',0
+.187: DC.B    'WORD',0
+.188: DC.B    'Byte',0   ;020 variant
+.189: DC.B    'WORD',0   ;020 variant
+.190:	DC.B    'PutByte',0
+.191:	DC.B    'PutWord',0
+
 
 GETA4NR = 136
 WRITEF = 1
@@ -29078,7 +29383,7 @@ ASM_INSJOB:
 
       I_INT:
 	MOVE.L	4(A7),A0
-	MOVEQ	#0,D0
+	MOVEQ	#0,D0   ;INT SHOULD REALLY SIGN EXTEND - do we fix it?
 	MOVE.W	(A0),D0
 	RTS
 
@@ -31900,7 +32205,7 @@ I_LONG020:
 ; Int (020 variant)
 I_INT020:
 	MOVEQ   #0,D0
-	MOVE.W  ([4.W,A7]),D0
+	MOVE.W  ([4.W,A7]),D0   ;INT REALLY SHOULD SIGN EXTEND - do we fix it?
 	RTS
 ;*-*
 ; Char (020 variant)
@@ -32164,6 +32469,35 @@ I_STACKSIZE:
   MOVE.L 62(A1),D0  ;stack top
   SUB.L 58(A1),D0   ;stack bottom
   RTS
+
+I_WORD:
+	MOVE.L	4(A7),A0
+	MOVEQ	#0,D0
+	MOVE.W	(A0),D0
+	RTS
+
+I_BYTE:
+	MOVE.L	4(A7),A0
+	MOVE.B	(A0),D0
+	EXT.W   D0
+	EXT.L   D0
+	RTS
+
+; Int (020 variant)
+I_WORD020:
+	MOVEQ   #0,D0
+	CPU020
+	MOVE.W  ([4.W,A7]),D0
+	CPU000
+	RTS
+;*-*
+; Char (020 variant)
+I_BYTE020:
+	CPU020
+	MOVE.B  ([4.W,A7]),D0
+	EXTB.L  D0
+	CPU000
+	RTS
 
 I_CODEEND:
 

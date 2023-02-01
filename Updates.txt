@@ -442,9 +442,12 @@ Development restarted as E-VO by Darren Coles
    (3.6.0)
    - fix issue with memfill that could cause odd address exception on 68000
    - add TRY..CATCH..ENDTRY allowing more control over exception handling
-   - Add UNTILN, WHILEN ELSEWHILEN, IFN, ELSEIFN, EXITN, CONTN which are inverse of their counterparts 
-     eg. UNTILN x is equal to UNTIL x=0
-   
+   - Add UNTILN, WHILEN ELSEWHILEN, IFN, ELSEIFN, EXITN, CONTN which are
+     inverse of their counterparts eg. UNTILN x is equal to UNTIL x=0
+   - Add WORD and BYTE types (unsigned 16 bit and signed 8 bit variable types)
+     and Word() Byte() functions as well as PutByte() and PutWord()
+   - Allow SIZEOF object and SIZEOF object.member
+   - Fix issue where SIZEOF x didnt throw a compile error if x was not defined
    
 DATE HISTORY:
     3.3b    20.11.1999 -> 12.12.1999
