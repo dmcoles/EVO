@@ -26818,7 +26818,7 @@ INLINETAB:
     DC.L    .E,.E,INL_LSL,INL_LSR,.E,.E,.E,.E,.E,.E   ; 161-170
     DC.L    INL_MUL020,INL_DIV020,INL_LONG,INL_INT,INL_CHAR,INL_MOD020,.E,.E,.E,.E   ; 171-180
     DC.L    .E,.E,.E,.E,.E,INL_BYTE,INL_WORD,INL_BYTE020,INL_WORD,INL_PCHAR   ; 181-190
-    DC.L    INL_PINT,.E,.E,.E,.E,.E,.E,.E,.E,.E   ; 191-200
+    DC.L    INL_PINT,.E,.E,INL_FCOMPARE,.E,.E,.E,.E,.E,.E   ; 191-200
 ;; ERROR
 .E:
     JMP     ERROR0
@@ -27472,6 +27472,19 @@ INL_BYTE020:
     MOVE.W	#$49C0,(A4)+
     RTS
 ;*-*
+;; Fcompare
+INL_FCOMPARE:
+    MOVE.L  #$F00,D0            ; move.l    d0,-(a7)
+    BSR EA_GETEXP
+    JSR ASM_COMMA
+    MOVEQ   #0,D0
+    BSR EA_GETEXP
+    MOVE.L  #$2200201F,(A4)+        ; move.l d0,d1  move.l    (a7)+,d0
+    
+    MOVE.L  #$2C6CFFC8,(A4)+
+    MOVE.L  #$4EAEFFD6,(A4)+
+    RTS
+;*-*
 ;; Inline - optimized version end
 INL_OPTI:
     move.l  a0,a4
@@ -27506,7 +27519,7 @@ INL_OPTI:
 	DC.B	0,0,64,64,0,0,0,0,0,0	; 161-170
 	DC.B	64,64,64,64,64,64,0,0,0,0	; 171-180
 	DC.B	0,0,0,0,0,64,64,64,64,64	; 181-190
-	DC.B	64,0,0,0,0,0,0,0,0,0	; 191-200
+	DC.B	64,0,0,64+1,0,0,0,0,0,0	; 191-200
 
 ; BITS: 0 = USES MATHBAS
 ;       1 = USES MATHTRANS
@@ -27518,7 +27531,7 @@ INL_OPTI:
 ;
 
 FOFF		= $100
-NREFUNC		= 191
+NREFUNC		= 195
 NRLEGEFUNC = 131
 EFUNCENTRYSIZE=16   ;size of efunctab entry (eg 4 LONGWORD entries)
 
@@ -27715,6 +27728,10 @@ EFUNCENTRYSIZE=16   ;size of efunctab entry (eg 4 LONGWORD entries)
   DC.L  .189,   I_WORD020,1,0
   DC.L	.190,   I_PUTCHAR,2,0
   DC.L	.191,   I_PUTINT,2,0
+  DC.L	.192,   I_COMPARE,2,0
+  DC.L	.193,   I_UCOMPARE,2,0
+  DC.L	.194,   I_FCOMPARE,2,0
+  DC.L	.195,   I_STRCOMPARE,3,$FF
   DC.L	0,I_CODEEND,0,0
 
 .1:	DC.B	'WriteF',0
@@ -27908,6 +27925,10 @@ EFUNCENTRYSIZE=16   ;size of efunctab entry (eg 4 LONGWORD entries)
 .189: DC.B    'WORD',0   ;020 variant
 .190:	DC.B    'PutByte',0
 .191:	DC.B    'PutWord',0
+.192:	DC.B    'Compare',0
+.193:	DC.B    'Ucompare',0
+.194:	DC.B    'Fcompare',0
+.195:	DC.B    'StrCompare',0
 
 
 GETA4NR = 136
@@ -32498,6 +32519,56 @@ I_BYTE020:
 	EXTB.L  D0
 	CPU000
 	RTS
+
+I_COMPARE:
+	MOVEQ #0,D0
+	MOVE.L	4(A7),D1
+	CMP.L	8(A7),D1
+	BEQ.S .done
+	BLT.S .lower
+	MOVEQ #-1,D0
+	RTS
+.lower
+	MOVEQ #1,D0
+.done:  RTS
+
+I_UCOMPARE:
+	MOVEQ #0,D0
+	MOVE.L	4(A7),D1
+	CMP.L	8(A7),D1
+	BEQ.S .done
+	BLO.S .lower
+	MOVEQ #-1,D0
+	RTS
+.lower
+	MOVEQ #1,D0
+.done:  RTS
+
+I_FCOMPARE:
+	MOVE.L	4(A7),D1
+	MOVE.L	8(A7),D0
+	MOVE.L	-56(A4),A6
+	JSR	-42(A6)
+	RTS
+
+I_STRCOMPARE:
+	MOVE.W	6(A7),D1		; LEN
+	MOVE.L	8(A7),A1		; STR1
+	MOVE.L	12(A7),A0		; STR2
+	MOVEQ	#-1,D0
+	ADDQ.W	#1,D1
+.1:	SUBQ.W	#1,D1
+	BEQ.S	.3
+	MOVE.B	(A0)+,D2
+	CMP.B	(A1)+,D2
+	BNE.S	.2
+	TST.B	D2
+	BNE.S	.1
+.3:	MOVEQ	#0,D0
+    RTS
+.2:	BLO.S .4
+	MOVEQ #1,D0
+.4: RTS
 
 I_CODEEND:
 
