@@ -9824,7 +9824,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.6.0-dev',160
-			DC.B	'(01.02.2023)'
+			DC.B	'(04.04.2023)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -32611,6 +32611,7 @@ DOARGMACROS:
 .evodef:
 	DC.B 'EVO_3_4_0',0
 	DC.B 'EVO_3_5_0',0
+	DC.B 'EVO_3_6_0',0
 	DC.B 0,0
 
     EVEN

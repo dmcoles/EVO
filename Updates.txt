@@ -437,7 +437,7 @@ Development restarted as E-VO by Darren Coles
     - fix issue with immediate lists, ListMax() could not be used as the max
       size was not populated.
     - allow 0 length lists to be created eg List(0)
-    -  add showhunk source
+    - add showhunk source
 
    (3.6.0)
    - fix issue with memfill that could cause odd address exception on 68000
@@ -448,6 +448,7 @@ Development restarted as E-VO by Darren Coles
      and Word() Byte() functions as well as PutByte() and PutWord()
    - Allow SIZEOF object and SIZEOF object.member
    - Fix issue where SIZEOF x didnt throw a compile error if x was not defined
+   - Added EVO_3_6_0 define
    
 DATE HISTORY:
     3.3b    20.11.1999 -> 12.12.1999
