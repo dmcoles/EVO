@@ -449,6 +449,8 @@ Development restarted as E-VO by Darren Coles
    - Allow SIZEOF object and SIZEOF object.member
    - Fix issue where SIZEOF x didnt throw a compile error if x was not defined
    - Added EVO_3_6_0 define
+   - Added Compare, Ucompare, Fcompare, StrCompare functions
+   
    
 DATE HISTORY:
     3.3b    20.11.1999 -> 12.12.1999
