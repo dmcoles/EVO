@@ -114,7 +114,8 @@ from offset IOFF
  102    UNTILN           103    WHILEN           104    ELSEWHILEN
  105    IFN              106    ELSEIFN          107    EXITN
  108    CONTN            109    BYTE             110    WORD
-  
+ 111    LEGACYINT
+ 
 |       = significant for idents
 
 to change: INSTABLE, INSJOBTAB, PARSEUPPER, HEAVYTABLE,
@@ -612,8 +613,8 @@ bit     flags           opt             clear   set
 2                                               inline IF or ? operator in use
 3
 4
-5       LEGACY/S                                produce old module version format 10 and no new system constants
-6
+5       LEGACY                                  produce old module version format 10 and no new system constants
+6       LEGACYINT                               Int() function not sign extended
 7
 
 

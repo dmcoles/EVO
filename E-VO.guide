@@ -76,6 +76,7 @@ Contents:
           @{"  M. memory deallocation (END)  " link CH_5M }
           @{"  N. generate an error or warning (FATAL/WARN)  " link CH_5N }
           @{"  O. code and data sections (SECTION)  " link CH_5O }
+          @{"  P. Negative conditions/loops (IFN/ELSEIFN etc)  " link CH_5P }
 
          6. function definitions and declarations
           @{"  A. proc definition and arguments (PROC)  " link CH_6A }
@@ -133,7 +134,7 @@ Contents:
           @{"  D. float implementation issues  " link CH_12D }
 
         13. Exception handling
-          @{"  A. defining exception handlers (HANDLE/EXCEPT)  " link CH_13A }
+          @{"  A. defining exception handlers (TRY/CATCH or HANDLE/EXCEPT)  " link CH_13A }
           @{"  B. using the Raise() function  " link CH_13B }
           @{"  C. defining exceptions for built-in functions (RAISE/IF)  " link CH_13C }
           @{"  D. use of exception-ID's  " link CH_13D }
@@ -1341,6 +1342,8 @@ IF (obj<>NIL) ANDALSO (obj.myval=3) THEN b:=2 ELSE b:=3
 This is perfectly acceptable with ANDALSO since the (abj.myval=3) won't be
 executed if (obj<>NIL) is false, so there will be no invalid memory referencing.
 
+
+
 @endnode
 @node CH_4F
 @title "4F. structure (.)"
@@ -2163,6 +2166,46 @@ NOTE
 
 @endnode
 
+@node CH_5P
+@title "5P. Negative conditions/loops (IFN/ELSEIFN etc)"
+5P. Negative conditions/loops (IFN/ELSEIFN etc)
+-----------------------------------------------
+
+While it is perfectly possible to use the Not() operator in loops or conditions to
+indicate the negative condition eg.
+
+   REPEAT
+   ..
+   UNTIL Not(failed)
+
+There are a set of commands which are shorter and generate more efficient code. These 
+commands are:
+
+    UNTILN
+    WHILEN
+    ELSEWHILEN
+    IFN
+    ELSEIFN
+    EXITN
+    CONTN
+    
+They are used in exactly the same way as their counterparts eg.
+
+    REPEAT
+    ..
+    UNTILN failed
+
+    or
+
+    IFN v
+    ..
+    ENDIF
+
+Rather than inverting the results of the operation (which is what adding a Not() would
+do and thus adding extra steps to the calculation these commands simply alter the
+expected branch condition so its direct opposite and so are more efficient.
+
+@endnode
 
 @node CH_6A
 @title "6A. proc definition and arguments (PROC)"
@@ -2609,13 +2652,21 @@ DEF a=1, b=NIL:PTR TO textfont
 
 @endnode
 @node CH_8C
-@title "8C. the simple type (CHAR/INT/LONG)"
-8C. the simple type (CHAR/INT/LONG)
------------------------------------
-The simple types CHAR (8bit) and INT (16bit) may not be used as types
-for a basic (single) variable; the reason for this must be clear by now.
+@title "8C. the simple type (BYTE/CHAR/INT/WORD/LONG)"
+8C. the simple type (BYTE/CHAR/INT/WORD/LONG)
+---------------------------------------------
+in the E language basic (single) variables cannot be 8 or 16 bit types
+(BYTE/CHAR/INT/WORD); the reason for this must be clear by now.
 However they may be used as data type to build ARRAYs from, set PTRs to,
 use in the definition of OBJECTs etc. See those for examples.
+
+The types are defined as follows:
+
+     BYTE - Signed 8 bit values (-128 to 127)
+     CHAR - Unsigned 8 bit values (0 to 255)
+     INT  - Signed 16 bit values (-32768 to 32767)
+     WORD - Unsigned 16 bit values (0-65535)
+     LONG - Signed 32 bit values (-2147483648 to 2147483647)
 
 
 @endnode
@@ -3208,6 +3259,12 @@ Inserts estring2 into estring1 at the specified pos. Returns the estring
 Removes a sub-string within an estring. len characters are removed starting
 at position pos. The estring is returned.
 
+        StrCompare(string1,string2,len=ALL)
+        
+Compares string1 and string2 for upto "len" characters and returns -1 if
+string1<string2. 0 if string1 = string2 and +1 is string1 > string2
+
+
 for string linking functions (see @{" 9H " link CH_9H })
 
 
@@ -3772,18 +3829,31 @@ arithmatically shifts y num bits to left or right (set new bits to 0).
 
 logically shifts y num bits to left or right (set new bits to 0).
 
-        a:=Long(adr)          a:=Int(adr)          a:=Char(adr)
+        a:=Long(adr)          a:=Int(adr)          a:=Word(adr)
+        
+        a:=Char(adr)          a:=Byte(adr)
 
 peeks into memory at some address, and returns the value found. This
-works with 32, 16 and 8 bit values respectively. Note that the compiler does
-not check if 'adr' is valid. These functions are available in E for
-those cases where reading and writing in memory with PTR TO <type>
-would only make a program more complex or less efficient. You are _not_
-encouraged to use these functions.
+works with 32, 16 and 8 bit values and signed or unsigned according to the
+respective types. Note that the compiler does not check if 'adr' is valid.
+These functions are available in E for those cases where reading and writing
+in memory with PTR TO <type> would only make a program more complex or less
+efficient. You are _not_ encouraged to use these functions.
+
+NOTE: In E-VO versions prior to 3.6.0 (and other E languages based directly
+from the original E source) Int() did not sign extend the results. This
+has been corrected in v3.6.0 of E-VO but you can restore the old functioning
+by specifying OPT LEGACYINT
 
         PutLong(adr,a)       PutInt(adr,a)        PutChar(adr,a)
 
-Pokes value 'a' into memory. See: Long()
+Pokes value 'a' into memory. See: Long() in addition:
+
+        PutByte(adr,a) and PutWord(adr,a)
+        
+are also defined but are just aliases for PutChar and PutInt since there is
+no actual difference in functionality when the value is signed or not, the
+value is simply saved to that address.
 
         y:=Bounds(x,a,b)
 
@@ -3793,6 +3863,24 @@ It equals:    y:=IF x<a THEN a ELSE IF x>b THEN b ELSE x
         b:=Chk(x)
   
 Returns FALSE if x is 0 and TRUE for any other value.
+
+  r:=Compare(a,b)
+  
+Does a comparison between a and b and returns -1 if a < b, 0 if a=b and +1 if a>b
+
+  r:=Ucompare(a,b)
+  
+As above but treating a and b as unsigned 32 bit values
+
+  r:=Fcompare(a,b)
+
+As above but treating a and b as floating point values
+  
+  r:=StrCompare(a,b,len)
+
+As above but performing a string comparison on a and b.
+(see @{" 9B " link CH_9B } on string functions for more details)
+
 
 @endnode
 @node CH_9H
@@ -4615,13 +4703,19 @@ for float constants) it will warn you that you are not running the patch.
 
 @endnode
 @node CH_13A
-@title "13A. defining exception handlers (HANDLE/EXCEPT)"
-13A. defining exception handlers (HANDLE/EXCEPT)
-------------------------------------------------
-The exception mechanism in E is basically the same as in ADA; it
-provides for flexible reaction on errors in your program and
-complex resource management. NOTE: the term 'exception' in E has
-very little to do with exceptions caused directly by 680x0 processors.
+@title "13A. defining exception handlers (TRY/CATCH or HANDLE/EXCEPT)"
+13A. defining exception handlers (TRY/CATCH or HANDLE/EXCEPT)
+-------------------------------------------------------------
+
+E now has two styles of exception handling which you can happily mix and
+match according to your needs.
+
+The first (and original) exception mechanism in E is basically the
+same as in ADA; it provides for flexible reaction on errors in your
+program and complex resource management.
+
+NOTE: the term 'exception' in E has very little to do with exceptions
+caused directly by 680x0 processors.
 
 An exception handler is a piece of program code that will be invoked
 when runtime errors occurs, such as windows that fail to open or
@@ -4649,6 +4743,25 @@ exception occurs, the block between EXCEPT and ENDPROC is skipped, and
 the procedure is left at ENDPROC. If an exception is raised, either
 in the PROC part, or in any function that is called in this block,
 an exception handler is invoked.
+
+The second style of exception handling is more flexible and allows for
+more than one exception handler in a single PROC. It is more akin to
+the exception handling in more modern languages. The syntax for this is
+
+  TRY
+    ..
+    do something
+    ..
+  CATCH
+    ..
+    handle the exception
+    ..
+  ENDTRY
+
+So you can define a block of code anywhere within a procedure that can
+handle exceptions raised within the scope of that block. Exception blocks
+can be nested and in effect work exactly the same but this gives the
+developer a greater level of control.
 
 @endnode
 @node CH_13B
@@ -5522,6 +5635,11 @@ NOSTARTUP       Disables as much of the startup code as possible. No libraries
 UTILLIB         Automatically opens UTILITY.LIBRARY in addition to the
                 usual libraries that E-VO will open. The library pointer will
                 be placed in UTILBASE
+LEGACYINT       The Int() function did not sign extend the value. This is not
+                in line with the definition of INT variable type which is
+                signed. This has been corrected in v3.6.0 of E-VO and this
+                option will revert that function back to the previous way of
+                working for backwards compatibility.
 
 example:
 
@@ -5589,8 +5707,10 @@ Note these signs: (+-)    just about, depends on situation,
 OBJECT/ITEM                                     SIZE/AMOUNT/MAX
 --------------------------------------------------------------------------
 
+value datatype BYTE                             -128 .. 127
 value datatype CHAR                             0 .. 255
-value datatype INT                              -32 k .. +32 k
+value datatype INT                              -32768 .. +32767
+value datatype WORD                             0 .. 65535
 value datatype LONG/PTR                         -2 gig .. +2 gig
 
 identifierlength                                100 bytes (n.l.)
@@ -6816,6 +6936,7 @@ The currently defined version macro's are
 
         EVO_3_4_0
         EVO_3_5_0
+        EVO_3_6_0
     
 So if this is not defined then you are not compiling under E-VO. Further
 defines will be added for each new revision of the E-VO compiler so you can
@@ -7094,7 +7215,7 @@ argdecllist     = { argdecl "," }+
 argdecl         = ident [ "=" defaultarg ]
                     [ ":" ( "LONG" | "REAL" | "PTR" "TO" ptrtype ) ]
 ptrtype         = objtype | simpletype
-simpletype      = CHAR | INT | LONG
+simpletype      = BYTE | CHAR | INT | WORD | LONG
 objtype         = ident
 
 stats           = ( ( onelinestat | multlinestat ) eol )*
@@ -7102,14 +7223,14 @@ onelinestat     = exp |
                   lval ":=" exp |
                   { var "," }+ ":=" exp |
                   lval :=: lval
-                  "IF" exp "THEN" onelinestat "ELSE" onelinestat |
+                  "IF[N]" exp "THEN" onelinestat "ELSE" onelinestat |
                   "FOR" var ":=" exp "TO" exp [ "STEP" num ]
                      "DO" onelinestat |
-                  "WHILE" exp "DO" onelinestat |
+                  "WHILE[N]" exp "DO" onelinestat |
                   "RETURN" { exp "," }* |
                   "JUMP" ident |
-                  "EXIT" exp |
-                  "CONT" exp |
+                  "EXIT[N]" exp |
+                  "CONT[N]" exp |
                   "WARN" stringconst |
                   "FATAL" stringconst |
                   "SECTION" ("CODE" | "DATA") ["CHIP"] ["FAST"] | 
@@ -7118,14 +7239,14 @@ onelinestat     = exp |
                   "INCBIN" stringconst |                ; inline asm support
                   simpletype { num "," }+ |
                   "VOID" exp                            ; obsolete
-multlinestat    = "IF" exp eol stats
-                     [ ( "ELSEIF" exp eol stats )* ] 
+multlinestat    = "IF[N]" exp eol stats
+                     [ ( "ELSEIF[N]" exp eol stats )* ] 
                      [ "ELSE" eol stats ]
                      "ENDIF" |
                   "FOR" var ":=" exp "TO" exp [ "STEP" num ] eol
                      stats "ENDPROC" |
-                  "WHILE" exp eol stats ["ELSEWHILE" exp eol stats] ["ALWAYS" eol stats] "ENDWHILE" |
-                  "REPEAT" eol stats "UNTIL" exp |
+                  "WHILE[N]" exp eol stats ["ELSEWHILE[N]" exp eol stats] ["ALWAYS" eol stats] "ENDWHILE" |
+                  "REPEAT" eol stats "UNTIL[N]" exp |
                   "SELECT" var eol
                      ( "CASE" exp eol stats )+
                      [ "DEFAULT" eol stats ]
@@ -7138,7 +7259,7 @@ exp             = [ "-" ] { [ "NOT" ] item binop }+ |
 item            = num | fnum | lval | stringconst | charconst |
                   "SIZEOF" objident |
                   "OFFSETOF objident.ident |
-                  "IF" exp "THEN" exp "ELSE" exp |
+                  "IF[N]" exp "THEN" exp "ELSE" exp |
                   exp ? exp : exp |
                   exp == [ { (exp | exp "TO" exp) ","}+]
                   "[" explist "]" [ ":" ptrtype ] |
@@ -7786,7 +7907,7 @@ Will E have...
 - DEFs halfway PROCs or local to loops etc.?
 - Disassembly mixed mode for EDBG?
 - Sourcecode level #include?
-- Unsigned INT/LONG or signed CHARs?
+- Unsigned LONG?
 - Multiple statements in macros?
 - Multiple error messages?
 - Dereferenced variables in lefthandsides of assignment expressions,

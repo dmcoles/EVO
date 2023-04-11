@@ -2350,7 +2350,7 @@ CURBRACK:	DC.L	0
 	DC.L	.DONE,.DONE,.DONE,.DONE,.DONE,.DONE ; 90 INLINE .. DATA
 	DC.L	.DONE,.DONE,.DONE,.DONE,.DONE,.DONE ; 96 CHIP .. ENDTRY
 	DC.L  .DONE,.DONE,.DONE,.DONE,.DONE,.DONE ; 102 UNTILN .. EXITN
-	DC.L  .DONE,.DONE,.DONE ; 108 CONTN .. WORD
+	DC.L  .DONE,.DONE,.DONE,.DONE ; 108 CONTN .. LEGACYINT
   
 
 .SAFE:
@@ -2576,9 +2576,9 @@ HEAVYTABLE:
       BUSYRAISE:	DC.W	0
 
       PARSECONSTASM:
-	MOVE.L	WORK(PC),A2
+	MOVE.L	WORK,A2
 	BSR	ASM_PARSE
-	MOVE.L	WORK(PC),A2
+	MOVE.L	WORK,A2
 	TST.L	D0
 	BNE	PARSELOOP
 	MOVE.L	#CONSTHASH,A3
@@ -2680,26 +2680,35 @@ HEAVYTABLE:
 	MOVE.L 4(A3),D4
 
 	MOVEM.L D0-D1/A0,-(A7)
+  
+ 	CLR.L D7
+ 	TST.W ECPU
+	BEQ.S .b1
+  
+ 	OR.L #1,D7
+
+.b1 CMP.W	#37,OSVERSION
+	BMI.S	.b2
+
+	OR.L #2,D7
+
+.b2 BTST #6,ICODEPREFS+3        ;LEGACYINT MODE
+    BEQ  .b3
+
+	OR.L #4,D7
+
+.b3
+  
 	LEA PATCHFUNCLIST,A0
 .patch:
 	MOVE.L (A0)+,D0
-	BEQ.S .8      ;list end
+  BEQ.S .8      ;list end
   
-	CMP.L #1,D0
-	BNE.S .5      ;020 kludge
-
-	TST.W ECPU
-	BEQ.S .6
-	BRA.S .7
-
-.5:
-	CMP.L #2,D0
-	BNE.S .6      ;V37 kludge
-
-	CMP.W	#37,OSVERSION
-	BMI.S	.6
-
-.7:
+  MOVE.L (A0)+,D1
+  AND.L D7,D0
+  CMP.L D0,D1
+  BNE.S .6
+  
 	MOVE.L (A0)+,D0
 	MOVE.L (A0)+,D1
 	CMP.L D0,D4
@@ -3377,8 +3386,13 @@ CONTINUEKEY:
 .19:    CMP.W   #IOFF+90,D7	;INLINE
     BNE.S   .20
     BSET    #6,CODEPREFS
+    BRA.S	.5
+.20:
+    CMP.W   #IOFF+111,D7	;LEGACYINT    
+    BNE.S   .21
+    BSET    #6,ICODEPREFS+3
 	BRA.S	.5
-.20:    BRA	ERROR1
+.21:    BRA	ERROR1
 
 .5:	CMP.W	#COM,(A3)+
 	BEQ	.2
@@ -9824,7 +9838,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.6.0-dev',160
-			DC.B	'(04.04.2023)'
+			DC.B	'(11.04.2023)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -15562,12 +15576,12 @@ DESTR:	MOVE.W	ODESTR(A6),D2		; GETS OBJ=A6, OSIZE=D0
 	ROR.W	#8,D6
 	MOVE.W	D6,(A4)+
 	MOVE.L	CURIDENTREC(PC),A0
-	BSR	GVA0D2_0
+	JSR	GVA0D2_0
 	BRA.S	.4
 .2:	MOVE.W	4(A2),(A4)+
 	MOVE.L	D0,D6
 .3:	MOVE.L	CURIDENTREC(PC),A0
-	BSR	GVA0D2_0
+	JSR	GVA0D2_0
 	MOVE.L	D6,(A4)+
 	BTST	#3,5(A0)
 	BNE.S	.4
@@ -23488,7 +23502,7 @@ VREF:	MOVE.L	A1,A3			; SEARCH FOR VAR
 	BSET	#0,5(A4)		; SET TO REF
 	MOVE.L	A4,D2			; JAAAH, BESTAAT REEDS!
 	BRA.S	ODONE
-.NOTF:	GETM	A5			; LINKED INTO HASH TABLE!
+.NOTF:	GETML	A5			; LINKED INTO HASH TABLE!
 	MOVE.L	(A3),(A5)+
 	MOVE.L	A5,(A3)
 	MOVE.L	A1,(A5)+		; ASCIIPTR
@@ -26035,16 +26049,22 @@ STRLENADR:	DC.L	0
 	EVEN
 
       PATCHFUNCLIST:
-	DC.L  1,I_MUL,I_MUL020      ;replace I_MUL with I_MUL020 for 020+
-	DC.L  1,I_DIV,I_DIV020      ;replace I_DIV with I_DIV020 for 020+
-	DC.L  1,I_LONG,I_LONG020    ;replace I_LONG with I_LONG020 for 020+
-	DC.L  1,I_INT,I_INT020      ;replace I_INT with I_INT020 for 020+
-	DC.L  1,I_CHAR,I_CHAR020    ;replace I_CHAR with I_CHAR020 for 020+
-	DC.L  1,I_WORD,I_WORD020    ;replace I_WORD with I_WORD020 for 020+
-	DC.L  1,I_BYTE,I_BYTE020    ;replace I_BYTE with I_BYTE020 for 020+
-	DC.L  2,I_WRITEF,I_WRITEF37 ;replace I_WRITEF with I_WRITEF37 for V37+
-	DC.L  2,I_PRINTF,I_WRITEF37 ;replace I_PRINTF with I_WRITEF37 for V37+
-	DC.L  2,I_PUTF,I_PUTF37     ;replace I_PUTF with I_PUTF37 for V37+
+      ;bit 0 = 020
+      ;bit 1 = OS 37+
+      ;bit 2 = Legacy INT mode
+	DC.L  1,1,I_MUL,I_MUL020      ;replace I_MUL with I_MUL020 for 020+
+	DC.L  1,1,I_DIV,I_DIV020      ;replace I_DIV with I_DIV020 for 020+
+	DC.L  1,1,I_LONG,I_LONG020    ;replace I_LONG with I_LONG020 for 020+
+	DC.L  1,1,I_CHAR,I_CHAR020    ;replace I_CHAR with I_CHAR020 for 020+
+	DC.L  1,1,I_WORD,I_WORD020    ;replace I_WORD with I_WORD020 for 020+
+	DC.L  1,1,I_BYTE,I_BYTE020    ;replace I_BYTE with I_BYTE020 for 020+
+	DC.L  2,1,I_WRITEF,I_WRITEF37 ;replace I_WRITEF with I_WRITEF37 for V37+
+	DC.L  2,1,I_PRINTF,I_WRITEF37 ;replace I_PRINTF with I_WRITEF37 for V37+
+	DC.L  2,1,I_PUTF,I_PUTF37     ;replace I_PUTF with I_PUTF37 for V37+
+
+	DC.L  5,1,I_INT,I_INT020      ;replace I_INT with I_INT020 for 020+
+ 	DC.L  5,4,I_INT,I_INT_LEGACY  ;replace I_INT with I_INT_LEGACY for LEGACYINT 
+	DC.L  5,5,I_INT,I_INT020_LEGACY;replace I_INT with I_INT020_LEGACY for LEGACYINT and 020+
 	DC.L  0,0,0
 
       INITFUNCS:			; init efuncs
@@ -26486,7 +26506,7 @@ UTIL:
     DC.L    .ELSEWHILE,.ALWAYS,.SECTION,.ERROR,.ERROR,.ERROR    ; 91-96
     DC.L    .ERROR,.ERROR,.TRY,.CATCH,.ENDTRY,.UNTIL,.WHILE     ; 97-102
     DC.L    .WHILE,.ELSEWHILE,.IF,.ELSEIF,.EXIT,.JCONT			; 103 - 108
-    DC.L    .ERROR,.ERROR
+    DC.L    .ERROR,.ERROR,.ERROR                            ; 109 - 111
 
 .PROC:		DC.W	50,19,17,36,33,1,37,10
 		LINK	A5,#-27*4
@@ -26677,10 +26697,10 @@ UTIL:
 	DC.L	.52,0,.53,0,.54,0,.55,0,.56,0,.57,0,.58,0,.59,0,.60,0,.61,0
 	DC.L	.62,0,.63,0,.64,0,.65,0,.66,0,.67,0,.68,0,.69,0,.70,0,.71,0
 	DC.L	.72,0,.73,0,.74,0,.75,0,.76,0,.77,0,.78,0,.79,0,.80,0,.81,0
-	DC.L    .82,0,.83,0,.84,0,.85,0,.86,0,.87,0,.88,0,.89,0,.90,0,.91,0
-	DC.L    .92,0,.93,0,.94,0,.95,0,.96,0,.97,0,.98,0,.99,0,.100,0,.101,0
-	DC.L    .102,0,.103,0,.104,0,.105,0,.106,0,.107,0,.108,0,.109,0,.110,0
-	DC.L	0,0
+	DC.L  .82,0,.83,0,.84,0,.85,0,.86,0,.87,0,.88,0,.89,0,.90,0,.91,0
+	DC.L  .92,0,.93,0,.94,0,.95,0,.96,0,.97,0,.98,0,.99,0,.100,0,.101,0
+	DC.L  .102,0,.103,0,.104,0,.105,0,.106,0,.107,0,.108,0,.109,0,.110,0
+	DC.L	.111,0,0,0
 
 .0:	DC.B	'PROC',0
 .1:	DC.B	'ENDPROC',0
@@ -26793,6 +26813,7 @@ UTIL:
 .108:  DC.B  'CONTN',0
 .109:  DC.B  'BYTE',0
 .110:  DC.B  'WORD',0
+.111:  DC.B  'LEGACYINT',0
 
 	EVEN
 
@@ -26818,7 +26839,7 @@ INLINETAB:
     DC.L    .E,.E,INL_LSL,INL_LSR,.E,.E,.E,.E,.E,.E   ; 161-170
     DC.L    INL_MUL020,INL_DIV020,INL_LONG,INL_INT,INL_CHAR,INL_MOD020,.E,.E,.E,.E   ; 171-180
     DC.L    .E,.E,.E,.E,.E,INL_BYTE,INL_WORD,INL_BYTE020,INL_WORD,INL_PCHAR   ; 181-190
-    DC.L    INL_PINT,.E,.E,INL_FCOMPARE,.E,.E,.E,.E,.E,.E   ; 191-200
+    DC.L    INL_PINT,.E,.E,INL_FCOMPARE,INL_INT_LEGACY,INL_INT_LEGACY,.E,.E,.E,.E   ; 191-200
 ;; ERROR
 .E:
     JMP     ERROR0
@@ -26909,11 +26930,17 @@ INL_LONG:
 INL_INT:
     MOVEQ   #$40,D0
     BSR     EA_GETEXP
-    ;INT SHOULD REALLY SIGN EXTEND - do we fix it?
-    ;that means remove the #$7000 line below and add the commented out line instead
+    MOVE.W  #$3010,(a4)+
+    MOVE.W  #$48c0,(a4)+
+    RTS
+;*-*
+;; Int
+INL_INT_LEGACY:
+    MOVEQ   #$40,D0
+    BSR     EA_GETEXP
+    ;INT SHOULD REALLY SIGN EXTEND - this is the legacy version
     move.w  #$7000,(A4)+  
     MOVE.W  #$3010,(a4)+
-    ;MOVE.W  #$48c0,(a4)+
     RTS
 ;*-*
 ;; Char
@@ -27531,7 +27558,7 @@ INL_OPTI:
 ;
 
 FOFF		= $100
-NREFUNC		= 195
+NREFUNC		= 197
 NRLEGEFUNC = 131
 EFUNCENTRYSIZE=16   ;size of efunctab entry (eg 4 LONGWORD entries)
 
@@ -27732,6 +27759,8 @@ EFUNCENTRYSIZE=16   ;size of efunctab entry (eg 4 LONGWORD entries)
   DC.L	.193,   I_UCOMPARE,2,0
   DC.L	.194,   I_FCOMPARE,2,0
   DC.L	.195,   I_STRCOMPARE,3,$FF
+  DC.L	.196,   I_INT_LEGACY,1,0
+  DC.L	.197,   I_INT020_LEGACY,1,0
   DC.L	0,I_CODEEND,0,0
 
 .1:	DC.B	'WriteF',0
@@ -27920,15 +27949,17 @@ EFUNCENTRYSIZE=16   ;size of efunctab entry (eg 4 LONGWORD entries)
 .184: DC.B    'UsedStack',0
 .185: DC.B    'TotalStack',0
 .186: DC.B    'Byte',0
-.187: DC.B    'WORD',0
+.187: DC.B    'Word',0
 .188: DC.B    'Byte',0   ;020 variant
-.189: DC.B    'WORD',0   ;020 variant
+.189: DC.B    'Word',0   ;020 variant
 .190:	DC.B    'PutByte',0
 .191:	DC.B    'PutWord',0
 .192:	DC.B    'Compare',0
 .193:	DC.B    'Ucompare',0
 .194:	DC.B    'Fcompare',0
 .195:	DC.B    'StrCompare',0
+.196:	DC.B    'Int',0
+.197:	DC.B    'Int',0
 
 
 GETA4NR = 136
@@ -29402,10 +29433,16 @@ ASM_INSJOB:
 	MOVE.L	(A0),D0
 	RTS
 
+      I_INT_LEGACY:
+	MOVE.L	4(A7),A0
+	MOVEQ	#0,D0   ;LEGACYINT mode doesnt sign extend
+	MOVE.W	(A0),D0
+	RTS
+
       I_INT:
 	MOVE.L	4(A7),A0
-	MOVEQ	#0,D0   ;INT SHOULD REALLY SIGN EXTEND - do we fix it?
 	MOVE.W	(A0),D0
+  EXT.L D0
 	RTS
 
       I_CHAR:
@@ -32224,11 +32261,16 @@ I_LONG020:
 	RTS
 ;*-*
 ; Int (020 variant)
-I_INT020:
+I_INT020_LEGACY:
 	MOVEQ   #0,D0
-	MOVE.W  ([4.W,A7]),D0   ;INT REALLY SHOULD SIGN EXTEND - do we fix it?
+	MOVE.W  ([4.W,A7]),D0   ;LEGACYINT doesnt sign extend
 	RTS
 ;*-*
+; Int (020 variant)
+I_INT020:
+	MOVE.W  ([4.W,A7]),D0
+	EXT.L D0
+	RTS
 ; Char (020 variant)
 I_CHAR020:
 	MOVEQ   #0,D0
@@ -32504,7 +32546,7 @@ I_BYTE:
 	EXT.L   D0
 	RTS
 
-; Int (020 variant)
+; Word (020 variant)
 I_WORD020:
 	MOVEQ   #0,D0
 	CPU020
@@ -32512,7 +32554,7 @@ I_WORD020:
 	CPU000
 	RTS
 ;*-*
-; Char (020 variant)
+; Byte (020 variant)
 I_BYTE020:
 	CPU020
 	MOVE.B  ([4.W,A7]),D0
