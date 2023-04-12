@@ -1077,6 +1077,7 @@ errornum        = 0 error caused by own cookie-check
                   103 = beta module used (v1 .. v4)
                   104 = regalloc prob
                   105 = prep not empty line
+                  106 = cant find patched function entry
 linenum         = -1 if no lines were being processed
                 = [0..] current linenum
 cookiesthrashed = #of cookies thrashed. reboot if >0

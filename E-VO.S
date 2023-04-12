@@ -5,7 +5,7 @@
 ;	GRIO Amiga E Compiler/Assembler/Linker by grio	 		;
 ;			in 1999-2003					;
 ;	E-VO Amiga E Compiler/Assembler/Linker by Darren Coles	 		;
-;     in 2021/2022
+;     in 2021-2023
 ; ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, ;
 
 ;debug=1
@@ -2590,7 +2590,7 @@ HEAVYTABLE:
 	MOVE.L	A3,D0
 	BEQ	.3
 	MOVE.L	CASCII(A3),A4		; A4=ASCIIPTR
-	MOVE.L	WORK(PC),A5		; A5=THIS CONST
+	MOVE.L	WORK,A5		; A5=THIS CONST
 .2:	CMPM.B	(A4)+,(A5)+
 	BNE.S	.1
 	TST.B	-1(A4)
@@ -2715,17 +2715,24 @@ HEAVYTABLE:
 	BNE.S .patch
   
 	MOVE.L  D1,D4    ;patched code start
+	LEA	EFUNCTAB,A3
+	MOVEQ	#1,D3
 	BRA.S .8
   
 .6: LEA 8(A0),A0
 	BRA.S .patch
 .8: 	CMP.L 4(A3),D4
 	BEQ.S .nokludge
+	TST.L 4(A3)
+	BEQ.S .cantfind
  
-	ADDQ.L	#8,A3   ;search for new routine (must be later on in the list
-	ADDQ.L	#8,A3   ;than the original
+	ADDQ.L	#8,A3   ;search for new routine
+	ADDQ.L	#8,A3
 	ADDQ.L	#1,D3
 	BRA.S .8
+
+.cantfind
+	INTERN	106
 
 .nokludge:  MOVEM.L (A7)+,A0/D0-D1
 
@@ -9838,7 +9845,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.6.0-dev',160
-			DC.B	'(11.04.2023)'
+			DC.B	'(12.04.2023)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -11459,8 +11466,7 @@ SYMEND:
       BUFSPOT:	DC.W	0
       CRASHPC:	DC.L	0
 
-
-      INTERNALMESSY:	DC.B	"EC INTERNAL ERROR [%d,%d,%d,%d,$%lx] (please report!)",10,0
+      INTERNALMESSY:	DC.B	"EVO INTERNAL ERROR [%d,%d,%d,%d,$%lx] (please report!)",10,0
 			EVEN
       IEEEMESSY:	DC.B	"PROBLEM: your `mathieeesingbas.library' is"
       			DC.B	" not properly patched (see docs)",10
@@ -27553,7 +27559,7 @@ INL_OPTI:
 ;
 
 FOFF		= $100
-NREFUNC		= 197
+NREFUNC		= 195
 NRLEGEFUNC = 131
 EFUNCENTRYSIZE=16   ;size of efunctab entry (eg 4 LONGWORD entries)
 
@@ -27754,8 +27760,6 @@ EFUNCENTRYSIZE=16   ;size of efunctab entry (eg 4 LONGWORD entries)
   DC.L	.193,   I_UCOMPARE,2,0
   DC.L	.194,   I_FCOMPARE,2,0
   DC.L	.195,   I_STRCOMPARE,3,$FF
-  DC.L	.196,   I_WORD,1,0
-  DC.L	.197,   I_WORD020,1,0
   DC.L	0,I_CODEEND,0,0
 
 .1:	DC.B	'WriteF',0
@@ -27953,8 +27957,6 @@ EFUNCENTRYSIZE=16   ;size of efunctab entry (eg 4 LONGWORD entries)
 .193:	DC.B    'Ucompare',0
 .194:	DC.B    'Fcompare',0
 .195:	DC.B    'StrCompare',0
-.196:	DC.B    'Int',0     ;legacy variant
-.197:	DC.B    'Int',0     ;legacy 020 variant
 
      EVEN
       EFUNCSIZES:
@@ -28153,9 +28155,6 @@ EFUNCENTRYSIZE=16   ;size of efunctab entry (eg 4 LONGWORD entries)
   DC.L	I_FCOMPARE-I_UCOMPARE
   DC.L	I_STRCOMPARE-I_FCOMPARE
   DC.L	I_CODEEND-I_STRCOMPARE
-  DC.L	I_BYTE020-I_WORD
-  DC.L	I_COMPARE-I_WORD020
-
 
 GETA4NR = 136
 WRITEF = 1
