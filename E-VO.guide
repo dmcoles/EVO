@@ -258,7 +258,7 @@ syntax of the compiler (2.04+):
 
 SOURCE/A,REG=NUMREGALLOC/N/K,LARGE/S,SYM=SYMBOLHUNK/S,NOWARN/S
 QUIET/S,ASM/S,ERRLINE/S,ERRBYTE/S,SHOWBUF/S,ADDBUF/N/K,COMPILESTACK/N/K,
-IC=IGNORECACHE/S,HOLD/S,WB/S,LINEDEBUG/S,OPTI/S,LEGACY/S,DEBUG/S,DEBUG50/S,NILCHECK/S,
+IC=IGNORECACHE/S,HOLD/S,WB/S,LINEDEBUG/S,OPTI/S,LEGACY/S,LEGACYINT/S,DEBUG/S,DEBUG50/S,NILCHECK/S,
 SHOWFNAME/S,DEFINE/M',0
 
 for 1.2 to 2.03:
@@ -320,8 +320,9 @@ HOLD            -h      wait for a <return> on the commandline before
                         exiting E-VO.
 OPTI                    enable all optimisations (currently equals REG=5 and STRMERGE on)
 LEGACY                  enable legacy mode - outputs module files in version 10 format
-                        and disable the new constants and build in functions that may cause
+                        and disable the new constants and built in functions that may cause
 												naming clashes with older code.
+LEGACYINT               see OPT LEGACYINT. Enables backward compability with Int() function                       
 DEBUG                   attach debug infos to executable/module (see @{" 17K " link CH_17K })
 DEBUG50                 attach debug infos to executable/module in a way that allows debugging under OS 4.x (see @{" 17K " link CH_17K })
 NILCHECK                insert code at every "." or "[]" dereference to check
