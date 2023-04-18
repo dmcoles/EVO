@@ -1,5 +1,5 @@
 OPT LARGE, OSVERSION=37
-MODULE 'tools/EasyGUI','tools/constructors','asl','libraries/Asl','dos/dos','exec/nodes','exec'
+MODULE 'tools/EasyGUI','tools/constructors','asl','libraries/Asl','dos/dos','exec/nodes','exec','exec/lists'
 
 ENUM ABORT=0,ERR_OPEN,ERR_NOMEM,ERR_TOONEW,ERR_JOBID,ERR_TEMP
 

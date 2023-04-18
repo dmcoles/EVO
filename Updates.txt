@@ -454,7 +454,8 @@ Development restarted as E-VO by Darren Coles
    - Fixed Int() function to sign extend result
    - Added OPT LEGACYINT to restore old version of Int() command
    - Added command line switch LEGACYINT/S which does the same as the above OPT
-   
+   - FindModule: fix error in memory deallocation
+
    
 DATE HISTORY:
     3.3b    20.11.1999 -> 12.12.1999
@@ -467,4 +468,4 @@ DATE HISTORY:
     3.4.1   19.10.2021 -> 23.10.2021
     3.5.0   04.11.2021 -> 14.07.2022
     3.5.1   08.08.2022 -> 06.09.2222
-    3.6.0   14.11.2022 -> ?
+    3.6.0   12.09.2022 -> 18.04.2023

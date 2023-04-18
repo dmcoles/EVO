@@ -1,14 +1,14 @@
 @database "e.guide"
 @node MAIN
-@title "Amiga E-VO v3.5.0"
+@title "Amiga E-VO v3.6.0"
 
                 +-----------------------------------------------+
                 |                                               |
-                |               Amiga E-VO v3.5.0               |
+                |               Amiga E-VO v3.6.0               |
                 |          Compiler for The E Language          |
                 |     Originally By Wouter van Oortmerssen      |
                 |           Updates By GRIO 1999-2003           |
-                |             and Darren Coles 2022             |
+                |          and Darren Coles 2022 / 2023         |
                 |                                               |
                 +-----------------------------------------------+
 
@@ -342,6 +342,23 @@ NOTE: in most cases you won't need to use any of these options
 0D. changes / history / new features
 ------------------------------------
 
+ New in E-VO  (3.6.0)
+    - EDBG: add support for ECX/EEC compiled executables
+    - fix issue with memfill that could cause odd address exception on 68000
+    - add TRY..CATCH..ENDTRY allowing more control over exception handling
+    - Add UNTILN, WHILEN ELSEWHILEN, IFN, ELSEIFN, EXITN, CONTN which are
+      inverse of their counterparts eg. UNTILN x is equal to UNTIL Not(x)
+    - Add WORD and BYTE types (unsigned 16 bit and signed 8 bit variable types)
+      and Word() Byte() functions as well as PutByte() and PutWord()
+    - Allow SIZEOF object and SIZEOF object.member
+    - Fix issue where SIZEOF x didnt throw a compile error if x was not defined
+    - Added EVO_3_6_0 define
+    - Added Compare, Ucompare, Fcompare, StrCompare functions
+    - Fixed Int() function to sign extend result
+    - Added OPT LEGACYINT to restore old version of Int() command
+    - Added command line switch LEGACYINT/S which does the same as the above OPT
+    - FindModule: fix error in memory deallocation
+   
  New in E-VO  (3.5.1)
     - fix issue with short jump calculations being done incorrect in certain
       circumstances, causing crashes.
@@ -900,7 +917,7 @@ v3.3g   04.01.2002 -> 16.06.2003
 v3.4.0  09.06.2021 -> 07.10.2021
 v3.4.1  19.10.2021 -> 23.10.2021
 v3.5.0  04.11.2021 -> 14.07.2022
-
+v3.6.0  12.09.2022 -> 18.04.2023
 
 @endnode
 @node CH_0E
@@ -6563,6 +6580,8 @@ described in its own documentation in the Bin/Tools directory.
 @title "17K. EDBG"
 17K. EDBG
 ---------
+Updates to v3.6.0:
+- add support for ECX/EEC compiled executables
 
 Updates to v3.5.0:
 - Added case insensitive searches
