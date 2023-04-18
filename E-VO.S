@@ -2523,8 +2523,8 @@ HEAVYTABLE:
 		DC.B "            s  "	; 45 OF-EXPORT
 		DC.B "               "	; 60 REG...SAFE
 		DC.B "               "  ; 75 RUNBG..UTILLIB
-		DC.B "               "  ; 90 INLINE..ELSEWHILEN
-		DC.B "               "  ; 105 IFN..
+		DC.B "            Um "  ; 90 INLINE..ELSEWHILEN
+		DC.B "i              "  ; 105 IFN..
 		EVEN
 
 ; s	h:=8		start of PROC etc.
@@ -9849,7 +9849,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.6.0-dev',160
-			DC.B	'(14.04.2023)'
+			DC.B	'(18.04.2023)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -18022,6 +18022,7 @@ XIT:	MOVEM.L	(A7)+,D3-D5/A1
     BCLR    #2,ICODEPREFS+3
     MOVE.L  #0,LASTVAR
 	MOVEM.L	D3-D5/A1/A2,-(A7)	; WE DO HEAVY RECURSION
+	MOVE.W IFLAG,-(A7)
 	MOVE.W FORCESIGNED,-(A7)
 	CLR.W FORCESIGNED
 	MOVE.W FORCEUNSIGNED,-(A7)
@@ -18091,6 +18092,8 @@ XIT:	MOVEM.L	(A7)+,D3-D5/A1
 	BEQ	EXPOUT
 	CMP.W	#IOFF+2,D0
 	BEQ	EXPIF
+	CMP.W	#IOFF+105,D0
+	BEQ	EXPIF
 	CMP.W	#IOFF+50,D0
 	BEQ	EXPSIZEOF
 	CMP.W	#IOFF+98,D0
@@ -18141,6 +18144,7 @@ XIT:	MOVEM.L	(A7)+,D3-D5/A1
 	MOVE.W	(A7)+,andalsoflag
 	MOVE.W	(A7)+,FORCEUNSIGNED
 	MOVE.W	(A7)+,FORCESIGNED
+	MOVE.W	(A7)+,IFLAG
 	MOVEM.L	(A7)+,D3-D5/A1/A2
 	RTS
 	CPU040
@@ -26518,7 +26522,7 @@ UTIL:
 	DC.L	.ERROR,.JCONT,.ERROR,.ERROR,.ERROR,.ERROR,.FATAL    ; 77-83
     DC.L    .WARN,.ERROR,.ERROR,.ERROR,.ERROR,.ERROR,.ERROR	    ; 84-90
     DC.L    .ELSEWHILE,.ALWAYS,.SECTION,.ERROR,.ERROR,.ERROR    ; 91-96
-    DC.L    .ERROR,.ERROR,.TRY,.CATCH,.ENDTRY,.UNTIL,.WHILE     ; 97-102
+    DC.L    .ERROR,.ERROR,.TRY,.CATCH,.ENDTRY,.UNTIL     ; 97-102
     DC.L    .WHILE,.ELSEWHILE,.IF,.ELSEIF,.EXIT,.JCONT			; 103 - 108
     DC.L    .ERROR,.ERROR,.ERROR                            ; 109 - 111
 
@@ -26556,7 +26560,7 @@ UTIL:
 		DC.W	29,5,2,0
 .ENDIF:		DC.W	7,2,15,53,0
 .VOID:		DC.W	2,0
-.WHILE: DC.W    86,IOFF+102,51,6,20,61,56
+.WHILE: DC.W    86,IOFF+103,51,6,20,61,56
         TST.L   D0
         BEQ DUM
         DC.W    87
@@ -26626,7 +26630,7 @@ UTIL:
         DC.W    0
 
 .REPEAT:	DC.W	6,20,5,6,0			; was 20,5,6,0
-.UNTIL:		DC.W	86,IOFF+103,7,6,21,61,56
+.UNTIL:		DC.W	86,IOFF+102,7,6,21,61,56
 		TST.L	D0
 		BEQ	DUM
 		DC.W    87
