@@ -440,6 +440,7 @@ Development restarted as E-VO by Darren Coles
     - add showhunk source
 
    (3.6.0)
+   - EDBG: add support for ECX/EEC compiled executables
    - fix issue with memfill that could cause odd address exception on 68000
    - add TRY..CATCH..ENDTRY allowing more control over exception handling
    - Add UNTILN, WHILEN ELSEWHILEN, IFN, ELSEIFN, EXITN, CONTN which are
@@ -452,6 +453,7 @@ Development restarted as E-VO by Darren Coles
    - Added Compare, Ucompare, Fcompare, StrCompare functions
    - Fixed Int() function to sign extend result
    - Added OPT LEGACYINT to restore old version of Int() command
+   - Added command line switch LEGACYINT/S which does the same as the above OPT
    
    
 DATE HISTORY:
