@@ -25,7 +25,7 @@ ENUM JOB_DONE,JOB_CONST,JOB_OBJ,JOB_CODE,JOB_PROCS,
 ENUM ER_NONE,ER_FILE,ER_MEM,ER_USAGE,ER_JOBID,
      ER_BREAK,ER_FILETYPE,ER_TOONEW
 
-CONST MODVERS=12,     -> upto which version we understand , MODVER = 11 for Creative, MODVER=12 for Evo 3.5.0
+CONST MODVERS=13,     -> upto which version we understand , MODVER = 11 for Creative, MODVER=12 for Evo 3.5.0
       SKIPMARK=$FFFF8000
 
 DEF flen,o:PTR TO INT,mem,handle=NIL,file[250]:STRING,thisvers=0,cmode=FALSE,emode=FALSE
@@ -89,11 +89,12 @@ EXCEPT
 ENDPROC
 
 PROC process()
-  DEF end,job,len,val,f,off,types:PTR TO LONG,c,r,c2,l,narg,priv,darg:PTR TO LONG
-  DEF dimscount,ptrrep,ptrRepText[255]:STRING,dimsText[255]:STRING,tempstr[10]:STRING,d
+  DEF end,job,len,val,f,off,types:PTR TO LONG,types2:PTR TO LONG,c,r,c2,l,narg,priv,darg:PTR TO LONG
+  DEF fl,dimscount,ptrrep,ptrRepText[255]:STRING,dimsText[255]:STRING,tempstr[10]:STRING,d
   o:=mem
   end:=o+flen
   types:=['substructure','CHAR','INT','','LONG']
+  types2:=['substructure','BYTE','WORD','','LONG']
   IF ^o++<>"EMOD" THEN Raise(ER_FILETYPE)
   IF emode THEN PutS('  OPT MODULE\n  OPT EXPORT\n  OPT PREPROCESS\n\n')
   WHILE o<end
@@ -149,6 +150,9 @@ PROC process()
           StrCopy(dimsText,'')
           dimscount:=0
           IF thisvers>=12
+            IF thisvers>=13
+              fl:=o[]++
+            ENDIF
             ptrrep:=o[]++
             WHILE (ptrrep>0)
               StrAdd(ptrRepText,'PTR TO ')
@@ -166,21 +170,25 @@ PROC process()
           IF thisvers>=6
             IF (c:=o[]++)>=0
               IF c=0
-                PutF(':\s\n',types[val])
+                IF fl
+                  PutF(':\s\n',types2[val])
+                ELSE
+                  PutF(':\s\n',types[val])
+                ENDIF
               ELSE
                 IF val
                   PutF(
                     '\s:\sPTR TO \s\n',
                     '',
                     ptrRepText,
-                    ListItem(['','CHAR','INT','','LONG'],c)
+                    IF fl THEN ListItem(['','BYTE','WORD','','LONG'],c) ELSE ListItem(['','CHAR','INT','','LONG'],c)
                   )
                 ELSE
                   IF EstrLen(dimsText)=0 THEN StringF(dimsText,'[\d]',Int(o+IF o[] THEN 4 ELSE 2)-off/c,)
                   PutF(
                     '\s:ARRAY OF \s\n',
                     dimsText,
-                    ListItem(['','CHAR','INT','','LONG'],c)
+                    IF fl THEN ListItem(['','BYTE','WORD','','LONG'],c) ELSE ListItem(['','CHAR','INT','','LONG'],c)
                   )
                 ENDIF
               ENDIF
@@ -195,7 +203,11 @@ PROC process()
               o:=o+l
             ENDIF
           ELSE
-             PutF(':\s\n',types[val])
+            IF fl
+              PutF(':\s\n',types2[val])
+            ELSE
+              PutF(':\s\n',types[val])
+            ENDIF
           ENDIF
           IF CtrlC() THEN Raise(ER_BREAK)
         ENDWHILE

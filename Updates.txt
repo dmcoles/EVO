@@ -454,8 +454,10 @@ Development restarted as E-VO by Darren Coles
    - Fixed Int() function to sign extend result
    - Added OPT LEGACYINT to restore old version of Int() command
    - Added command line switch LEGACYINT/S which does the same as the above OPT
+   - Allow BYTE and WORD types in modules, increase module version to 13.
    - FindModule: fix error in memory deallocation
-
+   - FindModule: update for BYTE and WORD types (module version 13)
+   - ShowModule: update for BYTE and WORD types (module version 13)
    
 DATE HISTORY:
     3.3b    20.11.1999 -> 12.12.1999

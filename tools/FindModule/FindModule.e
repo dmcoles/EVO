@@ -6,7 +6,7 @@ ENUM ABORT=0,ERR_OPEN,ERR_NOMEM,ERR_TOONEW,ERR_JOBID,ERR_TEMP
 ENUM JOB_DONE,JOB_CONST,JOB_OBJ,JOB_CODE,JOB_PROCS,
      JOB_SYS,JOB_LIB,JOB_RELOC,JOB_GLOBS,JOB_MODINFO,JOB_DEBUG,JOB_MACROS
 
-CONST MODVERS=12,     -> upto which version we understand , MODVER = 11 for Creative, MODVER=12 for Evo 3.5.0
+CONST MODVERS=13,     -> upto which version we understand , MODVER = 11 for Creative, MODVER=12 for Evo 3.5.0
       SKIPMARK=$FFFF8000
 
 DEF caseSensitive=TRUE
@@ -100,8 +100,8 @@ PROC processTfile(tfile,tempText)
 ENDPROC
 
 PROC search(mem,flen,filename:PTR TO CHAR) HANDLE
-  DEF end,job,len,val,f,off,types:PTR TO LONG,c,r,c2,l,narg,priv,darg:PTR TO LONG
-  DEF dimscount,ptrrep,ptrRepText[255]:STRING,dimsText[255]:STRING,tempstr[10]:STRING,d,o:PTR TO INT
+  DEF end,job,len,val,f,off,types:PTR TO LONG,types2:PTR TO LONG,c,r,c2,l,narg,priv,darg:PTR TO LONG
+  DEF fl,dimscount,ptrrep,ptrRepText[255]:STRING,dimsText[255]:STRING,tempstr[10]:STRING,d,o:PTR TO INT
   DEF match=FALSE,match2=FALSE,thisvers=0
   DEF tempText[4000]:STRING
   DEF temp2[100]:STRING
@@ -111,6 +111,7 @@ PROC search(mem,flen,filename:PTR TO CHAR) HANDLE
   o:=mem
   end:=o+flen
   types:=['substructure','CHAR','INT','','LONG']
+  types2:=['substructure','BYTE','WORD','','LONG']
   IF ^o++<>"EMOD" THEN RETURN
   WHILE o<end
     IF aborted THEN Raise(ABORT)
@@ -199,6 +200,9 @@ PROC search(mem,flen,filename:PTR TO CHAR) HANDLE
             ENDWHILE
           ENDIF
           IF thisvers>=6
+            IF thisvers>=13
+              fl:=o[]++
+            ENDIF
             IF (c:=o[]++)>=0
               IF c=0
                 IF match2 THEN WriteF(':\s\n',types[val])
@@ -208,14 +212,14 @@ PROC search(mem,flen,filename:PTR TO CHAR) HANDLE
                     '\s:\sPTR TO \s\n',
                     '',
                     ptrRepText,
-                    ListItem(['','CHAR','INT','','LONG'],c)
+                    IF fl THEN ListItem(['','CHAR','INT','','LONG'],c) ELSE ListItem(['','BYTE','WORD','','LONG'],c) 
                   )
                 ELSE
                   IF EstrLen(dimsText)=0 THEN StringF(dimsText,'[\d]',Int(o+IF o[] THEN 4 ELSE 2)-off/c,)
                   IF match2 THEN WriteF(
                     '\s:ARRAY OF \s\n',
                     dimsText,
-                    ListItem(['','CHAR','INT','','LONG'],c)
+                    IF fl THEN ListItem(['','CHAR','INT','','LONG'],c) ELSE ListItem(['','BYTE','WORD','','LONG'],c)
                   )
                 ENDIF
               ENDIF

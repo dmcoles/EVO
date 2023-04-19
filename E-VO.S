@@ -184,8 +184,8 @@ CVAL	= 8
 CFLAGS	= 12
 
 LEGACYVERSION = 10
-CURVERSION	= 12			; IMPORTANT, MODULE VERSION!!
-MAXVERSION = 12             ; max supported module version
+CURVERSION	= 13			; IMPORTANT, MODULE VERSION!!
+MAXVERSION = 13             ; max supported module version
 
 SKIPMARK	= $8000
 
@@ -10676,6 +10676,13 @@ SYMEND:
 	BSR	.DOREC
     BTST #5,ICODEPREFS+3        ;LEGACY MODE
     BNE  .nodimdata
+    ;handle byte and word types
+
+    MOVE.B OFLAGS(A0),D0
+    AND.W #%11000,D0	;forcesigned and forceunsigned flags
+    ROR.W #3,D0   ;shift flags into lowest bits
+
+    MOVE.W D0,(A5)+
     MOVE.W  PTRREPCOUNT(A0),(A5)+
     CLR.W (A5)+
 
@@ -13275,6 +13282,8 @@ LDEF:	MACRO
 .W3:  
 	CMP.W	#IOFF+109,D1		; "OF BYTE"
 	BNE.S	.W4
+	BTST #5,ICODEPREFS+3        ;LEGACY MODE
+	BNE     ERROR90
 	BSET #5,5(A0)
 	BRA.S	.SK
 .W4:  
@@ -13282,6 +13291,8 @@ LDEF:	MACRO
 	BNE	ERROR33
 	LSL.L	#1,D2
 	MOVE.W	#2,2(A0)
+	BTST #5,ICODEPREFS+3        ;LEGACY MODE
+	BNE     ERROR90
 	BSET #6,5(A0)
 .SK:	RTS
 .W5:	MOVE.L	A4,-(A7)		; "OF <object>"
@@ -13297,7 +13308,7 @@ LDEF:	MACRO
 	ADDQ.L	#2,A3
 	CMP.W   #IOFF+44,(A3)		;PTR
 	BEQ     .ARR_00
-.3B:	BSR.S	.SETT
+.3B:	BSR	.SETT
 .SK2:	CMP.L	#MAXINT,D2
 	BPL	ERROR85
 	BSR.W	.5			; a[100]:ARRAY OF <TYPE>
@@ -14092,11 +14103,17 @@ CHECKPR:	MACRO			; \1=TR.DX
 .3: CMP.W	#IOFF+109,D0
 	BNE.S	.4
 	MOVEQ	#1,D2			; BYTE
+	BTST #5,ICODEPREFS+3        ;LEGACY MODE
+	BNE     ERROR90
+  
 	BSET #3,OFLAGS(A0)
 	BRA.S	.O
 .4: CMP.W	#IOFF+110,D0
 	BNE.S	.SOBJ
 	MOVEQ	#2,D2			; WORD
+	BTST #5,ICODEPREFS+3        ;LEGACY MODE
+	BNE     ERROR90
+
 	BSET #4,OFLAGS(A0)
 .O:	MOVE.L	D2,D3
 .O2:	MOVE.W	OBJCOUNT(PC),6(A0)
@@ -14310,11 +14327,16 @@ CHECKPR:	MACRO			; \1=TR.DX
 .GT4: CMP.W	#IOFF+109,D0		; BYTE
 	BNE.S	.GT5
 	MOVEQ	#1,D0
+	BTST #5,ICODEPREFS+3        ;LEGACY MODE
+	BNE     ERROR90
 	BSET	#3,OFLAGS(A0)
 	BRA.S	.GTE
 .GT5: CMP.W	#IOFF+110,D0		; WORD
 	BNE.S	.MUT
 	MOVEQ	#2,D0
+	BTST #5,ICODEPREFS+3        ;LEGACY MODE
+	BNE     ERROR90
+
 	BSET	#4,OFLAGS(A0)
 .GTE:	MOVE.L	D0,OPTRTYPE(A0)
 	BSET	#1,OFLAGS(A0)
@@ -14411,11 +14433,17 @@ ALIGN:	DC.W	0
 .3: CMP.W	#IOFF+109,D0
 	BNE.S	.4
 	MOVEQ	#1,D2			; BYTE
+	BTST #5,ICODEPREFS+3        ;LEGACY MODE
+	BNE     ERROR90
+
 	BSET	#3,OFLAGS(A0)
 	BRA.S	.O
 .4: CMP.W	#IOFF+110,D0
 	BNE.S	.SOBJ
 	MOVEQ	#2,D2			; WORD
+	BTST #5,ICODEPREFS+3        ;LEGACY MODE
+	BNE     ERROR90
+
 	BSET	#4,OFLAGS(A0)
 .O:	MOVE.L	D2,D3
 .O2:	MOVE.W	OBJCOUNT(PC),6(A0)
@@ -14618,11 +14646,15 @@ ALIGN:	DC.W	0
 .GT4:	CMP.W	#IOFF+109,D0		; BYTE
 	BNE.S	.GT5
 	MOVEQ	#1,D0
+	BTST #5,ICODEPREFS+3        ;LEGACY MODE
+	BNE     ERROR90
 	BSET	#3,OFLAGS(A0)
 	BRA.S	.GTE
 .GT5:	CMP.W	#IOFF+110,D0		; WORD
 	BNE.S	.MUT
 	MOVEQ	#2,D0
+	BTST #5,ICODEPREFS+3        ;LEGACY MODE
+	BNE     ERROR90
 	BSET	#4,OFLAGS(A0)
 .GTE:	MOVE.L	D0,OPTRTYPE(A0)
 	BSET	#1,OFLAGS(A0)
@@ -17323,6 +17355,7 @@ PLB:
 	LSL.W	#2,D0
 	ADD.W	D0,D7
 	LSR.W	#2,D0
+	MOVE.L A4,.tmpA4
 	MOVE.L	.20(PC,D7.W),(A4)+
 .E0_B:
     TST.W   .THE_FACTOR
@@ -17339,9 +17372,17 @@ PLB:
 	BPL.S	.22
 	TST.W	D4
 	BEQ	.DO			; SKIP MOVE.X SET
-	BCLR	#5,-4(A4)
+	MOVE.L A4,-(sp)
+	MOVE.L .tmpA4,A4
+	BCLR	#5,(A4)
+	MOVE.L (sp)+,A4
 	BRA	.21
-.22:	BCLR	#4,-4(A4)
+
+.22:
+	MOVE.L A4,-(sp)
+	MOVE.L .tmpA4,A4
+	BCLR	#4,(A4)
+	MOVE.L (sp)+,A4
 	BRA	.21
 .THE_FACTOR:
     DC.W    0
@@ -17356,9 +17397,6 @@ PLB:
     MOVE.L  .20+8(PC),(A4)+
     BRA     .E0_B
 
-.E0_S:  MOVEM.L  D2/A0,-(A7)
-.E0_R:  MOVEM.L  (A7)+,D2/A0
-
 .20:	MOVE.W	0(A0,D2.L),D0		; LONG
 	MOVE.W	0(A0,D2.L),D1
 	MOVE.W	D0,0(A0,D2.L)
@@ -17367,6 +17405,10 @@ PLB:
 	LEA	0(A0,D2.L),A0
 	LEA	0(A0,D2.L),A0
 	LEA	0(A0,D2.L),A0
+
+.E0_S:  MOVEM.L  D2/A0,-(A7)
+.E0_R:  MOVEM.L  (A7)+,D2/A0
+
 
 ;; Extend
 .EXPEXT0:
@@ -17392,6 +17434,7 @@ PLB:
     LSL.W   #2,D0
   	ADD.W	D0,D7
     LSR.W   #2,D0
+    MOVE.L A4,.tmpA4
     MOVE.L  .20(PC,D7.W),(A4)+      ;
 
     TST.W   .THE_FACTOR
@@ -17407,10 +17450,16 @@ PLB:
     BPL.S   .EXP_C0_1
     TST.W   D4
     BEQ     ERROR0                  ; compiler shouldn't use this code, anyway..
-    BCLR    #5,-4(A4)               ; .B/.L size
+    MOVE.L  A4,-(sp)
+    MOVE.L  .tmpA4,A4
+    BCLR    #5,(A4)               ; .B/.L size
+    MOVE.L  (sp)+,A4
     BRA.S   .EXP_C0_2
 .EXP_C0_1:
-    BCLR    #4,-4(A4)               ; same here
+    MOVE.L  A4,-(sp)
+    MOVE.L  .tmpA4,A4
+    BCLR    #4,(A4)               ; same here
+    MOVE.L  (sp)+,A4
 .EXP_C0_2:
     MOVE.L  D4,-(A7)
     MOVE.L  .EXP_ST2,(A4)+
@@ -17571,6 +17620,7 @@ PLB:
 	LSL.W	#2,D0
 	ADD.W	D0,D7
 	LSR.W	#2,D0
+	MOVE.L  A4,.tmpA4
 	MOVE.W	.42(PC,D7.W),(A4)+
 
 .E2_B1:
@@ -17581,9 +17631,16 @@ PLB:
 	BPL.S	.41
 	TST.W	D4
 	BEQ.W	.DO			; SKIP MOVE.X SET
-	BCLR	#5,-4(A4)
+	MOVE.L A4,-(A7)
+	MOVE.L .tmpA4,A4
+	BCLR	#5,(A4)
+	MOVE.L (A7)+,A4
 	BRA.W	.21
-.41:	BCLR	#4,-4(A4)
+.41:
+	MOVE.L A4,-(A7)
+	MOVE.L .tmpA4,A4
+	BCLR	#4,(A4)
+	MOVE.L (A7)+,A4
 	BRA.W	.21
 
 ;; Enhanced (assigns in lists)
@@ -17635,6 +17692,7 @@ PLB:
     LSL.W   #2,D0
     ADD.W   D0,D7
     LSR.W   #2,D0
+    MOVE.L  A4,.tmpA4
     MOVE.W  .42(PC,D7.W),(A4)+      ;
 
     MOVE.W  D3,(A4)+
@@ -17644,10 +17702,16 @@ PLB:
     BPL.S   .EXP_C2_1
     TST.W   D4
     BEQ     ERROR0                  ; compiler shouldn't use this code, anyway..
-    BCLR    #5,-4(A4)               ; .B/.L size
+    MOVE.L  A4,-(sp)
+    MOVE.L  .tmpA4,A4
+    BCLR    #5,(A4)               ; .B/.L size
+    MOVE.L  (sp)+,A4
     BRA.S   .EXP_C2_2
 .EXP_C2_1:
-    BCLR    #4,-4(A4)               ; same here
+    MOVE.L  A4,-(sp)
+    MOVE.L  .tmpA4,A4
+    BCLR    #4,(A4)               ; same here
+    MOVE.L  (sp)+,A4
 .EXP_C2_2:
     MOVem.L  D3/D4,-(A7)
     MOVE.W  .EXP_ST,(A4)+
@@ -22441,9 +22505,9 @@ DOREGARGS:
       EXPVARPROCCALL:			; A0=IDENTENTRY
     CLR.L   LAST_CMD_ADR
 	TST.B	4(A0)
-	BEQ	ERROR22
+	BEQ.S	.err22
 	CMP.W	#17,(A3)+
-	BNE	ERROR23
+	BNE.S	.err23
 	MOVE.L LABLOG,-(A7) 
 	BSR	SD0
 	MOVE.L	A0,-(A7)
@@ -22460,7 +22524,12 @@ DOREGARGS:
 	BEQ.S	.3
 	SUBQ.L	#2,A3
 .2:	CMP.W	#18,(A3)+		; OUT
-	BNE	ERROR23
+	BEQ .noerr
+.err23
+	JMP ERROR23
+.err22
+	JMP ERROR22
+.noerr:
 	MOVE.W	(A7)+,D0
 	MOVE.L	(A7)+,A0
 	MOVE.W	.7(PC),(A4)+
@@ -23264,7 +23333,7 @@ EA_GETEXP:
 	OR.W	D7,(A4)+
 	MOVE.L	.BNE(PC),(A4)+
 	MOVE.L	D6,D0
-	BSR	ADDBRANCH
+	JSR	ADDBRANCH
 
 .4F:	CMP.W	#12,(A3)+
 	BNE	.6
@@ -23482,7 +23551,7 @@ NumHunks:
 	BRA.S	.L
 .OUT:	TST.W	D0			; NOW FIND OFFSET
 	BNE.S	VREF
-	GETM	A5			; NOT LINKED INTO HASH TABLE!
+	GETML	A5			; NOT LINKED INTO HASH TABLE!
 	MOVE.L	#.NAME,(A5)+		; ANONYMOUS VARIABLE
 	MOVE.B	#GLOBV,(A5)+		; SET GLOBAL(=2)
 	MOVE.B	#5,(A5)+		; REF+EXPORT
@@ -23492,7 +23561,7 @@ NumHunks:
 	MOVE.W	D2,(A5)+		; SET OFFS
 	EXT.L	D2
 	MOVE.L	A5,D2
-	MOVE.W  LINENUM(PC),(A5)+ ;SET line num
+	MOVE.W  LINENUM,(A5)+ ;SET line num
 	DONEM	A5
 	SUBQ.L	#8,D2
 	SUBQ.L	#4,D2
@@ -23526,7 +23595,7 @@ VREF:	MOVE.L	A1,A3			; SEARCH FOR VAR
 	SUBQ.W	#4,NRGLOB
 	MOVE.W	NRGLOB,(A5)+		; SET OFFS
 	MOVE.L	A5,D2
- 	MOVE.W  LINENUM(PC),(A5)+ ;SET line num
+ 	MOVE.W  LINENUM,(A5)+ ;SET line num
 	CLR.L (A5)+ ;VARHEAVY
     MOVE.W #-1,(A5)+ ;VAR_PTRREPCOUNT
 	CLR.L (A5)+ ;VAR_DIMDATA
@@ -24016,6 +24085,13 @@ i2ERROR39:
 	CMP.W	#12,LOADEDVERSION
 	BMI.S	.not12
 
+	CMP.W	#13,LOADEDVERSION
+	BMI.S	.not13
+
+	MOVE.W	(A0)+,D0
+	ROL.W   #3,D0         ; shift bits into positions 3 and 4 (forcesigned and forceunsigned flags)
+	OR.B    D0,-16(A5)    ; flags
+.not13
 	MOVE.W	(A0)+,-6(A5)	; PTRREPCOUNT
        
     MOVE.L  A5,-(A7)

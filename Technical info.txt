@@ -681,6 +681,7 @@ OBJECT emodule
           size:INT                      either membersize or -1 if objhead
           offset:INT                    zero for objhead
           id[len]:ARRAY
+            flags:INT                       if version>=13 (forcesigned and forceunsigned flags bits 0+1)
             ptrrepcount:INT                 if version>=12 (count of PTR TO PTR)
             dimdatacount:INT                if version>=12 (number of array dimensions)
               dimoffset:INT                 if version>=12 array dimension offset (repeated for each dimension above)
