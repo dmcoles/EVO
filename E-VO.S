@@ -11717,6 +11717,8 @@ ERROR102:	MOVEQ	#102,D0
 		BRA	LEAVEERROR
 ERROR103:	MOVEQ	#103,D0
 		BRA	LEAVEERROR
+ERROR104:	MOVEQ	#104,D0
+		BRA	LEAVEERROR
 
 ; ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' ;
 ;	The COMPILER Part !!!!!!				;
@@ -14109,7 +14111,7 @@ CHECKPR:	MACRO			; \1=TR.DX
 	BSET #3,OFLAGS(A0)
 	BRA.S	.O
 .4: CMP.W	#IOFF+110,D0
-	BNE.S	.SOBJ
+	BNE	.SOBJ
 	MOVEQ	#2,D2			; WORD
 	BTST #5,ICODEPREFS+3        ;LEGACY MODE
 	BNE     ERROR90
@@ -14119,6 +14121,10 @@ CHECKPR:	MACRO			; \1=TR.DX
 .O2:	MOVE.W	OBJCOUNT(PC),6(A0)
 	MOVE.W	D3,4(A0)
 	ADD.L	D2,D1
+
+	CMP.L #65536,D1
+	BPL ERROR103
+  
 	BTST	#0,1(A0)		; CHECK ON WORD BOUNDARIES
 	BEQ.S	.1
 
@@ -14150,10 +14156,14 @@ CHECKPR:	MACRO			; \1=TR.DX
 	BEQ.S	.S
 	BTST	#0,D1
 	BEQ.W	.S
-	ADDQ.W	#1,D1			; EVEN SIZED OBJECTS
+	ADDQ.L	#1,D1			; EVEN SIZED OBJECTS
 .S:	MOVE.W	D1,OSIZE(A1)
 	TST.W	D1
-	BEQ	ERROR39			; EMPTY OBJECT
+	BEQ	ERROR39			; EMPTY OBJECT 
+ 
+	CMP.L #65536,D1
+	BPL ERROR103
+ 
 	MOVE.L	(A7)+,A2
 	BRA	JOBLOOP			; ONLY EXIT!
 .SOBJ:	CMP.W	#IOFF+44,D0
@@ -28317,7 +28327,7 @@ fatalerr: DC.L 0
 	DC.L	.73,.74,.75,.76,.77,.78,.79,.80
 	DC.L	.81,.82,.83,.84,.85,.86,.87,.88
 	DC.L    .89,.90,.91,.92,.93,.94,.95,.96
-	DC.L    .97,.98,.99,.100,.101,.102,.103
+	DC.L    .97,.98,.99,.100,.101,.102,.103,.104
 
 .0:	DC.B	'syntax error',0
 .1:	DC.B	'unknown keyword/const',0
@@ -28422,7 +28432,8 @@ fatalerr: DC.L 0
 .100:   DC.B    'control register expected',0
 .101:   DC.B    'cpu register expected',0
 .102:   DC.B    'sorry, feature is not available yet',0
-.103:   DC.B    '',0
+.103:   DC.B    'object too large',0
+.104:   DC.B    '',0
 
 	EVEN
 
