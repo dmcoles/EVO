@@ -9848,8 +9848,8 @@ SRCFN: DC.L 0
 	EROBJLINE:	DC.B	'WITH: %s',10,0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
-			DC.B	'/Assembler/Linker/PP',160,'v3.6.0',160
-			DC.B	'(19.04.2023)'
+			DC.B	'/Assembler/Linker/PP',160,'v3.6.1-dev',160
+			DC.B	'(24.04.2023)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -17356,14 +17356,39 @@ PLB:
 	ADD.W	D0,D7
 	LSR.W	#2,D0
 	MOVE.L A4,.tmpA4
-	MOVE.L	.20(PC,D7.W),(A4)+
+	MOVE.L  a0,-(sp)
+	LEA		.20,A0
+	MOVE.L	(A0,D7.W),(A4)+
+	MOVE.L  (sp)+,a0
+  
+	MOVE.L  THE_OFFSET,D1
+	CLR.L   THE_OFFSET
+	CMP.L   #128,D1
+	BPL.S   .bigoff1
+	OR.W    D1,-2(A4)
+  
+	BRA.S .E0_B
+.bigoff1:
+	CMP.W #32768,D1
+	BPL.S   .longoff1
+  
+	OR.W    #$0120,-2(a4)
+	MOVE.W D1,(A4)+
+	BRA.S .E0_B
+.longoff1:  
+	OR.W    #$0130,-2(a4)
+	MOVE.L D1,(A4)+
+
 .E0_B:
     TST.W   .THE_FACTOR
     BEQ     .E0_S0
     MOVE.W  .THE_FACTOR,D1
     LSL.W   #8,D1
     LSL.W   #1,D1
-    OR.W    D1,-2(A4)
+    MOVE.L A4,-(sp)
+    MOVE.L .tmpA4,A4
+    OR.W    D1,2(A4)
+    MOVE.L (sp)+,A4
     CLR.W   .THE_FACTOR
 .E0_S0:
 	BSR	.EXTL
@@ -17435,14 +17460,34 @@ PLB:
   	ADD.W	D0,D7
     LSR.W   #2,D0
     MOVE.L A4,.tmpA4
-    MOVE.L  .20(PC,D7.W),(A4)+      ;
+    MOVE.L .20(PC,D7.W),(A4)+      ;
 
+	MOVE.L  THE_OFFSET,D1
+	CLR.L   THE_OFFSET
+	CMP.L   #128,D1
+	BPL.S   .bigoff2
+	OR.W    D1,-2(A4)
+	BRA.S .dofac
+.bigoff2:
+	CMP.W #32768,D1
+	BPL.S   .longoff2
+  
+	OR.W    #$0120,-2(a4)
+	MOVE.W D1,(A4)+
+	BRA.S .dofac
+.longoff2:  
+	OR.W    #$0130,-2(a4)
+	MOVE.L D1,(A4)+
+.dofac
     TST.W   .THE_FACTOR
     BEQ .EXP_C0_0
     MOVE.W  .THE_FACTOR,D1
     LSL.W   #8,D1
     LSL.W   #1,D1
-    OR.W    D1,-2(A4)
+    MOVE.L  A4,-(sp)
+    MOVE.L  .tmpA4,A4
+    OR.W    D1,2(A4)
+    MOVE.L  (sp)+,A4
 .EXP_C0_0:
     BSR     .EXTL
     CMP.W   #2,D4
@@ -17901,6 +17946,8 @@ PLB:
 LASTMEMBER:	DC.L	0
 FORCEUNSIGNED: DC.W 0
 FORCESIGNED: DC.W 0
+THE_OFFSET:  DC.L    0
+
 
 PLX:	CMP.W	#35,D1			; p++  p--
 	BPL	PLB
@@ -18020,19 +18067,27 @@ GENID:	CMP.L	D1,D2
 GENADD:	TST.L	D1			; value in d1
 	BNE.S	.GA1
 	RTS
-.GA1:	CMP.L	#9,D1
-	BPL.S	.GA5
-	CMP.W	#8,D1
-	BNE.S	.GA8
-	MOVEQ	#0,D1
-.GA8:	MOVE.W	.GA6(PC),(A4)+
-	LSL.W	#1,D1
-	OR.B	D1,-2(A4)
+.GA1:
+	MOVE.L D1,THE_OFFSET
+	CMP.L	#128,D1
+	BMI.S	.GAR
+
+	CMP.W   #1,ECPU
+	BPL.S .GAR
+  
+;	CMP.W	#8,D1
+;	BNE.S	.GA8
+;	MOVEQ	#0,D1
+;.GA8:	MOVE.W	.GA6(PC),(A4)+
+;	LSL.W	#1,D1
+;	OR.B	D1,-2(A4)
 	RTS
 .GA5:	MOVE.W	.GA7(PC),(A4)+
 	MOVE.L	D1,(A4)+
+	CLR.L   THE_OFFSET
+.GAR:
 	RTS
-.GA6:	ADDQ.L	#8,D2
+;.GA6:	ADDQ.L	#8,D2
 .GA7:	ADD.L	#1,D2
 
 
@@ -23230,7 +23285,7 @@ EA_GETEXP:
 .1C:	MOVE.L	D0,(A4)+
 	MOVE.L	.BNE(PC),(A4)+
 	MOVE.L	D6,D0
-	BSR	ADDBRANCH
+	JSR	ADDBRANCH
 	BRA	.X
 
 .1:	CMP.W	#IDENT,D0
@@ -23270,7 +23325,7 @@ EA_GETEXP:
 	MOVE.W	#-2,(A4)+
 	MOVE.L	.BNE(PC),(A4)+
 	MOVE.L	D6,D0
-	BSR	ADDBRANCH
+	JSR	ADDBRANCH
 .L:	MOVE.L	A6,-(A7)
 	BSR.W	.R
 	MOVE.L	(A7)+,A6
@@ -23476,7 +23531,7 @@ NumHunks:
 	MOVE.L	A2,CACHENAMEEND
 	MOVE.L	A1,CACHENAMESTART
 	JSR	SEARCHINMODLIST
-	GETM	A3
+	GETML	A3
 	TST.L	D0
 	BNE.S	.L2
 	ADDQ.W	#1,AGAIN		; SIGNAL NEW MODULES
@@ -23541,7 +23596,7 @@ NumHunks:
 	MOVE.L	A0,A1			; A1=NAME
 	ADD.W	D0,A0
 	MOVE.L	A0,A2			; A2=OFFSETSTAB
-	MOVE.W	LOADEDVERSION(PC),D2
+	MOVE.W	LOADEDVERSION,D2
 	SUB.W	#10,D2
 .L:	TST.L	(A0)+
 	BEQ.S	.OUT
