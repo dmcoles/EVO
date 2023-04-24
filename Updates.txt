@@ -458,6 +458,13 @@ Development restarted as E-VO by Darren Coles
    - FindModule: fix error in memory deallocation
    - FindModule: update for BYTE and WORD types (module version 13)
    - ShowModule: update for BYTE and WORD types (module version 13)
+
+   (3.6.1)
+   - add checks for object going over 64k
+   - fix 020 optimised address calculation for array of object (or ptr to
+     object) indexing
+   - added EXENAME and DESTDIR command line arguments to override the output
+     file name.
    
 DATE HISTORY:
     3.3b    20.11.1999 -> 12.12.1999
@@ -471,3 +478,4 @@ DATE HISTORY:
     3.5.0   04.11.2021 -> 14.07.2022
     3.5.1   08.08.2022 -> 06.09.2222
     3.6.0   12.09.2022 -> 19.04.2023
+    3.6.1   24.04.2023 -> ?

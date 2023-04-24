@@ -1350,6 +1350,7 @@ has to become (ends with):      FOR/WHILE/UNTIL:        lab,jumpback,id
 100             control register expected
 101             cpu register expected
 102             sorry, feature is not available yet
+103             object too large
 
 WARNINGS:
 
