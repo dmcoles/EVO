@@ -182,6 +182,7 @@ evo legacy showfname ram:emods/libraries/keymap.e
 evo legacy showfname ram:emods/libraries/iffparse.e
 evo legacy showfname ram:emods/libraries/gadtools.e
 evo legacy showfname ram:emods/libraries/expansionbase.e
+evo legacy showfname ram:emods/libraries/diskfont.e
 evo legacy showfname ram:emods/libraries/expansion.e
 evo legacy showfname ram:emods/libraries/configvars.e
 evo legacy showfname ram:emods/libraries/configregs.e
@@ -219,6 +220,9 @@ evo legacy showfname ram:emods/tools/textedit/filetypes.e
 evo legacy showfname ram:emods/tools/textedit/plugin.e
 
 flushcache
+
+copy /bin_modules/#? all ram:emods
+
 cd ram:emods/fd
 
 fdtom window_lib.fd
