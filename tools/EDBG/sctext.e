@@ -3,8 +3,8 @@
 OPT MODULE
 
 MODULE 'class/sc'
-MODULE 'intuition/intuition', 'intuition/screens',
-       'graphics/rastport', 'graphics/gfxbase', 'graphics/text'
+MODULE 'intuition/intuition', 'intuition/screens','exec/memory',
+       'graphics/rastport', 'graphics/gfxbase', 'graphics/text','graphics/gfx'
 
 EXPORT OBJECT scrolltext OF scrollwin PRIVATE
   font:PTR TO textfont
@@ -52,6 +52,9 @@ ENDPROC FALSE
 PROC extra_refresh(x,y,xs,ys,xoff,yoff,win:PTR TO window) OF scrolltext
   DEF fx,fy,a,b,yc,base,s,r:PTR TO rastport,ny,nys,bot,de=TRUE,xo2,bp
   DEF ai:areainfo
+  DEF tp:tmpras
+  DEF sz
+  DEF buf
   DEF pi[25]:ARRAY OF INT
   
   r:=stdrast:=win.rport
@@ -112,10 +115,21 @@ PROC extra_refresh(x,y,xs,ys,xoff,yoff,win:PTR TO window) OF scrolltext
       IF x THEN FOR b:=1 TO x DO IF s[] THEN s++
       
       IF bp 
+        MemFill(pi,50,0)
         InitArea( ai, pi, 5);
         r.areainfo:=ai
-        AreaEllipse(r,xoff+(fx/2)-1,yc+base-(fy/2)+2,fx/4,fy/4)
-        AreaEnd(r)
+        
+        sz:=fx*fy
+        buf:=NewM(sz,MEMF_CHIP)
+        IF buf
+          InitTmpRas(tp,buf,sz)
+          r.tmpras:=tp
+          
+          AreaEllipse(r,xoff+(fx/2)-1,yc+base-(fy/2)+2,fx/4,fy/4)
+          AreaEnd(r)
+          r.tmpras:=NIL
+          Dispose(buf)
+        ENDIF
         r.areainfo:=NIL
         ->DrawEllipse(r,xoff+(fx/2),yc+base-(fy/2),fx/4,fy/4)
       ENDIF
