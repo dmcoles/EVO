@@ -17,7 +17,11 @@ source is all contained within a single source file and requires no additional
 resources.
 
 The program is released into the public domain for anyone to use however they
-wish with no restrictions apart from that the program should not be sold for
-profit.
+wish with no restrictions apart from that the E-VO program (or related
+support programs) should not be sold for profit.
+
+You may use this program to develop any application without restriction however
+use of this project is entirely at your own risk. I will not accept responsibilty
+for any issues arising from the use of E-VO.
 
 Darren Coles
