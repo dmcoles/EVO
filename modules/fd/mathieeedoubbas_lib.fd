@@ -12,6 +12,6 @@ IeeeDPSub(leftParm,rightParm)(d0/d1/d2/d3)
 IeeeDPMul(factor1,factor2)(d0/d1/d2/d3)
 IeeeDPDiv(dividend,divisor)(d0/d1/d2/d3)
 *--- functions in V33 or higher (Release 1.2) ---
-IEEEDPFloor(parm)(d0/d1)
-IEEEDPCeil(parm)(d0/d1)
+IeeeDPFloor(parm)(d0/d1)
+IeeeDPCeil(parm)(d0/d1)
 ##end
