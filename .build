@@ -1,0 +1,7 @@
+all: 
+  cd modules
+  EXECUTE make
+
+clean:
+  DELETE ram:emods all
+ 
