@@ -9904,7 +9904,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.6.1-dev',160
-			DC.B	'(24.04.2023)'
+			DC.B	'(10.05.2023)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -13312,8 +13312,8 @@ LDEF:	MACRO
 	BNE	ERROR33
 	LDEF
 	MOVE.L	(A3)+,A6
+	MOVEQ #0,D2
 	MOVE.W	OSIZE(A6),D2
-	EXT.L	D2
 	MOVE.L	D2,D7
 	MOVE.L	A6,(A0)			; TYPE=OBJECT
 	BSR.W	.5
@@ -13873,8 +13873,8 @@ DOCHAR:               ; 41
 	MOVE.W	ODESTR(A0),ODESTR(A1)
 .NID:	TST.W	OID(A0)
 	BEQ	ERROR39
+	MOVEQ #0,D1
 	MOVE.W	OSIZE(A0),D1		; SET D1=OFFSET
-	EXT.L	D1
 	LEA	OMEMB+4(A0),A0		; A0=SUPERMEMBERLIST
 .L:	MOVE.L	-(A0),A0
 	MOVE.L	A0,D0
@@ -15417,8 +15417,8 @@ SAVEDREGSPTR:	DC.L	0
 	CMP.L	#5,D0
 	BMI.S	.0
 	MOVE.L	D0,A6
+	MOVEQ #0,D0
 	MOVE.W	OSIZE(A6),D0
-	EXT.L	D0
 
 	CMP.W	#35,(A3)
 	BNE.S	.0
@@ -15439,8 +15439,8 @@ SAVEDREGSPTR:	DC.L	0
 	CMP.L	#5,D0
 	BMI.S	.CON
 .OO:	MOVE.L	D0,A6
+	MOVEQ #0,D0
 	MOVE.W	OSIZE(A6),D0
-	EXT.L	D0
 .CON:
 	MOVE.W	.ST2(PC),(A4)+
 	JSR	GVA0D1_0
@@ -17229,7 +17229,6 @@ PLB:
 	CMP.L	A1,D1
 	BEQ.S	.13
 	MOVE.W	(A1),D1
-	EXT.L	D1
 .13:	BSR	GEND2
 	BRA.W	.CONT
 
@@ -17288,7 +17287,6 @@ PLB:
 	CMP.L	A1,D1
 	BEQ.S	.14
 	MOVE.W	(A1),D1
-	EXT.L	D1
 .14:	MOVE.L	D3,D4
 	MULU	D5,D4
 	ADD.L	D4,D1
@@ -18663,8 +18661,8 @@ MOVED0FP0: MACRO
 	CMP.L	#5,D0
 	BMI.S	.0
 	MOVE.L	D0,A6
+	MOVEQ #0,D0
 	MOVE.W	OSIZE(A6),D0
-	EXT.L	D0
 
 	CMP.W	#35,(A3)
 	BNE.S	.0
@@ -18686,8 +18684,8 @@ MOVED0FP0: MACRO
 	CMP.L	#5,D0
 	BMI.S	.CON
 .OO:	MOVE.L	D0,A6
+	MOVEQ #0,D0
 	MOVE.W	OSIZE(A6),D0
-	EXT.L	D0
 .CON:	MOVE.L	(A7)+,A1
 .0:
 	CMP.W	#29,(A3)
@@ -18716,9 +18714,18 @@ MOVED0FP0: MACRO
 .NM:	MOVE.W	.S1(PC),(A4)+
 	BRA.S	.2
 
-.1:	MOVE.W	.S2(PC),(A4)+		; just NEW p
-	MOVE.W	D0,(A4)+
+.1:	
 	MOVE.W	#1,.SINGL
+	CMP.L #$8000,D0
+	BPL .lg
+
+	MOVE.W	.S2(PC),(A4)+		; just NEW p
+	MOVE.W	D0,(A4)+
+	BRA.S .2
+  
+.lg
+	MOVE.W	.S3(PC),(A4)+		; just NEW p
+	MOVE.L	D0,(A4)+
 
 .2:	MOVE.L	D0,D1			; D1=OBJECTSIZE NOW
 	BSR	.GNEW
@@ -18801,6 +18808,7 @@ MOVED0FP0: MACRO
 .LSL2:	LSL.L	#2,D0
 .S1:	MOVE.L	D0,-(A7)
 .S2:	PEA	1.W
+.S3:	PEA	1.L
 .5:	JSR	.M
 .4:	BSR.W	.M
 .A:	ADDQ.L	#4,A7
@@ -18960,9 +18968,9 @@ MOVED0FP0: MACRO
 	MOVE.W	.SL2(PC),(A4)+
 	BRA.S	.SK2
 .SK1A:	MOVE.L	D7,A0
+	MOVEQ #0,D6
 	MOVE.W	OSIZE(A0),D6
 	BEQ	ERROR40
-	EXT.L	D6
 .SK1:	MOVE.W	.ALLD(PC),(A4)+
 .SK2:	MOVE.W	D6,(A6)
 	GEAT	D0
@@ -19738,8 +19746,9 @@ EXPQMARK:
     CMP.L   #4,D0
     BLE.S     .5
     MOVE.L  D0,A0
+    MOVEQ #0,D0
     MOVE.W  OSIZE(A0),D0
-.5: CMP.W   #126,D0
+.5: CMP.L   #126,D0
     BGT.S     .6
     BSR SD0
     MOVE.B  .3(PC),(A4)+
@@ -19749,7 +19758,7 @@ EXPQMARK:
     BRA EXPLOOP
 .6: BSR SD0
     MOVE.W  .7(PC),(A4)+
-    EXT.L   D0
+    AND.L #$ffff,D0
     MOVE.L  D0,(A4)+
     BSR RD0
     MOVEQ   #1,D5
@@ -20505,16 +20514,17 @@ EXPIMMLIST:
     beq     .F1
     move.l  OMEMB(a2),a6
 .FL:add.w   OOFF(a6),d5
+    MOVEQ #0,D2
     move.w  OSIZE(a6),d2
     beq     ERROR40
-    cmp.w   #4,d2
+    cmp.l   #4,d2
     bgt     ERROR40
 .F1:moveq   #0,d0           ;
     move.w  (a1)+,d0
     cmp.w   #1,d0
     bne     .F2
     move.l  (a1)+,d0
-    cmp.w   #2,d2
+    cmp.l   #2,d2
     blt     .Fb
     beq     .Fi
     move.l  d0,4(a0,d5)
@@ -22503,9 +22513,9 @@ DOREGARGS:
 	MOVE.L	A6,D7
 	BEQ	ERROR23
 	MOVE.W	(A6)+,D7
-	BEQ	ERROR23
+	BEQ	.lERR23
 	SUB.W	D6,D7
-	BMI	ERROR23
+	BMI	.lERR23
 	LSL.W	#2,D7
 	EXT.L	D7
 	ADD.L	D7,A6
@@ -22536,7 +22546,7 @@ DOREGARGS:
 .P1:	PEA	$0.W
 .P2:	PEA	$0
 .P3:	CLR.L	-(A7)
-
+.lERR23 JMP ERROR23
 
 
       OPTIMOVEMS:
@@ -23326,14 +23336,14 @@ EA_GETEXP:
 	BEQ.S	.SH
 	MOVE.L	.TRUE(PC),(A4)+
 	MOVE.L	D6,D0
-	BSR	ADDLABEL
+	JSR	ADDLABEL
 	MOVE.W	.FALSE(PC),(A4)+
 	BRA	EXPLOOP
 .SH:	MOVE.W	.TRUE(PC),(A4)+
 	BRA	EXPLOOP
 
 .SR:	MOVE.L	D6,D0
-	BSR	ADDLABEL
+	JSR	ADDLABEL
 	BRA	EXPLOOP
 
 .R:	MOVE.W	(A3)+,D0		; RECURSIVE PART
@@ -30533,7 +30543,7 @@ BIN:	ADDQ.L	#1,A2
       I_LIST:
 	MOVE.L	4(A7),D1
 	MOVEA.L	D1,A2			; LEN
-	CMPA.W	#$7FF0,A2
+	CMPA.W	#$FFF0,A2
 	BHS.S	.1
 	LSL.L	#2,D1
 	MOVEQ	#16,D0			; 8 (LIST) + 4 (LINK) + 4 (LENGTHS)
@@ -30579,14 +30589,14 @@ BIN:	ADDQ.L	#1,A2
 	MOVE.W	6(A7),D0		; LEN
 	BPL.S	.1
 	MOVE.W	-2(A0),D0
-.1:	MOVE.W	-4(A1),D1
+.1: MOVEQ #0,D1
+	MOVE.W	-4(A1),D1
 	SUB.W	-2(A1),D1
 	CMP.W	D1,D0
 	BMI.S	.2
 	MOVE.W	D1,D0
 .2:	MOVE.W	-2(A1),D1
 	ADD.W	D0,-2(A1)
-	EXT.L	D1
 	LSL.L	#2,D1
 	ADD.L	D1,A1
 	BRA.S	.4
@@ -32527,12 +32537,12 @@ I_LISTADDITEM:
 	MOVE.L	4(A7),D3		; SRC
 	MOVE.L	8(A7),A1		; DEST
 	MOVE.L	A1,A2
+	MOVEQ #0,D1
 	MOVE.W	-2(A1),D1
 	CMP.W	-4(A1),D1
 	BEQ.S .1
 	ADDQ.W #1,D1
 	MOVE.W D1,-2(A1)
-	EXT.L	D1
 	LSL.L	#2,D1
 	ADD.L	D1,A1
 	MOVE.L	D3,-4(A1)
@@ -32777,7 +32787,7 @@ I_LISTINSITEM:
 	MOVE.L	8(A7),D0		; SRC
 	MOVE.L	12(A7),A1		; DEST
 	MOVE.L	A1,A2
-	CLR.L D1
+	MOVEQ #0,D1
 	MOVE.W	-2(A1),D1 ;length
 	CMP.W	-4(A1),D1 ;max
 	BEQ.S .1
@@ -32805,7 +32815,7 @@ I_LISTREMITEM:
 	BMI.S .1
 	MOVE.L	8(A7),A1		; DEST
 	MOVE.L	A1,A2
-	CLR.L D1
+	MOVEQ #0,D1
 	MOVE.W	-2(A1),D1 ;length
 	BEQ.S .1
 	CMP.W D1,D2

@@ -465,6 +465,7 @@ Development restarted as E-VO by Darren Coles
      object) indexing
    - added EXENAME and DESTDIR command line arguments to override the output
      file name.
+   - Extend lists to handle 64k items instead of 32k.
    
 DATE HISTORY:
     3.3b    20.11.1999 -> 12.12.1999
