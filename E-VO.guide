@@ -1,10 +1,10 @@
 @database "e.guide"
 @node MAIN
-@title "Amiga E-VO v3.6.0"
+@title "Amiga E-VO v3.6.1"
 
                 +-----------------------------------------------+
                 |                                               |
-                |               Amiga E-VO v3.6.0               |
+                |               Amiga E-VO v3.6.1               |
                 |          Compiler for The E Language          |
                 |     Originally By Wouter van Oortmerssen      |
                 |           Updates By GRIO 1999-2003           |
@@ -341,6 +341,17 @@ NOTE: in most cases you won't need to use any of these options
 @title "0D. changes / history / new features"
 0D. changes / history / new features
 ------------------------------------
+
+ New in E-VO  (3.6.1)
+
+    - add checks for object going over 64k
+    - fix 020 optimised address calculation for array of object (or ptr to
+      object) indexing
+    - added EXENAME and DESTDIR command line arguments to override the output
+      file name.
+    - fix casing for IeeeDPFloor and IeeeDPCeil
+    - Extend lists to handle 64k items instead of 32k.
+    - Fix #else preprocessor parsing issues
 
  New in E-VO  (3.6.0)
     - EDBG: add support for ECX/EEC compiled executables
@@ -921,6 +932,8 @@ v3.4.0  09.06.2021 -> 07.10.2021
 v3.4.1  19.10.2021 -> 23.10.2021
 v3.5.0  04.11.2021 -> 14.07.2022
 v3.6.0  12.09.2022 -> 19.04.2023
+v3.6.1  24.04.2023 -> 16.06.2023
+
 
 @endnode
 @node CH_0E
@@ -6583,6 +6596,9 @@ described in its own documentation in the Bin/Tools directory.
 @title "17K. EDBG"
 17K. EDBG
 ---------
+Updates to v3.6.1
+- Setting breakpoint caused crashes on certain versions of graphics.library
+
 Updates to v3.6.0:
 - add support for ECX/EEC compiled executables
 
