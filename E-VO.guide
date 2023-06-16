@@ -4676,7 +4676,7 @@ RealF(s,-3.14159,0)    results in    '-3'
 As said before, the E float format is IEEE (single), this means that
 older float code using the FFP format with the SpXxx functions will
 have to be rewritten (as stated in the v2.1b docs). The mathffp
-library is no longer directly supported by E-VO starting from v3.0, and
+library is no longer directly supported by E starting from v3.0, and
 you'll have to open this library like all others if you want to use it.
 
 single IEEE's were chosen because:
