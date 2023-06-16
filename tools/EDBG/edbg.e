@@ -67,7 +67,7 @@ PROC main() HANDLE
   DEF options:PTR TO LONG,rdargs=NIL,exename[100]:STRING,e:PTR TO dbgwin,
       pubconname[200]:STRING, i
   DEF gb:PTR TO gfxbase
-  title:='EDBG v3.6.1-dev, The E Debugger! © 1994-1997 Wouter (and Jason), 2021-2023 Darren Coles'
+  title:='EDBG v3.6.1, The E Debugger! © 1994-1997 Wouter (and Jason), 2021-2023 Darren Coles'
   reqtitle:='EDBG'
   vars:=newlist()
   options:=[0,0,0,0]
@@ -1542,4 +1542,4 @@ EXCEPT DO
   IF rexxsysbase THEN CloseLibrary(rexxsysbase)
 ENDPROC
 
-CHAR 0, '$VER: EDBG 3.6.1-dev', 0, 0
+CHAR 0, '$VER: EDBG 3.6.1', 0, 0
