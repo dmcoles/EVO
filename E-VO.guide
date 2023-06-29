@@ -194,17 +194,18 @@ Contents:
 0A. introduction
 ----------------
 E is an object oriented / procedural / unpure functional higher programming
-language, mainly influenced by languages such as C++, Ada, Lisp etc.  It is a
-general-purpose programming language, and the Amiga implementation is
+language, mainly influenced by languages such as C++, Ada, Lisp etc.  It is
+a general-purpose programming language, and the Amiga implementation is
 specifically targeted at programming applications.  Features of the language
-include:  speed of >20000 lines/minute on a vanilla A500, inline assembler and
-linker integrated into compiler, large set of integrated functions, great
-module concept with v47 (OS3.2) includes as modules, flexible type-system,
-quoted expressions, immediate and typed lists, parametric and inclusion
-polymorphism, exception handling, inheritance, data-hiding, methods, multiple
-return values, default arguments, register allocation, fast memory management,
-unification, LISP-Cells, gui-toolkit, (macro-) preprocessor, very intuitive
-and powerful source-level debugger, easy .library linking, and much more...
+include:  speed of >20000 lines/minute on a vanilla A500, inline assembler
+and linker integrated into compiler, large set of integrated functions,
+great module concept with v47 (OS3.2) includes as modules, flexible
+type-system, quoted expressions, immediate and typed lists, parametric and
+inclusion polymorphism, exception handling, inheritance, data-hiding,
+methods, multiple return values, default arguments, register allocation,
+fast memory management, unification, LISP-Cells, gui-toolkit,
+(macro-) preprocessor, very intuitive and powerful source-level debugger,
+easy .library linking, and much more...
 
 This is what 'HelloWorld' looks like in E:
 
@@ -237,9 +238,9 @@ Distributing copies of E-VO for more than the price of media+postage, or any
 other way of distribution with only the slightest aim of making profit,
 is not allowed.
 
-No guarantees, no warranty.  If you manage to drown your pet goldfish using E,
-or E fails to be suitable for ordering pizzas, that's entirely your problem.
-Whatever happens, don't blame it on me.
+No guarantees, no warranty.  If you manage to drown your pet goldfish
+using E, or E fails to be suitable for ordering pizzas, that's entirely your
+problem. Whatever happens, don't blame it on me.
 
 @endnode
 
@@ -258,8 +259,8 @@ syntax of the compiler (2.04+):
 
 SOURCE/A,REG=NUMREGALLOC/N/K,LARGE/S,SYM=SYMBOLHUNK/S,NOWARN/S
 QUIET/S,ASM/S,ERRLINE/S,ERRBYTE/S,SHOWBUF/S,ADDBUF/N/K,COMPILESTACK/N/K,
-IC=IGNORECACHE/S,HOLD/S,WB/S,LINEDEBUG/S,OPTI/S,LEGACY/S,LEGACYINT/S,DEBUG/S,DEBUG50/S,NILCHECK/S,
-SHOWFNAME/S,DEFINE/M',0
+IC=IGNORECACHE/S,HOLD/S,WB/S,LINEDEBUG/S,OPTI/S,LEGACY/S,LEGACYINT/S,
+DEBUG/S,DEBUG50/S,NILCHECK/S,SHOWFNAME/S,DEFINE/M',0
 
 for 1.2 to 2.03:
 
@@ -293,43 +294,46 @@ These are standard AmigaDos options. You can see them at any time by typing
 'EVO ?'. For 1.2 options the old unix-like switches are used (need to be
 written together, preceded by a "-"):
 
-LARGE           -l      compiles with large code/data model (see @{" 16A " link CH_16A }, OPT LARGE).
-ASM             -a      puts E-VO into assembler mode (see @{" 15D " link CH_15D }, OPT ASM).
-NOWARN          -n      suppresses warnings (see @{" 16A " link CH_16A }, OPT NOWARN)
-SYM             -s      adds a symbolhunk to the executable, for use with
-                        profilers, debuggers, disassemblers etc.
-LINEDEBUG       -L      adds a "LINE" debughunk to the executable, for use
-                        with profilers, debuggers etc. (see @{" 17K " link CH_17K }).
-REG=N           -rN     uses N regs per PROC for register-allocation.
-                        (default is 0 for the time being, read elsewhere
-                        about how to use this!)
-QUIET           -q      if there are no errors or warnings, E-VO won't output
-                        anything.
-WB              -w      puts wb to front (for scripts)
-SHOWBUF         -b      shows buffer memory usage information
-ADDBUF=X        -mX     forces E-VO to allocate more memory for its buffers.
-                        X ranges 1..9, the minimum number of 100k blocks to allocate.
-                        default is 1 (never needed).
-COMPILESTACK            Allows you to override the size of the compilestack in case you
-                        get workspace full errors.
-ERRLINE         -e      give the line# the error was on as returnvalue
-ERRBYTE         -E      give the byte-offset in the file the error was on
-                        as returnvalue
-IGNORECACHE     -c      don't use the module-cache in any way
-HOLD            -h      wait for a <return> on the commandline before
-                        exiting E-VO.
-OPTI                    enable all optimisations (currently equals REG=5 and STRMERGE on)
-LEGACY                  enable legacy mode - outputs module files in version 10 format
-                        and disable the new constants and built in functions that may cause
-												naming clashes with older code.
-LEGACYINT               see OPT LEGACYINT. Enables backward compability with Int() function                       
-DEBUG                   attach debug infos to executable/module (see @{" 17K " link CH_17K })
-DEBUG50                 attach debug infos to executable/module in a way that allows debugging under OS 4.x (see @{" 17K " link CH_17K })
-NILCHECK                insert code at every "." or "[]" dereference to check
-                        for a NIL pointer. Will throw an exception of the form
-                        Throw("NIL",source_line_number)
-SHOWFNAME               Displays the filename of the E file being compiled.
-DEFINE                  Equivalent to #DEFINE in your code, defines a macro
+LARGE        -l  compiles with large code/data model (see @{" 16A " link CH_16A }, OPT LARGE)
+ASM          -a  puts E-VO into assembler mode (see @{" 15D " link CH_15D }, OPT ASM).
+NOWARN       -n  suppresses warnings (see @{" 16A " link CH_16A }, OPT NOWARN)
+SYM          -s  adds a symbolhunk to the executable, for use with
+                 profilers, debuggers, disassemblers etc.
+LINEDEBUG    -L  adds a "LINE" debughunk to the executable, for use
+                 with profilers, debuggers etc. (see @{" 17K " link CH_17K }).
+REG=N        -rN uses N regs per PROC for register-allocation.
+                 (default is 0 for the time being, read elsewhere
+                 about how to use this!)
+QUIET        -q  if there are no errors or warnings, E-VO won't output
+                 anything.
+WB           -w  puts wb to front (for scripts)
+SHOWBUF      -b  shows buffer memory usage information
+ADDBUF=X     -mX forces E-VO to allocate more memory for its buffers.
+                 X ranges 1..9, the minimum number of 100k blocks to
+                 allocate. default is 1 (never needed).
+COMPILESTACK     Allows you to override the size of the compilestack in case
+                 you get workspace full errors.
+ERRLINE      -e  give the line# the error was on as returnvalue
+ERRBYTE      -E  give the byte-offset in the file the error was on
+                 as returnvalue
+IGNORECACHE  -c  don't use the module-cache in any way
+HOLD         -h  wait for a <return> on the commandline before
+                 exiting E-VO.
+OPTI             enable all optimisations (currently equals REG=5 and
+                 STRMERGE on)
+LEGACY           enable legacy mode - outputs module files in version 10
+                 format and disable the new constants and built in functions
+                 that may cause naming clashes with older code.
+LEGACYINT        see OPT LEGACYINT. Enables backward compability with
+                 Int() function
+DEBUG            attach debug infos to executable/module (see @{" 17K " link CH_17K })
+DEBUG50          attach debug infos to executable/module in a way that
+                 allows debugging under OS 4.x (see @{" 17K " link CH_17K })
+NILCHECK         insert code at every "." or "[]" dereference to check
+                 for a NIL pointer. Will throw an exception of the form
+                 Throw("NIL",source_line_number)
+SHOWFNAME        Displays the filename of the E file being compiled.
+DEFINE           Equivalent to #DEFINE in your code, defines a macro
 
 example:  evo large blabla
 compiles blabla.e with large model.
@@ -347,8 +351,8 @@ NOTE: in most cases you won't need to use any of these options
     - add checks for object going over 64k
     - fix 020 optimised address calculation for array of object (or ptr to
       object) indexing
-    - added EXENAME and DESTDIR command line arguments to override the output
-      file name.
+    - added EXENAME and DESTDIR command line arguments to override the
+      output file name.
     - fix casing for IeeeDPFloor and IeeeDPCeil
     - Extend lists to handle 64k items instead of 32k.
     - Fix #else preprocessor parsing issues
@@ -359,15 +363,17 @@ NOTE: in most cases you won't need to use any of these options
     - add TRY..CATCH..ENDTRY allowing more control over exception handling
     - Add UNTILN, WHILEN ELSEWHILEN, IFN, ELSEIFN, EXITN, CONTN which are
       inverse of their counterparts eg. UNTILN x is equal to UNTIL Not(x)
-    - Add WORD and BYTE types (unsigned 16 bit and signed 8 bit variable types)
-      and Word() Byte() functions as well as PutByte() and PutWord()
+    - Add WORD and BYTE types (unsigned 16 bit and signed 8 bit variable
+      types) and Word() Byte() functions as well as PutByte() and PutWord()
     - Allow SIZEOF object and SIZEOF object.member
-    - Fix issue where SIZEOF x didnt throw a compile error if x was not defined
+    - Fix issue where SIZEOF x didnt throw a compile error if x was not
+      defined
     - Added EVO_3_6_0 define
     - Added Compare, Ucompare, Fcompare, StrCompare functions
     - Fixed Int() function to sign extend result
     - Added OPT LEGACYINT to restore old version of Int() command
-    - Added command line switch LEGACYINT/S which does the same as the above OPT
+    - Added command line switch LEGACYINT/S which does the same as the
+      above OPT
     - Allow BYTE and WORD types in modules, increase module version to 13.
     - FindModule: fix error in memory deallocation
     - FindModule: update for BYTE and WORD types (module version 13)
@@ -381,8 +387,8 @@ NOTE: in most cases you won't need to use any of these options
     - disable THISTASK, __POOL and UTILITYBASE in legacy mode
     - reinstate [] in immediate list to previous E functionality (a blank
       0 item list)
-    - fix optimisation issue where MOVE.B (A0),D0 and MOVE.W (A0),D0 followed
-      by TST.L would be optimised incorrectly.
+    - fix optimisation issue where MOVE.B (A0),D0 and MOVE.W (A0),D0
+      followed by TST.L would be optimised incorrectly.
     - fix issue with immediate lists, ListMax() could not be used as the max
       size was not populated.
     - allow 0 length lists to be created eg List(0)
@@ -436,8 +442,8 @@ NOTE: in most cases you won't need to use any of these options
     - Allow \xNN for hex char in strings
     - Add ELSEWHILE and ALWAYS extension to WHILE LOOP (from CreativE)
     - Improvements to SELECT x to allow expressions (from CreativE)
-    - Added LEGACY option to output module format version 10 and disable newer
-      features
+    - Added LEGACY option to output module format version 10 and disable
+      newer features
     - Fix: 2 << obj.val was generating corrupt code
     - Add SECTION (code and data) support
     - Fix: ReadStr return value was not completely compatible with EC (fix
@@ -450,14 +456,15 @@ NOTE: in most cases you won't need to use any of these options
     - Remove some unused startup code when OPT ASM in use.
     - ShowModule: Added support for string CONSTs
     - Added OFFSETOF to get the offset of a member of an object
-    - Added MemFill, AstrClone, ListInsItem, ListRemItem, ListSwapItem functions     
+    - Added MemFill, AstrClone, ListInsItem, ListRemItem, ListSwapItem
+      functions
     - EDBG: Support for sections
     - FindModule: Coded new FindModule application from scratch with support
       for latest module format.
     - Make second parameter of SetStr optional and if not specified it will
       set the calculate the string length automatically
-    - Added EndsWith function eg EndsWith(s,'A') returns TRUE if a string1 ends
-      with string2
+    - Added EndsWith function eg EndsWith(s,'A') returns TRUE if a string1
+      ends with string2
     - Fix: CHAR '' or CONST STR='' would cause memory corruption
     - Fix "3*SIZEOF LONG" error
     - added AstpCopy and UsedStack and StackSize functions
@@ -492,9 +499,9 @@ NOTE: in most cases you won't need to use any of these options
     - Added #date preprocessor (taken from CreativE but enhanced with hours
       minutes and seconds options)
     - Added DoMethod, DoMethodA, CoerceMethod, CoerceMethodA,
-      DoSuperMethod, DoSuperMethodA, Set, Sets, Get, Gets, CtrlD, CtrlE, CtrlF,
-      Chk, Eof, Fopen, Fclose, Alloc, Free, PutF, ReadB, WriteB, Size, Lsl, Lsr
-      functions (all taken from CreativE)
+      DoSuperMethod, DoSuperMethodA, Set, Sets, Get, Gets, CtrlD, CtrlE,
+      CtrlF, Chk, Eof, Fopen, Fclose, Alloc, Free, PutF, ReadB, WriteB,
+      Size, Lsl, Lsr functions (all taken from CreativE)
     - We now have optimised versions of WriteF, PrintF, PutF when targetting
       OS 37.
     - Added SHOWFNAME command line parameter.
@@ -505,8 +512,8 @@ NOTE: in most cases you won't need to use any of these options
         LowerChar(c), UpperChar(c) - takes a char and returns a char
         StrAddChar(s,c) - Adds a single character to an estring
         ListAddItem(l,i) - Adds a single item to an elist
-    - Immediate assignments for values -256 to 254 for even numbers converted
-      to MOVEQ followed by ADD.L D0,D0
+    - Immediate assignments for values -256 to 254 for even numbers
+      converted to MOVEQ followed by ADD.L D0,D0
     - Optimised NEW [] list creation to remove duplicate moves into D0
       eg. NEW [0,0,0,0]
     - Added OPT PURE to check for non pure code (eg variables in static
@@ -540,8 +547,8 @@ NOTE: in most cases you won't need to use any of these options
     - NOT operator works correctly with immediate values (eg "NOT 0" did not
       work correctly.
     - MUL/DIV optimisations also working for 020 generated code.
-    - NOALIGN now requires 020 as accessing unaligned INT or LONG will result
-      in exception if you don't have 020.
+    - NOALIGN now requires 020 as accessing unaligned INT or LONG will
+      result in exception if you don't have 020.
     - Fixed optimiser bug in library calls where IF function was used in
       a parameter that prevented the correct value from being passed.
      - Fix: x AND 0 was returning incorrect value
@@ -558,7 +565,8 @@ NOTE: in most cases you won't need to use any of these options
     - EXTRA keyword for LIBRARY mode (idea taken from CreativE) :
       LIBRARY namestring,version,revision,versionstring EXTRA value IS ...;
       now library base can have more variables
-    - PREPROCESS'ing is on at beginnig , OPT PREPROCESS leaved for down compatibility.
+    - PREPROCESS'ing is on at beginnig , OPT PREPROCESS leaved for down
+      compatibility.
     - Added shift expresion (exp. CONST  ABC=1<<4; x:=y<<3 ).
     - Function added AstringF - like StringF but for normal string's
  
@@ -848,7 +856,8 @@ Bugs fixed in v3.3a:
 - and many smaller bugs...
 
 New in v3.2i:
-- make sure you read about the bug in mathieeesingbas.library (see @{" 12D " link CH_12D }) (!)
+- make sure you read about the bug in mathieeesingbas.library
+  (see @{" 12D " link CH_12D }) (!)
 - You can explicitly assign registers in own libraries (e.g. 'myfun(A0)').
 - 'find' in EDBG
 - Iconvert supports PhxAss (with "-p")
@@ -859,9 +868,10 @@ Bugs fixed in v3.2i:
   allocator.
 - various bugs in EDBG (scroller etc.)
 - double declaration of object or label identifiers could go unnoticed
-- EC would have problems flushing modules from different directories (now it
-  only looks for the file-part and flushes it).
-- problems could occur with method being called before their OBJECT declarations.
+- EC would have problems flushing modules from different directories (now
+  it only looks for the file-part and flushes it).
+- problems could occur with method being called before their OBJECT
+  declarations.
 - and various smaller bugs...
 
 New features in v3.2e:
@@ -898,7 +908,8 @@ Bugs fixed in v3.2a:
 - silly bug in /2
 - asm -xx(Ax,Dx.w) addressing mode assembled wrong
 - a-- where a:PTR TO o where SIZEOF o>8 translated into ADDI ipv SUBI
-- globals in modules used in inline asm were not exported / offsets adjusted
+- globals in modules used in inline asm were not exported / offsets
+  adjusted
 - exp*globvar in module not compiled ok
 - macros of other module would be saved again in current module
 - and quite a few smaller ones...
@@ -911,7 +922,8 @@ v0.3    sep 91   5      first version that outputs executables
 v1.0    may 92  20      builtins and library calls, usable for small tools
 v2.0    okt 92  38      v37 modules usable, language pretty "complete"
 v2.1a   jan 93  44      first public release
-v2.1b   apr 93  45      bug fix, few new features. current version for >1 year
+v2.1b   apr 93  45      bug fix, few new features. current version for >1
+                        year
 v3.0a   jul 94  82      enormous amount of new features. E gets a price tag.
 v3.0b   sep 94  82      bug fix
 v3.0e   nov 94  83      bug fix
@@ -920,7 +932,8 @@ v3.1i   jun 95  83      new EDBG etc.
 v3.2a   jul 95  85      .library mode
 v3.2e   nov 95  85      new EDBG, EasyGUI, bugfixes.
 v3.2i   nov 96  86      bugfixes, various
-v3.3a   okt 97  86      bugfixes, new EDBG/EasyGUI/modules/classes/sources etc.
+v3.3a   okt 97  86      bugfixes, new EDBG/EasyGUI/modules/classes/sources
+                        etc.
 
 v3.3b   20.11.1999 -> 12.12.1999
 v3.3c   15.12.1999 -> 12.01.2000
@@ -1360,12 +1373,14 @@ circuit evalaution. So you cannot do this for example:
 IF (obj<>NIL) AND (obj.myval=3) THEN b:=2 ELSE b:=3
 
 because both sides of the AND operator will always be executed and this will
-result in an invalid memory access when obj.myval is referenced if obj = NIL.
+result in an invalid memory access when obj.myval is referenced
+if obj = NIL.
 
-To address this E-VO also has ANDALSO and ORELSE constructs which perform the
-same operation as AND and OR but will not perform the second part of the test
-if the outcome is already determined by the first part. eg x AND y will always
-be false if x is false and x OR y will always be true if x is not false.
+To address this E-VO also has ANDALSO and ORELSE constructs which perform
+the same operation as AND and OR but will not perform the second part of the
+test if the outcome is already determined by the first part. eg x AND y will
+always be false if x is false and x OR y will always be true if x is not
+false.
 
 They are only designed for use in IF statements although you can use them in
 a bitwise way the results are not defined. It is best to stick to just using
@@ -1374,7 +1389,8 @@ them with boolean expressions and expecting them to return FALSE or TRUE.
 IF (obj<>NIL) ANDALSO (obj.myval=3) THEN b:=2 ELSE b:=3
 
 This is perfectly acceptable with ANDALSO since the (abj.myval=3) won't be
-executed if (obj<>NIL) is false, so there will be no invalid memory referencing.
+executed if (obj<>NIL) is false, so there will be no invalid memory
+referencing.
 
 
 
@@ -1500,9 +1516,10 @@ NEW p[10]       /* array of 10 objects */
 NEW q[a+1]      /* array of INT, size is runtime computed */
 
 (this doesn't work when instantiating classes)
-A problem with list [1,2,3] expressions sometimes is that they are static, and
-when using these to build large datastructures they would need to be created
-at run-time.  The dynamic equivalent to static lists may then be used:
+A problem with list [1,2,3] expressions sometimes is that they are static,
+and when using these to build large datastructures they would need to be
+created at run-time.  The dynamic equivalent to static lists may then
+be used:
 
 p:=[1,2,3]:whateverobj           /* static structure */
 
@@ -1740,7 +1757,9 @@ That works mostly same as in C. You can easily omit the sequence such as
 
     x:=x....
 
-and start it without writing the above. It is especially useful when You want to perform an action on some long-named fields in Your object identifier or the variables with quite big names. The main sequence is:
+and start it without writing the above. It is especially useful when You
+want to perform an action on some long-named fields in Your object
+identifier or the variables with quite big names. The main sequence is:
 
     <function>=
 
@@ -1888,11 +1907,13 @@ any positive or negative constant, excluding 0, and is optional. Example:
 
 FOR a:=1 TO 10 DO WriteF('\\d\\n',a)
 
-The body of FOR may contain CONT and EXIT statements with the following syntax:
+The body of FOR may contain CONT and EXIT statements with the following
+syntax:
 
 CONT <boolexp>
 
-Will continue executing at the next iteration of the loop of the boolexp is true.
+Will continue executing at the next iteration of the loop of the boolexp
+is true.
 
 EXIT <boolexp>
 
@@ -1916,21 +1937,29 @@ the one-line/one-statement version and the multiple line version.
 
 WHILE may also contain CONT and EXIT statements, like FOR.
 
-This great idea was brought by Martin Kuchinka - author of PowerD compiler. The WHILE-ENDWHILE loop is expanded with following keywords:
+This great idea was brought by Martin Kuchinka - author of PowerD compiler0.
+The WHILE-ENDWHILE loop is expanded with following keywords:
 
 ELSEWHILE
 
-Alternative loop part. Any number of ELSEWHIlE keywords can be used in each WHILE loop. Usage is same as for WHILE:
+Alternative loop part. Any number of ELSEWHIlE keywords can be used in each
+WHILE loop. Usage is same as for WHILE:
 
 ELSEWHILE <condition>
 
-with only one exception from the rule. As for now it DOESN'T support "DO" kword (it means: You cannot write ELSEWHILE x DO y as it will cause an error)
+with only one exception from the rule. As for now it DOESN'T support "DO"
+keyword (it means: You cannot write ELSEWHILE x DO y as it will cause an
+error)
 
-Every time the WHILE loop is executed, program searches for a condition that returns true and executes proper part of program. In other case it returns the loop
+Every time the WHILE loop is executed, program searches for a condition
+that returns true and executes proper part of program. In other case it
+returns the loop
 
 ALWAYS
 
-This keyword is designed especially to be used together with ELSEWHILE. It declares part of program that will be called every time the loop is executed and at last one condition is true.
+This keyword is designed especially to be used together with ELSEWHILE.
+It declares part of program that will be called every time the loop is
+executed and at last one condition is true.
 
 Sample code (as short as possible :):
 
@@ -2015,8 +2044,8 @@ syntax:         SELECT <exp>
                 ENDSELECT
 
 builds a select-case block. Various expressions will be matched against
-the variable, and only the first matching block executed. If nothing matches,
-a default block may be executed.
+the variable, and only the first matching block executed. If nothing
+matches, a default block may be executed.
 
 SELECT character
   CASE 10
@@ -2131,8 +2160,8 @@ You can imagine END p as a macro for:
 
 If you don't call END on memory allocated by NEW, it will be deallocated
 automatically at the end of the program, however no destructor methods
-(.end()) will be called at this stage (i.e.  if this is necessary you'll have
-to do it yourself).
+(.end()) will be called at this stage (i.e.  if this is necessary you'll
+have to do it yourself).
 
 note that the NEW and END make use of the FastNew() and FastDispose()
 functions (described elsewhere) which work quite differently from
@@ -2174,17 +2203,20 @@ USAGE
   SECTION type,mem
 
 PARAMETERS
-  Second parameter is optional. First one decides about the section type [CODE/DATA], second - memory type [none=PUBLIC, FAST or CHIP]
+  Second parameter is optional. First one decides about the section type
+  [CODE/DATA], second - memory type [none=PUBLIC, FAST or CHIP]
 
 ABOUT
-  This keyword allows a programmer creating programs splitted up to more than one hunk
+  This keyword allows a programmer creating programs splitted up to more
+  than one hunk
 
 NOTE
   - OPT LARGE should be set if You want to use it.
   - Although SECTION DATA allows storing code, please don't do it.
   - it is allowed only in executable files, not in modules
 
-  and a small example - don't blame me for it, I want to make it as simple as possible ;)
+  and a small example - don't blame me for it, I want to make it as simple
+  as possible ;)
 
   MODULE 'tools/pt', 'dos/dos'
 
@@ -2205,15 +2237,15 @@ NOTE
 5P. Negative conditions/loops (IFN/ELSEIFN etc)
 -----------------------------------------------
 
-While it is perfectly possible to use the Not() operator in loops or conditions to
-indicate the negative condition eg.
+While it is perfectly possible to use the Not() operator in loops or
+conditions to indicate the negative condition eg.
 
    REPEAT
    ..
    UNTIL Not(failed)
 
-There are a set of commands which are shorter and generate more efficient code. These 
-commands are:
+There are a set of commands which are shorter and generate more efficient
+code. These commands are:
 
     UNTILN
     WHILEN
@@ -2235,9 +2267,10 @@ They are used in exactly the same way as their counterparts eg.
     ..
     ENDIF
 
-Rather than inverting the results of the operation (which is what adding a Not() would
-do and thus adding extra steps to the calculation these commands simply alter the
-expected branch condition so its direct opposite and so are more efficient.
+Rather than inverting the results of the operation (which is what adding a
+Not() would do and thus adding extra steps to the calculation these commands
+simply alter the expected branch condition so its direct opposite and so are
+more efficient.
 
 @endnode
 
@@ -2317,9 +2350,9 @@ syntax:         DEF <declarations>,...
 
 declares variables. A declaration has one of the forms:
 
-                <var>
-                <var>:<type>              where <type>=LONG,<objectident>,...
-                <var>[<size>]:<type>      where <type>=ARRAY,STRING,LIST
+          <var>
+          <var>:<type>              where <type>=LONG,<objectident>,...
+          <var>[<size>]:<type>      where <type>=ARRAY,STRING,LIST
 
 (see @{" 8A " link CH_8A } for more examples, as that is where the types are introduced).
 For now, we'll use the <var> form.
@@ -2332,7 +2365,8 @@ DEF a=1,b=2
 A program consists of a set of functions, called procedures, PROCs. Each
 procedure may have Local variables, and the program as a whole may have
 Global variables. At least one procedure should be the PROC main(), as
-this is the module where execution begins. A simple program could look like:
+this is the module where execution begins. A simple program could look
+like:
 
 DEF a, b                            /* definition of global vars */
 
@@ -2401,8 +2435,8 @@ Following global variables are always available in your program,
 they're called system variables.
 
 arg             As discussed above, contains a pointer to a zero-terminated
-                string, containing the command-line arguments. Don't use this
-                variable if you wish to use ReadArgs() instead.
+                string, containing the command-line arguments. Don't use
+                this variable if you wish to use ReadArgs() instead.
 stdout          Contains a file-handle to the standard output (and input).
                 If your program was started from the workbench, so no
                 shell-output is available, WriteF() will open a
@@ -2410,8 +2444,8 @@ stdout          Contains a file-handle to the standard output (and input).
 stdin           file-handle of standard input
 conout          This is where that file handle is kept, and the console
                 window will be automatically closed upon exit of your
-                program. (see @{" 9A " link CH_9A }, WriteF(), on how to use these two variables
-                properly).
+                program. (see @{" 9A " link CH_9A }, WriteF(), on how to use these two
+                variables properly).
 execbase,       These four variables are always provided with their
 dosbase,        correct values.
 gfxbase,
@@ -2603,8 +2637,10 @@ Following are built-in constants that may be used:
 
 TRUE,FALSE      Represent the boolean values (-1,0)
 NIL             (=0), the uninitialised pointer.
-ALL             Used with string functions like StrCopy() to copy all characters
-GADGETSIZE      Minimum size in bytes to hold one gadget (see @{" 9D " link CH_9D }, Gadget()) [obsolete]
+ALL             Used with string functions like StrCopy() to copy all
+                characters
+GADGETSIZE      Minimum size in bytes to hold one gadget (see @{" 9D " link CH_9D },
+                Gadget()) [obsolete]
 OLDFILE,NEWFILE,READWRITE
                 Mode-parameters for use with Open()
 EMPTY           used with methods (might be keyword in the future)
@@ -2613,7 +2649,8 @@ STRLEN          Always has the value of the length of the last immediate
 
                 Write(handle,'hi folks!',STRLEN)      /* =9 */
                 
-                The following built in constants are new and not active if you are using LEGACY mode.
+                The following built in constants are new and not active if
+                you are using LEGACY mode.
 TAG_DONE,TAG_END,TAG_IGNORE,
 TAG_MORE,TAG_SKIP,TAG_USER
                 Used with tag lists
@@ -2667,7 +2704,9 @@ where type is either a simple type or a compound type. Example:
 
 DEF x:PTR TO INT, myscreen:PTR TO screen
 
-Note that 'screen' is the name of an object as defined in intuition/screens.m
+Note that 'screen' is the name of an object as defined in
+intuition/screens.m
+
 For example, if you open your own screen with:
 
 myscreen:=OpenS(...   etc.
@@ -2740,9 +2779,9 @@ Multi-dimensional arrays are also allowed and declared as follows:
 
 DEF f[5][8][10]:ARRAY OF CHAR
 
-The number of dimensions is not limited however the maximum size of the array
-is 32767 elements in total (eg when all the dimensions are multiplied
-together).
+The number of dimensions is not limited however the maximum size of the
+array is 32767 elements in total (eg when all the dimensions are
+multiplied together).
 
 Accessing a multi-dimensional array is done using the same syntax:
 
@@ -2877,9 +2916,10 @@ This section tries to explain how the E typesystem works from
 another perspective.
 
 Most problems people have while programming in E stem from their incorrect
-view of how the E type-system works, Also, many people have an idea how types
-work from their previous programming language, and try to apply this to E,
-which is often fatal, because E is quite different when it come to types.
+view of how the E type-system works, Also, many people have an idea how
+types work from their previous programming language, and try to apply this
+to E, which is often fatal, because E is quite different when it come to
+types.
 
 The Type System.
 but E is in essence a TYPELESS language. Indeed, variables may have a type,
@@ -3159,8 +3199,8 @@ returns the estring, and length as second returnvalue.
 
         AstringF(string,fmtstring,args,...)
   
-array string version of StringF.. So no length checking is done so make sure the
-output string is long enough or you will end up with memory corruption.
+array string version of StringF.. So no length checking is done so make sure
+the output string is long enough or you will end up with memory corruption.
 
 
         RightStr(estring,estring,n)
@@ -3184,9 +3224,10 @@ etc. will be skipped, and also hexadecimal numbers (1234567890ABCDEFabcdef)
 and binary numbers (01) may be read this way if they are preceded by a
 "$" or a "%" sign respectively. A minus "-" may indicate a negative integer.
 Val() returns the number of characters read in the second argument, which
-must be given by reference (<-!!!), or can be received as second returnvalue.
-If "read" returns 0 (value will be 0 too) then the string did not contain an
-integer, or the value was too sizy to fit in 32bit. "read" may be NIL.
+must be given by reference (<-!!!), or can be received as second
+returnvalue. If "read" returns 0 (value will be 0 too) then the string did
+not contain an integer, or the value was too sizy to fit in 32bit. "read"
+may be NIL.
 
 examples of strings that would be parsed correctly:
 '-12345', '%10101010', '   -$ABcd12'
@@ -3243,12 +3284,12 @@ manually sets the length of a string. This is only handy when you read
 data into the estring by a function other then an E string function,
 and want to continue using it as an Estring.
 
-The second parameter is optional and defaults to ALL which will automatically
-calculate the length of a zero-terminated string.  For example, after
-using a function that just puts a zero-terminated string at the
-address of estring, use   SetStr(mystr)  to make
-it manipulatable again. If the string is too long, SetStr does nothing
-(this should always be prevented).
+The second parameter is optional and defaults to ALL which will
+automatically calculate the length of a zero-terminated string.  For
+example, after using a function that just puts a zero-terminated string
+at the address of estring, use   SetStr(mystr) to make it manipulatable
+again. If the string is too long, SetStr does nothing (this should always
+be prevented).
 
         newstr:=StrClone(estring)
   
@@ -3266,15 +3307,16 @@ existing string.
         AstrCopy(string1,string2,size)
 
 'Array String Copy' copies string2 into the memory area denoted by string1.
-string1 is typically not an estring but an ARRAY. size is the total #of chars
-string1 can hold, i.e. if you write 5 and string2='helloworld', string1 will
-be 'hell' + 0termination.
+string1 is typically not an estring but an ARRAY. size is the total #of
+chars string1 can hold, i.e. if you write 5 and string2='helloworld',
+string1 will be 'hell' + 0termination.
 
         AstpCopy(string1,string2,size)
 
-This is based on the C stpcpy function. It is very similar to AstrCopy except
-that AstpCopy() returns the address of the  end of the string dest (that is,
-the address of the terminating zero byte) rather than the beginning.
+This is based on the C stpcpy function. It is very similar to AstrCopy
+except that AstpCopy() returns the address of the  end of the string dest
+(that is, the address of the terminating zero byte) rather than the
+beginning.
 
 It is therefore optimised for concatenating several strings tgogether using
 multiple calls to the function.
@@ -3356,8 +3398,8 @@ and see what function they have in the example-programs.
 
 summary:
 
-[<item>,<item>,... ]            immediate list (of LONGs, use with listfuncs)
-[<item>,<item>,... ]:<type>     typed list (just to build data structures)
+[<item>,<item>,... ]          immediate list (of LONGs, use with listfuncs) 
+[<item>,<item>,... ]:<type>   typed list (just to build data structures)
 
 If <type> is a simple type like INT or CHAR, you'll just have the
 initialised equivalent of ARRAY OF <type>, if <type> is an object-name,
@@ -3637,8 +3679,8 @@ of stdrast.
         TextF(x,y,formatstring,args,...)
 
 exactly the same function as WriteF(), only outputs to some (x,y) on
-your stdrast, instead of stdout. (see @{" 9A " link CH_9A }, WriteF() and strings in the language
-reference). returns the length of the resulting string.
+your stdrast, instead of stdout. (see @{" 9A " link CH_9A }, WriteF() and strings in the
+language reference). returns the length of the resulting string.
 
         oldrast:=SetStdRast(newrast)
 
@@ -3706,8 +3748,8 @@ from ENDPROC in main.
         amount:=FreeStack()
 
 returns the amount of free stack space left. This should always be 1000 or
-more. (see @{" 16C " link CH_16C } on how E organizes its stack. If you don't do heavy recursion,
-you need not worry about your free stack space.
+more. (see @{" 16C " link CH_16C } on how E organizes its stack. If you don't do heavy
+recursion, you need not worry about your free stack space.
 
 Stack space can also be monitored further using these calls
 
@@ -3724,8 +3766,8 @@ requested.
 Returns TRUE if Ctrl-C was pressed since you last checked, else FALSE.
 This only works for programs running on a console, i.e. cli-programs.
 
-Also CtrlD(), CtrlE(), CtrlF() work the same way but for each of the possible
-break conditions.
+Also CtrlD(), CtrlE(), CtrlF() work the same way but for each of the
+possible break conditions.
 
 Example of how these last three functions may be used:
 
@@ -3755,7 +3797,7 @@ PROC fac(n) IS IF n=1 THEN 1 ELSE fac(n-1)*n
 would be less safe.
 
 
-        mem:=FastNew(size)      FastDispose(mem,size)   FastDisposeList(list)
+     mem:=FastNew(size)      FastDispose(mem,size)   FastDisposeList(list)
 
 FastNew() and FastDispose() are replacements for NewR(size) and
 Dispose(ptr) (they are used by NEW and END). this is what they have
@@ -3891,7 +3933,9 @@ value is simply saved to that address.
 
         y:=Bounds(x,a,b)
 
-makes sure x lies between bounds a and b, and adjust acordingly if necessary.
+makes sure x lies between bounds a and b, and adjust acordingly if
+necessary. 
+
 It equals:    y:=IF x<a THEN a ELSE IF x>b THEN b ELSE x
 
         b:=Chk(x)
@@ -3900,7 +3944,8 @@ Returns FALSE if x is 0 and TRUE for any other value.
 
   r:=Compare(a,b)
   
-Does a comparison between a and b and returns -1 if a < b, 0 if a=b and +1 if a>b
+Does a comparison between a and b and returns -1 if a < b, 0 if a=b and +1
+if a>b
 
   r:=Ucompare(a,b)
   
@@ -3952,7 +3997,8 @@ creates a linked list like:    s --> t --> NIL
 
 reads the 'next' field of var complex. this may of course be NIL, or
 a complete linked list. Calling Next(NIL) will result in NIL, so it's
-safe to call Next when you're not sure if you're at the end of a linked list.
+safe to call Next when you're not sure if you're at the end of a linked
+list.
 
         tail:=Forward(complex,num)
 
@@ -4137,31 +4183,36 @@ different sizes to see what trade-off suits you best.
 --------------------
 
 E-VO Provides a number of functions that are useful when working with Boopsi
-objects. These are normally found in amiga.lib but since E-VO doesn't provide
-any way to link with amiga.lib these have been implemented as function calls.
+objects. These are normally found in amiga.lib but since E-VO doesn't
+provide any way to link with amiga.lib these have been implemented as
+function calls.
 
 These are particularly useful when working with the new Reaction objects
 that are introduced in OS3.2
 
-All of these boopsi functions are only available when targeting OS 37 or above.
+All of these boopsi functions are only available when targeting OS 37 or
+above.
 
         res:=DoMethod(object, methodid, ...)
         res:=DoMethodA(object, message)
 
-These invoke the specific message on the given object. The only difference is
-the way the parameters are passed. DoMethod expects a stream of parameters
-and DoMethodA expects the message to be a taglist starting with the methodid
-code and followed by any additional parameters and ending with TAG_DONE
+These invoke the specific message on the given object. The only difference
+is the way the parameters are passed. DoMethod expects a stream of
+parameters and DoMethodA expects the message to be a taglist starting with
+the methodid code and followed by any additional parameters and ending with
+TAG_DONE
 
         res:=CoerceMethod(class, object, methodid, ...)
         res:=CoerceMethodA(class, object, message)
 
-Function invokes the supplied message on the specific object as though it were the specified class
+Function invokes the supplied message on the specific object as though it
+were the specified class
 
         res:=DoSuperMethod(class, object, methodid, ...)
         res:=DoSuperMethodA(class, object, message)
 
-Function invokes the supplied message on the specified object though as it were the superclass of the specified class
+Function invokes the supplied message on the specified object though as it
+were the superclass of the specified class
 
         Set(object, attr, value, ...)
         Sets(object, attr, value)
@@ -4179,12 +4230,12 @@ Ask specified object for a value assigned to specified attribute
 10A. built-in library calls
 ---------------------------
 As you may have noticed from previous sections, the piece of code
-automatically linked to the start of your code, called the "initialisation code",
-always opens the three libraries intuition, dos, graphics and (and sometimes
-mathieeesingbas), and because of this, the compiler has all the calls to those
-four libraries (including exec) integrated in the compiler (there are a few hundred
-of them). These are up to AmigaDos v3.1 (v40). To call Open() from the dos library,
-simply say:
+automatically linked to the start of your code, called the "initialisation
+code", always opens the three libraries intuition, dos, graphics and (and
+sometimes mathieeesingbas), and because of this, the compiler has all the
+calls to those four libraries (including exec) integrated in the compiler
+(there are a few hundred of them). These are up to AmigaDos v3.1 (v40). To
+call Open() from the dos library, simply say:
 
 handle:=Open('myfile',OLDFILE)
 
@@ -4218,25 +4269,28 @@ MODULE
 
 syntax:         MODULE <modulenames>,...
 
-Loads a module. A module is a binary file containing information on libraries,
-constants, and sometimes functions. Using modules enables you to use
-libraries and functions previously unknown to the compiler.
+Loads a module. A module is a binary file containing information on
+ libraries, constants, and sometimes functions. Using modules enables you to
+use libraries and functions previously unknown to the compiler.
 
-Now for an example, below is a short version of the source/examples/asldemo.e
-source that uses modules to put up a filerequester from the 2.0 Asl.library.
+Now for an example, below is a short version of the
+source/examples/asldemo.e source that uses modules to put up a filerequester
+from the 2.0 Asl.library.
 
 
 MODULE 'Asl', 'libraries/Asl'
 
 PROC main()
-  DEF req:PTR TO filerequester
-  IF aslbase:=OpenLibrary('asl.library',37)
-    IF req:=AllocFileRequest()
-      IF RequestFile(req) THEN WriteF('File: "\\s" in "\\s"\\n',req.file,req.drawer)
-      FreeFileRequest(req)
-    ENDIF
-    CloseLibrary(aslbase)
+ DEF req:PTR TO filerequester
+ IF aslbase:=OpenLibrary('asl.library',37)
+  IF req:=AllocFileRequest()
+   IF RequestFile(req) 
+    WriteF('File: "\\s" in "\\s"\\n',req.file,req.drawer)
+   ENDIF
+   FreeFileRequest(req)
   ENDIF
+  CloseLibrary(aslbase)
+ ENDIF
 ENDPROC
 
 
@@ -4427,14 +4481,14 @@ compiler, and will give you big runtime problems: the value of x*x
 will be used as a pointer to code.
 
 To understand why 'quoted expressions' is a powerful feature think of the
-following cases: if you were to perform a set of actions on a set of different
-variables, you'd normally write a function, and call that function with
-different arguments. But what happens when the element that you want to give
-as argument is a piece of code? in traditional languages this would not be
-possible, so you would have to 'copy' the blocks of code representing your
-function, and put the expression in it. Not in E. say you wanted to write
-a program that times the execution time of different expressions. In E you
-would simply write:
+following cases: if you were to perform a set of actions on a set of
+different variables, you'd normally write a function, and call that function
+with different arguments. But what happens when the element that you want to
+give as argument is a piece of code? in traditional languages this would not
+be possible, so you would have to 'copy' the blocks of code representing
+your function, and put the expression in it. Not in E. say you wanted to
+write a program that times the execution time of different expressions. In
+E you would simply write:
 
 PROC timing(func,title)
   /* do all sorts of things to initialise time */
@@ -4514,9 +4568,9 @@ succeeded. (example is v37+)
 
 PROC main()
   DEF mem[4]:LIST,x
-  MapList({x},[200,80,10,2500],mem,`AllocVec(x,0))              -> alloc some
-  WriteF(IF ForAll({x},mem,`x) THEN 'Yes!\\n' ELSE 'No!\\n')        -> suxxes ?
-  ForAll({x},mem,`IF x THEN FreeVec(x) ELSE NIL)     -> free only those <>NIL
+  MapList({x},[200,80,10,2500],mem,`AllocVec(x,0))           -> alloc some
+  WriteF(IF ForAll({x},mem,`x) THEN 'Yes!\\n' ELSE 'No!\\n')     -> suxxes ?
+  ForAll({x},mem,`IF x THEN FreeVec(x) ELSE NIL)  -> free only those <>NIL
 ENDPROC
 
 
@@ -4656,9 +4710,9 @@ compute e^y, ln(y), log base 10, z^y and square root of y, respectively.
 
         x,n:=RealVal(s)
 
-parses string "s" to produce float value x. will skip leading spaces and tabs.
-n is the number of characters parsed from the start of the string, or 0
-if it couldn't be parsed as a float value. "x" will then be 0.0.
+parses string "s" to produce float value x. will skip leading spaces and
+tabs. n is the number of characters parsed from the start of the string,
+or 0 if it couldn't be parsed as a float value. "x" will then be 0.0.
 accepts negative numbers (and number without a ".", even).
 example:
 
@@ -4672,7 +4726,7 @@ max for "n" is 8, even less if you have lots of digits leading the ".".
 an "n" of 0 will denote no fraction. The string is returned as result,
 so it can be reused in a WriteF() for example:
 
-WriteF('float = \\s\\n',RealF(s,3.14159),4)    results in    'float = 3.1416\\n'
+WriteF('float = \\s\\n',RealF(s,3.14159),4) results in  'float = 3.1416\\n'
 
 RealF() tries hard to make sensible roundings for a certain "n", as
 the example shows. negative numbers are also handled properly.
@@ -4721,17 +4775,18 @@ be replaced with inline 68881 code transparently.
 
 The bug in mathieeesingbas.library.
 
-v3.1 (v40) of the amiga operating system is known to contain a bug in the IEEE
-code of the divide and multiply functions.  If you're using E floats under
-this version of the OS you will need to run a patch that fixes this otherwise
-you may provoke crashes.  Even worse, even if you program under another
-version of the OS, if your program uses these float operations, you will have
-to notify your users to use this patch, otherwise your programs may fail on
-other peoples machines.  I've included SetPatch v43.6 in this distribution
-which fixes the problem (Bin/SetPatch/).  Another suitable patch is for
-example util/boot/PatchMathSB10.lha on Aminet (or CD #7).  As far as E-VO
-itself is concerned, if E-VO has to use one of these operations (for example
-for float constants) it will warn you that you are not running the patch.
+v3.1 (v40) of the amiga operating system is known to contain a bug in the
+IEEE code of the divide and multiply functions.  If you're using E floats
+under this version of the OS you will need to run a patch that fixes this
+otherwise you may provoke crashes.  Even worse, even if you program under
+another version of the OS, if your program uses these float operations, you
+will have to notify your users to use this patch, otherwise your programs
+may fail on other peoples machines.  
+
+Another suitable patch is for example util/boot/PatchMathSB10.lha on Aminet
+(or CD #7).  As far as E-VO itself is concerned, if E-VO has to use one of
+these operations (for example for float constants) it will warn you that you
+are not running the patch.
 
 
 
@@ -5352,13 +5407,14 @@ NEW!):
 
         NEW obj.stack()
 
-Destructors however have to be named "end". An object is destroyed like this:
+Destructors however have to be named "end". An object is destroyed like
+this:
 
         END obj
 
-If 'obj' has a .end() method, it is automatically called. end() shouldn't have
-any arguments, and it is of no use returning a value. (see @{" 5M " link CH_5M } for a desciption
-of END's precise functioning).
+If 'obj' has a .end() method, it is automatically called. end() shouldn't
+have any arguments, and it is of no use returning a value.
+(see @{" 5M " link CH_5M } for a desciption of END's precise functioning).
 
 The super-method of a method is the method by the same name of its super
 class. Sometimes it's handy to call this method because you might want to
@@ -5406,8 +5462,9 @@ OBJECT myObject
   ENDUNION  
 
 With this object you can either access v1 and v2 or v depending on whether
-you wish to store two CHAR values or an INT. The space reserved in the object
-will only be 2 bytes and both v1 and v will point to the same memory area.
+you wish to store two CHAR values or an INT. The space reserved in the
+object will only be 2 bytes and both v1 and v will point to the same memory
+area.
 
 
 @endnode
@@ -5423,15 +5480,15 @@ Apart from normal assembly addressing modes, you may use the following
 identifiers from E:
 
 mylabel:
-LEA mylabel(PC),A1              /* labels */
+LEA mylabel(PC),A1            /* labels */
 
-DEF a                           /* variables */
-MOVE.L (A0)+,a                  /* note that <var> is <offset>(A4) (or A5) */
+DEF a                         /* variables */
+MOVE.L (A0)+,a                /* note that <var> is <offset>(A4) (or A5) */
 
-MOVE.L dosbase,A6               /* library call identifiers */
+MOVE.L dosbase,A6             /* library call identifiers */
 JSR    Output(A6)
 
-MOVEQ  #TRUE,D0                 /* constants */
+MOVEQ  #TRUE,D0               /* constants */
 
 
 E-VO's assembler supports following constructs,
@@ -5643,19 +5700,21 @@ RTD             generates RTD's instead of RTS in the main source.
                 so fpu and higher CPU's have no additional effect (except in
                 the case of FPEXP below).
 REG=n           use n register for register-allocation.
-RUNBG           Compiles the program with a modified startup code that detactes
-                from the current shell process
-PURE            Checks to make sure the code generated is pure (re-entrant) so
-                no use of variables in immedate lists is allowed and no use of
-                GetA4(). Doing either of these will result in an error.
+RUNBG           Compiles the program with a modified startup code that
+                detaches from the current shell process
+PURE            Checks to make sure the code generated is pure (re-entrant)
+                so no use of variables in immedate lists is allowed and no
+                use of GetA4(). Doing either of these will result in an
+                error.
                 Library code should be pure since it may be held in memory
                 and called from multiple applications at the same time.
 STRMERGE        Add an extra step into the compilation process where all
                 constant strings values are de-duped.
 POOL(memtype, puddlesize, threshsize)
                 create pool that can be used later in
-                your program using Alloc() and Free(). Parameters are optional
-                and default to $10001 (MEMF_CLEAR|MEMF_PUBLIC),10240 and 256.
+                your program using Alloc() and Free(). Parameters are
+                optional and default to $10001 (MEMF_CLEAR|MEMF_PUBLIC),
+                10240 and 256.
                 Pools are only availablein OS v39 and above.
 FPEXP           Tells the compiler to generate FPU based floating point math
                 code. You also need to specify either the cpu like 040/060
@@ -5664,16 +5723,16 @@ INLINE          The compiler will create inline code for many of the smaller
                 E-VO functions each time they are used instaad of calling a
                 subroutine each time. This results in larger code that will
                 run slightly faster.
-NOSTARTUP       Disables as much of the startup code as possible. No libraries
-                will be automatically opened.                
+NOSTARTUP       Disables as much of the startup code as possible. No
+                libraries will be automatically opened.                
 UTILLIB         Automatically opens UTILITY.LIBRARY in addition to the
-                usual libraries that E-VO will open. The library pointer will
-                be placed in UTILBASE
-LEGACYINT       The Int() function did not sign extend the value. This is not
-                in line with the definition of INT variable type which is
-                signed. This has been corrected in v3.6.0 of E-VO and this
-                option will revert that function back to the previous way of
-                working for backwards compatibility.
+                usual libraries that E-VO will open. The library pointer
+                will be placed in UTILBASE
+LEGACYINT       The Int() function did not sign extend the value. This is
+                not in line with the definition of INT variable type which
+                is signed. This has been corrected in v3.6.0 of E-VO and
+                this option will revert that function back to the previous
+                way of working for backwards compatibility.
 
 example:
 
@@ -5773,8 +5832,8 @@ local data per procedure                        250 meg
 global data                                     250 meg
 
 code size of one procedure                      32 k
-code size of executable                         32 k SMALL, 2 gig LARGE model
-current practical limit (may extend in future)  2-5 meg (v2.1) / 10 meg (v2.5)
+code size of executable                         32 k SMALL, 2 gb LARGE model
+current practical limit (may extend in future)  2-5 mb (v2.1) / 10 mb (v2.5)
 
 buffersize of generated code and identifiers    relative to source
 buffersize of labels/branches and intermediate  independently (re)allocated
@@ -5831,10 +5890,10 @@ something might be wrong, but is not really an error.
 
 Errors.
 The compiler will print the source-code-line that caused the error below it,
-with a cursor at the exact spot.  The cursor denotes the spot the compiler was
-when it _discovered_ the error, it is thus likely that the token that caused
-the error is the one or two tokens just _before_ the cursor, maybe even on
-the previous line (i.e. the cursor is always _after_ the error).
+with a cursor at the exact spot.  The cursor denotes the spot the compiler
+was when it _discovered_ the error, it is thus likely that the token that
+caused the error is the one or two tokens just _before_ the cursor, maybe
+even on the previous line (i.e. the cursor is always _after_ the error).
 
 - 'syntax error'
   Most common error. This error is issued either when no other
@@ -5972,10 +6031,12 @@ the previous line (i.e. the cursor is always _after_ the error).
 - 'immediate value expected'
   Some constructions require an immediate value instead of an expression.
   Example:
-  DEF s[x*y]:STRING   /* wrong: only something like s[100]:STRING is legal */
+  DEF s[x*y]:STRING /* wrong: only something like s[100]:STRING is legal */
 
 - 'incorrect size of value'
-  You specified an unacceptably large (or small) value for some construction.
+  You specified an unacceptably large (or small) value for
+  some construction.
+
   Examples:
   DEF s[-1]:STRING, t[1000000]:STRING    /* needs to be 0..32000  */
   MOVEQ #1000,D2                         /* needs to be -128..127 */
@@ -6015,7 +6076,8 @@ the previous line (i.e. the cursor is always _after_ the error).
 
 - 'not enough memory while (re-)allocating'
   Just like that. Possible solutions:
-  1. You were running other programs in multitasking. Leave them and try again.
+  1. You were running other programs in multitasking. Leave them and try
+    again.
   2. You were low on memory anyway and your memory was fragmented.
      Try rebooting.
   3. None of 1-2. Buy a memory expansion (um).
@@ -6055,7 +6117,8 @@ the previous line (i.e. the cursor is always _after_ the error).
   You probably wrote BRA.S or Bcc.S over too great a distance.
 
 - 'too sizy expression'
-  You used a string '' or list [], possibly recursive [[]], that is too sizy.
+  You used a string '' or list [], possibly recursive [[]], that is too
+  sizy.
 
 - 'incomplete exception handler definition'
   You probably used EXCEPT without HANDLE, or the other way round
@@ -6261,9 +6324,11 @@ ENDPROC
 @title "17A. bin/showmodule"
 17A. bin/showmodule
 -------------------
-As you might have noticed, E's equivalent for "includes", modules, are binary
-files, much like those usually suplied with Modula2 compilers, for example.
-To display the contents of such a file in readable ascii form, you may use
+As you might have noticed, E's equivalent for "includes", modules, are
+binary files, much like those usually suplied with Modula2 compilers, for
+example. To display the contents of such a file in readable ascii form, you
+may use
+
 showmodule:
 
 showmodule <modulespec>
@@ -6386,12 +6451,12 @@ them to the equivalent modules (for example intuition.i).
 17D. bin/ShowCache, bin/FlushCache
 ----------------------------------
 The E Module Cache is a piece of memory that is able to hold modules (.m)
-between compiles.  The first time you use a certain module, E-VO will load it
-from disk and put it in the cache.  the second time and on, E-VO will find it in
-cache and doesn't have to load anything from disk.  If E-VO compiles a module of
-which an old version is present in cache, it will flush it.  One can imagine
-that this a tremendous speedup, even for people with HD's when they use a lot
-of modules and recompile often.
+between compiles.  The first time you use a certain module, E-VO will load
+it from disk and put it in the cache.  the second time and on, E-VO will
+find it in cache and doesn't have to load anything from disk.  If E-VO
+compiles a module of which an old version is present in cache, it will flush
+it. One can imagine that this a tremendous speedup, even for people with
+HD's when they use a lot of modules and recompile often.
 
 To see what's currently stored in the cache (and how much memory
 it's wasteing :-), type:
@@ -6422,21 +6487,21 @@ the second E-VO acts as if its IGNORECACHE flag were set.
 @title "17E. rexx/ecompile.rexx"
 17E. rexx/ecompile.rexx
 -----------------------
-This is a rexx-script for CygnusEd (tm), and enables you to compile E programs
-from the editor.  Just assign this script a function key in the editor with
-"Install Dos/Arexx command ..." (check your CED-manual if you're not sure how
-to do this).  Now write your programs, and press Fx if you wish to compile.
-Your source will be saved if necessary, the compiler will be invoked on a
-separate console window, and the program is run on the same console.  When
-your program is done, you may press <return> to return to the editor
-(CED-screen to back and front is automatically done by the script).  If an
-error occurred during compilation, the script will let CED jump to the line of
-error after you pressed <return>
+This is a rexx-script for CygnusEd (tm), and enables you to compile E
+programs from the editor.  Just assign this script a function key in the
+editor with "Install Dos/Arexx command ..." (check your CED-manual if you're
+not sure how to do this).  Now write your programs, and press Fx if you wish
+to compile. Your source will be saved if necessary, the compiler will be
+invoked on a separate console window, and the program is run on the same
+console.  When your program is done, you may press <return> to return to the
+editor (CED-screen to back and front is automatically done by the script).
+If an error occurred during compilation, the script will let CED jump to the
+line of error after you pressed <return>
 
 Note:  in the script there is a path name as to where the compiler can be
-found.  You probably need to change this.  Also, the script copies E-VO to ram:
-for systems with a slower SYS:  device, you may want to disable this if you
-have a fast HD.
+found.  You probably need to change this.  Also, the script copies E-VO to
+ram: for systems with a slower SYS:  device, you may want to disable this if
+you have a fast HD.
 
 
 @endnode
@@ -6444,17 +6509,17 @@ have a fast HD.
 @title "17F. bin/o2m"
 17F. bin/o2m
 ------------
-If you have large pieces of assembly source that you'd like to use it would be
-tedious at best to convert them all by hand to E's inline assembly.  o2m
-allows you to simply have your favourite macro-assembler assemble it all to a
-.o file, and o2, then will turn this .o file into a .m file for use with E.
-If you have a file bla.o:
+If you have large pieces of assembly source that you'd like to use it would
+be tedious at best to convert them all by hand to E's inline assembly.  o2m
+allows you to simply have your favourite macro-assembler assemble it all to
+a .o file, and o2, then will turn this .o file into a .m file for use with
+E. If you have a file bla.o:
 
 1> o2m bla
 
-will produce bla.m.  However, the .o file will have to obey certain rules.  It
-should consist of just one code-hunk with external definitions (XDEFs) for
-each symbol you wish to reference from E, and no XREFs.  typically,
+will produce bla.m.  However, the .o file will have to obey certain rules.
+It should consist of just one code-hunk with external definitions (XDEFs)
+for each symbol you wish to reference from E, and no XREFs.  typically,
 
 your source would look like:
 
@@ -6492,8 +6557,8 @@ there are a couple of things to note:
   'proc' with {}, and use it as a ptr to your data.
 
 theoretically, o2m could be used to link C code to E programs, however in
-practise this is often not feasable.  If your C compiler allows you to 'tune'
-the resulting .o files a bit, this might work.
+practise this is often not feasable.  If your C compiler allows you to
+'tune' the resulting .o files a bit, this might work.
 
 some problems are:
 - reference of C functions, for example _printf()
@@ -6502,9 +6567,9 @@ some problems are:
   this value available somewhere on the stack
 - call/register conventions.
 
-I did manage to link a small C function to E that only does some computation,
-and call it succesfully (this was done using MaxonC++, whose linker uses the
-__ii convention for parameters also).
+I did manage to link a small C function to E that only does some
+computation, and call it succesfully (this was done using MaxonC++, whose
+linker uses the __ii convention for parameters also).
 
 
 @endnode
@@ -6512,10 +6577,10 @@ __ii convention for parameters also).
 @title "17G. bin/EYacc"
 17G. bin/EYacc
 --------------
-This is a port of the famous Yacc utility for unix, which now produces E code
-instead of C code.  It is only a first version, so don't expect too much from
-it.  If you have no clue what Yacc does, read a text on it, since I'm not
-going to explain that in full here.
+This is a port of the famous Yacc utility for unix, which now produces E
+code instead of C code.  It is only a first version, so don't expect too
+much from it.  If you have no clue what Yacc does, read a text on it, since
+I'm not going to explain that in full here.
 
 Basically you can write .y sources as normal, only where actions used to be
 written in C, now you can write E.  See the Src/Yacc/bcalc.y example.
@@ -6537,12 +6602,13 @@ corbett@berkeley.edu.  The inclusion of this modified version in the E
 distribution is totally legal, as the author states in the original BYacc1.8
 README:
 
-"   Berkeley Yacc is in the public domain.  The data structures and algorithms
-used in Berkeley Yacc are all either taken from documents available to the
-general public or are inventions of the author.  Anyone may freely distribute
-source or binary forms of Berkeley Yacc whether unchanged or modified.
-Distributers may charge whatever fees they can obtain for Berkeley Yacc.
-Programs generated by Berkeley Yacc may be distributed freely. "
+"   Berkeley Yacc is in the public domain.  The data structures and
+algorithms used in Berkeley Yacc are all either taken from documents
+available to the general public or are inventions of the author.  Anyone may
+freely distribute source or binary forms of Berkeley Yacc whether unchanged
+or modified. Distributers may charge whatever fees they can obtain for
+Berkeley Yacc. Programs generated by Berkeley Yacc may be distributed
+freely. "
 
 
 @endnode
@@ -6652,8 +6718,9 @@ EDBG is the E sourcelevel debugger. To use it, compile your source with
 the DEBUG flag (this works on both main program an modules).
 This will add debug infos to your executable/module.
 
-NOTE: Do NOT distribute a program of which any part is compiled with DEBUG/S.
-(You can check this with ShowHunk, it should not contain any hunk_debug).
+NOTE: Do NOT distribute a program of which any part is compiled with
+DEBUG/S. (You can check this with ShowHunk, it should not contain any
+hunk_debug).
 Programs with debug-infos are compiled with extra NOPs to facilitate
 debugging, which isn't wanted in the final code.
 
@@ -6670,24 +6737,25 @@ with for example PUBSCREEN=Workbench you can run EDBG anywhere. By default
 it opens it own screen, which is a clone of the workbench in size and
 display mode. EDBG works fine on the graphics-cards etc.
 
-EDBG opens a window for every source/module in your project, and it will start
-with the one that contains 'main'.  From you can step through your code, and
-windows will automatically open when necessary.  When code doesn't have a
-source attached, it can be executed only (which is sometimes handy, if it
-doesn't need to be debugged).
+EDBG opens a window for every source/module in your project, and it will
+start with the one that contains 'main'.  From you can step through your
+code, and windows will automatically open when necessary.  When code doesn't
+have a source attached, it can be executed only (which is sometimes handy,
+if it doesn't need to be debugged).
 
 From here all is pretty intuitive. Major buttons are the first two pictures
 which are step over/in. Step in follows the code every step as it is
 executed, step over does the same but does not enter subroutines.
 [Just try it, the debugger is quite intuitive]
 
-Other functions show memory or register windows, and various other functions.
-An important one is double-clicking on variable-names:  this will show their
-contents in variable view window.  Double clicking somewhere not on a variable
-allows you to set a breakpoint.
+Other functions show memory or register windows, and various other
+functions. An important one is double-clicking on variable-names:  this
+will show their contents in variable view window.  Double clicking
+somewhere not on a variable allows you to set a breakpoint.
 
-For the memory views, memory breakpoints, exception raising features a subset
-of the E expression language can be used to denote addresses and values:
+For the memory views, memory breakpoints, exception raising features a
+subset of the E expression language can be used to denote addresses and
+values:
 
 values: 123, $ABC, %010101, "FORM"
 variables: a, {a}
@@ -6706,8 +6774,8 @@ want to step past there first before raising an exception that should
 go to that handler.
 
 To quit a debugging session in the middle of a program while still freeing
-all resources, or to test the capacity of your program to deal with failures,
-raise an exception.
+all resources, or to test the capacity of your program to deal with
+failures, raise an exception.
 
 Caveats:
 - The debugged program runs on the same task as EDBG. this means that
@@ -6729,12 +6797,12 @@ Future:
 
 
 The LINEDEBUG and SYM options.
-The LINEDEBUG option adds linedebug info to your executable (for each line of
-code inside a PROC). This option is necessary for EDBG, but the DEBUG switch
-automatically turns it on. LINEDEBUG is partially compatible with the "LINE"
-HUNK_DEBUG produced by other compilers/assemblers, so it can be useful with
-other debug-tools as well. The SYM option is not necessary for EDBG, but
-can be useful for others, such as AProf or disassemblers.
+The LINEDEBUG option adds linedebug info to your executable (for each line
+of code inside a PROC). This option is necessary for EDBG, but the DEBUG
+switch automatically turns it on. LINEDEBUG is partially compatible with the
+"LINE" HUNK_DEBUG produced by other compilers/assemblers, so it can be
+useful with other debug-tools as well. The SYM option is not necessary for
+EDBG, but can be useful for others, such as AProf or disassemblers.
 
 
 The EDBG Arexx port (name: "EDBG")
@@ -6874,19 +6942,19 @@ You can define macros as follows:
           REST OF BODY
 
 MACRONAME and ARG may be ANY case, and may contain "_" and 0-9 as usual.
-Whitespace may be added everywhere, except between MACRONAME and "(", because
-otherwise E-VO can't see the difference between arguments and a body.  The BODY
-may contain occurances of the ARGs.  A macro may continue on the next line by
-preceding the end_of_line with a "\\".  A body should not extend over more than
-one statement. (a macroname with no body is useful in combination with
-conditional compilation).
+Whitespace may be added everywhere, except between MACRONAME and "(",
+because otherwise E-VO can't see the difference between arguments and a
+body.  The BODY may contain occurances of the ARGs.  A macro may continue
+on the next line by preceding the end_of_line with a "\\".  A body should
+not extend over more than one statement. (a macroname with no body is useful
+in combination with conditional compilation).
 
 Macro identifiers have precedence over other identifiers.
 
 Macro definitions defined in a module will be saved in the module only if
-OPT EXPORT is on (#define can't be preceded with EXPORT). If that's a problem,
-keep macros together in their own modules. Macros in modules can be used in
-other code simply by importing them with MODULE and OPT PREPROCESS.
+OPT EXPORT is on (#define can't be preceded with EXPORT). If that's a
+problem, keep macros together in their own modules. Macros in modules can be
+used in other code simply by importing them with MODULE and OPT PREPROCESS.
 
 
 Using a macro.
@@ -7018,16 +7086,17 @@ NOTE: there are quite a couple of things you need to know before you can
       rush off and create a library. please read this WHOLE chapter before
       proceeding!
 
-E-VO can generate shared library files that can be called from any programming
-language, and from any number of tasks at the same time.  Additionally it
-supports almost all E language constructs in one way or another.
+E-VO can generate shared library files that can be called from any
+programming language, and from any number of tasks at the same time.
+Additionally it supports almost all E language constructs in one way or
+another.
 
 How?
 
 You can create a library by writing a LIBRARY declaration at the top of the
 sourcefile you want to become the library.  syntax:
 
-        LIBRARY name,version,revision,versionstring EXTRA size IS function,...
+     LIBRARY name,version,revision,versionstring EXTRA size IS function,...
 
 for example:
 
@@ -7035,24 +7104,24 @@ for example:
           opengui,closegui,...
 
 The function names are simply those of the PROCs (no methods!) you wish to
-make available as functions in the library.  The order in which they appear is
-important, because it denotes at which offsets they will be in the library
-(starting from -30). You can explicitly assign registers (e.g. 'myfun(A0)').
+make available as functions in the library.  The order in which they appear
+is important, because it denotes at which offsets they will be in the
+library (starting from -30). You can explicitly assign registers
+(e.g. 'myfun(A0)').
 
 
-A source with a declaration like this is in many respects similar to a normal
-E source (i.e.  not a module).  You may also put names of PROCs from included
-modules in the LIBRARY declaration.
+A source with a declaration like this is in many respects similar to a
+normal E source (i.e.  not a module).  You may also put names of PROCs from
+included modules in the LIBRARY declaration.
 
 The EXTRA parameter is optional and reserves an extra amount of space in
 the library base struction that you can use for whatever you need. The value
 shoudl be 0 - 32000 and also must be even.
 
-If all went ok, E-VO will compile your source to two files:  the library file
-(with the name from the LIBRARY declaration, not the source file!), and a
-module (".library" replaced by ".m") which contains information for other E
-programs on how to use your library (see
-of procedures have their first char converted to uppercase.
+If all went ok, E-VO will compile your source to two files:  the library
+file (with the name from the LIBRARY declaration, not the source file!), and
+a module (".library" replaced by ".m") which contains information for other
+E programs on how to use your library
 
 You may now use your library from another E program as follows:
 
@@ -7066,20 +7135,20 @@ You may now use your library from another E program as follows:
         ENDPROC
 
 or similar.  This is all the E syntax need to create and use libraries,
-however, there are quite a number of things one needs to know about what kind
-of E code may be put into libraries.
+however, there are quite a number of things one needs to know about what
+kind of E code may be put into libraries.
 
 
 What's so special about libraries then?
 
 Well, imagine that the code in a library is completely separate from the
-calling program, and that it may be executed at the same time by two different
-tasks.  This weren't so problematic if it weren't for the fact that code in
-most languages needs a global environment, not only for storing global
-variables, but in E also for quite a lot of features including exception
-handling, memory, io, library bases, etc.  (In E, the A4 register is used for
-this).  It is safe to say that E code without this specific global environment
-is almost impossible.
+calling program, and that it may be executed at the same time by two
+different tasks.  This weren't so problematic if it weren't for the fact
+that code in most languages needs a global environment, not only for storing
+global variables, but in E also for quite a lot of features including
+exception handling, memory, io, library bases, etc.  (In E, the A4 register
+is used for this).  It is safe to say that E code without this specific
+global environment is almost impossible.
 
 This environment can't be provided by the program that calls the library,
 since this program might be written in C (even for E it would be a problem).
@@ -7089,29 +7158,30 @@ environment for every task that calls them.  When the library is opened by a
 task, a small E environment for that task is created.  When the task makes a
 call, the environment belonging to the task is looked up (and put in A4).
 
-In practise this means that libraries created by E should be opened/closed by
-any one task EXACTLY ONCE, not more, not less (this shouldn't pose any
-problems though).  If you put your library in the PD, you will want to put a
-programmers notice in your docs mentioning this.  Strange things WILL happen
-if you don't obey this rule.
+In practise this means that libraries created by E should be opened/closed
+by any one task EXACTLY ONCE, not more, not less (this shouldn't pose any
+problems though).  If you put your library in the PD, you will want to put
+a programmers notice in your docs mentioning this.  Strange things WILL
+happen if you don't obey this rule.
 
 
 features and problems/suggestions, hints and tips:
-- If you use global variables, or in general the global environment, remember
-  that you have a set of global vars for each task that uses your library.
-  Global arrays are initialised as normal. (this is what you want, in
-  general).
+- If you use global variables, or in general the global environment,
+  remember that you have a set of global vars for each task that uses your
+  library. Global arrays are initialised as normal. (this is what you want,
+  in general).
 - A procedure main() still needs to be present. It will be called each time
-  when a task makes an OpenLibrary() call to you library. Use it only to make
-  minor initialisations, i.e. setting global vars to certain values, otherwise
-  leave it empty. The code in main() is executed within a Forbid()/Permit().
-  If the source for a LIBRARY contains a PROC close(), it will be called
-  when the user of the library calls CloseLibrary() (i.e. it is the
-  counterpart to main()). [close still mentioned as unref]
-- Lists with variable bits in them, i.e [1,2,a].  A problem when >1 task uses
-  the library.  This is a bit of a problem for example in taglists.  For now
-  one should probably prefix those with a NEW and FastDisposeList() them
-  afterwards (hopefully a better solution will be found sometime later).
+  when a task makes an OpenLibrary() call to you library. Use it only to
+  make minor initialisations, i.e. setting global vars to certain values,
+  otherwise leave it empty. The code in main() is executed within a
+  Forbid()/Permit(). If the source for a LIBRARY contains a PROC close(), it
+  will be called when the user of the library calls CloseLibrary() (i.e. it
+  is the counterpart to main()). [close still mentioned as unref]
+- Lists with variable bits in them, i.e [1,2,a].  A problem when >1 task
+  uses the library.  This is a bit of a problem for example in taglists.
+  For now one should probably prefix those with a NEW and FastDisposeList()
+  them afterwards (hopefully a better solution will be found sometime
+  later).
 - Exceptions can be raised and caught like normal, only NO exception should
   be thrown out of a library call EVER (strange things might happen). If one
   of your library calls uses code that might throw an exception, you have to
@@ -7132,10 +7202,10 @@ features and problems/suggestions, hints and tips:
   and place its handle in stdout.
 - libraries will stay in memory after use, so make you flush them regularly,
   otherwise debugging becomes particularly hard (you'll be using an old
-  version: "didn't I just change that?"). Also close the library in all cases,
-  otherwise you'll have to reboot to flush it. A trick to flush directly
-  after testing the library is writing 'AllocMem(100000000,0)' or similar
-  directly after the CloseLibrary() call.
+  version: "didn't I just change that?"). Also close the library in all
+  cases, otherwise you'll have to reboot to flush it. A trick to flush 
+  directly after testing the library is writing 'AllocMem(100000000,0)' or
+  similar directly after the CloseLibrary() call.
 - memory allocation like New() and NEW, and other resources that E startup
   code may arrange, are freed when the calling task closes your library,
   i.e. not when your library is removed. Remember that your code might be
@@ -7153,8 +7223,9 @@ features and problems/suggestions, hints and tips:
   wether it has problematic code in it. Try letting it fall over in any
   combination of EDBG, NILCHECK/S, enforcer/mungwall etc. Test your
   code first as normal exe or module before turning it into a library.
-- In general, If you do tricky stuff involving the task or global environment,
-  remember that you're in a different position from normal E code.
+- In general, If you do tricky stuff involving the task or global
+  environment, remember that you're in a different position from normal
+  E code.
 
 Have a look at the examples in the Src/Library dir.
 
@@ -7366,59 +7437,59 @@ etc.
 -----------------------------------------------------------------------
 STRUCTURE/STATEMENTS
 
-E                       C/C++                   Pascal
------------------------ ----------------------- -----------------------
-PROC x()                int x() {               FUNCTION x:INTEGER;
-PROC x(y,z)             int x(y,z) {            FUNCTION x(y,z:INTEGER):INTEGER;
-PROC x(y=1)             int x(y=1) {            -
-ENDPROC                 return 0; };            x:=0; END;
-ENDPROC e               return e; };            x:=e; END;
-ENDPROC e,f,g           -                       -
-RETURN e                return e;               ?
+E                    C/C++                  Pascal
+-------------------- ---------------------- -----------------------
+PROC x()             int x() {              FUNCTION x:INTEGER;
+PROC x(y,z)          int x(y,z) {           FUNCTION x(y,z:INTEGER):INTEGER;
+PROC x(y=1)          int x(y=1) {           -
+ENDPROC              return 0; };           x:=0; END;
+ENDPROC e            return e; };           x:=e; END;
+ENDPROC e,f,g        -                      -
+RETURN e             return e;              ?
 
-IF e                    if(e) {                 IF e THEN BEGIN
-ELSEIF e                } else if(e) {          END ELSE IF e THEN BEGIN
-ELSE                    } else {                END ELSE BEGIN
-ENDIF                   };                      END;
-IF e THEN s             if(e) s;                IF e THEN s;
-IF e THEN s ELSE t      if(e) s else t;         IF e THEN s ELSE t;
+IF e                 if(e) {                IF e THEN BEGIN
+ELSEIF e             } else if(e) {         END ELSE IF e THEN BEGIN
+ELSE                 } else {               END ELSE BEGIN
+ENDIF                };                     END;
+IF e THEN s          if(e) s;               IF e THEN s;
+IF e THEN s ELSE t   if(e) s else t;        IF e THEN s ELSE t;
 
-FOR x:=e TO f           - (1)                   FOR x:=e TO f DO BEGIN
-FOR x:=e TO f STEP i    -                       - (2)
-EXIT e                  if(e) break;            -
-ENDFOR                  -                       END;
-FOR x:=e TO f DO s      -                       FOR x:=e TO f DO s;
+FOR x:=e TO f        - (1)                  FOR x:=e TO f DO BEGIN
+FOR x:=e TO f STEP   -                      - (2)
+EXIT e               if(e) break;           -
+ENDFOR               -                      END;
+FOR x:=e TO f DO s   -                      FOR x:=e TO f DO s;
 
-WHILE e                 while(e) {              WHILE e DO BEGIN
-EXIT e                  if(e) break;            -
-ENDWHILE                };                      END;
-WHILE e DO s            while(e) s;             WHILE e DO s;
+WHILE e              while(e) {             WHILE e DO BEGIN
+EXIT e               if(e) break;           -
+ENDWHILE             };                     END;
+WHILE e DO s         while(e) s;            WHILE e DO s;
 
-s; WHILE e              for(s;e;u) {            s; WHILE e DO BEGIN
-  t; u                    t;                      t; u
-ENDWHILE                };                      END;
+s; WHILE e           for(s;e;u) {           s; WHILE e DO BEGIN
+  t; u                 t;                     t; u
+ENDWHILE             };                     END;
 
-REPEAT                  do {                    REPEAT
-UNTIL e                 } while(!e);            UNTIL e;
+REPEAT               do {                   REPEAT
+UNTIL e              } while(!e);           UNTIL e;
 
-LOOP                    for(;;) {               WHILE TRUE DO BEGIN (?)
-ENDLOOP                 };                      END;
+LOOP                 for(;;) {              WHILE TRUE DO BEGIN (?)
+ENDLOOP              };                     END;
 
-SELECT x                switch(x) {             CASE x OF
-SELECT x OF y           switch(x) {             CASE x OF
-CASE 1; s...            case 1: s...; break     1: BEGIN s... END
-CASE a+1                -                       -
-CASE 1,2,3              case 1: case 2: case3:  1,2,3:
-CASE "a".."z"           -                       -
-ENDSELECT               };                      END
+SELECT x             switch(x) {            CASE x OF
+SELECT x OF y        switch(x) {            CASE x OF
+CASE 1; s...         case 1: s...; break    1: BEGIN s... END
+CASE a+1             -                      -
+CASE 1,2,3           case 1: case 2: case3: 1,2,3:
+CASE "a".."z"        -                      -
+ENDSELECT            };                     END
 
-INC x                   x++;                    x:=x+1; (INC())
-DEC x                   x--;                    x:=x-1; (DEC())
-JUMP lab                goto lab;               GOTO lab;
-x:=e                    x=e;                    x:=e;
+INC x                x++;                   x:=x+1; (INC())
+DEC x                x--;                   x:=x-1; (DEC())
+JUMP lab             goto lab;              GOTO lab;
+x:=e                 x=e;                   x:=e;
 
-/* */                   /* */                   { }
-->                      //                      -
+/* */                /* */                  { }
+->                   //                     -
 
 (1) see WHILE; C has no FOR, "for" in C is another way of writing "while"
 (2) only STEP -1 as DOWNTO
@@ -7650,23 +7721,24 @@ Compiler/Linking/Executables
   of hard work, so if I'm to go through with it, it'd better be worth it.
   That of course depends heavily on the future of the Amiga.
 
-- How can I link E code with other languages? / use standard object (.o) format?
+- How can I link E code with other languages? / use standard object (.o)
+  format?
 
   Converting between .m and .o really isn't a huge problem, as one can see
-  from the o2m utility, which allows cooperation between E and Macro-Assembly
-  quite marvelously. The problem with C is in the compiled code, not the file
-  format. Anything but trivial C will reference things like _DOSBase, link-
-  library functions, stack-bases or other things from startup-code that E
-  provides in a quite different way, for example E's startup code is very
-  different from that of C compilers, and dosbase in E is placed on the stack,
-  not in the exe as with C. Even two C compilers may have these problems.
-  If you can get your C compiler to deliver a .o without external references
-  etc., you can link it with E (I did this once with MaxonC++). If you need
-  to program a project in both E and another language, you may wish to look
-  at E's (or the other language's) library linking facilities. E is really
-  quite a bit different from other languages (e.g. C), and providing .o
-  linking facilities only makes sense if the code contained in the .o
-  files can cooperate, which isn't the case with E.
+  from the o2m utility, which allows cooperation between E and
+  Macro-Assembly quite marvelously. The problem with C is in the compiled
+  code, not the file format. Anything but trivial C will reference things
+  like _DOSBase, link- library functions, stack-bases or other things from
+  startup-code that E provides in a quite different way, for example E's
+  startup code is very different from that of C compilers, and dosbase in E
+  is placed on the stack,not in the exe as with C. Even two C compilers may
+  have these problems. If you can get your C compiler to deliver a .o
+  without external references etc., you can link it with E (I did this once
+  with MaxonC++). If you need to program a project in both E and another
+  language, you may wish to look at E's (or the other language's) library
+  linking facilities. E is really quite a bit different from other languages
+  (e.g. C), and providing .o linking facilities only makes sense if the code
+  contained in the .o files can cooperate, which isn't the case with E.
 
 - Can I link amiga.lib?
 
@@ -7677,8 +7749,8 @@ Compiler/Linking/Executables
 - Can E code be made resident?
 
   Nearly ALL E code is already resident-able without the help of the
-  programmer. As fas as I know, the only E construct that can violate this is
-  a static list [] with an expression in it (so [a], for example. [1] or
+  programmer. As fas as I know, the only E construct that can violate this 
+  is a static list [] with an expression in it (so [a], for example. [1] or
   NEW [a] is ok.). Use OPT PURE if you want to ensure these are not present
   in your code.
 
@@ -7700,9 +7772,9 @@ Compiler/Linking/Executables
 - I have written this nice 'myutils.m', only when I use one function
   from it, E-VO links all. I don't like that.
 
-  The style of writing modules in E is to keep them as relatively small units,
-  with only related code and data. (This makes more sense if you know that the
-  module is the unit of datahiding in E). Split it up!
+  The style of writing modules in E is to keep them as relatively small
+  units, with only related code and data. (This makes more sense if you know
+  that the module is the unit of datahiding in E). Split it up!
 
 - Can I make E-VO resident?
 
@@ -7720,14 +7792,15 @@ Compiler/Linking/Executables
 
   Sure it can, I can see that too. But E-VO is not an assembly programmer.
   Doing really very high quality optimisations would require a complete
-  rewrite of E-VO, and would make it a lot slower, even with optimisation off.
-  Writing a good optimizer for a compiler is quite a non-trivial operation,
-  and if some E-VO generated code is sub-optimal or downright silly doesn't
-  mean I must be amateur assembly programmer too, and you need to explain me
-  how its done.
+  rewrite of E-VO, and would make it a lot slower, even with optimisation
+  off. Writing a good optimizer for a compiler is quite a non-trivial
+  operation, and if some E-VO generated code is sub-optimal or downright
+  silly doesn't mean I must be amateur assembly programmer too, and you need
+  to explain me how its done.
 
-- E should have a CHIP keyword or somesuch, to put data areas in chip memory.
-
+- E should have a CHIP keyword or somesuch, to put data areas in chip
+  memory.
+  
   E-VO does now have a SECTION command which allows this.
 
 Resources
@@ -7736,12 +7809,12 @@ Resources
   intuition.library etc. How come?
 
   The functions are not part of E, rather they are part of the amiga OS.
-  As such, they are described by Commodore's documents, not by the E documents.
-  "The AMIGA ROM Kernal Reference Manuals" are a series of books published
-  by Addison Wesley. A good place to start is for example "Libraries", ISBN
-  0-201-56774-1. Other books are worth considering too, an example is "The
-  Amiga Guru Book" by Ralph Babel. All the C code you come across in the
-  RKRMs is available in E form in Src/RKRM/
+  As such, they are described by Commodore's documents, not by the E
+  documents. "The AMIGA ROM Kernal Reference Manuals" are a series of books
+  published by Addison Wesley. A good place to start is for example
+  "Libraries", ISBN 0-201-56774-1. Other books are worth considering too,
+  an example is "The Amiga Guru Book" by Ralph Babel. All the C code you
+  come across in the RKRMs is available in E form in Src/RKRM/
 
 - I'd like to read more source code than what comes with the distribution
   where should I look?
@@ -7758,9 +7831,9 @@ Resources
   'fsoft@intercom.it' (Fabio Rotondo, the list administrator). The old list
   at amigae-request@bkhouse.cts.com is no longer operational.
   There are E discussion on other nets as well (FidoNet, AmigaNet),
-  public domain disk series (EPD in europe/germany, same address as the german
-  registration site), furthermore there are heaps of user-clubs, BBS's etc.
-  supporting E these days. just look around in your area.
+  public domain disk series (EPD in europe/germany, same address as the
+  german  registration site), furthermore there are heaps of user-clubs,
+  BBS's etc. supporting E these days. just look around in your area.
 
 - I have troubles understanding your incomprehensible english. Can I read
   about E in my own language?
@@ -7777,19 +7850,20 @@ Resources
 
 - I have heard about this mailing list. is it any good?
 
-  Find out for yourself. If you're serious about E it's definitly a must, also
-  because it's the place where news on E is generally released first.
+  Find out for yourself. If you're serious about E it's definitly a must,
+  also because it's the place where news on E is generally released first.
   Many good E programmers are on it as well, so you are sure to get the
   right answers to your questions.
 
-- I have a hard time getting on the mailing list. Could you take care of that
-  for me?
+- I have a hard time getting on the mailing list. Could you take care of
+  that for me?
 
-  I personally don't have anything to do with the administration of the list,
-  so I can't help out any better than anyone else can. Remember that the
-  server is an automated process, so you need to be very precise in what you
-  send there. Don't send administrative post to the list at large, instead
-  try and get hold of the administrator (Fabio Rotondo: fsoft@intercom.it).
+  I personally don't have anything to do with the administration of the
+  list, so I can't help out any better than anyone else can. Remember that
+  the server is an automated process, so you need to be very precise in what
+  you send there. Don't send administrative post to the list at large,
+  instead try and get hold of the administrator
+  (Fabio Rotondo: fsoft@intercom.it).
 
 - I'm new to internet. Could you help me get on the mailing list /
   FTP files from Aminet etc...?
@@ -7815,10 +7889,9 @@ Resources
 - Does E exist for other platforms?
 
   Not Yet. Personally I have undertaken small projects to make portable
-  compilers/translators, and several others have E compiler projects on other
-  platforms, but nothing has come out of this so far.
-  Portability of some form might be available as a spin-off of the PPC
-  backend project (see
+  compilers/translators, and several others have E compiler projects on
+  other platforms, but nothing has come out of this so far. Portability
+  of some form might be available as a spin-off of the PPC backend project
 
 - Can I become an E registration site for country X?
 
@@ -7839,19 +7912,20 @@ Programming
 
 - Can I do X in E? (where X = {games,dtp-packages,...})
 
-  E is a general purpose programming language, so there shouldn't be any type
-  of program that can't be done in E (with few rare exceptions, which are covered
-  by E's inline asm). This doesn't mean E is especially equipped for certain
-  types of programs, i.e. E has no special functions for games (though its
-  extensibility makes it easy to add them).
+  E is a general purpose programming language, so there shouldn't be any
+  type of program that can't be done in E (with few rare exceptions, which
+  are covered by E's inline asm). This doesn't mean E is especially equipped
+  for certain types of programs, i.e. E has no special functions for games
+  (though its extensibility makes it easy to add them).
 
 - How do I create X in E (where X = {window, interupt handler,...})
 
-  as with the last question, E just opens the possibilities to write anything,
-  and there isn't always a specific function available. In the worst case this
-  means having to use difficult functions from spooky libraries, but it's
-  worth it getting to grips with that. If you're lucky some E programmer
-  already has done something similar which you can learn from.
+  as with the last question, E just opens the possibilities to write
+  anything, and there isn't always a specific function available. In the
+  worst case this means having to use difficult functions from spooky
+  libraries, but it's worth it getting to grips with that. If you're lucky
+  some E programmer already has done something similar which you can learn
+  from.
 
 - Please write me an example how to do X in E.
 
@@ -7862,28 +7936,29 @@ Programming
   eventhough x.y.z is generally possible. Why is that?
 
   This should not be a problem anymore. The only case where this can still
-  occur is if you do not include the module that defines the object "z" is in.
+  occur is if you do not include the module that defines the object "z" is
+  in.
 
 - I'm writing code like this:
 
         DEF s[100]:STRING
         s:='my beautiful string'
 
-  which is allowed by the compiler, but later gives me problems. What can possibly
-  be wrong with this?
+  which is allowed by the compiler, but later gives me problems. What can
+  possibly be wrong with this?
 
   If you're used to for example BASIC, you're used to handle strings in the
   same way as integers, as they are both _values_. In E however there are no
   real string variables in the BASIC sense, the DEF above creates a piece of
-  memory to hold a string, then sets the variable as a pointer to this memory.
-  The pointer and the memory are implementation-wise two unrelated entities.
-  From that DEF on, all operation that directly access 's' access the pointer,
-  which is just an integer which tells us were to find the actual string.
-  The assignment thus puts the address of 'my beautiful string' into 's',
-  overwriting the old value. The string-memory created by the DEF sits there
-  unaltered, and now unaccessable because no pointer points to it. Functions
-  like StrCopy() can use this pointer to find the real memory, and can fill
-  it:
+  memory to hold a string, then sets the variable as a pointer to this
+  memory. The pointer and the memory are implementation-wise two unrelated 
+  entities.From that DEF on, all operation that directly access 's' access
+  the pointer, which is just an integer which tells us were to find the
+  actual string. The assignment thus puts the address of 
+  'my beautiful string' into 's', overwriting the old value. The 
+  string-memory created by the DEF sits there unaltered, and now 
+  unaccessable because no pointer points to it. Functions like StrCopy()
+  can use this pointer to find the real memory, and can fill it:
 
         StrCopy(s,'my beautiful string')
 
@@ -7900,9 +7975,10 @@ Programming
 
 - How do I return a STRING / OBJECT etc. from a function?
 
-  depends. If you just wish to use it as temporary return value, give a string
-  as argument and let the routine fill it. If you need to create a NEW string/
-  object, allocate it dynamically within the function, and return the pointer.
+  depends. If you just wish to use it as temporary return value, give a
+  string as argument and let the routine fill it. If you need to create a
+  NEW string/ object, allocate it dynamically within the function, and
+  return the pointer.
 
 - can I create an array of typed pointers, eg ARRAY OF PTR TO LONG
 
@@ -7964,8 +8040,8 @@ No. Or atleast very unlikely.
 
 - Multiple Inheritance?
 
-  Not possible in E. MI breaks with structural compatability between objects,
-  and needs relatively strong typing to resolve this.
+  Not possible in E. MI breaks with structural compatability between
+  objects, and needs relatively strong typing to resolve this.
 
 - PROCs inside PROCs?
 
@@ -7978,8 +8054,8 @@ No. Or atleast very unlikely.
 - Overloading
 
   No. Overloading requires quite strong typing to distinguish which function
-  to call. Besides, overloading is 100% syntactic sugaring, it doesn't provide
-  any added functionality whatsoever.
+  to call. Besides, overloading is 100% syntactic sugaring, it doesn't
+  provide any added functionality whatsoever.
 
 - more 020/881 support?
 
@@ -8002,10 +8078,10 @@ No. Or atleast very unlikely.
   'Why doesn't "--" work as in C?'
   'I hate typing CAPS for keywords!'
   'No precedence sucks!'
-  The features 'referenced' above will never change, and you'd better get use
-  to them. All design decisions have good reasons, and unlike some rumours
-  they were not done for compiler speed (infact implementing them more
-  traditionally wouldn't make the compiler any slower).
+  The features 'referenced' above will never change, and you'd better get
+  use to them. All design decisions have good reasons, and unlike some
+  rumours they were not done for compiler speed (infact implementing them
+  more traditionally wouldn't make the compiler any slower).
 
 - Why is feature X in E not like language Y, which I find better.
 
@@ -8034,14 +8110,13 @@ No. Or atleast very unlikely.
 @title "18E. TODO/BUG list"
 18E. TODO/BUG list
 ------------------
-By popular demand:  This is an extract from my todo/bugs list for E.  The real
-list is much longer, since I left all the real details/unimportant stuff out.
-Don't go and ask why any of these items haven't been done yet; the answer will
-generally vary from the the tactical "due to the internal structure of the
-compiler fixing this bug is more work than the collective trouble it will ever
-cause" to the honest "I'm too lazy: I can't be bothered" :) Don't go and ask
-me "when?" either.
-
+By popular demand:  This is an extract from my todo/bugs list for E.  The
+real list is much longer, since I left all the real details/unimportant
+stuff out. Don't go and ask why any of these items haven't been done yet;
+the answer will generally vary from the the tactical "due to the internal
+structure of the compiler fixing this bug is more work than the collective
+trouble it will ever cause" to the honest "I'm too lazy: I can't be
+bothered" :) Don't go and ask me "when?" either.
 
         Bugs I haven't been able to reproduce:
 *       compilation problems on 060
