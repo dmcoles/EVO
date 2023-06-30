@@ -1,0 +1,37 @@
+/* Ecompile.rexx: run E compiler from ced.
+   thanks to Rick Younie for improvements. */
+
+epath = 'e:bin/'					/* homedir of EC */
+
+OPTIONS RESULTS
+ADDRESS COMMAND
+
+IF ~EXISTS('ram:ec') THEN 'copy 'epath'ec ram:'	/* for slow sys: devices */
+
+ADDRESS 'rexx_ced'
+
+'status 19'					/* ask ced filename */
+file = result
+
+'status 18'
+IF result ~= 0 THEN DO				/* save if changed */
+  'save' file
+  SAY 'saving changes..'
+END
+ELSE SAY 'no changes..'
+
+PARSE VAR file comparg '.e'			/* strip the extension */
+SAY 'invoking E compiler with file' comparg'.e'
+
+ADDRESS
+OPTIONS FAILAT 1000000
+'ram:ec -E' comparg				/* run compiler */
+ebyte = rc
+
+IF EXISTS(comparg) THEN comparg			/* run exe */
+
+ADDRESS
+pull						/* wait for a <cr> */
+'cedtofront'
+IF ebyte>0 THEN 'jump to byte' ebyte		/* jump to spot of error */
+exit 0

@@ -6577,6 +6577,12 @@ linker uses the __ii convention for parameters also).
 @title "17G. bin/EYacc"
 17G. bin/EYacc
 --------------
+
+This file is not included in the E-VO package.
+It can be obtained in the original E compiler files from the Aminet
+http://aminet.net/package/dev/e/amigae33a
+
+
 This is a port of the famous Yacc utility for unix, which now produces E
 code instead of C code.  It is only a first version, so don't expect too
 much from it.  If you have no clue what Yacc does, read a text on it, since
@@ -6616,6 +6622,11 @@ freely. "
 @title "17H. Src/Various/SrcGen.e"
 17H. Src/Various/SrcGen.e
 -------------------------
+
+This source file is not included in the E-VO package.
+It can be obtained in the original E compiler files from the Aminet
+http://aminet.net/package/dev/e/amigae33a
+
 SrcGen GadToolBox source generator for E: beta version
 [note: this is now very much obsolete. Have a look at EasyGUI]
 
@@ -6644,8 +6655,10 @@ source that has been generated.
 17I. bin/EBuild
 ---------------
 
-now also described by its own documentation in the
-Src/Utils/Build directory.
+This  file is not included in the E-VO package.
+It can be obtained from the Aminet
+
+http://aminet.net/package/dev/e/ebuild
 
 
 @endnode
@@ -6654,7 +6667,9 @@ Src/Utils/Build directory.
 17J. Aprof
 ---------------
 
-described in its own documentation in the Bin/Tools directory.
+This file is not included in the E-VO package.
+It can be obtained in the original E compiler files from the Aminet
+http://aminet.net/package/dev/e/amigae33a
 
 
 @endnode

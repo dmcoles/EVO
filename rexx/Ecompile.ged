@@ -1,0 +1,101 @@
+/* $VER: CompileE.ged v0.5 (8.8.94)
+   by Leon Woestenberg (leon@stack.urc.tue.nl)
+
+   This is an ARexx script for GoldED (© Dietmar Eilert), and enables
+   you to compile E programs from the editor. Just add a menu item,
+   and in the 'Command' window select this ARexx script. Also, set
+   the output to 'NIL:'. You might as well add keybindings, window
+   gadgets, a shortcut key or even API to call this script.
+
+   Now just edit your source in the active window, and select the
+   menu item (or key, gadget etc.) you added. The compiler will be
+   invoked, and feedback will be showed in the status line of the
+   active window. If necessary, unsaved changes will be saved first.
+   After compilation, the status line will show the result. If there
+   was an error, the cursor will jump exactly to the spot of error,
+   and the error message of the compiler will be shown in the status
+   line. Warnings or unreferences (not both) will also be shown but
+   will not jump, nor beep, as this would get annoying very soon.
+   Also, cursor slot (bookmark) 9 will contain the spot of trouble.
+
+*/
+
+/* adjust your EC filename here, especially after registering :) */
+ec='ECDEMO'
+
+OPTIONS RESULTS
+
+IF (LEFT(ADDRESS(),6)~="GOLDED") THEN ADDRESS 'GOLDED.1'
+'LOCK CURRENT QUIET'
+IF rc THEN EXIT
+
+options='ERRBYTE' 'QUIET'
+
+'QUERY ANYTEXT'
+IF (result='TRUE') THEN
+DO
+  'QUERY DOC VAR FILEPATH'
+  IF (UPPER(RIGHT(result,2))='.E') THEN
+  DO
+    'QUERY MODIFY'
+    IF (result='TRUE') THEN
+    DO
+      'REQUEST STATUS="Saving changes..."'
+      'SAVE ALL'
+    END
+    'REQUEST STATUS="Compiling source..."'
+    ADDRESS COMMAND ec filepath options '>T:EC_Report'
+    errorbyte=rc
+    IF errorbyte>0 THEN
+    DO
+      'FOLD OPEN=TRUE ALL'
+      'GOTO UNFOLD=TRUE BYTE=' || errorbyte
+      'PING 9'
+    END
+    IF OPEN(filehandle,'T:EC_Report','Read')~=0 THEN
+    DO
+      importance=0
+      DO WHILE ~EOF(filehandle) & importance~='ERROR'
+        lastline=READLN(filehandle)
+        /* messages ordered in accending importance */
+        IF (INDEX(lastline,'UNREFERENCED:')~=0) & (importance<1) THEN
+        DO
+          importance=1
+          message=lastline
+        END
+        IF (INDEX(lastline,'WARNING:')~=0) & (importance<2) THEN
+        DO
+          importance=2
+          message=lastline
+        END
+        IF (INDEX(lastline,'ERROR:')~=0) & (importance<3) THEN
+        DO
+          importance=3
+          message=lastline
+        END
+        IF (INDEX(lastline,'EC INTERNAL ERROR')~=0) & (importance<4) THEN
+        DO
+          importance=4
+          message=lastline
+        END
+      END
+      ok=CLOSE(filehandle)
+      IF importance=0 THEN message='Compilation succesful.'
+      IF importance>=3 THEN 'BEEP'
+      message=TRANSLATE(message,'''','"')
+      'FIX VAR message'
+      'REQUEST STATUS="' || message ||'"'
+    END
+  END
+  ELSE
+  DO
+    'REQUEST STATUS="Source has no .e extension!"'
+  END
+END
+ELSE
+DO
+  'REQUEST STATUS="Say what?! Try typing some e source first :)"'
+END
+'UNLOCK'
+EXIT
+
