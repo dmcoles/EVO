@@ -21,7 +21,7 @@
 */
 
 /* adjust your EC filename here, especially after registering :) */
-ec='ECDEMO'
+ec='evo'
 
 OPTIONS RESULTS
 

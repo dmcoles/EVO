@@ -1,12 +1,12 @@
 /* Ecompile.rexx: run E compiler from ced.
    thanks to Rick Younie for improvements. */
 
-epath = 'e:bin/'					/* homedir of EC */
+epath = 'emodules:/bin/'					/* homedir of EVO */
 
 OPTIONS RESULTS
 ADDRESS COMMAND
 
-IF ~EXISTS('ram:ec') THEN 'copy 'epath'ec ram:'	/* for slow sys: devices */
+IF ~EXISTS('ram:evo') THEN 'copy 'epath'evo ram:'	/* for slow sys: devices */
 
 ADDRESS 'rexx_ced'
 
@@ -25,7 +25,7 @@ SAY 'invoking E compiler with file' comparg'.e'
 
 ADDRESS
 OPTIONS FAILAT 1000000
-'ram:ec -E' comparg				/* run compiler */
+'ram:evo ' comparg				/* run compiler */
 ebyte = rc
 
 IF EXISTS(comparg) THEN comparg			/* run exe */
