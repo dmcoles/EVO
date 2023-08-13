@@ -140,7 +140,7 @@ ODESTR	= 34				;   O
 ;; Hunklist structure
 H_NEXT  =   -4      ; ptr to hunk
 H_ADDR  =   0       ; where it begins..
-H_TYPE  =   4       ; it's type
+H_TYPE  =   4       ; its type
 H_END   =   8       ; where it ends..
 H_PREV  =   12      ; previous
 H_RELO  =   16      ; relocs (longs!)
@@ -445,7 +445,7 @@ DONEM:	MACRO				; \1=Ax (DONE WITH MEM (LIGHT VERSION))
 	BNE.S	*+16
 	JSR	EXPAND5
 	MOVE.W	#5,CHECKHEAP		; MAX 200 BYTES EACH = IDENT OR STRUCT
-	ENDM				; doesn't trash \1 !!!!
+	ENDM				; does not trash \1 !!!!
 
 DONEH:	MACRO				; \1=Ax (HEAVY VERSION)
 	MOVE.L	\1,HEAP
@@ -522,9 +522,9 @@ PUTOUT:	MACRO
 
 ;;PREP
 
-; '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''	;
+; *************************************************************	;
 ;	The (Macro) PreProcessor				;
-; ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,	;
+; *************************************************************	;
 
 ; - recursive macros
 ; - check end_of_source at each "\n" skipped.
@@ -1803,7 +1803,7 @@ COOKIE	= $BE
 	LSL.L	#2,D0
 	LEA	0(A2,D0.L),A0
 	MOVE.L	A0,LINEBUFCUR
-	MOVE.L	A0,LINEBUFCURSTART	; IF THE SAME LATER, DON'T SAVE
+	MOVE.L	A0,LINEBUFCURSTART	; IF THE SAME LATER, DONT SAVE
 .1:	RTS
 
       ADDLINEDBG:
@@ -1865,9 +1865,9 @@ COOKIE	= $BE
 
 ;;PARSE
 
-; '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''	;
+; *************************************************************	;
 ;	The Parsing Routines					;
-; ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,	;
+; *************************************************************	;
 
 	LEXMESSY:	DC.B	'lexical analysing ...',10
 	ENDLEXMESSY:	EVEN
@@ -2988,6 +2988,7 @@ HEAVYTABLE:
     BRA     .SPB
 
 .SPT:   DC.B    10,"n",39,"a",34,"q",27,"e",9,"t","\","\",0,"0",13,"b",11,"v"
+;"
 ;*-*
 ;*-*
 
@@ -5059,9 +5060,9 @@ SSTR:	DC.L	0
 
 
 
-; ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' ;
+; ************************************************************* ;
 ;	The ASSEMBLER part !!!!!!!				;
-; ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, ;
+; ************************************************************* ;
 ;; Parse
 ASM_PARSE:
     MOVE.L  A2,D0
@@ -7508,7 +7509,7 @@ ASM_GETEA:
     BEQ ASM_GETLABEL
     MOVEM.L (A7)+,D1/A0
 GL_BACK:
-    MOVE.B  (A3),D2         ; SEE WHAT'S NEXT
+    MOVE.B  (A3),D2         ; SEE WHATS NEXT
     CMP.B   #4,D2
     BMI     .6              ; ABS OR INDEXED MODE
     CMP.W   #$D,d2
@@ -8564,9 +8565,9 @@ iERROR103 JMP ERROR103
 ;*-*
 ;;CHIDENT
 
-; ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' ;
+; ************************************************************* ;
 ;	The CheckIdents and Procs part				;
-; ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, ;
+; ************************************************************* ;
 
 
       CHECKIDENTS:
@@ -8783,9 +8784,9 @@ iERROR103 JMP ERROR103
 	RTS
 .1:	DC.W	10
 
-; ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' ;
+; ************************************************************* ;
 ;	The Error, Message And DosSupport Part			;
-; ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, ;
+; ************************************************************* ;
 
       ERROR:				; D0=ERRORNR.
 	BSR	PREPMACROERROR
@@ -9624,7 +9625,7 @@ PORTCOOKIE	= $DEADBEEF
 	MOVE.W	#0,CONOUT
 	BSR.W	SHOWIDENT
 	BRA.S	GOTOUT
-      NOSTDOUT:				; WE'VE GOT NO STDIO
+      NOSTDOUT:				; WEVE GOT NO STDIO
       	MOVEQ	#0,D0
       	MOVE.L	D0,ARGLEN		; SIMULATE NO ARGS
  ;     	SWAP	D0
@@ -11412,7 +11413,7 @@ SYMEND:
       CLOSECON:
 	BSR	HOLDCON
 	TST.W	CONOUT
-	BEQ.S	.1			; NO CON: SO DON'T CLOSE IT
+	BEQ.S	.1			; NO CON: SO DONT CLOSE IT
 	MOVE.L	STOUT(PC),D1
 	MOVE.L	DOSBASE(PC),A6
 	JSR	-36(A6)
@@ -11463,7 +11464,7 @@ SYMEND:
       BRA.S .1
     endif
 	;rts
-	;TST.W	CONOUT			; DON'T INSTALL IF IN ASMONE
+	;TST.W	CONOUT			; DONT INSTALL IF IN ASMONE
 	;BNE.S	.1
 	MOVE.L	4.W,A6
 	MOVE.L	276(A6),A0
@@ -11777,9 +11778,9 @@ ERROR103:	MOVEQ	#103,D0
 ERROR104:	MOVEQ	#104,D0
 		BRA	LEAVEERROR
 
-; ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' ;
+; ************************************************************* ;
 ;	The COMPILER Part !!!!!!				;
-; ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, ;
+; ************************************************************* ;
 
 
 ; compile main vars
@@ -12032,7 +12033,7 @@ ERROR104:	MOVEQ	#104,D0
 	BRA	ERROR35
 .DH:	CMP.W	#IOFF+17,D7
 	BEQ	.DHB
-	CLR.W	DEFFLAG			; FIRST STATEMENT AFTER DEF'S
+	CLR.W	DEFFLAG			; FIRST STATEMENT AFTER DEFs
 	TST.W	HANDLEFLAG
 	BEQ	.DHB
 	BSR	HANDLEPROCREALLY
@@ -13931,7 +13932,7 @@ DONE1:	MOVE.L	D1,SUPERSIZE		; STACK NEW OSIZE FROM SUPER
 	BSET	#1,M_FLAGS(A4)
 .ASAME:	MOVE.L	A5,D2
 	BEQ.S	.L2
-	MOVE.L	A5,A6			; IF THERE'S PART OF OWNMETHODS
+	MOVE.L	A5,A6			; IF THERES PART OF OWNMETHODS
 .L5:	TST.L	(A5)			; LEFT, RELINK IT.
 	BEQ.S	.DD
 	MOVE.L	(A5),A5
@@ -15704,7 +15705,7 @@ DESTR:	MOVE.W	ODESTR(A6),D2		; GETS OBJ=A6, OSIZE=D0
 
       EXPECT3:				; 79
 	MOVE.W	(A2)+,D0
-	CMP.W	(A3),D0			; IF expeted THEN go x STEP's
+	CMP.W	(A3),D0			; IF expeted THEN go x STEPs
 	BNE.S	.1
 	MOVE.W	(A2),D0
 	EXT.L	D0
@@ -15820,9 +15821,9 @@ DESTR:	MOVE.W	ODESTR(A6),D2		; GETS OBJ=A6, OSIZE=D0
 .1: bra         JOBLOOP
 ;*-*
 
-; ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' ;
+; ************************************************************* ;
 ;	The Calculate-Addresses-For-BRAnches Part		;
-; ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, ;
+; ************************************************************* ;
 
 APPEND_LISTS:
     MOVE.L      #.MESSY,D2
@@ -16023,7 +16024,7 @@ APPEND:
     BRA BRLOOP
 .3:      
 	BSR	INCRELOC
-	TST.W	2(A0)			; SEE IF THERE'S EFUNCNUM
+	TST.W	2(A0)			; SEE IF THERE IS EFUNCNUM
 	BNE.S	.2
 	SUB.L	D7,D2
 	MOVE.L	D2,(A0)
@@ -16465,9 +16466,9 @@ SETHUNKSYMPTRS:
     rts
 
 
-; ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' ;
+; ************************************************************* ;
 ;	The Expression Calculation Part				;
-; ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, ;
+; ************************************************************* ;
 
 
 ; ea specific version of EXP: optimizes some superfluous code away
@@ -16481,7 +16482,7 @@ SETHUNKSYMPTRS:
 ; MOVE.L Dx,D0			2	a
 ;
 ; RESULT IN D0:		0	NO OPTI DONE
-;			1	OPTI DONE, BUT DON'T MOVE (MAY USE A0 TOO)
+;			1	OPTI DONE, BUT DONT MOVE (MAY USE A0 TOO)
 ;			<ADR>	OPTI DONE, <ADR>..A4 IS CODE
 
       EAEXP:
@@ -16929,7 +16930,7 @@ dval2:  DC.L 0
 	MOVE.W D1,ARRAY_DIMS
   
 .nodimdata:
-	MOVE.W VAR_PTRREPCOUNT(A0),TYPERF_XXX  ; number of PTR TO's
+	MOVE.W VAR_PTRREPCOUNT(A0),TYPERF_XXX  ; number of PTR TOs
 	MOVE.W	(A3)+,D1
 	CMP.W	#33,D1			; SEE IF IDENT++
 	BPL	PLX
@@ -16956,7 +16957,7 @@ PLB:
 .DREFL:
     MOVE.L  COMPILEPROC(PC),A1
     CMP.L   18(A1),A0
-    BEQ .0_2                    ; self can't be a ptr to ptr ... - problems
+    BEQ .0_2                    ; self cant be a ptr to ptr ... - problems
 
 .NDIM:
     TST.W   ARRAY_DIMS
@@ -17064,7 +17065,7 @@ PLB:
 .nodp2
 	MOVE.L	2(A3),A6
 	MOVE.W	.OPTID2(PC),(A4)+
-	BSR	GVA6D3_0
+	BSR	GVA6D3_0                    ;generate array index into d2
 	ADDQ.L	#6,A3
 	MOVEQ	#-1,D3
 	BRA.W	.10
@@ -17208,7 +17209,7 @@ PLB:
 	MOVE.W D1,ARRAY_DIMS
   
 .nodimdata:
-	MOVE.W PTRREPCOUNT(A1),TYPERF_XXX  ; number of PTR TO's
+	MOVE.W PTRREPCOUNT(A1),TYPERF_XXX  ; number of PTR TOs
 	MOVE.L	.SPEC(PC),D1
 	MOVE.L	D1,A2
 	MOVE.W	4(A2),D5
@@ -17559,7 +17560,7 @@ PLB:
     BEQ.S   .EXP_C0_2
     BPL.S   .EXP_C0_1
     TST.W   D4
-    BEQ     ERROR0                  ; compiler shouldn't use this code, anyway..
+    BEQ     ERROR0                  ; compiler should not use this code, anyway..
     MOVE.L  A4,-(sp)
     MOVE.L  .tmpA4,A4
     BCLR    #5,(A4)               ; .B/.L size
@@ -17675,7 +17676,7 @@ PLB:
     BEQ.S   .EXP_C1_2
     BPL.S   .EXP_C1_1
     TST.W   D4
-    BEQ     ERROR0                  ; compiler shouldn't use this code, anyway..
+    BEQ     ERROR0                  ; compiler should not use this code, anyway..
     MOVE.L A4,-(A7)
     MOVE.L .tmpA4,A4
     BCLR    #5,-2(A4)               ; .B/.L size
@@ -17811,7 +17812,7 @@ PLB:
     BEQ.S   .EXP_C2_2
     BPL.S   .EXP_C2_1
     TST.W   D4
-    BEQ     ERROR0                  ; compiler shouldn't use this code, anyway..
+    BEQ     ERROR0                  ; compiler should not use this code, anyway..
     MOVE.L  A4,-(sp)
     MOVE.L  .tmpA4,A4
     BCLR    #5,(A4)               ; .B/.L size
@@ -18788,13 +18789,14 @@ MOVED0FP0: MACRO
 	MOVE.W	.MV(PC),(A4)+
 	MOVE.L	METHODIDENT(PC),A0
 	BSR	GVA0D0_0
-  
-	MOVE.W	.ISM(PC),D0
+   
+	TST.W	.ISM
 	BPL.S .3a
-	BRA.S .3
+	BRA.S .4B
 .3a:  MOVE.W .ST2(PC),-4(A4)
 	MOVE.W	.GOBJ4(PC),(A4)+
-	MOVE.W	D0,(A4)+
+	MOVE.W	.ISM(PC),(A4)+
+	BRA.S .4B
 .3:
 	MOVE.L	A6,D0
 	BEQ.S	.4B
@@ -19098,7 +19100,7 @@ EXPQMARK:
 	CMP.W	#29,(A3)
 	BEQ.S	.SKIP
 	BTST	#3,5(A0)
-	BNE	ERROR50			; YOU CAN'T GET THE ADDRESS OF A REG :-)
+	BNE	ERROR50			; YOU CANNOT GET THE ADDRESS OF A REG :-)
 .SKIP:	CMP.B	#LAB,4(A0)
 	BNE.W	.3
 ;	BTST	#4,5(A0)		; THE LAB VERSION
@@ -20061,7 +20063,7 @@ FEXPRCODE2:
     FMOVE.S (A7)+,FP0   ; 4
     FSMOVE.S (A7)+,FP0  ; 4
 FEXPRCODE_USED_REGS:
-    DC.W    0           ; shouldn't fail ;)
+    DC.W    0           ; should not fail ;)
 FEXPSTART:
     FMOVE.L #0,FP0
 FEXPS:
@@ -23508,9 +23510,9 @@ FINISHFPEXP:
 
 
 
-; ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' ;
+; ************************************************************* ;
 ;	The Unit Linking Subroutines.				;
-; ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, ;
+; ************************************************************* ;
 
 
 HunkList:
@@ -24548,9 +24550,9 @@ i2ERROR39:
 
 ;;HEADER
 
-; ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' ;
+; ************************************************************* ;
 ;	The InitCode and ExitCode Part ....			;
-; ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, ;
+; ************************************************************* ;
 
 
       STACKPOKE:		DC.L	0,0
@@ -24715,7 +24717,7 @@ i2ERROR39:
     clr.l   (a0)+               ; reloc
     clr.l   (a0)+               ; symbols
     clr.l   (a0)+               ; symbols end
-    DONEM   A0                  ; We'll use it for writing the stuff :)
+    DONEM   A0                  ; We will use it for writing the stuff :)
 	
 	BTST	#3,CODEPREFS+3
 	BNE	.EX
@@ -24917,7 +24919,7 @@ NT_MESSAGE = 5
      RBGEXIT37:
       	TST.L	D4
       	BEQ.S	NOWBMSG37
- 	JSR	-132(A6)		; no unloadseg until we're done
+ 	JSR	-132(A6)		; no unloadseg until we are done
 	MOVE.L	D4,A1
 	JSR	-378(A6)		; reply WB message
      NOWBMSG37:
@@ -24982,7 +24984,7 @@ NT_MESSAGE = 5
 	JSR	-372(A6)  		; getmsg
 	MOVE.L	D0,D4
 	MOVEA.L	D0,A1
-	TST.L	MN_REPLYPORT(A1)	; our fake msg haven't reply port
+	TST.L	MN_REPLYPORT(A1)	; our fake msg have no reply port
 	BNE.S	OPENDOS1
 	MOVE.L	MN_ARGSIZE(A1),D5
 	MOVEA.L	MN_ARGPTR(A1),A5
@@ -25024,7 +25026,7 @@ NT_MESSAGE = 5
      RBGEXIT:
       	TST.L	D4
       	BEQ.S	NOWBMSG1
- 	JSR	-132(A6)		; no unloadseg until we're done
+ 	JSR	-132(A6)		; no unloadseg until we are done
 	MOVE.L	D4,A1
 	JSR	-378(A6)		; reply WB message
      NOWBMSG1:
@@ -25195,7 +25197,7 @@ NT_MESSAGE = 5
       DOSFAIL:
       	TST.L	D4
       	BEQ.W	NOWBMSG2
- 	JSR	-132(A6)		; no unloadseg until we're done
+ 	JSR	-132(A6)		; no unloadseg until we are done
 	MOVE.L	D4,A1
 	JSR	-378(A6)		; reply WB message
       NOWBMSG2:
@@ -26535,9 +26537,9 @@ ConstsList:
 ;*-*
 
   
-; ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' ;
+; ************************************************************* ;
 ;	The Internal LIBRARYCALLS				;
-; ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, ;
+; ************************************************************* ;
 
 
 EXEC:
@@ -26717,9 +26719,9 @@ UTIL:
  EVEN
 ;;JOB
 
-; ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' ;
+; ************************************************************* ;
 ;	Instruction JobCode And Data Part			;
-; ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, ;
+; ************************************************************* ;
 
       DUM:
       INSJOBTAB:
@@ -27746,9 +27748,9 @@ INL_OPTI:
 
 ;;FUNCS
 
-; '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''	;
+; *************************************************************	;
 ;	ALL BUILDIN E FUNCTIONS					;
-; ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,	;
+; *************************************************************	;
 
       EFUNCFLAGSTAB:
 	DC.B	0,0,0,0,0,0,0,0,0,0	;  1-10
@@ -33091,7 +33093,7 @@ DOPREPDATE:             ; #date
     LSL.L   #2,D1           ;
     ADD.L   #MACROHASH,D1   ; add macro to hash table
     MOVE.L  D1,A6           ;
-    JSR PREPFINDMACRO       ; and check if it wasn't already defined
+    JSR PREPFINDMACRO       ; and check if it wasnt already defined
     TST.L   D0              ;
     BNE .iERROR66             ;
     MOVE.L  D1,A6           ; restore location
@@ -33676,9 +33678,9 @@ CLOSEUTILEND:
 ;*-*
 
 
-; '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''	;
+;*************************************************************	;
 ;	UnInitialized DataSection for E Compiler		;
-; ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,	;
+;*************************************************************	;
 
 		SECTION EDATA,BSS
 FIB:		DS.B	300
