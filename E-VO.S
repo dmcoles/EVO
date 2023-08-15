@@ -9907,7 +9907,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.6.2-dev',160
-			DC.B	'(02.08.2023)'
+			DC.B	'(15.08.2023)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -12388,6 +12388,34 @@ ERROR104:	MOVEQ	#104,D0
 	DONEM	A0
 	RTS
 
+      ADDBRANCHUSINGTEMPSPACE:			; D0 LABEL (A4 IS ADR. NA OP.)
+	MOVE.L	A4,D1
+	SUBQ.L	#2,D1			; +TRASH: D1/A0, -TRASH: D0 !
+	TST.W	NEWOP
+	BEQ.S	.NL
+	BTST	#2,CODEPREFS+3
+	BEQ.S	.NL
+	MOVE.L	#$30000,-2(A4)
+	ADDQ.L	#2,A4
+;	MOVE.W	D7,-(A7)
+;	MOVE.W	NEWOP(PC),D7
+;	BEQ.S	.NNO
+;	MOVE.W	D7,-6(A4)
+;.NNO:	MOVE.W	(A7)+,D7
+	MOVE.W	NEWOP(PC),-6(A4)
+.NL:
+
+	MOVE.L tempspacedataptr(PC),A0
+	CMP.L   #tempspacebuffend-10,A0
+	BPL     ERROR84
+
+	MOVE.W  #3,(A0)+
+	MOVE.L	D1,(A0)+
+	MOVE.W	D0,(A0)+
+	MOVE.W	LINENUM(PC),(A0)+
+	MOVE.L A0,tempspacedataptr
+	RTS
+
       ADDBRANCHRELOC:			; D0 LABEL (A4 IS ADR. VOOR REL.LONG.)
 	MOVE.L	A4,D1			; +TRASH: D1/A0, -TRASH: D0 !
 	MOVE.L	#$30000,(A4)+
@@ -12981,7 +13009,7 @@ LDEF:	MACRO
 	MOVEQ	#0,D6			; D6=DEFARGS COUNT
 	MOVE.W	(A2)+,D5		; 1=PROC,2=LOCAL,3=DEF
 
-	MOVE.L #DIMSDATABUF,.dimsdataptr
+	MOVE.L #TEMPSPACEDATABUF,tempspacedataptr
 	CLR.L	DBCUR
 	BTST	#6,CODEPREFS+1
 	BEQ.W	.NDB			; NOW __DEBUG__ SPECIFIC
@@ -13071,9 +13099,10 @@ LDEF:	MACRO
  	MOVEQ.L #1,D2
  	MOVE.L A6,-(A7)
   
-	MOVE.L .dimsdataptr(PC),A6
-    CMP.L   #dimbuffend-6,A6
+	MOVE.L tempspacedataptr(PC),A6
+    CMP.L   #tempspacebuffend-8,A6
     BPL     ERROR84
+	MOVE.W #1,(A6)+
 	MOVE.L A0,(A6)+
  	CLR.W (A6)+
     CLR.W .dcount
@@ -13091,7 +13120,7 @@ LDEF:	MACRO
     CMP.L   #32768,D2
     BGE     ERROR85
     
-    CMP.L   #dimbuffend-2,A6
+    CMP.L   #tempspacebuffend-2,A6
     BPL     ERROR84
     
 	MOVE.W  D2,(A6)+
@@ -13119,7 +13148,7 @@ LDEF:	MACRO
 	MOVE.W .dcount,(A6)
 
 	ADD.L D1,A6  
-	MOVE.L A6,.dimsdataptr
+	MOVE.L A6,tempspacedataptr
  
 .singledim:
 	MOVE.L (A7)+,A6
@@ -13151,7 +13180,6 @@ LDEF:	MACRO
 	BEQ	.3A
 	BRA .SK2
 
-.dimsdataptr: DC.L 0
 .dcount: DC.W 0
 .1:	
 	MOVE.L	DBCUR(PC),D2		; ADD DEBUG ADDRESSING MODE
@@ -13191,21 +13219,24 @@ LDEF:	MACRO
 	MOVE.L	A0,(A1)
 .LN2:	MOVE.L	A0,DBTAIL
 .NDBF:
-	BSR .updatedimsdata
+	BSR .updatetempdata
 	BRA	JOBLOOP
 
-.updatedimsdata:
+.updatetempdata:
 	MOVEM.L D0/A0-A4,-(A7)
-	LEA DIMSDATABUF,A0
-	LEA .dimsdataptr(PC),A1
+	LEA TEMPSPACEDATABUF,A0
+	LEA tempspacedataptr(PC),A1
 	MOVE.L (A1),A4  ;get current dimsdatapt
 	MOVE.L A0,(A1)  ;reset back to start
  
 	CMP.L A0,A4
-	BEQ.S .nodata
+	BEQ .nodata
 
 	GETM A3
-.copydimall:
+.copyall:
+	MOVE.W (A0)+,D0
+	CMP.W #1,D0
+	BNE.S .notdim
 	MOVE.L (A0)+,A1 ;VAR
 	MOVE.L A3,VAR_DIMDATA(A1)
 	MOVE.L A0,A2
@@ -13215,8 +13246,41 @@ LDEF:	MACRO
 .copydim:
 	MOVE.W (A0)+,(A3)+  ;dimension offsets
 	DBF d0,.copydim
+	BRA.S .copydone
+.notdim:
+	CMP.W #2,D0
+	BNE.S .notvarinit
+
+	MOVE.L A6,-(A7)
+	MOVE.L (A0)+,A6
+	MOVE.L (A0)+,A1
+  
+	MOVE.L	OACC(A6),(A3)
+	MOVE.L	A3,OACC(A6)
+	ADDQ.L	#4,A3
+	MOVE.L	A1,(A3)+
+	CLR.W	(A3)+
+	MOVE.L (A7)+,A6
+	BRA.S .copydone
+.notvarinit:
+	CMP.W #3,D0
+	BNE.S .notbranchreloc
+
+	MOVE.L	BRANCHLIST(PC),(A3)
+	MOVE.L	A3,BRANCHLIST
+	ADDQ.L	#4,A3
+	MOVE.L (A0)+,(A3)+
+	MOVE.W (A0)+,(A3)+
+	MOVE.W (A0)+,(A3)+
+	CLR.W   (A3)+  
+	BRA.S .copydone
+
+.notbranchreloc
+	BRA	ERROR0
+
+.copydone:
 	CMP.L A0,A4
-	BNE .copydimall
+	BNE .copyall
 	DONEM A3
   
 .nodata:
@@ -13458,7 +13522,87 @@ LDEF:	MACRO
 .LEA:	MOVE.W	.6(PC),(A4)+
 	NEG.L	D3
 	MOVE.W	D3,(A4)+
-.CNT:	ADD.L	D2,D0
+.CNT:
+;init here
+	MOVE.L A6,-(A7)
+  
+	MOVE.L (a0),a6
+	CMP.L #5,A6
+	BCS .G3
+
+	TSTMOD
+	BNE .skipDEL
+
+	TST.W SCOPE
+	BNE.S .skipDEL
+
+	TST.W DONEDEL
+	BNE.S .skipDEL 
+
+	TST.W	ODEL(A6)
+	BEQ.W	.skipDEL
+
+	MOVEM.L D0-D1/A0,-(a7)
+
+; early initialisation of delegates since
+; they are needed by the global variable
+
+	MOVE.L	INITCODE,(A4)+	; DELEGATES
+	MOVEQ	#6,D0
+	MOVE.W	#$4eb9,NEWOP
+
+	BSR	ADDBRANCHUSINGTEMPSPACE
+  
+	MOVE.W #-1,DONEDEL
+	MOVEM.L (a7)+,D0-D1/A0
+
+.skipDEL:  
+	TST.W	ODEL(A6)
+	BEQ.W	.G3
+	MOVEM.L A0/D1,-(A7)
+	MOVE.W	.GOBJ(PC),(A4)+
+ 
+;figure out how many elements to initialise
+;using osize(a6) vs d2
+
+	MOVEQ #0,D1
+	MOVE.L tempspacedataptr(PC),A0
+
+.arrloop:
+	CMP.L   #tempspacebuffend-10,A0
+	BPL     ERROR84
+
+	MOVE.W #2,(A0)+
+	MOVE.L A6,(A0)+
+  
+	ADD.W ODELOFF(A6),D1
+	BNE.S	.G1
+	MOVE.W	.GOBJ2(PC),(A4)+
+	MOVE.L	A4,(A0)+
+	CLR.W	(A4)+
+	BRA.S	.G2
+.G1:	MOVE.W	.GOBJ3(PC),(A4)+
+	MOVE.L	A4,(A0)+
+	CLR.W	(A4)+
+	MOVE.W	D1,(A4)+
+.G2:
+	SUB.W ODELOFF(A6),D1
+
+	ADD.W OSIZE(A6),D1
+	CMP.L D1,D2
+	BNE.S .arrloop
+	MOVE.L A0,tempspacedataptr
+
+	MOVEM.L (A7)+,A0/D1
+	BRA.S .G3
+
+.GOBJ:	MOVE.L	A7,A0
+.GOBJ2:	MOVE.L	4(A4),(A0)
+.GOBJ3:	MOVE.L	4(A4),4(A0)
+ 
+.G3:
+	MOVE.L (A7)+,A6
+	ADD.L	D2,D0
 	CMP.W	#3,D5
 	BEQ.S	.12
 	MOVE.L	XTRASTACK(PC),D3	; LOC
@@ -13501,6 +13645,8 @@ LDEF:	MACRO
 
 TERES:  DC.L  0
 BEGDEF:	DC.L	0
+DONEDEL: DC.W 0
+tempspacedataptr: DC.L 0
 
 CHECKLASTIDENT:
 	MOVE.L A2,-(A7)
@@ -13785,11 +13931,15 @@ DOCHAR:               ; 41
 	MOVE.W	#-1,SCOPE
 	TSTMOD
 	BNE	JOBLOOP
+	TST.W DONEDEL
+	BNE.S .skipDEL
 	MOVE.L	INITCODE(PC),(A4)+	; DELEGATES
 	MOVEQ	#6,D0
 	MOVE.W	.1(PC),NEWOP
 	BSR	ADDBRANCH 
+	MOVE.W #-1,DONEDEL
   
+.skipDEL:  
   LEA .TESTRES(PC),A0
 .copytest:
   MOVE.W (A0)+,(A4)+
@@ -17147,7 +17297,7 @@ PLB:
 	MOVE.W	.RETA0(PC),(A4)+
 .NDR2:	MOVEM.L	(A7)+,D0/D3/A0
 	MOVEQ	#-1,D3
-.10:	CMP.W	#30,(A3)+
+.10:	CMP.W	#30,(A3)+     ;should be ]
 	BNE	ERROR34
 	MOVE.W	(A3)+,D1
   
@@ -17161,6 +17311,7 @@ PLB:
 	SUB.W #2,A3
 	BRA ERROR83
 
+;no more dims
 .8: 
 	SUBA.L	A1,A1			; A1=OBJECT (member/NIL)
 	SUBA.L	A6,A6			; A6=OBJECT (HEAD/NIL)
@@ -17172,7 +17323,7 @@ PLB:
 	MOVE.L	A6,.SSPEC		; -
     MOVE.L  A6,.SSPEC1
 	MOVE.W	(A3)+,D1
-.NCAST:	CMP.W	#35,D1
+.NCAST:	CMP.W	#35,D1      ;should be .
 	BNE	.11
 	CMP.L	#5,(A0)			; -
 	BPL.S	.NC2			; -
@@ -17260,8 +17411,8 @@ PLB:
     BEQ     .SF3
 	CMP.W	#16,D5
 	BEQ.S	.S4
-	MOVE.W	.28(PC),(A4)+
-	MOVE.W	D5,(A4)+
+	MOVE.W	.28(PC),(A4)+   ; generate muls
+	MOVE.W	D5,(A4)+        ; object size
 	BRA.S	.SO
 .S4:	MOVE.W	.29+6(PC),(A4)+		; OBJ OF 16
 	BRA.S	.SO
@@ -18752,6 +18903,7 @@ MOVED0FP0: MACRO
 
 	MOVE.L	A6,D0
 	BEQ.W	.4B
+  ;init method pointer
 	TST.W	ODEL(A6)
 	BEQ.W	.4B
 	MOVE.L	A0,METHODIDENT
@@ -22353,11 +22505,14 @@ EXPFPCMP:
       	DC.W	$4C6D,$800		; DIVS.L x(A5),D0
       	DC.W	$4C41,$800		; DIVS.L D1,D0
       	
+lERROR4:  JMP ERROR4
+lERROR23: JMP ERROR23
+lERROR25: JMP ERROR25
 
 	  EXPOWNFUNC:           ; A0=IDENTENTRY
     CLR.L   LAST_CMD_ADR
     BTST    #4,5(A0)
-    BNE ERROR4
+    BNE.S lERROR4
     CMP.B   #LAB,4(A0)
     BNE EXPVARPROCCALL
     MOVE.L  6(A0),A6        ; A6=PROC!!
@@ -22395,9 +22550,9 @@ EXPFPCMP:
     move.w  d0,-(a7)
     MOVE.L  D6,A6
     TST.L   D6
-    BEQ ERROR25
+    BEQ lERROR25
     CMP.W   #17,(A3)+
-    BNE ERROR23
+    BNE lERROR23
     BSR SD0
     MOVEQ   #0,D0           ; #OF ARGS
     CMP.W   #18,(A3)
@@ -22406,7 +22561,7 @@ EXPFPCMP:
     MOVE.W  #16,EAREQUEST
     BSR EAEXP
     TST.L   D0
-    BNE.S   .OPT
+    BNE   .OPT
     MOVE.W  .4(PC),(A4)+
 .OPT:   MOVEM.L (A7)+,D0/A0/A6
     ADDQ.L  #4,D0
@@ -22414,7 +22569,7 @@ EXPFPCMP:
     BEQ.S   .3
     SUBQ.L  #2,A3
 .2: CMP.W   #18,(A3)+       ; OUT
-    BNE ERROR23
+    BNE lERROR23
     BSR DODEFARGS
     MOVEM.L D0/A0,-(A7)
 
@@ -22479,7 +22634,7 @@ DOREGARGS:
     MOVE.L  D0,D6
     LSR.L   #2,D6
     CMP.W   (A6),D6
-    BNE     ERROR23
+    BNE     lERROR23
     move.l  6(a6),a6
     subq.l  #1,d6
 
@@ -23214,7 +23369,7 @@ EFUNDA:	ADDQ.L	#1,D0
 	TSTMOD
 	BNE.S	.MOD
 	MOVE.W	.5(PC),NEWOP
-	BSR	ADDBRANCH
+	JSR	ADDBRANCH
 	BRA.S	.CC
 .MOD:	SUBQ.L	#4,A4
 	MOVE.W	.5(PC),(A4)+
@@ -23575,7 +23730,7 @@ NumHunks:
 	ADD.L	D0,A0			; skip LINE debug
 	CMP.W	#1,D1
 	BEQ.S	.NL
-	GETM	A2
+	GETML	A2
 	MOVE.L	CODELIST(PC),D0
 	BNE.S	.NN
 	MOVE.L	A2,CODELIST
@@ -24207,8 +24362,8 @@ i2ERROR39:
 	MOVE.W	(A0)+,D1
 	CLR.L	(A5)+			; ONEXT
 	MOVE.L	A5,(A6)
-    MOVE.L  A5,DIMSDATABUF
-    CLR.W   DIMSDATABUF+4
+    MOVE.L  A5,TEMPSPACEDATABUF
+    CLR.W   TEMPSPACEDATABUF+4
 	LEA	ONEXT(A5),A6
 	MOVE.W	(A0)+,(A5)+		; OOFF
 	CLR.W	(A5)+			; OFLAGS
@@ -24236,7 +24391,7 @@ i2ERROR39:
 	MOVE.W	(A0)+,-6(A5)	; PTRREPCOUNT
        
     MOVE.L  A5,-(A7)
-    lea DIMSDATABUF+4,A5
+    lea TEMPSPACEDATABUF+4,A5
  	
     MOVE.W  (A0)+,D0        ; DIMDATA COUNT
     MOVE.W D0,(A5)+
@@ -24271,13 +24426,13 @@ i2ERROR39:
 	BSET	#1,OFLAGS+4(A6)
 .4: CLR.L	(A5)+ 
     MOVE.L	#$deadf00d,(A5)+ 
-    bsr .updatedimsdata2
+    bsr .updatetempdata2
 	DONEM	A5
 	BRA.W	ADDOBJECTLOOP
     
-.updatedimsdata2:
+.updatetempdata2:
 	MOVEM.L D0/A0-A1,-(A7)
-	LEA DIMSDATABUF,A0
+	LEA TEMPSPACEDATABUF,A0
 .copydimall:
 	MOVE.L (A0)+,A1 ;MEMBER
 	MOVE.W (A0)+,D0 ;number of dimensions
@@ -33699,8 +33854,8 @@ PRINTBUF:	DS.B	300
 		EVEN
 WORKBUF:	DS.B	MAXIDENT+2
 		EVEN
-DIMSDATABUF:  DS.B 10000
-dimbuffend:
+TEMPSPACEDATABUF:  DS.B 10000
+tempspacebuffend:
 ;ESTACKBUF:	DS.B	MAXSTACK+2
 ;		EVEN
 EFUNCBYTE:	DS.B	NREFUNC+10
