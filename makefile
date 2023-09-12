@@ -30,7 +30,7 @@ dist:					EVO tools modules
 							makedir Rel/Docs
 							makedir Rel/Modules
 							makedir Rel/Src
-              makedir Rel/Rexx
+							makedir Rel/Rexx
 							Copy EVO Rel/Bin/EVO
 							Copy Tools/EDBG/EDBG Rel/Bin/
 							Copy Tools/FDtoM/FDtoM Rel/Bin/
@@ -41,10 +41,13 @@ dist:					EVO tools modules
 							Copy Tools/ShowCache/ShowCache Rel/Bin/
 							Copy Tools/ShowHunk/ShowHunk Rel/Bin/
 							Copy Tools/ShowModule/ShowModule Rel/Bin/
-              Copy Rexx/#? Rel/Rexx/
+							Copy Rexx/ecompile.ced Rel/Rexx/
+							Copy Rexx/ecompile.ged Rel/Rexx/
 							Copy file_id.diz Rel/
 							Copy readme.txt Rel/
 							Copy readme.txt Rel/evo.readme
+							Copy E-VO_Install Rel/
+							Copy E-VO_Install.info Rel/
 							Copy E-VO.guide Rel/Docs/
 							Copy Updates.txt Rel/Docs/
 							Copy Ram:EMODS Rel/Modules ALL

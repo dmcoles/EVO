@@ -1,0 +1,336 @@
+;------------------------------------------------------------------------
+;
+; $VER: E-Vo Install 1.0.0 (08.06.23)
+;
+; (C) Darren Coles
+;
+;------------------------------------------------------------------------
+
+;welcome
+;install/update - uninstall
+;expert
+
+(set #app-name "E-VO")  ; Application name
+
+(set #app-year 2023)            ; Copyright year
+(set #app-version "3.6.0")
+
+(set #ModulesPath     "EModules:")
+
+(set #MakeEvoDir "Creating drawer for E-VO")
+(set #MakeEvoDirHelp "The drawer created will contain the EVO files")
+
+
+(set #destdir-prompt "Please select the drawer where %s should be installed.\nA drawer called EVO will be created in this location.")
+(set #destdir-help "If you are not sure, keep with the default values.")
+
+(set #removedir-prompt "Please select the drawer where %s is installed.\n")
+
+(set #AddUserStartup "Performing changes to user-startup.")
+(set #AddUserStartupHelp
+  (cat
+    "An assignment \""
+    #ModulesPath
+    ":\" will be added to your user-startup file and the E-VO bin drawer will be added to the path. "
+  )
+)
+
+(set #RemoveUserStartup "Removing changes from user-startup.")
+(set #RemoveUserStartupHelp "The assign and path changes will be removed from the user-startup")
+
+(set #source-dir "")
+
+
+(set #welcome
+(cat "Welcome to the installer for %s %s \n\n"
+ "E-VO is an E compiler for the Amiga written by Darren Coles and is based on the\n"
+ "source from the original E compiler written by Wouter van Oortmerssen.\n\n"
+ "It features many enhancements abd the modules have been fully updated to\n"
+ "bring them in line with the OS 3.2 NDK (including support for reaction)"
+)
+)
+;------------------------------------------------------------------------
+(procedure ApplyStartupChanges createEModules
+  (if  (= createEModules 1)
+
+    (startup @app-name
+      (set #bin-dir (tackon #evo-dir "Bin") )
+      (prompt #AddUserStartup)
+      (help #AddUserStartupHelp)
+      (command (cat "Assign " #ModulesPath " \"" #modules-dir "\"\n"))
+      (command (cat "Path \"" #bin-dir "\" add"))
+      (confirm "expert")
+    )
+    (startup @app-name
+      (set #bin-dir (tackon #evo-dir "Bin") )
+      (prompt #AddUserStartup)
+      (help #AddUserStartupHelp)
+      (command (cat "Path \"" #bin-dir "\" add"))
+      (confirm "expert")
+    )
+  )
+)
+
+;------------------------------------------------------------------------
+(procedure RemoveStartupChanges
+
+  (startup @app-name
+    (prompt #RemoveUserStartup)
+    (help #RemoveUserStartupHelp)
+    (command "")
+  )
+)
+;------------------------------------------------------------------------
+
+; Never ever leave junk lying around!
+;
+(onerror (CLEANUP))
+
+;------------------------------------------------------------------------
+; Cleanup any temporary mess we created
+(procedure CLEANUP
+    ; Nothing to cleanup
+) ; CLEANUP
+
+;------------------------------------------------------------------------
+
+    ;Install/Update
+      (set #InstallMode ("Do you want to install or uninstall %s?" #app-name))
+      (set #Install ("Install/Update to %s %s" #app-name #app-version))
+      (set #Uninstall   "Uninstall an installed version")
+
+    (message (#welcome #app-name #app-version) (all))
+      
+    (set #install_mode
+      (askchoice
+        (prompt #InstallMode)
+        (help "N/A")
+        (choices
+          #Install
+          #Uninstall
+        )
+        (default 0)
+      )
+    )
+
+
+(if (= #install_mode 0)
+; find out how the user wants to install things
+  (
+    (welcome)
+    (if (exists "emodules:/bin/evo" (noreq))
+      (
+        (set #evo-dir (expandpath "emodules:/"))
+        (set #modules-dir "emodules:" )
+        (message "Upgrade existing E-VO install in\n\n" #evo-dir)
+      )
+      
+      (
+        (set #evodir
+          (askdir
+            (prompt (#destdir-prompt #app-name))
+            (help #destdir-help)
+            (default @default-dest) ) )
+
+        (set #evo-dir (tackon #evodir "EVO") )
+        (set #modules-dir (tackon #evo-dir "Modules") )
+      )
+    )
+
+    (complete 0)
+
+    (if (= (exists #evo-dir) 0)
+      (makedir #evo-dir
+          (prompt #MakeEvoDir)
+          (help #MakeEvoDirHelp)
+          (confirm "expert")
+      )
+    )
+
+  (complete 10)
+
+  (makedir (tackon #evo-dir "Bin"))
+
+  (copyfiles
+    (prompt "Copying binaries")
+    (help @copyfiles-help)
+    (source (tackon #source-dir "Bin"))
+    (dest (tackon #evo-dir "Bin"))
+    (all)
+    (infos)
+    (confirm "expert")
+  )
+
+  (complete 20)
+
+  (makedir (tackon #evo-dir "Docs"))
+
+  (copyfiles
+    (prompt "Copying docs")
+    (help @copyfiles-help)
+    (source (tackon #source-dir "Docs"))
+    (dest (tackon #evo-dir "Docs"))
+    (all)
+    (infos)
+    (confirm "expert")
+  )
+
+  (complete 30)
+
+  (if (exists "EModules:" (noreq))
+    (set createEModules 0)
+    (set createEModules 1)
+  )
+
+  (if (= createEModules 1)
+    ( 
+      (makedir #modules-dir)
+      (set updateEModules 1)
+    )
+    (
+      (set #modules-dir "emodules:")
+      (set updateEModules
+        (askchoice
+          (prompt "You already have an EMODULES: assign. Do you wish to update with the latest modules?")
+          (help "N/A")
+          (choices
+            "No"
+            "Yes"
+          )
+          (default 1)
+        )
+      )
+    )
+  )
+
+  (if (= updateEModules 1)
+    (copyfiles
+      (prompt "Copying modules")
+      (help @copyfiles-help)
+      (source (tackon #source-dir "Modules"))
+      (dest #modules-dir)
+      (all)
+      (confirm "expert")
+      (infos)
+    )
+  )
+
+  (complete 80)
+
+  (copyfiles
+    (prompt "Copying readme")
+    (help @copyfiles-help)
+    (source #source-dir)
+    (confirm "expert")
+    (choices "readme.txt")
+    (dest #evo-dir)
+  )
+
+    (complete 90)
+    (ApplyStartupChanges createEModules)
+    (complete 100)
+  )
+)
+
+(if (= #install_mode 1)
+  (
+    
+    (set @default-dest (tackon @default-dest "EVO"))
+    (welcome)
+    (set #modules-dir "emodules:" )
+
+    (if (exists "emodules:/bin/evo" (noreq))
+      (
+        (set #evo-dir (expandpath "emodules:/"))
+        (message "Remove existing E-VO install in\n\n" #evo-dir)
+      )
+      
+      (
+        (set #evo-dir
+          (askdir
+            (prompt (#removedir-prompt #app-name))
+            (help #destdir-help)
+            (default @default-dest) ) )
+      )
+    )
+
+
+   (delete (tackon #evo-dir "Bin")
+      (prompt "Removing BIN files")
+      (help "Deleting the BIN drawer from the E-VO installation.")
+      (confirm "expert")
+      (all)
+      (infos)
+    )
+
+   (delete (tackon #evo-dir "Docs")
+      (prompt "Removing Docs files")
+      (help "Deleting the Docs folder from the E-VO installation.")
+      (confirm "expert")
+      (all)
+      (infos)
+    )
+
+    (if (exists "emodules:" (noreq))
+     (set emodsDir (expandpath "emodules:"))
+     (set emodsDir (tackon #evo-dir "Modules"))
+    )
+
+   (if (<> emodsDir (tackon #evo-dir "Modules"))
+      (
+        (set removeModules 
+              (askchoice 
+                (prompt (cat "The modules is installed in a different location than the E-VO installation folder. It is installed in: " (expandpath "emodules:") "\nWhat do you wish to do?"))
+                (help "N/A")
+                (choices
+                  "Leave the modules drawer intact"
+                  "Remove the modules drawer"
+                )
+                (default 0)
+              )
+            )      
+      )
+      (set removeModules 1)
+   )
+
+   (if (= removeModules 1)
+     (delete emodsDir
+        (prompt "Removing Modules files")
+        (help "Deleting the Modules folder from the E-VO installation.")
+        (confirm "expert")
+        (infos)
+        (all)
+     )
+   )
+    
+   (delete (tackon #evo-dir "readme.txt")
+      (prompt "Removing readme file")
+      (help "Deleting the readme.txt file from the E-VO installation.")
+      (confirm "expert")
+      (infos)
+    )
+
+   (delete #evo-dir
+      (prompt "Removing installation drawer")
+      (help "Deleting the EVO folder.")
+      (confirm "expert")
+      (infos)
+    )
+
+    (RemoveStartupChanges)
+    (complete 100)
+  (complete 100)
+  )
+)
+
+;------------------------------------------------------------------------
+; That's it!
+
+
+(CLEANUP)
+(exit)
+
+;------------------------------------------------------------------------
+
+; *** EOT ***
+
