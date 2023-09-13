@@ -8,7 +8,7 @@ all:					EDBG
 debug:        options = DEBUG SHOWFNAME
 debug:				EDBG
 
-EDBG:					EDBG.e sctext.m screg.m schex.m eexe.m
+EDBG:					edbg.e sctext.m screg.m schex.m eexe.m
 							$(compiler) EDBG $(options)
 
 sctext.m:			sctext.e
