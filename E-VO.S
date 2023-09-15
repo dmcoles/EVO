@@ -9908,7 +9908,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.6.2-dev',160
-			DC.B	'(15.08.2023)'
+			DC.B	'(15.09.2023)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -17634,22 +17634,38 @@ PLB:
 	LEA		.20,A0
 	MOVE.L	(A0,D7.W),(A4)+
 	MOVE.L  (sp)+,a0
-  
+
 	MOVE.L  THE_OFFSET,D1
 	CLR.L   THE_OFFSET
 	CMP.L   #128,D1
 	BPL.S   .bigoff1
 	OR.W    D1,-2(A4)
-  
+
 	BRA.S .E0_B
 .bigoff1:
 	CMP.W #32768,D1
 	BPL.S   .longoff1
-  
+	CMP.W   #1,ECPU
+	BPL.S   .020_wordoff
+	MOVE.W .addword000(PC),(A4)+
+	MOVE.W D1,(A4)+
+	BRA.S .E0_B
+
+.020_wordoff:
 	OR.W    #$0120,-2(a4)
 	MOVE.W D1,(A4)+
 	BRA.S .E0_B
+.addword000:
+	LEA 200(A0),A0
 .longoff1:  
+	CMP.W   #1,ECPU
+	BPL.S   .020_longoff
+	MOVE.W .addlong000(PC),(A4)+
+	MOVE.L D1,(A4)+
+	BRA.S .E0_B
+.addlong000:
+	ADDA.L #200,A0
+.020_longoff:
 	OR.W    #$0130,-2(a4)
 	MOVE.L D1,(A4)+
 
@@ -17731,7 +17747,7 @@ PLB:
     MOVE.W  #51,(A3)
 
     LSL.W   #2,D0
-  	ADD.W	D0,D7
+    ADD.W	D0,D7
     LSR.W   #2,D0
     MOVE.L A4,.tmpA4
     MOVE.L .20(PC,D7.W),(A4)+      ;
@@ -17745,11 +17761,27 @@ PLB:
 .bigoff2:
 	CMP.W #32768,D1
 	BPL.S   .longoff2
-  
+	CMP.W   #1,ECPU
+	BPL.S   .020_wordoff2
+	MOVE.W .addword000_2(PC),(A4)+
+	MOVE.W D1,(A4)+
+	BRA.S .dofac
+
+.020_wordoff2:
 	OR.W    #$0120,-2(a4)
 	MOVE.W D1,(A4)+
 	BRA.S .dofac
-.longoff2:  
+.addword000_2:
+	LEA 200(A0),A0
+.longoff2:
+	CMP.W   #1,ECPU
+	BPL.S   .020_longoff_2
+	MOVE.W .addlong000_2(PC),(A4)+
+	MOVE.L D1,(A4)+
+	BRA.S .dofac
+.addlong000_2:
+	ADDA.L #200,A0
+.020_longoff_2:
 	OR.W    #$0130,-2(a4)
 	MOVE.L D1,(A4)+
 .dofac
