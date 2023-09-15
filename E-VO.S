@@ -17637,7 +17637,7 @@ PLB:
 	LEA		.20,A0
 	MOVE.L	(A0,D7.W),(A4)+
 	MOVE.L  (sp)+,a0
-  
+
 	MOVE.L  THE_OFFSET,D1
 	CLR.L   THE_OFFSET
 	CMP.L   #128,D1
@@ -17650,8 +17650,10 @@ PLB:
 	BPL.S   .longoff1
 	CMP.W   #1,ECPU
 	BPL.S   .020_wordoff
+	MOVE.L -(A4),-(sp)
 	MOVE.W .addword000(PC),(A4)+
 	MOVE.W D1,(A4)+
+	MOVE.L (sp)+,(A4)+
 	BRA.S .E0_B
   
 .020_wordoff:
@@ -17663,8 +17665,10 @@ PLB:
 .longoff1:  
 	CMP.W   #1,ECPU
 	BPL.S   .020_longoff
+	MOVE.L -(A4),-(sp)
 	MOVE.W .addlong000(PC),(A4)+
 	MOVE.L D1,(A4)+
+	MOVE.L (sp)+,(A4)+
 	BRA.S .E0_B
 .addlong000:
 	ADDA.L #200,A0
@@ -17766,8 +17770,10 @@ PLB:
 	BPL.S   .longoff2
 	CMP.W   #1,ECPU
 	BPL.S   .020_wordoff2
+	MOVE.L -(A4),-(sp)
 	MOVE.W .addword000_2(PC),(A4)+
 	MOVE.W D1,(A4)+
+	MOVE.L (sp)+,(A4)+
 	BRA.S .dofac
   
 .020_wordoff2:
@@ -17779,8 +17785,10 @@ PLB:
 .longoff2:  
 	CMP.W   #1,ECPU
 	BPL.S   .020_longoff_2
+	MOVE.L -(A4),-(sp)
 	MOVE.W .addlong000_2(PC),(A4)+
 	MOVE.L D1,(A4)+
+	MOVE.L (sp)+,(A4)+
 	BRA.S .dofac
 .addlong000_2:
 	ADDA.L #200,A0
@@ -22478,7 +22486,7 @@ EXPFPCMP:
 	BEQ	EXPCONS
 	CMP.W	#16,D0
 	BEQ	EXPCONSNIL
-	BRA	ERROR0
+	JMP	ERROR0
 .FLT:
     MOVE.L  D0,D3
     SUB.W   #11,D3
