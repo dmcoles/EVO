@@ -17376,11 +17376,13 @@ PLB:
 .CASTO:	
     BSR	FINDMEMBER
 	BRA.S	.SKM
-.FAKEO:	DC.L	0,0,0,0
+.FAKEO:	DC.L	0,0,0,0,0,0
 .SKMS:	SUBQ.L	#2,A3			; JUMPSPOT FOR OBJ[I]
 	LEA	.FAKEO(PC),A1
 .SKM:
-    MOVE.L DIMDATA(A1),D1
+	CMP.L #0,A1
+	BEQ .noobj1
+	MOVE.L DIMDATA(A1),D1
 	BEQ .nodimdata
 	MOVE.L D1,A2
 	MOVE.W (A2),D1
@@ -17391,6 +17393,7 @@ PLB:
   
 .nodimdata:
 	MOVE.W PTRREPCOUNT(A1),TYPERF_XXX  ; number of PTR TOs
+.noobj1:
 	MOVE.L	.SPEC(PC),D1
 	MOVE.L	D1,A2
 	MOVE.W	4(A2),D5
@@ -17634,13 +17637,13 @@ PLB:
 	LEA		.20,A0
 	MOVE.L	(A0,D7.W),(A4)+
 	MOVE.L  (sp)+,a0
-
+  
 	MOVE.L  THE_OFFSET,D1
 	CLR.L   THE_OFFSET
 	CMP.L   #128,D1
 	BPL.S   .bigoff1
 	OR.W    D1,-2(A4)
-
+  
 	BRA.S .E0_B
 .bigoff1:
 	CMP.W #32768,D1
@@ -17650,7 +17653,7 @@ PLB:
 	MOVE.W .addword000(PC),(A4)+
 	MOVE.W D1,(A4)+
 	BRA.S .E0_B
-
+  
 .020_wordoff:
 	OR.W    #$0120,-2(a4)
 	MOVE.W D1,(A4)+
@@ -17747,7 +17750,7 @@ PLB:
     MOVE.W  #51,(A3)
 
     LSL.W   #2,D0
-    ADD.W	D0,D7
+  	ADD.W	D0,D7
     LSR.W   #2,D0
     MOVE.L A4,.tmpA4
     MOVE.L .20(PC,D7.W),(A4)+      ;
@@ -17766,14 +17769,14 @@ PLB:
 	MOVE.W .addword000_2(PC),(A4)+
 	MOVE.W D1,(A4)+
 	BRA.S .dofac
-
+  
 .020_wordoff2:
 	OR.W    #$0120,-2(a4)
 	MOVE.W D1,(A4)+
 	BRA.S .dofac
 .addword000_2:
 	LEA 200(A0),A0
-.longoff2:
+.longoff2:  
 	CMP.W   #1,ECPU
 	BPL.S   .020_longoff_2
 	MOVE.W .addlong000_2(PC),(A4)+
