@@ -9908,7 +9908,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.6.2-dev',160
-			DC.B	'(15.09.2023)'
+			DC.B	'(21.09.2023)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -15531,8 +15531,10 @@ AAAAAA:	BLOCK2	#8,#IOFF+12
 	BNE	ERROR55
 	MOVE.L	18(A6),A6		; A6=SELF
 	MOVE.L	A0,(A6)			; SET SELF AS PTR TO OBJ
+	MOVEA.L	SAVEDREGSPTR(PC),A4
 	MOVE.W	.CODE(PC),(A4)+
 	JSR	GVA6D0_9
+	MOVEA.L	A4,SAVEDREGSPTR
 	BRA	JOBLOOP
 .CODE:	MOVE.L	A0,2(A5)
 
