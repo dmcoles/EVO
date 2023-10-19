@@ -1501,7 +1501,7 @@ NEW p
 is an expression that will allocate zero-ised memory for the object-size
 p points to. the resulting pointer will be put in p, and is also
 the value of the expression. if NEW fails to get memory, it raises
-a "NEW" exception. 'NEW p' is therefore roughly equivalent with:
+a "MEM" exception. 'NEW p' is therefore roughly equivalent with:
 
 IF (p:=New(SIZEOF whateverobj))=NIL THEN Raise("MEM")
 
@@ -3802,7 +3802,7 @@ would be less safe.
 FastNew() and FastDispose() are replacements for NewR(size) and
 Dispose(ptr) (they are used by NEW and END). this is what they have
 in common:
-- "NEW" exceptions may be Raised
+- "MEM" exceptions may be Raised
 - memory is always cleared
 - auto-dealloc at end of program
 - NIL accepted in deallocation
@@ -4136,7 +4136,7 @@ cells. if out of cells, it will collect garbage by scanning the
 stack and registers for pointers into the cellspace, and recursively
 mark them. after that, all unmarked cells are reused, and if the
 gain after a collection was only small, a new chunk is allocated
-(if this fails, "NEW" is raised).
+(if this fails, "MEM" is raised).
 
 interaction with other E values:
 - storing other values in cells is no problem whatsoever. objects,
@@ -7764,7 +7764,7 @@ Compiler/Linking/Executables
 - Can E code be made resident?
 
   Nearly ALL E code is already resident-able without the help of the
-  programmer. As fas as I know, the only E construct that can violate this 
+  programmer. As far as I know, the only E construct that can violate this 
   is a static list [] with an expression in it (so [a], for example. [1] or
   NEW [a] is ok.). Use OPT PURE if you want to ensure these are not present
   in your code.

@@ -9908,7 +9908,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.6.2-dev',160
-			DC.B	'(21.09.2023)'
+			DC.B	'(18.10.2023)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -15534,7 +15534,7 @@ AAAAAA:	BLOCK2	#8,#IOFF+12
 	MOVEA.L	SAVEDREGSPTR(PC),A4
 	MOVE.W	.CODE(PC),(A4)+
 	JSR	GVA6D0_9
-	MOVEA.L	A4,SAVEDREGSPTR
+	MOVE.L	A4,SAVEDREGSPTR
 	BRA	JOBLOOP
 .CODE:	MOVE.L	A0,2(A5)
 
@@ -17854,6 +17854,7 @@ PLB:
     beq     .DO
     bra     .21
 .E1_B00:
+ 	LSR.W #1,D7
 	ADD.W	D0,D7
 	ADD.W	D0,D7
 	MOVE.W	.24(PC,D7.W),(A4)+
@@ -17922,6 +17923,7 @@ PLB:
     MOVE.W  (A3),2(A3)
     MOVE.W  #51,(A3)
 
+    LSR.W #1,D7
     ADD.W   D0,D7
     ADD.W   D0,D7
     MOVE.W  .24(PC,D7.W),(A4)+      ;
