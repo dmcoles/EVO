@@ -3,13 +3,17 @@
 options=
 compiler=evo
 
-all:					EDBG FDtoM FindModule FlushCache Pragma2Module ShowCache ShowModule ShowHunk
+all:					EDBG FDtoM FindModule FlushCache Pragma2Module ShowCache ShowModule ShowHunk O2M IConvert
 
 debug:        options = DEBUG
-debug:				EDBG FDtoM FindModule FlushCache Pragma2Module
+debug:				EDBG FDtoM FindModule FlushCache Pragma2Module O2M IConvert
 
 EDBG:					
 							make -C EDBG $(options)
+IConvert:
+							make -C IConvert $(options)
+O2M:
+							make -C O2M $(options)
 FDtoM:
 							make -C FDtoM $(options)
 FindModule:
@@ -34,5 +38,7 @@ clean:
 							make -C ShowCache clean
 							make -C ShowModule clean
 							make -C ShowHunk clean
+							make -C O2M clean
+							make -C IConvert clean
 
-.PHONY:				EDBG FDtoM FindModule FlushCache Pragma2Module ShowCache ShowModule ShowHunk
+.PHONY:				EDBG FDtoM FindModule FlushCache Pragma2Module ShowCache ShowModule ShowHunk O2M IConvert

@@ -41,6 +41,8 @@ dist:					EVO tools modules
 							Copy Tools/ShowCache/ShowCache Rel/Bin/
 							Copy Tools/ShowHunk/ShowHunk Rel/Bin/
 							Copy Tools/ShowModule/ShowModule Rel/Bin/
+							Copy Tools/O2M/o2m Rel/Bin/
+							Copy Tools/IConvert/Iconvert Rel/Bin/
 							Copy Rexx/ecompile.ced Rel/Rexx/
 							Copy Rexx/ecompile.ged Rel/Rexx/
 							Copy file_id.diz Rel/
