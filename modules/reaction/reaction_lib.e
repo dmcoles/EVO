@@ -1,5 +1,6 @@
   OPT MODULE
   OPT EXPORT
+  OPT PREPROCESS
 
   MODULE 'intuition/intuition',
          'gadgets/listbrowser',
@@ -83,7 +84,7 @@ PROC freeClickTabs(list:PTR TO lh)
   DEF nextnode:PTR TO ln
   IF list
     node:= list.head
-   WHILE (nextnode = node.succ)
+   WHILE (nextnode := node.succ)
       FreeClickTabNode(node)
       node := nextnode
    ENDWHILE
@@ -152,7 +153,7 @@ PROC freeChooserLabels(list:PTR TO lh)
   IF list
     node:= list.head
 
-   WHILE (nextnode = node.succ)
+   WHILE (nextnode := node.succ)
      FreeChooserNode(node)
      node := nextnode
    ENDWHILE
@@ -190,7 +191,7 @@ PROC freeRadioButtons(list:PTR TO lh)
   IF list
     node:= list.head
 
-   WHILE (nextnode = node.succ)
+   WHILE (nextnode := node.succ)
      FreeRadioButtonNode(node)
      node := nextnode
    ENDWHILE

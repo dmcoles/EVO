@@ -85,6 +85,7 @@ evo legacy showfname ram:emods/gadgets/layout.e
 evo legacy showfname ram:emods/gadgets/listbrowser.e
 evo legacy showfname ram:emods/gadgets/clicktab.e
 evo legacy showfname ram:emods/gadgets/virtual.e
+evo legacy showfname ram:emods/gadgets/textfield.e
 evo legacy showfname ram:emods/gadgets/texteditor.e
 evo legacy showfname ram:emods/gadgets/tapedeck.e
 evo legacy showfname ram:emods/gadgets/tabs.e
@@ -232,6 +233,7 @@ fdtom utility_lib.fd
 fdtom translator_lib.fd
 fdtom trackfile_lib.fd resource
 fdtom timer_lib.fd
+fdtom textfield.fd
 fdtom texteditor_lib.fd
 fdtom string_lib.fd
 fdtom speedbar_lib.fd
