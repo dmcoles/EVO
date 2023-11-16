@@ -179,8 +179,8 @@ OBJECT ident_lex_parse
   dimdata                       VAR_DIMDATA used to track multi-dimensional arrays
 ENDOBJECT
 
-            0/1  1/2     2/4        3/8 4/16          5/32             6/64
-flags = SET USED,SYS_VAR,EXPORT (*),REG,REAL|METHOD,FORCEUNSIGNED,FORCESIGNED
+            0/1  1/2     2/4        3/8 4/16          5/32             6/64      7/128
+flags = SET USED,SYS_VAR,EXPORT (*),REG,REAL|METHOD,FORCEUNSIGNED,FORCESIGNED, SIZE=LONG
 (*) = in mainsource var komt uit module, variable coalescing
 etype = PTR TO [1,2,4] | PTR TO <object>
 info = [if_arg_then_offset,0,lab=-1 | proc=-2 | -3/-4 code in other module]

@@ -82,6 +82,7 @@ evo legacy showfname ram:emods/dos/dos.e
 evo legacy showfname ram:emods/dos/datetime.e
 evo legacy showfname ram:emods/dos/stdio.e
 evo legacy showfname ram:emods/gadgets/layout.e
+evo legacy showfname ram:emods/gadgets/listview.e
 evo legacy showfname ram:emods/gadgets/listbrowser.e
 evo legacy showfname ram:emods/gadgets/clicktab.e
 evo legacy showfname ram:emods/gadgets/virtual.e
