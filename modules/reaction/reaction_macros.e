@@ -49,8 +49,8 @@
 #define DropDownObject       NewObjectA( Chooser_GetClass(), NIL, [CHOOSER_DROPDOWN, TRUE
 #define FuelGaugeObject      NewObjectA( FuelGauge_GetClass(), NIL,[TAG_IGNORE,0
 #define FuelObject           FuelGaugeObject
-#define GetFileObject        NewObjectA( GetFile_GetClass(), NIL,[TAG_IGNORE,0
-#define GetFontObject        NewObjectA( GetFont_GetClass(), NIL,[TAG_IGNORE,0
+#define GetFileObject        NewObjectA( GetFile_GetClass(), NIL, [TAG_IGNORE,0
+#define GetFontObject        NewObjectA( GetFont_GetClass(), NIL, [TAG_IGNORE,0
 #define GetScreenModeObject  NewObjectA( GetScreenMode_GetClass(), NIL,[TAG_IGNORE,0
 #define IntegerObject  NewObjectA( Integer_GetClass(), NIL,[TAG_IGNORE,0
 #define PaletteObject  NewObjectA( Palette_GetClass(), NIL,[TAG_IGNORE,0
@@ -178,9 +178,9 @@
 #define PushButton(text,id )  ButtonObject, GA_TEXT, text, GA_ID, id, GA_RELVERIFY, TRUE, BUTTON_PUSHBUTTON, TRUE, End
 #define TextLine(text )   ButtonObject, GA_TEXT, text, GA_READONLY, TRUE, End
 #define LabelTextLine(text,label )  TextLine(text), Label(label)
-#define String(text,id,maxchars ) StringObject, STRINGA_TEXTVAL, text, STRINGA_MAXCHARS, maxchars, GA_ID, id, GA_RELVERIFY, TRUE, GA_TABCYCLE, TRUE, End
-#define LabelString(text,id,maxchars,label )    String(text,id,maxchars), Label(label)
-#define PopString(text,id,maxchars,image )  LAYOUT_ADDCHILD, HLayoutObject, String(text,0,maxchars), ButtonObject, BAG_AUTOBUTTON, image, GA_RELVERIFY, TRUE, GA_ID, id, End, End
+#define String_(text,id,maxchars ) StringObject, STRINGA_TEXTVAL, text, STRINGA_MAXCHARS, maxchars, GA_ID, id, GA_RELVERIFY, TRUE, GA_TABCYCLE, TRUE, End
+#define LabelString(text,id,maxchars,label )    String_(text,id,maxchars), Label(label)
+#define PopString(text,id,maxchars,image )  LAYOUT_ADDCHILD, HLayoutObject, String_(text,0,maxchars), ButtonObject, BAG_AUTOBUTTON, image, GA_RELVERIFY, TRUE, GA_ID, id, End, End
 /****************************************************************************
  * BGUI style Window/Layout Group Macros.
  */

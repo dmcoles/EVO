@@ -1,4 +1,4 @@
-E-VO v3.5.0 :
+E-VO v3.7.0 :
 
 Formerly : GRIO Amiga E Compiler !
 
@@ -470,7 +470,7 @@ Development restarted as E-VO by Darren Coles
    - Extend lists to handle 64k items instead of 32k.
    - Fix #else preprocessor parsing issues
    
-   (3.6.2)
+   (3.7.0)
    - Compiler sometimes produced garbage error message with an error at the very
      end of the file.
    - Reformatted the Amigaguide document to better fit in 80 columns.
@@ -488,4 +488,4 @@ DATE HISTORY:
     3.5.1   08.08.2022 -> 06.09.2222
     3.6.0   12.09.2022 -> 19.04.2023
     3.6.1   24.04.2023 -> 16.06.2023
-    3.6.2   30.06.2023 -> ?
+    3.7.0   30.06.2023 -> ?

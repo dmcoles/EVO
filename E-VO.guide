@@ -8,7 +8,7 @@
                 |          Compiler for The E Language          |
                 |     Originally By Wouter van Oortmerssen      |
                 |           Updates By GRIO 1999-2003           |
-                |          and Darren Coles 2022 / 2023         |
+                |          and Darren Coles 2022 - 2024         |
                 |                                               |
                 +-----------------------------------------------+
 
@@ -946,7 +946,7 @@ v3.4.1  19.10.2021 -> 23.10.2021
 v3.5.0  04.11.2021 -> 14.07.2022
 v3.6.0  12.09.2022 -> 19.04.2023
 v3.6.1  24.04.2023 -> 16.06.2023
-
+v3.7.0  30.06.2023 -> ?
 
 @endnode
 @node CH_0E

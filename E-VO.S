@@ -5,7 +5,7 @@
 ;	GRIO Amiga E Compiler/Assembler/Linker by grio	 		;
 ;			in 1999-2003					;
 ;	E-VO Amiga E Compiler/Assembler/Linker by Darren Coles	 		;
-;     in 2021-2023
+;     in 2021-2024
 ; ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, ;
 
 ;debug=1
@@ -2354,7 +2354,7 @@ CURBRACK:	DC.L	0
 	DC.L	.DONE,.DONE,.DONE,.DONE,.DONE,.DONE ; 90 INLINE .. DATA
 	DC.L	.DONE,.DONE,.DONE,.DONE,.DONE,.DONE ; 96 CHIP .. ENDTRY
 	DC.L  .DONE,.DONE,.DONE,.DONE,.DONE,.DONE ; 102 UNTILN .. EXITN
-	DC.L  .DONE,.DONE,.DONE,.DONE ; 108 CONTN .. LEGACYINT
+	DC.L  .DONE,.DONE,.DONE,.DONE,.DONE ; 108 CONTN .. PSIZEOF
   
 
 .SAFE:
@@ -4313,6 +4313,8 @@ CPUTAB:
 	BEQ.S	.1
 	CMP.W	#IOFF+98,D4		; OFFSETOF
 	BEQ.S	.1
+	CMP.W	#IOFF+112,D4		; PSIZEOF
+	BEQ.S	.1
 	CMP.W	#41,D4			; ::
 	BEQ.S	.1
 	BRA.S	XNEXT
@@ -4604,6 +4606,8 @@ CPUTAB:
 	BSR	FINDOBJ
 
     CMP.W   #IOFF+50,D4	;SIZEOF
+    BEQ .000
+    CMP.W   #IOFF+112,D4	;PSIZEOF
     BEQ .000
     CMP.W   #IOFF+98,D4	;OFFSETOF
     BEQ .000
@@ -8310,9 +8314,11 @@ ASM_GRABVALUE:
     RTS
 .X: CMp.W   #LIBC,D3
     BEQ .LIB
-    CMP.W   #IOFF+50,D3     ; check for sizeof
+    CMP.W   #IOFF+112,D3     ; PSIZEOF
+    BEQ   .SIZ
+    CMP.W   #IOFF+50,D3     ; SIZEOF
     BNE   .XNS
-
+.SIZ
     CMP.W   #IOFF+109,(A3) ;BYTE
     BEQ.S   .BYTEWORD
     CMP.W   #IOFF+110,(A3) ;WORD
@@ -9909,13 +9915,13 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.7.0-dev',160
-			DC.B	'(15.11.2023)'
+			DC.B	'(05.01.2024)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
 			DC.B	'''1999/2003',160,'by grio',10
 			DC.B	'developing as "E-VO"',160
-			DC.B	'''2021-23',160,'by Darren Coles',10
+			DC.B	'''2021-24',160,'by Darren Coles',10
 	TITLEEND:	DC.B	0
   FNPRE: DC.B '-> '
   FNPREEND:
@@ -13166,8 +13172,8 @@ LDEF:	MACRO
 	ADD.W #1,D1
 	ADD.W D1,D1  	
 	SUB.L D1,A6
-	CMP.W #4,D1
-	BEQ .singledim
+	;CMP.W #4,D1
+	;BEQ .singledim
 	MOVE.W .dcount,(A6)
 
 	ADD.L D1,A6  
@@ -14498,8 +14504,8 @@ CHECKPR:	MACRO			; \1=TR.DX
   	ADD.W #1,D0
   	ADD.W D0,D0  	
   	SUB.L D0,A6
-  	CMP.W #4,D0
-  	BEQ .singledim
+  	;CMP.W #4,D0
+  	;BEQ .singledim
   	MOVE.L A6,DIMDATA(A0)
     CLR.L D3
     MOVE.W .dcount,D3
@@ -14823,11 +14829,11 @@ ALIGN:	DC.W	0
   	BEQ .singledim
     TSTMOD
     BNE     ERROR48
+.singledim:
   	MOVE.L A6,DIMDATA(A0)
   	MOVE.W .dcount,(A6)
   	ADD.L D0,A6
   	DONEM	A6
-.singledim:
   	MOVE.L (A7)+,A6
    
 	CMP.W	#19,(A3)+			;colon
@@ -17109,9 +17115,10 @@ dval2:  DC.L 0
 	BEQ .nodimdata
 	MOVE.L D1,A1
 	MOVE.W (A1),D1
-	MOVE.L A1,DIMSPTR
-  MOVE.L A1,FIRSTPTR
 	SUBQ.W #1,D1
+	beq .nodimdata
+	MOVE.L A1,DIMSPTR
+	MOVE.L A1,FIRSTPTR
 	MOVE.W D1,ARRAY_DIMS
   
 .nodimdata:
@@ -17420,9 +17427,10 @@ PLB:
 	BEQ .nodimdata
 	MOVE.L D1,A2
 	MOVE.W (A2),D1
-	MOVE.L A2,DIMSPTR
-    MOVE.L A2,FIRSTPTR
 	SUBQ.W #1,D1
+	BEQ .nodimdata
+	MOVE.L A2,DIMSPTR
+	MOVE.L A2,FIRSTPTR
 	MOVE.W D1,ARRAY_DIMS
   
 .nodimdata:
@@ -18576,6 +18584,8 @@ XIT:	MOVEM.L	(A7)+,D3-D5/A1
 	CMP.W	#IOFF+105,D0
 	BEQ	EXPIF
 	CMP.W	#IOFF+50,D0
+	BEQ	EXPSIZEOF
+	CMP.W	#IOFF+112,D0
 	BEQ	EXPSIZEOF
 	CMP.W	#IOFF+98,D0
 	BEQ	EXPOFFSETOF
@@ -19971,6 +19981,7 @@ EXPQMARK:
 
  ;; SIZEOF
       EXPSIZEOF:
+    MOVE.W D0,.tok
     CLR.L   LAST_CMD_ADR
     MOVE.W  (A3),D0
     CMP.W   #IOFF+109,D0
@@ -20010,6 +20021,17 @@ EXPQMARK:
     MOVE.L OPTRTYPE(A1),D1
     BEQ.S .s
     MOVE.L D1,D0
+    
+    TST.L DIMDATA(A1)
+    BNE .arr2
+
+    CMP.W #IOFF+112,.tok
+    BNE.S .arr2
+    
+    MOVEQ #4,D0
+    BRA.S .s
+    
+.arr2
     CMP.L #5,D0
     BMI.S .s
     
@@ -20057,11 +20079,19 @@ EXPQMARK:
 
     CMP.W #35,(A3)
     BEQ.S .MB2
-    
+
+    TST.L VAR_DIMDATA(A0)
+    BNE.S .arr
+    CMP.W #IOFF+112,.tok
+    BEQ.S .p
+.arr
     BTST #7,VARFLAGS(A0)
     BEQ.S .nospecial
-    MOVEQ #4,D0
+.p    MOVEQ #4,D0
     BRA.S .5 
+
+.2: DC.B    4,2,1,0
+
 .nospecial
     CMP.L   #4,D0
     BLE.S     .5
@@ -20084,9 +20114,9 @@ EXPQMARK:
     MOVEQ   #1,D5
     BRA EXPLOOP
 
-.2: DC.B    4,2,1,0
 .3: MOVEQ   #0,D0
 .7: MOVE.L  #0,D0
+.tok: DC.W 0
 
 .MB2:
     ADDQ.L	#2,A3 
@@ -20105,6 +20135,17 @@ EXPQMARK:
     MOVE.L OPTRTYPE(A1),D1
     BEQ.S .s1
     MOVE.L D1,D0
+   
+    TST.L DIMDATA(A1)
+    BNE .arr3
+
+    CMP.W #IOFF+112,.tok
+    BNE.S .arr3
+    
+    MOVEQ #4,D0
+    BRA.S .s1
+    
+.arr3
     CMP.L #5,D0
     BMI.S .s1
     
@@ -27063,7 +27104,7 @@ UTIL:
     DC.L    .ELSEWHILE,.ALWAYS,.SECTION,.ERROR,.ERROR,.ERROR    ; 91-96
     DC.L    .ERROR,.ERROR,.TRY,.CATCH,.ENDTRY,.UNTIL     ; 97-102
     DC.L    .WHILE,.ELSEWHILE,.IF,.ELSEIF,.EXIT,.JCONT			; 103 - 108
-    DC.L    .ERROR,.ERROR,.ERROR                            ; 109 - 111
+    DC.L    .ERROR,.ERROR,.ERROR,.ERROR                       ; 109 - 112
 
 .PROC:		DC.W	50,19,17,36,33,1,37,10
 		LINK	A5,#-27*4
@@ -27257,7 +27298,7 @@ UTIL:
 	DC.L  .82,0,.83,0,.84,0,.85,0,.86,0,.87,0,.88,0,.89,0,.90,0,.91,0
 	DC.L  .92,0,.93,0,.94,0,.95,0,.96,0,.97,0,.98,0,.99,0,.100,0,.101,0
 	DC.L  .102,0,.103,0,.104,0,.105,0,.106,0,.107,0,.108,0,.109,0,.110,0
-	DC.L	.111,0,0,0
+	DC.L	.111,0,.112,0,0,0
 
 .0:	DC.B	'PROC',0
 .1:	DC.B	'ENDPROC',0
@@ -27371,6 +27412,7 @@ UTIL:
 .109:  DC.B  'BYTE',0
 .110:  DC.B  'WORD',0
 .111:  DC.B  'LEGACYINT',0
+.112:  DC.B	'PSIZEOF',0
 
 	EVEN
 
