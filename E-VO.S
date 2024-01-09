@@ -2354,7 +2354,7 @@ CURBRACK:	DC.L	0
 	DC.L	.DONE,.DONE,.DONE,.DONE,.DONE,.DONE ; 90 INLINE .. DATA
 	DC.L	.DONE,.DONE,.DONE,.DONE,.DONE,.DONE ; 96 CHIP .. ENDTRY
 	DC.L  .DONE,.DONE,.DONE,.DONE,.DONE,.DONE ; 102 UNTILN .. EXITN
-	DC.L  .DONE,.DONE,.DONE,.DONE,.DONE ; 108 CONTN .. PSIZEOF
+	DC.L  .DONE,.DONE,.DONE,.DONE,.DONE,.DONE ; 108 CONTN .. ARRAYSIZE
   
 
 .SAFE:
@@ -4315,6 +4315,8 @@ CPUTAB:
 	BEQ.S	.1
 	CMP.W	#IOFF+112,D4		; PSIZEOF
 	BEQ.S	.1
+	CMP.W	#IOFF+113,D4		; ARRAYSIZE
+	BEQ.S	.1
 	CMP.W	#41,D4			; ::
 	BEQ.S	.1
 	BRA.S	XNEXT
@@ -4608,6 +4610,8 @@ CPUTAB:
     CMP.W   #IOFF+50,D4	;SIZEOF
     BEQ .000
     CMP.W   #IOFF+112,D4	;PSIZEOF
+    BEQ .000
+    CMP.W   #IOFF+113,D4	;ARRAYSIZE
     BEQ .000
     CMP.W   #IOFF+98,D4	;OFFSETOF
     BEQ .000
@@ -8314,6 +8318,8 @@ ASM_GRABVALUE:
     RTS
 .X: CMp.W   #LIBC,D3
     BEQ .LIB
+    CMP.W   #IOFF+113,D3     ; ARRAYSIZE
+    BEQ   .ASIZ
     CMP.W   #IOFF+112,D3     ; PSIZEOF
     BEQ   .SIZ
     CMP.W   #IOFF+50,D3     ; SIZEOF
@@ -8340,6 +8346,18 @@ ASM_GRABVALUE:
 .sizeofident:
     ADDQ.L #2,A3
     MOVE.L  (A3)+,A0
+
+    CMP.W #IOFF+112,D3    ;PSIZEOF
+    BNE.S .arr
+
+    TST.L VAR_DIMDATA(A0)
+    BNE.S .arr
+
+    MOVE.W  #4,-(A3)
+    CLR.W -(A3)
+    BRA.W .2
+
+.arr:
     CMP.L   #4,(A0)
     BLE.S   .PTRTOLONGINTCHAR
     MOVE.L  (A0),A0
@@ -8378,6 +8396,27 @@ ASM_GRABVALUE:
     MOVE.L  D3,(A3)
     MOVE.L  (A7)+,D3
     BRA     .2
+
+.ASIZ:
+    CMP.W   #IDENT,(A3)       
+    BEQ.S .asizofident
+    BRA   iERROR40
+
+.asizofident
+    ADDQ.L #2,A3
+    MOVE.L  (A3)+,A0
+
+    MOVE.L D0,-(a7)
+    MOVE.L VAR_DIMDATA(A0),D0
+    BEQ   iERROR40
+    
+    MOVE.L D0,A0
+    MOVE.W 2(a0),D0
+
+    MOVE.W  D0,-(A3)
+    CLR.W -(A3)
+    MOVE.L (a7)+,D0
+    BRA.W .2
 
 .XNS:
     SUBQ.L  #2,A3           ; ASSUMES NEXT WORD ALREADY READ
@@ -18587,6 +18626,8 @@ XIT:	MOVEM.L	(A7)+,D3-D5/A1
 	BEQ	EXPSIZEOF
 	CMP.W	#IOFF+112,D0
 	BEQ	EXPSIZEOF
+	CMP.W	#IOFF+113,D0
+	BEQ	EXPARRAYSIZE
 	CMP.W	#IOFF+98,D0
 	BEQ	EXPOFFSETOF
 	CMP.W	#36,D0
@@ -19978,6 +20019,80 @@ EXPQMARK:
     BNE ERROR40
     MOVE.L  (A3)+,A6
     BRA .objback
+
+ ;; ARRAYSIZE
+      EXPARRAYSIZE:
+    CLR.L   LAST_CMD_ADR
+    MOVE.W  (A3),D0
+
+    CMP.W   #IDENT,D0
+    BEQ.S     .ident
+
+    CMP.W   #31,D0
+    BNE ERROR40
+
+    ADDQ.L	#2,A3 
+    CMP.W #35,4(A3)
+    BNE ERROR40
+
+    ADDQ.L	#6,A3 
+    CMP.W	#39,(A3)+
+    BNE	ERROR40
+    MOVE.L  -8(A3),A6
+    BRA.S .MB2a
+
+.ident
+    ADDQ.L  #2,A3
+    MOVE.L  (A3)+,A0
+      
+    TST.B	4(A0)
+    BEQ	ERROR22
+    
+    CMP.W #35,(A3)
+    BEQ .MB2
+
+    MOVE.L VAR_DIMDATA(A0),D0
+    BEQ ERROR40
+    MOVE.L D0,A0
+    MOVE.W 2(A0),D0
+
+.5: CMP.L   #126,D0
+    BGT.S     .6
+    BSR SD0
+    MOVE.B  .3(PC),(A4)+
+    MOVE.B  D0,(A4)+
+    BSR RD0
+    MOVEQ   #1,D5
+    BRA EXPLOOP
+.6: BSR SD0
+    MOVE.W  .7(PC),(A4)+
+    AND.L #$ffff,D0
+    MOVE.L  D0,(A4)+
+    BSR RD0
+    MOVEQ   #1,D5
+    BRA EXPLOOP
+
+.3: MOVEQ   #0,D0
+.7: MOVE.L  #0,D0
+    
+.MB2:
+    ADDQ.L	#2,A3 
+    CMP.W	#39,(A3)+
+    BNE	ERROR40
+    MOVE.L  (A0),A6
+.MB2a:
+    MOVEM.L A1/D1,-(A7)
+    MOVE.L	(A3)+,A1		; A1=MEMBER
+    BSR	FINDMEMBER		; D1=TRASH,a1=first->REAL,a6=obj
+   
+    TST.L DIMDATA(A1)
+    BEQ ERROR40
+
+    MOVE.l DIMDATA(A1),A1
+    MOVE.W 2(A1),D0
+    MOVEM.L (A7)+,A1/D1
+    
+    BRA.S  .5
 
  ;; SIZEOF
       EXPSIZEOF:
@@ -22459,7 +22574,9 @@ EXPFPCMP:
 	MOVE.B	4(A0),D2
 	BEQ	ERROR22
 	CMP.B	#LAB,D2
-	BEQ	ERROR6
+	BNE.S .nerr  
+	JMP	ERROR6
+.nerr:
 	MOVE.W	(A1),(A4)+
 	BSR	GVA0D5_9
 	MOVEQ	#1,D5
@@ -23460,7 +23577,7 @@ iiERROR5: JMP ERROR5
 	BRA.S	.CC
 .MOD:	SUBQ.L	#4,A4
 	MOVE.W	EFUNCJUMPL(PC),(A4)+
-	BSR	ADDBRANCHRELOC
+	JSR	ADDBRANCHRELOC
 	MOVE.W	D0,-2(A4)
 .CC:
 	MULU	#10,D7
@@ -27104,7 +27221,7 @@ UTIL:
     DC.L    .ELSEWHILE,.ALWAYS,.SECTION,.ERROR,.ERROR,.ERROR    ; 91-96
     DC.L    .ERROR,.ERROR,.TRY,.CATCH,.ENDTRY,.UNTIL     ; 97-102
     DC.L    .WHILE,.ELSEWHILE,.IF,.ELSEIF,.EXIT,.JCONT			; 103 - 108
-    DC.L    .ERROR,.ERROR,.ERROR,.ERROR                       ; 109 - 112
+    DC.L    .ERROR,.ERROR,.ERROR,.ERROR,.ERROR             ; 109 - 113
 
 .PROC:		DC.W	50,19,17,36,33,1,37,10
 		LINK	A5,#-27*4
@@ -27298,7 +27415,7 @@ UTIL:
 	DC.L  .82,0,.83,0,.84,0,.85,0,.86,0,.87,0,.88,0,.89,0,.90,0,.91,0
 	DC.L  .92,0,.93,0,.94,0,.95,0,.96,0,.97,0,.98,0,.99,0,.100,0,.101,0
 	DC.L  .102,0,.103,0,.104,0,.105,0,.106,0,.107,0,.108,0,.109,0,.110,0
-	DC.L	.111,0,.112,0,0,0
+	DC.L	.111,0,.112,0,.113,0,0,0
 
 .0:	DC.B	'PROC',0
 .1:	DC.B	'ENDPROC',0
@@ -27413,6 +27530,7 @@ UTIL:
 .110:  DC.B  'WORD',0
 .111:  DC.B  'LEGACYINT',0
 .112:  DC.B	'PSIZEOF',0
+.113:  DC.B	'ARRAYSIZE',0
 
 	EVEN
 
@@ -28148,7 +28266,7 @@ INL_OPTI:
 ;
 
 FOFF		= $100
-NREFUNC		= 195
+NREFUNC		= 196
 NRLEGEFUNC = 131
 EFUNCENTRYSIZE=16   ;size of efunctab entry (eg 4 LONGWORD entries)
 
@@ -28349,6 +28467,7 @@ EFUNCENTRYSIZE=16   ;size of efunctab entry (eg 4 LONGWORD entries)
   DC.L	.193,   I_UCOMPARE,2,0
   DC.L	.194,   I_FCOMPARE,2,0
   DC.L	.195,   I_STRCOMPARE,3,$FF
+  DC.L	.196,   I_SELECTFIRST,3,0
   DC.L	0,I_CODEEND,0,0
 
 .1:	DC.B	'WriteF',0
@@ -28546,6 +28665,7 @@ EFUNCENTRYSIZE=16   ;size of efunctab entry (eg 4 LONGWORD entries)
 .193:	DC.B    'Ucompare',0
 .194:	DC.B    'Fcompare',0
 .195:	DC.B    'StrCompare',0
+.196:	DC.B    'SelectFirst',0
 
      EVEN
       EFUNCSIZES:
@@ -28743,7 +28863,8 @@ EFUNCENTRYSIZE=16   ;size of efunctab entry (eg 4 LONGWORD entries)
   DC.L	I_UCOMPARE-I_COMPARE
   DC.L	I_FCOMPARE-I_UCOMPARE
   DC.L	I_STRCOMPARE-I_FCOMPARE
-  DC.L	I_CODEEND-I_STRCOMPARE
+  DC.L	I_SELECTFIRST-I_STRCOMPARE
+  DC.L	I_CODEEND-I_SELECTFIRST
 
 GETA4NR = 136
 WRITEF = 1
@@ -33383,6 +33504,23 @@ I_STRCOMPARE:
 .2:	BLO.S .4
 	MOVEQ #1,D0
 .4: RTS
+
+      I_SELECTFIRST:
+	MOVE.L	4(A7),A0		; code
+	MOVE.L	8(A7),A1		; SRClist
+	MOVE.L	12(A7),A2		; VAR
+	MOVEQ	#0,D1
+	MOVE.W	-2(A1),D2		; COUNT
+	BRA.S	.S
+.L:	MOVE.L	(A1)+,(A2)
+	MOVEM.L	D1-D2/A0-A3/A6,-(A7)
+	JSR	(A0)
+	MOVEM.L	(A7)+,D1-D2/A0-A3/A6
+	TST.L	D0
+	BEQ.S	.S
+	RTS
+.S:	DBRA	D2,.L
+	RTS
 
 I_CODEEND:
 
