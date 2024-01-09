@@ -2774,7 +2774,7 @@ HEAVYTABLE:
 	BRA.S	PLIBOUT
 
       MIGHTBELIB:
-	MOVE.L	WORK(PC),A2
+	MOVE.L	WORK,A2
 	MOVE.L	ACODE(PC),A3		; IT MIGHT BE A LIBRARY CALL!
 	MOVEQ	#0,D1			; (WE USE ASMCODE BUF !!!)
 .1:	MOVE.L	(A3)+,A4		; ASC
@@ -8398,7 +8398,18 @@ ASM_GRABVALUE:
     BRA     .2
 
 .ASIZ:
-    CMP.W   #IDENT,(A3)       
+    MOVE.L #1,.dimno
+
+    CMP.W   #VALUE,(A3)
+    BNE.S   .nval
+
+    ADDQ.L	#2,A3 
+    MOVE.L  A3,.dimerrpos
+    
+    MOVE.L  (A3)+,.dimno
+.nval:
+
+    CMP.W   #IDENT,(A3)
     BEQ.S .asizofident
     BRA   iERROR40
 
@@ -8411,8 +8422,25 @@ ASM_GRABVALUE:
     BEQ   iERROR40
     
     MOVE.L D0,A0
-    MOVE.W 2(a0),D0
 
+    MOVE.L .dimno,D0
+    BLE.S .derror104
+    SWAP D0
+    TST.W D0
+    BNE.S .derror104
+    SWAP D0
+    CMP.W (A0),D0
+    BGT.S .derror104
+
+    ADD.W D0,D0
+    LEA (A0,D0.W),A0
+  
+    MOVE.W (A0),D0
+    CMP.L #1,.dimno
+    BEQ.S .dim1
+
+    DIVU.W -2(A0),D0
+.dim1:
     MOVE.W  D0,-(A3)
     CLR.W -(A3)
     MOVE.L (a7)+,D0
@@ -8424,6 +8452,9 @@ ASM_GRABVALUE:
     BEQ.S   .5
     SUBQ.L  #2,A3
 .5: RTS
+.dimno: DC.L 0
+.dimerrpos: DC.L 0
+.derror104: BRA ERROR104
 
 
 .X3:
@@ -8609,6 +8640,8 @@ iERROR100: JMP ERROR100
 iERROR101 JMP ERROR101
 iERROR102 JMP ERROR102
 iERROR103 JMP ERROR103
+iERROR104 JMP ERROR104
+iERROR105 JMP ERROR105
 ;*-*
 ;;CHIDENT
 
@@ -11823,6 +11856,8 @@ ERROR102:	MOVEQ	#102,D0
 ERROR103:	MOVEQ	#103,D0
 		BRA	LEAVEERROR
 ERROR104:	MOVEQ	#104,D0
+		BRA	LEAVEERROR
+ERROR105:	MOVEQ	#105,D0
 		BRA	LEAVEERROR
 
 ; ************************************************************* ;
@@ -20034,22 +20069,34 @@ EXPQMARK:
       EXPARRAYSIZE:
     CLR.L   LAST_CMD_ADR
     MOVE.W  (A3),D0
+    MOVE.L #1,.dimno
 
+    CMP.W   #VALUE,D0
+    BNE.S   .nval
+
+    ADDQ.L	#2,A3 
+    MOVE.L  A3,.dimerrpos
+    
+    MOVE.L  (A3)+,.dimno
+    MOVE.W (A3),D0
+.nval:
     CMP.W   #IDENT,D0
-    BEQ.S     .ident
+    BEQ.S    .ident
 
     CMP.W   #31,D0
-    BNE ERROR40
+    BNE.S .derror40
 
     ADDQ.L	#2,A3 
     CMP.W #35,4(A3)
-    BNE ERROR40
+    BNE.S .derror40
 
     ADDQ.L	#6,A3 
     CMP.W	#39,(A3)+
-    BNE	ERROR40
+    BNE.S .derror40
     MOVE.L  -8(A3),A6
-    BRA.S .MB2a
+    BRA .MB2a
+
+.derror40 BRA ERROR40
 
 .ident
     ADDQ.L  #2,A3
@@ -20062,9 +20109,26 @@ EXPQMARK:
     BEQ .MB2
 
     MOVE.L VAR_DIMDATA(A0),D0
-    BEQ ERROR40
+    BEQ.S .derror40
     MOVE.L D0,A0
-    MOVE.W 2(A0),D0
+    
+    MOVE.L .dimno,D0
+    BLE.S .derror104
+    SWAP D0
+    TST.W D0
+    BNE.S .derror104
+    SWAP D0
+    CMP.W (A0),D0
+    BGT.S .derror104
+
+    ADD.W D0,D0
+    LEA (A0,D0.W),A0
+  
+    MOVE.W (A0),D0
+    CMP.L #1,.dimno
+    BEQ.S .5
+
+    DIVU.W -2(A0),D0
 
 .5: CMP.L   #126,D0
     BGT.S     .6
@@ -20084,6 +20148,11 @@ EXPQMARK:
 
 .3: MOVEQ   #0,D0
 .7: MOVE.L  #0,D0
+.dimno: DC.L 0
+.dimerrpos: DC.L 0
+.derror104:
+    MOVE.L .dimerrpos,A3
+    BRA ERROR104
     
 .MB2:
     ADDQ.L	#2,A3 
@@ -22582,10 +22651,12 @@ EXPFPCMP:
 .S1:	MOVE.L	(A7)+,A0
 	LEA	.1(PC),A1
 	MOVE.B	4(A0),D2
-	BEQ	ERROR22
+	BEQ.S	.DERROR22
 	CMP.B	#LAB,D2
 	BNE.S .nerr  
 	JMP	ERROR6
+.DERROR22
+	JMP	ERROR22
 .nerr:
 	MOVE.W	(A1),(A4)+
 	BSR	GVA0D5_9
@@ -22598,7 +22669,7 @@ EXPFPCMP:
 	MOVE.W	EXPLMASK(PC),D1
 	BTST	D0,D1
 	BEQ.W	.CHB
-	BRA	ERROR25
+	JMP	ERROR25
 
 
 
@@ -28897,8 +28968,9 @@ fatalerr: DC.L 0
 	DC.L	.65,.66,.67,.68,.69,.70,.71,.72
 	DC.L	.73,.74,.75,.76,.77,.78,.79,.80
 	DC.L	.81,.82,.83,.84,.85,.86,.87,.88
-	DC.L    .89,.90,.91,.92,.93,.94,.95,.96
-	DC.L    .97,.98,.99,.100,.101,.102,.103,.104
+	DC.L	.89,.90,.91,.92,.93,.94,.95,.96
+	DC.L	.97,.98,.99,.100,.101,.102,.103,.104
+	DC.L	.105
 
 .0:	DC.B	'syntax error',0
 .1:	DC.B	'unknown keyword/const',0
@@ -29004,7 +29076,8 @@ fatalerr: DC.L 0
 .101:   DC.B    'cpu register expected',0
 .102:   DC.B    'sorry, feature is not available yet',0
 .103:   DC.B    'object too large',0
-.104:   DC.B    '',0
+.104:   DC.B    'invalid array dimension',0
+.105:   DC.B 0
 
 	EVEN
 
