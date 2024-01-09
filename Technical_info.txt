@@ -114,7 +114,7 @@ from offset IOFF
  102    UNTILN           103    WHILEN           104    ELSEWHILEN
  105    IFN              106    ELSEIFN          107    EXITN
  108    CONTN            109    BYTE             110    WORD
- 111    LEGACYINT
+ 111    LEGACYINT        112    PSIZEOF          113    ARRAYSIZE
  
 |       = significant for idents
 
@@ -161,6 +161,7 @@ those with "" are actual addressable variables
 -124    pool
 -128    opened files list
 -132    utilitybase
+-136    rnd seed
 
 +---------------------------------------------------------------+
 |       structures                                              |
@@ -1351,6 +1352,7 @@ has to become (ends with):      FOR/WHILE/UNTIL:        lab,jumpback,id
 101             cpu register expected
 102             sorry, feature is not available yet
 103             object too large
+104             invalid array dimension
 
 WARNINGS:
 

@@ -15868,7 +15868,7 @@ DESTR:	MOVE.W	ODESTR(A6),D2		; GETS OBJ=A6, OSIZE=D0
   BRA.S .CL
 .C5	CMP.W	#5,D0			; SELECT/ENDSELECT
   BNE.S	.C6
-  LEA -16(A0),A0
+  LEA -10(A0),A0
   BRA.S .CL
 .C6	CMP.W	#8,D0			; SELECT_OF
   BNE.W	ERROR9
@@ -15908,7 +15908,7 @@ DESTR:	MOVE.W	ODESTR(A6),D2		; GETS OBJ=A6, OSIZE=D0
   BRA.S .EL
 .E5	CMP.W	#5,D0			; SELECT/ENDSELECT
   BNE.S	.E6
-  LEA -16(A0),A0
+  LEA -10(A0),A0
   BRA.S .EL
 .E6	CMP.W	#8,D0			; SELECT_OF
   BNE.W	ERROR9
@@ -28316,9 +28316,9 @@ INL_OPTI:
 ; *************************************************************	;
 
       EFUNCFLAGSTAB:
-	DC.B	0,0,0,0,0,0,0,0,0,0	;  1-10
+	DC.B	0,0,0,32,32,0,0,0,0,0	;  1-10
 	DC.B	0,0,64,64,64,64,64,64,0,64	; 11-20
-	DC.B	0,0,64,64,64,0,0,0,0,0	; 21-30
+	DC.B	0,0,64,64,64,32,32,0,0,0	; 21-30
 	DC.B	0,0,0,0,0,0,0,0,0,0	; 31-40
 	DC.B	0,0,0,0,0,0,0,64,64,0	; 41-50
 	DC.B	0,0,0,0,0,0,0,64,64,64	; 51-60
@@ -28330,7 +28330,7 @@ INL_OPTI:
 	DC.B	0,0,0,0,0,0,0,0,64,64	; 111-120
 	DC.B	0,0,64+2,64+2,64+2,64+2,64+2,64+2,64+2,64+2	; 121-130
 	DC.B	64+2,0,0,0,0,64+32,0,8,8,8	; 131-140
-	DC.B	8,8,8,8,8,8,8,0,0,0	; 141-150
+	DC.B	8,8,8,8,32+8,8,32+8,0,0,0	; 141-150
 	DC.B	0,0,16,16,4,4,0,0,0,0	; 151-160
 	DC.B	0,0,64,64,0,0,0,0,0,0	; 161-170
 	DC.B	64,64,64,64,64,64,0,0,0,0	; 171-180
@@ -31469,14 +31469,13 @@ BIN:	ADDQ.L	#1,A2
 	BMI.S	.SET
 	MOVE.W	D2,D1			; RangeRand(1000) --> 0..999
 	SUBQ.W	#$1,D1
-	MOVE.L	.S(PC),D0		; randnr:=Rnd(max)
+	MOVE.L	-136(A4),D0		; randnr:=Rnd(max)
 .2:	ADD.L	D0,D0
 	BHI.S	.3
 	EORI.L	#$1D872B41,D0
 .3:	LSR.W	#$1,D1
 	BNE.S	.2
-	LEA	.S(PC),A0
-	MOVE.L	D0,(A0)
+	MOVE.L	D0,-136(A4)   ;new seed
 	TST.W	D2
 	BNE.S	.4
 	SWAP	D0
@@ -31486,10 +31485,8 @@ BIN:	ADDQ.L	#1,A2
 	SWAP	D0
 	RTS
 .SET:	NEG.L	D2
-	LEA	.S(PC),A0
-	MOVE.L	D2,(A0)
+	MOVE.L	D2,-136(A4)   ;new seed
 	RTS
-.S:	DC.L	0
 
       I_RNDQ:				;	seed32:=FastRand(seed32)
 	MOVE.L	4(A7),D0
