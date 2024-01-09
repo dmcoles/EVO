@@ -16517,8 +16517,8 @@ nexthunk:
 	BEQ.S	.OLOOP
 	CMP.B	#LAB,4(A5)
 	BNE.S	.LOOP
-	BTST	#4,5(A5)
-	BNE.S	.LOOP			; SKIP METHODS
+
+  
 	;TST.L	6(A5)
 	;BEQ.S	.LOOP			; skip labels yesorno?
 	MOVEQ	#0,D1
@@ -16539,6 +16539,16 @@ nexthunk:
 
 	CLR.L	(A4)+
 	MOVE.L	A4,A6			; A6=BACKPATCH
+
+	BTST	#4,5(A5)
+	BEQ.S	.NMETH
+	MOVE.L 6(A5),A2   ;get proc
+	MOVE.L 10(A2),A2  ;get obj
+	MOVE.L OASCII(A2),A2
+.CLO:	MOVE.B	(A2)+,(A4)+
+	BNE.S	.CLO
+	MOVE.B #".",-1(A4)
+.NMETH:
 	MOVE.L	(A5),A2			; A2=ASCII
 .CL:	MOVE.B	(A2)+,(A4)+
 	BNE.S	.CL
