@@ -10012,7 +10012,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.7.0-dev',160
-			DC.B	'(05.01.2024)'
+			DC.B	'(10.01.2024)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -27701,11 +27701,10 @@ INLINETAB:
     DC.L    .E,.E,INL_LSL,INL_LSR,.E,.E,.E,.E,.E,.E   ; 161-170
     DC.L    INL_MUL020,INL_DIV020,INL_LONG,INL_INT,INL_CHAR,INL_MOD020,.E,.E,.E,.E   ; 171-180
     DC.L    .E,.E,.E,.E,.E,INL_BYTE,INL_WORD,INL_BYTE020,INL_WORD,INL_PCHAR   ; 181-190
-    DC.L    INL_PINT,.E,.E,INL_FCOMPARE,INL_WORD,INL_WORD,.E,.E,.E,.E   ; 191-200
+    DC.L    INL_PINT,.E,.E,INL_FCOMPARE,.E,.E,INL_ROL,INL_ROR,.E,.E   ; 191-200
 ;; ERROR
 .E:
     JMP     ERROR0
-;*-*
 ;*-*
 ;; GetA4
 INL_GETA4:
@@ -28370,6 +28369,49 @@ INL_OPTI:
     move.l  a0,a4
     rts
 ;*-*
+;; Rol
+INL_ROL:
+    move.w  #16,EAREQUEST
+    jsr     EAEXP
+    tst.l   d0
+    bne     .O
+    move.w  .C,(a4)+
+.O: CMP.W   #COM,(A3)+
+    BEQ     .1
+    JMP     ERROR5
+.1:
+    move.w  #1,EAREQUEST
+    jsr     EAEXP
+    tst.l   d0
+    bne     .O2
+    move.w  .C2,(A4)+
+.O2:MOVE.W  #$201F,(A4)+        ; MOVE.L    (A7)+,D0
+    MOVE.W  #$E3B8,(A4)+        ; ROL.L     D1,D0
+    RTS
+.C: move.l  d0,-(a7)
+.C2:move.l  d0,d1
+;*-*
+;; Ror
+INL_ROR:
+    move.w  #16,EAREQUEST
+    jsr     EAEXP
+    tst.l   d0
+    bne     .O
+    move.w  .C,(a4)+
+.O: CMP.W   #COM,(A3)+
+    BEQ     .1
+    JMP     ERROR5
+.1:
+    move.w  #1,EAREQUEST
+    jsr     EAEXP
+    tst.l   d0
+    bne     .O2
+    move.w  .C2,(A4)+
+.O2:MOVE.W  #$201F,(A4)+        ; MOVE.L    (A7)+,D0
+    MOVE.W  #$E2B8,(A4)+        ; ROR.L     D1,D0
+    RTS
+.C: move.l  d0,-(a7)
+.C2:move.l  d0,d1
 ;*-*
 
 
@@ -28399,7 +28441,7 @@ INL_OPTI:
 	DC.B	0,0,64,64,0,0,0,0,0,0	; 161-170
 	DC.B	64,64,64,64,64,64,0,0,0,0	; 171-180
 	DC.B	0,0,0,0,0,64,64,64,64,64	; 181-190
-	DC.B	64,0,0,64+1,0,0,0,0,0,0	; 191-200
+	DC.B	64,0,0,64+1,0,0,64,64,0,0	; 191-200
 
 ; BITS: 0 = USES MATHBAS
 ;       1 = USES MATHTRANS
@@ -28411,7 +28453,7 @@ INL_OPTI:
 ;
 
 FOFF		= $100
-NREFUNC		= 196
+NREFUNC		= 198
 NRLEGEFUNC = 131
 EFUNCENTRYSIZE=16   ;size of efunctab entry (eg 4 LONGWORD entries)
 
@@ -28613,6 +28655,8 @@ EFUNCENTRYSIZE=16   ;size of efunctab entry (eg 4 LONGWORD entries)
   DC.L	.194,   I_FCOMPARE,2,0
   DC.L	.195,   I_STRCOMPARE,3,$FF
   DC.L	.196,   I_SELECTFIRST,3,0
+  DC.L	.197,   I_ROL,2,0
+  DC.L	.198,   I_ROR,2,0
   DC.L	0,I_CODEEND,0,0
 
 .1:	DC.B	'WriteF',0
@@ -28811,6 +28855,8 @@ EFUNCENTRYSIZE=16   ;size of efunctab entry (eg 4 LONGWORD entries)
 .194:	DC.B    'Fcompare',0
 .195:	DC.B    'StrCompare',0
 .196:	DC.B    'SelectFirst',0
+.197:	DC.B    'Rol',0
+.198:	DC.B    'Ror',0
 
      EVEN
       EFUNCSIZES:
@@ -29009,7 +29055,9 @@ EFUNCENTRYSIZE=16   ;size of efunctab entry (eg 4 LONGWORD entries)
   DC.L	I_FCOMPARE-I_UCOMPARE
   DC.L	I_STRCOMPARE-I_FCOMPARE
   DC.L	I_SELECTFIRST-I_STRCOMPARE
-  DC.L	I_CODEEND-I_SELECTFIRST
+  DC.L	I_ROL-I_SELECTFIRST
+  DC.L	I_ROR-I_ROL
+  DC.L	I_CODEEND-I_ROR
 
 GETA4NR = 136
 WRITEF = 1
@@ -33664,6 +33712,18 @@ I_STRCOMPARE:
 	BEQ.S	.S
 	RTS
 .S:	DBRA	D2,.L
+	RTS
+
+      I_ROL:
+	MOVE.L	8(A7),D0
+	MOVE.L	4(A7),D1
+	ROL.L	D1,D0
+	RTS
+
+      I_ROR:
+	MOVE.L	8(A7),D0
+	MOVE.L	4(A7),D1
+	ROR.L	D1,D0
 	RTS
 
 I_CODEEND:
