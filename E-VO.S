@@ -26910,10 +26910,12 @@ STRLENADR:	DC.L	0
       ;bit 2 = Legacy INT mode
 	DC.L  1,1,I_MUL,I_MUL020      ;replace I_MUL with I_MUL020 for 020+
 	DC.L  1,1,I_DIV,I_DIV020      ;replace I_DIV with I_DIV020 for 020+
+	DC.L  1,1,I_MOD,I_MOD020      ;replace I_MOD with I_MOD020 for 020+
 	DC.L  1,1,I_LONG,I_LONG020    ;replace I_LONG with I_LONG020 for 020+
 	DC.L  1,1,I_CHAR,I_CHAR020    ;replace I_CHAR with I_CHAR020 for 020+
 	DC.L  1,1,I_WORD,I_WORD020    ;replace I_WORD with I_WORD020 for 020+
 	DC.L  1,1,I_BYTE,I_BYTE020    ;replace I_BYTE with I_BYTE020 for 020+
+	DC.L  1,1,I_LISTITEM,I_LISTITEM020    ;replace I_LISTITEM with I_LISTITEM020 for 020+
 	DC.L  2,1,I_WRITEF,I_WRITEF37 ;replace I_WRITEF with I_WRITEF37 for V37+
 	DC.L  2,1,I_PRINTF,I_WRITEF37 ;replace I_PRINTF with I_WRITEF37 for V37+
 	DC.L  2,1,I_PUTF,I_PUTF37     ;replace I_PUTF with I_PUTF37 for V37+
@@ -28453,7 +28455,7 @@ INL_ROR:
 ;
 
 FOFF		= $100
-NREFUNC		= 198
+NREFUNC		= 199
 NRLEGEFUNC = 131
 EFUNCENTRYSIZE=16   ;size of efunctab entry (eg 4 LONGWORD entries)
 
@@ -28657,6 +28659,7 @@ EFUNCENTRYSIZE=16   ;size of efunctab entry (eg 4 LONGWORD entries)
   DC.L	.196,   I_SELECTFIRST,3,0
   DC.L	.197,   I_ROL,2,0
   DC.L	.198,   I_ROR,2,0
+  DC.L	.199,   I_LISTITEM020,2,0
   DC.L	0,I_CODEEND,0,0
 
 .1:	DC.B	'WriteF',0
@@ -28857,6 +28860,7 @@ EFUNCENTRYSIZE=16   ;size of efunctab entry (eg 4 LONGWORD entries)
 .196:	DC.B    'SelectFirst',0
 .197:	DC.B    'Rol',0
 .198:	DC.B    'Ror',0
+.199: DC.B    'ListItem',0   ;020 variant
 
      EVEN
       EFUNCSIZES:
@@ -29057,7 +29061,8 @@ EFUNCENTRYSIZE=16   ;size of efunctab entry (eg 4 LONGWORD entries)
   DC.L	I_SELECTFIRST-I_STRCOMPARE
   DC.L	I_ROL-I_SELECTFIRST
   DC.L	I_ROR-I_ROL
-  DC.L	I_CODEEND-I_ROR
+  DC.L	I_LISTITEM020-I_ROR
+  DC.L	I_CODEEND-I_LISTITEM020
 
 GETA4NR = 136
 WRITEF = 1
@@ -33364,10 +33369,10 @@ I_CHAR020:
 
 ; MOD (020 variant)
 I_MOD020:
-	MOVE.L	8(A7),D0
+	MOVE.L	8(A7),D1
 	DIVSL.L	4(A7),D0:D1
-	MOVE.L	D1,D0
 	RTS
+
 	CPU000
 
 I_MEMFILL:
@@ -33725,6 +33730,15 @@ I_STRCOMPARE:
 	MOVE.L	4(A7),D1
 	ROR.L	D1,D0
 	RTS
+
+  CPU020
+; LISTITEM (020 variant)
+      I_LISTITEM020:
+	MOVE.L	4(A7),D0
+	MOVE.L	8(A7),A0
+	MOVE.L	0(A0,D0.L*4),D0
+	RTS
+  CPU000
 
 I_CODEEND:
 
