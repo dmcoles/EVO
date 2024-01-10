@@ -45,6 +45,14 @@ CPU000:	MACRO
 	endif
 	ENDM
 
+MAKEWARN: MACRO
+	MOVEM.L D0/D1,-(A7)
+	MOVEQ #\1-1,D0
+	MOVEQ #\2,D1
+	JSR makewarn
+	MOVEM.L (A7)+,D0/D1
+	ENDM
+
 
 ;FAKESTACK33
 
@@ -2843,7 +2851,7 @@ HEAVYTABLE:
 	MOVE.B	#0,(A2)+		; VALUE FINISHED
 	MOVE.L	WORK,A2
 	BSR	PARSEGETVALUE
-	MOVE.L	WORK(PC),A2
+	MOVE.L	WORK,A2
 
 	MOVEQ	#VALUE,D4
 	TST.L	D7
@@ -2859,7 +2867,7 @@ HEAVYTABLE:
 	BRA	PARSELOOP
 
       PARSEHEXNUM:
-	MOVE.L	WORK(PC),A2
+	MOVE.L	WORK,A2
 	MOVE.L	A2,D3
 	MOVEQ	#0,D1			; RESULT
 	MOVEQ	#0,D2			; #OF SHIFTS
@@ -2887,7 +2895,7 @@ HEAVYTABLE:
 	MOVE.W	D4,(A1)+
 	MOVE.L	D1,(A1)+
 	SUBQ.L	#1,A0
-	MOVE.L	WORK(PC),A2
+	MOVE.L	WORK,A2
 	BRA	PARSELOOP
 .2:	CMP.B	#"A",D0
 	BMI.S	.1
@@ -2901,7 +2909,7 @@ HEAVYTABLE:
 	BRA.S	.3
 
       PARSEBINNUM:
-	MOVE.L	WORK(PC),A2
+	MOVE.L	WORK,A2
 	MOVE.L	A2,D3
 	MOVEQ	#0,D1			; RESULT
 	MOVEQ	#0,D2			; BITNUM
@@ -2927,7 +2935,7 @@ HEAVYTABLE:
 	MOVE.W	D4,(A1)+
 	MOVE.L	D1,(A1)+
 	SUBQ.L	#1,A0
-	MOVE.L	WORK(PC),A2
+	MOVE.L	WORK,A2
 	BRA	PARSELOOP
       
       PARSELONGSTR:
@@ -5238,9 +5246,7 @@ ASM_PARSEREG:
     BRA PARSELOOP
 .8: CMP.W   #$400,D3
     BEQ.S   .9
-    TST.L warnsenabled
-    BEQ.S .9
-    BSET    #0,WARNINGS+3       ; ISSUE A4/A5 USED WARNING
+    MAKEWARN 1,0  ; ISSUE A4/A5 USED WARNING
     BRA.S   .9
 ;*-*
 
@@ -5268,6 +5274,30 @@ MAKEASMHASH:
 .EXX:
     RTS
 ;*-*
+
+makewarn:
+  TST.L warnsenabled
+  BEQ.S .nwarn
+  TST.L D1
+  BEQ.S .nw1
+  BCLR	#2,WARNINGS+3	
+.nw1:
+  MOVE.L A0,-(A7)
+  MOVE.L WARNINGS,D1
+  BSET D0,D1
+  MOVE.L D1,WARNINGS
+  LEA warnlines(PC),A0
+  ADD.L D0,D0
+  MOVE.W LINENUM,D1
+  CMP.W #-1,D1
+  BNE.S .ln
+  MOVE.W LINENUM2,D1
+.ln:
+  ADDQ #1,D1
+  MOVE.W D1,(A0,D0)
+  MOVE.L (A7)+,A0
+.nwarn:
+  RTS
 ;*-*
 ;;ASM
 
@@ -6113,9 +6143,7 @@ ASM_FPUSUP:
 ASM_46EMUL:
     CMP.W   #2,EFPU
     BNE     .X
-    TST.L   warnsenabled
-    BEQ.S   .X
-    BSET    #7,WARNINGS+3
+    MAKEWARN 8,0
 .X: RTS
 ;*-*
 ;; Dyadic               32
@@ -9292,7 +9320,7 @@ BYTEOFF:	DC.L	0
 .3:	DC.L	0
 
       NOERROR:
-	ADDQ.W	#1,ASSLINE
+	;ADDQ.W	#1,ASSLINE
 	BTST	#4,CODEPREFS+3
 	BNE	.X
 	BTST	#3,CODEPREFS+3
@@ -9304,9 +9332,7 @@ BYTEOFF:	DC.L	0
     TST.L LIBINFO
     BEQ.S .4
     
-    TST.L warnsenabled
-    BEQ.S .4
-    BSET #1,WARNINGS+2
+    MAKEWARN 10,0
 
 .4: MOVE.L	WARNINGS(PC),D7
 	MOVEQ	#0,D6			; BITCOUNT
@@ -9320,7 +9346,8 @@ BYTEOFF:	DC.L	0
 	BSR	WRITECON
 	MOVE.L	D6,D5
 	LSL.L	#2,D5
-	MOVE.L	WARNINGTAB(PC,D5.L),D2
+	LEA WARNINGTAB(PC),A0
+	MOVE.L (A0,D5.L),D2
 	MOVE.L	D2,A0
 
 ;.2:	TST.B	(A0)+
@@ -9331,7 +9358,10 @@ BYTEOFF:	DC.L	0
 ;	BSR	WRITECON
 
 	MOVEM.L	D0-D3/A0-A3,-(A7)
-	LEA	ASSLINE(PC),A1
+	LSR.L	#1,D5
+	LEA warnlines(PC),A1
+	LEA (A1,D5.L),A1
+	;LEA	ASSLINE(PC),A1
 	BSR	WRITEFORMAT
 	MOVEM.L	(A7)+,D0-D3/A0-A3
 
@@ -9341,24 +9371,36 @@ BYTEOFF:	DC.L	0
 	BRA.S	.L
 .USER:
 	LEA userwarns(PC),A0
+	LEA userwarnlines(PC),A1
 .USER1:
 	CMP.L #endwarns,A0
 	BEQ.S .X
 	TST.L (A0)+
 	BEQ.S .X
 
-	MOVE.L A0,-(A7)
+	MOVEM.L A0/A1,-(A7)
 	MOVEQ	#9,D3
 	MOVE.L	#WARNINGMESSY,D2
 	BSR	WRITECON
-	MOVE.L (A7)+,A0
+	MOVEM.L (A7)+,A0/A1
 
 	MOVEM.L	D0-D3/A0-A3,-(A7)
 	MOVE.L -(A0),A0
-	LEA	ASSLINE(PC),A1
+	LEA PRINTBUF2,A2
+.copytext:
+	MOVE.B (A0)+,(A2)+
+	BNE.S .copytext
+	SUB.L #1,A2
+	LEA LINENOTEXT(PC),A0
+.copytext2:
+	MOVE.B (A0)+,(A2)+
+	BNE.S .copytext2
+
+	LEA PRINTBUF2,A0
 	BSR	WRITEFORMAT
 	BSR	WRITELN
 	MOVEM.L	(A7)+,D0-D3/A0-A3
+	ADD.L #2,A1
  	BRA.S .USER1
 
 .X:	BTST	#7,CODEPREFS+2
@@ -9372,18 +9414,26 @@ BYTEOFF:	DC.L	0
       WARNINGMESSY:
 	DC.B	"WARNING: ",0		; 9
 
+      LINENOTEXT:
+	DC.B " (line %d)",0
+
+;store the (first) line numbers of the warnings
+warnlines:
+	DC.W 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0  ;1-16
+
       WARNINGTAB:
 	DC.L	.1,.2,.3,.4,.5,.6,.7,.8,.9,.10,.11
 
-.1:	DC.B	"A4/A5 used in inline assembly",0
+
+.1:	DC.B	"A4/A5 used in inline assembly. (line %d)",0
 .2:	DC.B	"keep an eye on your stacksize",0
 .3:	DC.B	"stack is definitely too small",0
 .4:	DC.B	'suspicious use of "=" in void expression(s). (line %d)',0
 .5:	DC.B	"module changed OPT settings",0
-.6:	DC.B	"variable used as function",0
-.7:	DC.B	"code outside PROCs",0
-.8:	DC.B	"in line %d REG var used after EXCEPT",0
-.9:	DC.B	"member used as method",0
+.6:	DC.B	"variable used as function (line %d)",0
+.7:	DC.B	"code outside PROCs (line %d)",0
+.8:	DC.B	"REG var used after EXCEPT (line %d)",0
+.9:	DC.B	"member used as method (line %d)",0
 .10: DC.B "OPT PURE recommended for libraries",0
 .11:	DC.B	" ",0
 	EVEN
@@ -9391,6 +9441,9 @@ BYTEOFF:	DC.L	0
 userwarns:	DC.L 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 			DC.L 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 endwarns:
+
+userwarnlines:	DC.W 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+			DC.W 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 
 warnsenabled: DC.L -1
 
@@ -10002,7 +10055,7 @@ SRCFN: DC.L 0
 	CDLOCK:		DC.L	0
 	GOTLOCK:	DC.W	0
 	RETERROR:	DC.W	-1
-	ASSLINE:	DC.W	0	; LINENUM OF LAST A=1
+	;ASSLINE:	DC.W	0	; LINENUM OF LAST A=1
 	ERARGS:		DC.L	0,0,0,0,0
 	RETURNOUT:	DC.B	10
 	ERTEXT:		DC.B	'ERROR: '
@@ -12152,9 +12205,7 @@ ERROR105:	MOVEQ	#105,D0
       DOEXP:
 	TST.W	PROCF
 	BNE.S	.1
-	TST.L warnsenabled
-	BEQ.S .1
-	BSET	#6,WARNINGS+3		; CODE OUTSIDE PROCS
+	MAKEWARN 7,0 ; CODE OUTSIDE PROCS
 .1:	MOVE.W	#1,EXPSTAT
 	MOVE.W	D7,-(A3)
 	BSR	EXP
@@ -12380,11 +12431,8 @@ ERROR105:	MOVEQ	#105,D0
 .2:	RTS
 .1:	ADDQ.L	#4,A3
 	BRA.S	EATLEXP
-.4:	TST.L warnsenabled
-	BEQ.S .nwarn
-	BSET	#3,WARNINGS+3		; a.complex=1 a statement
-.nwarn:
-	MOVE.W	LINENUM,ASSLINE
+.4:	MAKEWARN 4,0   ; a.complex=1 a statement
+	;MOVE.W	LINENUM,ASSLINE
 .3:	ADDQ.L	#8,A7
 	BRA.S	NOASSIGN
 .MET:	ADDQ.L	#4,A7
@@ -12444,11 +12492,9 @@ ERROR105:	MOVEQ	#105,D0
 	BEQ	DOMULTIPLE
 	CMP.W	#11,D0
 	BNE.S	.3
-	TST.L warnsenabled
-	BEQ.S .nwarn
-	BSET	#3,WARNINGS+3		; a=1 a statement
+	MAKEWARN 4,0   ; a=1 a statement
+	;MOVE.W	LINENUM,ASSLINE
 .nwarn:
-	MOVE.W	LINENUM,ASSLINE
 .3:	CMP.W	#19,D0
 	BNE	DOEXP
 	SUBQ.L	#2,A3
@@ -14363,8 +14409,6 @@ CHECKPR:	MACRO			; \1=TR.DX
 .X:	MOVEM.L	(A7)+,A3-A5
 	RTS
 
-
-
       DOOBJECT:				; 55
 	MOVE.L	A2,-(A7)
 	CLR.W	OBJPRIV
@@ -14376,7 +14420,7 @@ CHECKPR:	MACRO			; \1=TR.DX
 	CMP.W	#IOFF+70,(A3)
 	BNE.S	.NOAL
 
-	MOVE.W	ECPU(PC),D2 ;noalign needs 020 cpu
+	MOVE.W	ECPU,D2 ;noalign needs 020 cpu
 	BEQ	ERROR53
 
 	ADDQ.L	#2,A3
@@ -16054,6 +16098,15 @@ DESTR:	MOVE.W	ODESTR(A6),D2		; GETS OBJ=A6, OSIZE=D0
 .freewarn
  
 	MOVE.L A3,-(A0)
+	MOVE.L D0,-(A7)
+	MOVE.L A0,D0
+	SUB.L #userwarns,D0
+	LSR.L #1,D0
+	ADD.L #userwarnlines,D0
+	MOVE.L D0,A0
+	MOVE.W LINENUM,(A0)
+	MOVE.L (A7)+,D0
+  
 	LSL.W	#1,D6
 	EXT.L	D6
 	ADD.L	D6,A3
@@ -21956,11 +22009,9 @@ EXPFPVAL:
 	BEQ.S	.1
 	MOVE.L	ENDPEA(PC),D0
 	BEQ.S	.1
-	TST.L warnsenabled
-	BEQ.S .nwarn
-	BSET	#7,WARNINGS+3
-.nwarn:
-	MOVE.W	LINENUM(PC),ASSLINE
+ 	MAKEWARN 8,0
+	;MOVE.W	LINENUM(PC),ASSLINE
+
 .1:	MOVE.W	(A3),D0			; CHECK COMPLEX
     CMP.W   #11,2(A3)
     BEQ     EXPEXT
@@ -22673,9 +22724,7 @@ EXPFPCMP:
 	LEA	LASTMEMBER(PC),A1
 	CLR.L	(A1)
 	MOVEA.L	(A7)+,A1
-	TST.L warnsenabled
-	BEQ .MBASMEBACK
-	BSET	#0,WARNINGS+2
+	MAKEWARN 9,0
 	BRA.W	.MBASMEBACK
 .MEMBCALL:
 	DC.L	0			;-end membcall
@@ -23302,9 +23351,7 @@ DOREGARGS:
 	BSR	RD0
 	MOVE.L (A7)+,LABLOG
 	MOVEQ	#1,D5
-	TST.L warnsenabled
-	BEQ EXPLOOP
-	BSET	#5,WARNINGS+3
+	MAKEWARN 6,0
 	BRA	EXPLOOP
 .4:	MOVE.L	D0,-(A7)
 .5:	LEA	-8(A7),A7
@@ -24434,9 +24481,7 @@ ODONE:	GETML	A3			; GOT VAR IN D2, NOW HANG IN CODEREM LIST
 	CMP.W	OSVERSION,D0		; HIGHEST OSVERSION
 	BLE.S	.1
 	MOVE.W	D0,OSVERSION
-	TST.L warnsenabled
-	BEQ.S .1
-	BSET	#4,WARNINGS+3
+	MAKEWARN 5,0
 .1:	MOVE.L	(A0)+,D0
 	AND.L	#%110000000000000000000,D0	; ONLY INTERESTING BITS
 	OR.L	D0,CODEPREFS
@@ -24444,25 +24489,19 @@ ODONE:	GETML	A3			; GOT VAR IN D2, NOW HANG IN CODEREM LIST
 	CMP.W	ECPU,D0			; BEST CPU
 	BLE.S	.2
 	MOVE.W	D0,ECPU
-	TST.L warnsenabled
-	BEQ.S .2
-	BSET	#4,WARNINGS+3
+	MAKEWARN 5,0
 .2:	MOVE.W	(A0)+,D0		; BEST FPU
 	CMP.W	EFPU,D0
 	BLE.S	.3
 	MOVE.W	D0,EFPU
-	TST.L warnsenabled
-	BEQ.S .3
-	BSET	#4,WARNINGS+3
+	MAKEWARN 5,0
 .3:	MOVE.W	(A0)+,D0		; OR BITSET
 	MOVE.W	ASMCPU,D3
 	OR.W	D3,D0
 	CMP.W	D3,D0
 	BEQ.S	.4
 	MOVE.W	D0,ASMCPU
-	TST.L warnsenabled
-	BEQ.S .4
-	BSET	#4,WARNINGS+3
+	MAKEWARN 5,0
 .4:	MOVE.W	(A0)+,D0		; VERSION
 	BNE.S	.5
 	ADDQ.W	#1,D0			; 0 is version 1
@@ -25309,16 +25348,11 @@ i2ERROR39:
 	BRA.S	.NS
 .S:	CMP.L	D0,D1
 	BPL.S	.S2
-	TST.L warnsenabled
-	BEQ.S .S2
-	BSET	#2,WARNINGS+3
+	MAKEWARN 3,0
 .S2:	ADD.L	#4000,D0
 	CMP.L	D0,D1
 	BPL.S	.S3
-	TST.L warnsenabled
-	BEQ.S .S3
-	BSET	#1,WARNINGS+3	
-	BCLR	#2,WARNINGS+3	
+	MAKEWARN 2,1
 .S3:
 .NS:	MOVE.L	CODESTACK,D0
 	LEA	STACKPOKE(PC),A0
@@ -34417,6 +34451,8 @@ SRCFULLNAME     DS.B	300
 DIRNAME:	DS.B	300
 		EVEN
 PRINTBUF:	DS.B	300
+		EVEN
+PRINTBUF2:	DS.B	300
 		EVEN
 WORKBUF:	DS.B	MAXIDENT+2
 		EVEN
