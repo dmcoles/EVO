@@ -2964,7 +2964,7 @@ HEAVYTABLE:
 .3:	MOVEQ	#VALUE,D4
 	MOVE.W	D4,(A1)+
 	MOVE.L	D0,(A1)+
-	MOVE.L	WORK(PC),A2
+	MOVE.L	WORK,A2
 	BRA	PARSELOOP
 .SP:
     MOVE.B  (A0)+,D2
@@ -10071,7 +10071,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.7.0-dev',160
-			DC.B	'(10.01.2024)'
+			DC.B	'(12.01.2024)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -10170,14 +10170,27 @@ SRCFN: DC.L 0
 	MOVE.L	#NAMEBUF,D1
 	MOVE.L	#1005,D2
 	JSR	-30(A6)
-	MOVE.B	#0,(A2)
 	MOVE.L	D0,HANDLE
 	BEQ	ERROR16
 
+	CMP.W	#36,KICKVERS
+	BPL	.namefromfh
+
+	LEA NAMEBUF,A0
+	LEA SRCFULLNAME,A1
+.copyname:
+	MOVE.B (A0)+,(A1)+
+	BNE.S .copyname
+	BRA.S .gotname
+
+.namefromfh:
 	MOVE.L	D0,D1
 	MOVE.L	#SRCFULLNAME,D2
 	MOVE.L	#300,D3
 	JSR	-408(A6)
+
+.gotname:
+	MOVE.B	#0,(A2)   ; REMOVE .E from file
 
 	MOVE.L	D6,D4			; READ DATA
 	MOVE.L	D7,D3
