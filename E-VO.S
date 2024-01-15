@@ -8327,6 +8327,7 @@ ASM_GRABVALUE:
     MOVEQ   #-1,D0          ; IF D0=-1 THEN NOVALUE ELSE CODENR
 .XL:
     MOVEQ   #0,D2           ; D2<>0 --> NEGATE
+.XL1:
     CLR.L D3
     MOVE.W  (A3)+,D3
     CMP.W   #52,D3		      ; do nothing marker
@@ -8339,9 +8340,15 @@ ASM_GRABVALUE:
     CMP.W   #52,D3			    ;do nothing marker
     BEQ     .xl
     CMP.W   #VALUE,D3
-    BNE.S   .X2
+    BNE   .X2
     BRA.S   .2
-.1: CMP.W   #VALUE,D3       ; VALUE ?
+.1: CMP.W	#IOFF+71,D3
+    BNE.S  .nn2
+    
+    ADDQ.W #1,NOTEXP
+    BRA.S   .XL1
+.nn2:
+    CMP.W   #VALUE,D3       ; VALUE ?
     BNE.S   .X              ; sizeof or exit
 .2: CMP.W   #-1,D0          ; SIZEOFBACK
     BNE.S   .3
@@ -8349,7 +8356,14 @@ ASM_GRABVALUE:
 .3: TST.L   D2
     BEQ.S   .4
     NEG.L   (A3)
-.4: SUBQ.W  #6,D0
+.4: TST.W NOTEXP
+    BEQ.S .4a
+    BTST #0,NOTEXP+1
+    BEQ.S .4a
+    NOT.L (A3)
+.4a:
+    CLR.W NOTEXP
+    SUBQ.W  #6,D0
     LSL.W   #2,D0
     MOVE.L  .T(PC,D0.W),A0
     JMP (A0)
@@ -8364,7 +8378,7 @@ ASM_GRABVALUE:
     CMP.W   #7,D0
     BMI.W   .X3         ; SEE IF AND/OR, ELSE QUIT
 .AOB:
-    BRA.S   .XL
+    BRA   .XL
 .X2:
     SUBQ.L  #4,A3
     CMP.W   #-1,D0
@@ -10071,7 +10085,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.7.0-dev',160
-			DC.B	'(12.01.2024)'
+			DC.B	'(15.01.2024)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -18711,6 +18725,7 @@ XIT:	MOVEM.L	(A7)+,D3-D5/A1
     MOVE.L  #0,LASTVAR
 	MOVEM.L	D3-D5/A1/A2,-(A7)	; WE DO HEAVY RECURSION
 	MOVE.W IFLAG,-(A7)
+	CLR.W IFLAG
 	MOVE.W METHCALL,-(A7)
 	CLR.W METHCALL
 	MOVE.W FORCESIGNED,-(A7)
@@ -18721,7 +18736,8 @@ XIT:	MOVEM.L	(A7)+,D3-D5/A1
 	CLR.W	andalsoflag
 	MOVE.W	FLTFLAG(PC),-(A7)
 	CLR.W	FLTFLAG
-      	MOVE.W	NOTEXP(PC),-(A7)
+	MOVE.W	NOTEXP(PC),-(A7)
+	CLR.W NOTEXP
 	ADDQ.W	#1,EXPRECC
 	MOVEQ	#6,D4			;
 	MOVEQ	#-1,D5			; MUST BE = EXPBUT
@@ -18833,6 +18849,12 @@ XIT:	MOVEM.L	(A7)+,D3-D5/A1
 	CMP.W	#1,D5
 	BNE	ERROR0
 	SUBQ.W	#1,EXPRECC
+
+	TST.W NOTEXP
+	BEQ.S .notok
+
+	INTERN  107
+.notok:
 	MOVE.W	(A7)+,NOTEXP
 	MOVE.W	(A7)+,FLTFLAG
 	MOVE.W	(A7)+,andalsoflag
@@ -19976,9 +19998,20 @@ EXPQMARK:
 	BSR.W	EXP
 	BSR.W	RD0
 	MOVE.L (A7)+,LABLOG
+	TST.W NOTEXP
+	BEQ .n1
+
+	BTST #0,NOTEXP+1
+	BEQ .n1
+
+	MOVE.W .N2,(A4)+
+.n1:
+ 	CLR.W NOTEXP
 	ADDQ.L	#2,A3
 	MOVEQ	#1,D5
 	BRA	EXPLOOP
+.N2:
+	NOT.L D0
 
       EXPCONSNIL:
 	MOVEQ	#1,D5
@@ -21650,8 +21683,9 @@ STRLH:
 	BEQ.S .2a
   
 	NOT.L D1
-.2a:  MOVE.L (A7)+,D0
-  CMP.W	#$400,(A3)
+.2a: CLR.W NOTEXP
+	MOVE.L (A7)+,D0
+	CMP.W	#$400,(A3)
 	BMI.S	VALUENTRY
 	MOVE.W	(A3)+,D0
 	BRA	EXPREG
@@ -22075,8 +22109,10 @@ EXPEXTBACK:
 .6:	MOVE.W	.MVD1(PC),(A4)+
 	MOVE.W	10(A1),.PUTW1
 	MOVE.W	.NOT1(PC),.PUTW2
+	CLR.W NOTEXP
 	BRA.S	.7
 .5:
+	CLR.W NOTEXP
 	TST.W	ECPU
 	BEQ.S	.CE
 
@@ -22506,6 +22542,18 @@ EXPFPCMP:
     MOVE.L  .c0,(A4)+
 .i0:
 	BSR	EADDRESSMODI
+    TST.W NOTEXP
+    BEQ .nonot
+
+    BTST #0,NOTEXP+1
+    BEQ .nonot
+    addq.l  #1,d5
+    lsl.l   #1,d5
+    move.w  .N0(PC,D5.w),(a4)+
+    lsr.l   #1,d5
+    subq.l  #1,d5
+.nonot
+    CLR.W NOTEXP
     TST.W   D5
     BMI     .i1
     TST.W   FLTFLAG
@@ -22538,6 +22586,9 @@ EXPFPCMP:
     FMOVE.S D0,FP0
     FMOVE.S D1,FP1
 	CPU000
+.N0:
+    NOT.L D0
+    NOT.L D1
 
 .0: CMP.W	#-1,D5
 	BEQ.S	.1
@@ -22556,6 +22607,15 @@ EXPFPCMP:
 	BSR.S	EXPCALLMETHOD
 	BSR	RD0
 	MOVE.L (A7)+,LABLOG
+	TST.W NOTEXP
+	BEQ .nonot
+
+	BTST #0,NOTEXP+1
+	BEQ .nonot2
+	move.w  .N0,(a4)+
+.nonot2
+	CLR.W NOTEXP
+
 	MOVEQ	#1,D5
 	BRA	EXPLOOP
 
@@ -22751,20 +22811,16 @@ EXPFPCMP:
 	CMP.W	#-1,D5
 	BNE	EXPVARASSBACK
 	ADDQ.L	#2,A3
+	MOVE.W	NOTEXP(PC),D2
+	BEQ.S	.S1
+	JMP ERROR33
+.S1:
+
 	TST.W	EXPLCHECK
 	BNE.W	.CH
 .CHB:	MOVE.L	A0,-(A7)
 	BSR	EXP
-	MOVE.W	NOTEXP(PC),D2
-	BEQ.S	.S1
-	BTST	#0,D2
-	BEQ.S	.S1
-	CMPI.W	#-1,D5
-	BNE.S	.S2
-	MOVEQ	#1,D2
-.S2:	ORI.W	#$4680,D2		; NOT.L	D0
-	MOVE.W	D2,(A4)+
-.S1:	MOVE.L	(A7)+,A0
+	MOVE.L	(A7)+,A0
 	LEA	.1(PC),A1
 	MOVE.B	4(A0),D2
 	BEQ.S	.DERROR22
@@ -22882,7 +22938,9 @@ EXPFPCMP:
 	BEQ.S	.5
 	EOR.W	#$0100,D3
 	SUBQ.L	#2,A4
-.5:	LEA	EXPCMP(PC),A1
+.5:
+	CLR.W NOTEXP
+	LEA	EXPCMP(PC),A1
 	MOVEQ	#2,D4
 		BRA	EXPLOOP
 .1:	CMP.W	#13,D0
@@ -23137,6 +23195,16 @@ lERROR25: JMP ERROR25
     move.w  #$4cdf,(a4)+
     move.w  d0,(a4)+
 .exit:
+    TST.W NOTEXP
+    BEQ .n1
+
+    BTST #0,NOTEXP+1
+    BEQ .n1
+    
+    MOVE.W .ncode,(A4)+
+
+.n1
+    CLR.W NOTEXP
     MOVEQ   #1,D5
     BRA EXPLOOP
 .1: BSR .1
@@ -23147,6 +23215,7 @@ lERROR25: JMP ERROR25
 .4: MOVE.L  D0,-(A7)
 .5: ADDa.w  #8,a7
 .5o:addq.l  #8,a7
+.ncode: NOT.L D0
 DOREGARGS:
     MOVE.L  D0,D6
     LSR.L   #2,D6
