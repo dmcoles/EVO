@@ -761,6 +761,8 @@ OBJECT emodule
                         9  = v3.1a+ (more debuginfos)
                         10 = v3.1b+ (fix opersize globals)
                         11 = creative
+                        12 = v3.5.0 (PTR TO PTR types and Multi-dimensional arrays)
+                        13 = v3.6.0 (add BYTE and WORD types)
 
 
 6       LIBDEF
@@ -1080,6 +1082,7 @@ errornum        = 0 error caused by own cookie-check
                   104 = regalloc prob
                   105 = prep not empty line
                   106 = cant find patched function entry
+                  107 = unhandled NOT expression
 linenum         = -1 if no lines were being processed
                 = [0..] current linenum
 cookiesthrashed = #of cookies thrashed. reboot if >0

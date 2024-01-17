@@ -1,10 +1,10 @@
 @database "e.guide"
 @node MAIN
-@title "Amiga E-VO v3.6.1"
+@title "Amiga E-VO v3.7.0"
 
                 +-----------------------------------------------+
                 |                                               |
-                |               Amiga E-VO v3.6.1               |
+                |               Amiga E-VO v3.7.0               |
                 |          Compiler for The E Language          |
                 |     Originally By Wouter van Oortmerssen      |
                 |           Updates By GRIO 1999-2003           |
@@ -46,7 +46,7 @@ Contents:
           @{"  A. math (+ - * /)  " link CH_4A }
           @{"  B. comparison (= <> > < >= <=)  " link CH_4B }
           @{"  C. logical and bitwise (AND OR NOT << and >>)  " link CH_4C }
-          @{"  D. unary (SIZEOF OFFSETOF ` ^ {} ++ -- -)  " link CH_4D }
+          @{"  D. unary (SIZEOF PSIZEOF ARRAYSIZE OFFSETOF ` ^ {} ++ -- -)  " link CH_4D }
           @{"  E. triple (IF THEN ELSE)  " link CH_4E }
           @{"  F. structure (.)  " link CH_4F }
           @{"  G. array ([])  " link CH_4G }
@@ -1290,12 +1290,37 @@ a:=128 >> 3  /* bitwise shift right */
 
 @endnode
 @node CH_4D
-@title "4D. unary (SIZEOF OFFSETOF ^ {} ++ -- `)"
-4D. unary (SIZEOF OFFSETOF ^ {} ++ -- `)
+@title "4D. unary (SIZEOF PSIZEOF ARRAYSIZE OFFSETOF ^ {} ++ -- `)"
+4D. unary (SIZEOF PSIZEOF ARRAYSIZE OFFSETOF ^ {} ++ -- `)
 ---------------------------------
 - SIZEOF <objectident> or SIZEOF <var>
-  simply returns the size of a certain object or CHAR/INT/LONG.
+  simply returns the size of a certain object or CHAR/INT/LONG.  
   Example: SIZEOF newscreen + SIZEOF INT
+
+  doing a SIZEOF on a pointer type always returns the size of the type
+  pointed to. eg DEF a:PTR TO INT - SIZEOF a will be 2. One caveat
+  to this rule is the default type. So although DEF a by itself will act
+  as a PTR TO CHAR, in this case SIZEOF a will be 4 as it has not been
+  specifically declared as a pointer type. Array types will also return
+  the size of the individual elements not the whole size of the array.
+  
+- PSIZEOF <objectident> or PSIZEOF <var>
+  works the same way as SIZEOF but all pointer types will return 4 (the
+  size of the pointer. eg DEF a:PTR TO INT - SIZEOF a will be 4. Array
+  types will still return the size of the individual elements.
+  
+- ARRAYSIZE {<dimension>,}<var>
+  returns the number of elements declared in the array. The variable must
+  be declared as an array for this to work. You cannot make a pointer
+  variable and point it at an array and ask for an ARRAYSIZE of that pointer
+  because the compiler calculates the size at compile time. You can also
+  include dimension value, so if you want to get the size of a 2 dimensional
+  array you must do ARRAYSIZE 1,var and ARRAYSIZE 2,var to get the 2
+  dimensions seperately. eg DEF a[5][7]:ARRAY OF CHAR - ARRAYSIZE 1,a is 5
+  and ARRAYSIZE 2,a is 7. The dimension cannot be a variable or calculation
+  because as before the value is calculated at compile time.
+  
+
 - OFFSETOF <member>
   returns the offset from the base address of the object for that member
 - {<var>}
@@ -2192,6 +2217,19 @@ display an error or warning when using the wrong E compiler.
   #ifndef EVO_3_4_0
     FATAL 'This code requires at least E-VO compiler v3.4.0'
   #endif
+
+In addition to genrating warnings, the built in warnings can be
+enabled and disabled using 
+
+  WARN TRUE
+
+  and
+
+  WARN FALSE
+
+Make sure you only place them around the parts of the code you want to
+disable warnings for. If you accidentally forget to re-enable them, the
+warnings will be disabled for the rest of the file.
 
 @endnode
 @node CH_5O
@@ -3905,6 +3943,11 @@ arithmatically shifts y num bits to left or right (set new bits to 0).
 
 logically shifts y num bits to left or right (set new bits to 0).
 
+        x:=Rol(y,num)         x:=Ror(y,num)
+
+rotates y num bits to left or right.
+
+
         a:=Long(adr)          a:=Int(adr)          a:=Word(adr)
         
         a:=Char(adr)          a:=Byte(adr)
@@ -4555,10 +4598,18 @@ it uses it as a boolean value, and only those values for which it is
 true are stored in listvar (which should be capable of holding
 the same amount of elements as list. example:
 
-SelectList({x},[1,2,0,3,NIl],r,`x<>0)
+SelectList({x},[1,2,0,3,NIL],r,`x<>0)
 
 results in r being [1,2,3].
 returns length of listvar.
+
+        SelectFirst(v,list,quotedexp)
+        
+This works exactly the same way as SelectList above but rather than
+taking a listvar and returning all the items that match it simply
+returns the first one that matches. If none are matched then it will
+return NIL.
+
 
 Example of how to use these functions in a practical fashion:
 we allocate different sizes of memory in one statement, check them
@@ -7059,6 +7110,7 @@ The currently defined version macro's are
         EVO_3_4_0
         EVO_3_5_0
         EVO_3_6_0
+        EVO_3_7_0
     
 So if this is not defined then you are not compiling under E-VO. Further
 defines will be added for each new revision of the E-VO compiler so you can
@@ -7356,7 +7408,7 @@ onelinestat     = exp |
                   "JUMP" ident |
                   "EXIT[N]" exp |
                   "CONT[N]" exp |
-                  "WARN" stringconst |
+                  "WARN" TRUE| FALSE |stringconst |
                   "FATAL" stringconst |
                   "SECTION" ("CODE" | "DATA") ["CHIP"] ["FAST"] | 
                   ( "INC" | "DEC" ) var [ "," num]|               ; nearly obsolete
@@ -7383,6 +7435,8 @@ exp             = [ "-" ] { [ "NOT" ] item binop }+ |
                   exp "BUT" exp
 item            = num | fnum | lval | stringconst | charconst |
                   "SIZEOF" objident |
+                  "PSIZEOF" objident |
+                  "ARRAYSIZE" [ lval "," ] objident |
                   "OFFSETOF objident.ident |
                   "IF[N]" exp "THEN" exp "ELSE" exp |
                   exp ? exp : exp |
@@ -7766,8 +7820,8 @@ Compiler/Linking/Executables
   Nearly ALL E code is already resident-able without the help of the
   programmer. As far as I know, the only E construct that can violate this 
   is a static list [] with an expression in it (so [a], for example. [1] or
-  NEW [a] is ok.). Use OPT PURE if you want to ensure these are not present
-  in your code.
+  NEW [a] is ok.). There are also a few built in functions that are not pure.
+  Use OPT PURE if you want to ensure these are not present in your code.
 
 - I have this application with pieces of inline asm, and after
   OPTI/S it behaves weird. what is going on?
@@ -7899,7 +7953,7 @@ Resources
 
 - How do I register?
 
-  please read E.doc on this.
+  No need to register.
 
 - Does E exist for other platforms?
 
@@ -7910,8 +7964,7 @@ Resources
 
 - Can I become an E registration site for country X?
 
-  Generally I pick sites myself, when I feel the necessity, and know someone
-  in that country pretty well.
+  No longer applicable.
 
 - Can I start an E support BBS / an E programming club...?
 

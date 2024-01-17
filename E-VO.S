@@ -10085,7 +10085,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.7.0-dev',160
-			DC.B	'(15.01.2024)'
+			DC.B	'(17.01.2024)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -20226,6 +20226,10 @@ EXPQMARK:
     MOVE.L  A3,.dimerrpos
     
     MOVE.L  (A3)+,.dimno
+
+    CMP.W	#COM,(A3)+
+    BNE.W	ERROR5
+
     MOVE.W (A3),D0
 .nval:
     CMP.W   #IDENT,D0
@@ -33835,6 +33839,7 @@ I_STRCOMPARE:
 	MOVEM.L	(A7)+,D1-D2/A0-A3/A6
 	TST.L	D0
 	BEQ.S	.S
+ 	MOVE.L (A2),D0
 	RTS
 .S:	DBRA	D2,.L
 	RTS
