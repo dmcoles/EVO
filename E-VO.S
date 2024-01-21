@@ -10085,7 +10085,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.7.0-dev',160
-			DC.B	'(17.01.2024)'
+			DC.B	'(21.01.2024)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -17651,8 +17651,10 @@ PLB:
 .nodimdata:
 	MOVE.W PTRREPCOUNT(A1),TYPERF_XXX  ; number of PTR TOs
 .noobj1:
-	MOVE.L	.SPEC(PC),D1
-	MOVE.L	D1,A2
+	MOVE.L	.SPEC(PC),D5
+	CMP.L #5,D5
+	BMI.S  .12
+	MOVE.L	D5,A2
 	MOVE.W	4(A2),D5
 	BRA.S	.12
 .11:	MOVE.L	.SPEC(PC),D5		; D5=OBJSIZE
