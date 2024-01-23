@@ -10085,7 +10085,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.7.0-dev',160
-			DC.B	'(21.01.2024)'
+			DC.B	'(23.01.2024)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -13776,49 +13776,133 @@ LDEF:	MACRO
 	MOVEM.L (a7)+,D0-D1/A0
 
 .skipDEL:  
-	TST.W	ODEL(A6)
-	BEQ.W	.G3
-	MOVEM.L A0/D1,-(A7)
+	;TST.W	ODEL(A6)
+	;BEQ.W	.G3
+	MOVEM.L A0/D0/D1/D7,-(A7)
 	MOVE.W	.GOBJ(PC),(A4)+
- 
+
+	MOVEQ #0,D0
+	MOVEQ #0,D7
+	MOVE.L tempspacedataptr(PC),A0
+
 ;figure out how many elements to initialise
 ;using osize(a6) vs d2
 
-	MOVEQ #0,D1
-	MOVE.L tempspacedataptr(PC),A0
-
 .arrloop:
+	BSR .recurseinit
+	ADD.W OSIZE(A6),D0
+	CMP.L D0,D2
+	BNE.S .arrloop
+
+	TST.L D7
+	BNE.S .some
+	SUBQ #2,A4
+.some:
+	MOVE.L A0,tempspacedataptr
+
+	MOVEM.L (A7)+,A0/D0/D1/D7
+	BRA .G3
+
+.GOBJ:	MOVE.L	A7,A0
+.GOBJ2:	MOVE.L	4(A4),(A0)
+.GOBJ3:	MOVE.L	4(A4),4(A0)
+.LOBJ: LEA 0(A0),A1
+.LD1  MOVEQ #0,D1
+	MOVE.W #1,D1
+.LOBJ2: LEA 0(A0,D1.L),A1
+
+.recurseinit:
+
+	MOVEM.L D0/D1/A1/A6,-(A7)
+
+	TST.W	ODEL(A6)
+	BEQ.W	.nodel
+
+	MOVEQ #-1,D7
+
 	CMP.L   #tempspacebuffend-10,A0
 	BPL     ERROR84
 
 	MOVE.W #2,(A0)+
 	MOVE.L A6,(A0)+
-  
-	ADD.W ODELOFF(A6),D1
+
+	TST.L D0
+	BEQ.S .off0
+	CMP.L #32768,D0
+	BPL .largeobj
+	MOVE.W	.LOBJ(PC),(A4)+
+	MOVE.W D0,(A4)+
+	BRA.S .off0
+.largeobj
+	MOVE.L	.LD1(PC),(A4)+
+	MOVE.W D0,(A4)+
+	MOVE.L	.LOBJ2(PC),(A4)+
+.off0:
+
+	MOVE.W ODELOFF(A6),D1
 	BNE.S	.G1
 	MOVE.W	.GOBJ2(PC),(A4)+
+	TST.L D0
+	BEQ.S .off0_1
+	OR.W #$200,-2(A4)   ;change from A0 TO A1
+.off0_1:
 	MOVE.L	A4,(A0)+
 	CLR.W	(A4)+
 	BRA.S	.G2
 .G1:	MOVE.W	.GOBJ3(PC),(A4)+
+	TST.L D0
+	BEQ.S .off0_2
+	OR.W #$200,-2(A4)   ;change from A0 TO A1
+.off0_2:
 	MOVE.L	A4,(A0)+
 	CLR.W	(A4)+
 	MOVE.W	D1,(A4)+
 .G2:
-	SUB.W ODELOFF(A6),D1
 
-	ADD.W OSIZE(A6),D1
-	CMP.L D1,D2
-	BNE.S .arrloop
-	MOVE.L A0,tempspacedataptr
+.nodel
+	MOVE.L OMEMB(A6),D1
+	BEQ.S .nomemb
+.nextmemb:
+	MOVE.L D1,A6
+	BTST #1,OFLAGS(A6)
+	BEQ.S .nottyped
+	TST.W   OSIZE(A6)     ;its a pointer
+	BNE.S .nottyped
+	CMP.L #5,OPTRTYPE(A6) ;its not an object
+	BMI.S .nottyped
 
-	MOVEM.L (A7)+,A0/D1
-	BRA.S .G3
+	MOVEQ #1,D1
+	TST.L DIMDATA(A6)
+	BEQ.S .nodim
+	MOVE.L DIMDATA(A6),A1
+	MOVE.L D0,-(A7)
+	MOVE.W (A1)+,D0
+	MOVE.W (A1,D0),D1 ;get the last dimsize (which will be the whole size)
+	MOVE.L (A7)+,D0
 
-.GOBJ:	MOVE.L	A7,A0
-.GOBJ2:	MOVE.L	4(A4),(A0)
-.GOBJ3:	MOVE.L	4(A4),4(A0)
- 
+.nodim
+	SUBQ #1,D1
+	MOVEM.L D0/A6,-(A7)
+	ADD.W  OOFF(A6),D0
+	MOVE.L OPTRTYPE(A6),A6
+
+.arrloop2
+	BSR .recurseinit
+	ADD.W OSIZE(A6),D0
+	DBF D1,.arrloop2
+
+	MOVEM.L (A7)+,D0/A6
+
+.nottyped:
+	MOVE.L ONEXT(A6),D1
+	BNE.S .nextmemb
+.nomemb:
+
+	MOVEM.L (A7)+,D0/D1/A1/A6
+
+	RTS
+
+
 .G3:
 	MOVE.L (A7)+,A6
 	ADD.L	D2,D0
@@ -19290,25 +19374,22 @@ MOVED0FP0: MACRO
 	MOVE.L	A6,D0
 	BEQ.W	.4B
   ;init method pointer
-	TST.W	ODEL(A6)
-	BEQ.W	.4B
+	;TST.W	ODEL(A6)
+	;BEQ.W	.4B
 	MOVE.L	A0,METHODIDENT
 	GETM	A0
-	MOVE.L	OACC(A6),(A0)
-	MOVE.L	A0,OACC(A6)
-	ADDQ.L	#4,A0
 	MOVE.W	.GOBJ(PC),(A4)+
-	TST.W	ODELOFF(A6)
-	BNE.S	.G1
-	MOVE.W	.GOBJ2(PC),(A4)+
-	MOVE.L	A4,(A0)+
-	CLR.W	(A4)+
-	BRA.S	.G2
-.G1:	MOVE.W	.GOBJ3(PC),(A4)+
-	MOVE.L	A4,(A0)+
-	CLR.W	(A4)+
-	MOVE.W	ODELOFF(A6),(A4)+
-.G2:	CLR.W	(A0)+
+	MOVEM.L D0/D7,-(A7)
+	MOVEQ #0,D0
+	MOVEQ #0,D7
+	BSR .RECURSEINIT
+	TST.L D7
+	BNE.S .some
+	SUBQ #2,A4
+	MOVEM.L (A7)+,D0/D7
+	BRA.W .4B
+.some:
+	MOVEM.L (A7)+,D0/D7
 	DONEM	A0
 	CMP.W	#35,(A3)
 	BNE.S	.4B
@@ -19349,6 +19430,87 @@ MOVED0FP0: MACRO
 .X1:	ADDQ.L	#2,A7
 	RTS
 
+.RECURSEINIT:
+	MOVEM.L D0/D1/A1/A6,-(A7)
+	TST.W ODEL(A6)
+	BEQ.S .noodel
+	MOVEQ #-1,D7
+	MOVE.L	OACC(A6),(A0)
+	MOVE.L	A0,OACC(A6)
+	ADDQ.L	#4,A0
+	TST.L D0
+	BEQ.S .off0
+	CMP.L #32768,D0
+	BPL .largeobj
+	MOVE.W	.LOBJ(PC),(A4)+
+	MOVE.W D0,(A4)+
+	BRA.S .off0
+.largeobj
+	MOVE.L	.LD1(PC),(A4)+
+	MOVE.W D0,(A4)+
+	MOVE.L	.LOBJ2(PC),(A4)+
+.off0:
+	TST.W	ODELOFF(A6)
+	BNE.S	.G1
+	MOVE.W	.GOBJ2(PC),(A4)+
+	TST.L D0
+	BEQ.S .off0_1
+	OR.W #$200,-2(A4)   ;change from A0 TO A1
+.off0_1:
+	MOVE.L	A4,(A0)+
+	CLR.W	(A4)+
+	BRA.S	.G2
+.G1:	MOVE.W	.GOBJ3(PC),(A4)+
+	TST.L D0
+	BEQ.S .off0_2
+	OR.W #$200,-2(A4)   ;change from A0 TO A1
+.off0_2:
+	MOVE.L	A4,(A0)+
+	CLR.W	(A4)+
+	MOVE.W	ODELOFF(A6),(A4)+
+.G2:	CLR.W	(A0)+
+
+.noodel:
+	MOVE.L OMEMB(A6),D1
+	BEQ.S .nomemb
+.nextmemb:
+	MOVE.L D1,A6
+	BTST #1,OFLAGS(A6)
+	BEQ.S .nottyped
+	TST.W   OSIZE(A6)     ;its a pointer
+	BNE.S .nottyped
+	CMP.L #5,OPTRTYPE(A6) ;its not an object
+	BMI.S .nottyped
+
+	MOVEQ #1,D1
+	TST.L DIMDATA(A6)
+	BEQ.S .nodim
+	MOVE.L DIMDATA(A6),A1
+	MOVE.L D0,-(A7)
+	MOVE.W (A1)+,D0
+	MOVE.W (A1,D0),D1 ;get the last dimsize (which will be the whole size)
+	MOVE.L (A7)+,D0
+
+.nodim
+	SUBQ #1,D1
+	MOVEM.L D0/A6,-(A7)
+	ADD.W  OOFF(A6),D0
+	MOVE.L OPTRTYPE(A6),A6
+
+.arrloop
+	BSR .RECURSEINIT
+	ADD.W OSIZE(A6),D0
+	DBF D1,.arrloop
+
+	MOVEM.L (A7)+,D0/A6
+
+.nottyped:
+	MOVE.L ONEXT(A6),D1
+	BNE.S .nextmemb
+.nomemb:
+	MOVEM.L (A7)+,D0/D1/A1/A6
+ RTS
+
 .SINGL:	DC.W	0
 .ISM:	DC.W	0
 .MV:	MOVE.L	2(A5),D0
@@ -19369,6 +19531,10 @@ MOVED0FP0: MACRO
 .GOBJ2:	MOVE.L	4(A4),(A0)
 .GOBJ3:	MOVE.L	4(A4),4(A0)
 .GOBJ4: MOVE.L 4(A0),D0
+.LOBJ: LEA 0(A0),A1
+.LD1  MOVEQ #0,D1
+    MOVE.W #1,D1
+.LOBJ2: LEA 0(A0,D1.L),A1
 
 ; GNEW TRASHES NOTHING
 
@@ -22678,7 +22844,7 @@ EXPFPCMP:
 .MS4:	MOVE.L	METHODFREEZ(PC),-(A7)
 	MOVE.L	D1,-(A7)		; STACK: S.L, F.L, M.L, I.L, COUNT.W
 	CMP.W	#17,(A3)+
-	BNE	ERROR23
+	BNE	.ERR23
 	MOVE.L	METHODIDENT,-(A7)
 	CLR.W	-(A7)
 	CMP.W	#18,(A3)
@@ -22693,8 +22859,7 @@ EXPFPCMP:
 	BEQ.S	.3
 	SUBQ.L	#2,A3
 .2:	CMP.W	#18,(A3)+		; OUT
-	BNE	ERROR23
-
+	BNE.S	.ERR23
 	MOVEQ	#0,D0
 	MOVE.W	(A7)+,D0		; D0=ARGCOUNT
 	MOVE.L	4(A7),A6
@@ -22715,6 +22880,8 @@ EXPFPCMP:
 .mcall1:
 	MOVE.L	(A0),A0			; A0=OBJ
 	BRA.S	.MS3
+.ERR23
+	JMP ERROR23
 .MS2:	MOVE.L	METHODSPEC(PC),A0
 	TST.W	D0
 	BNE.S	.MNOT0
@@ -22789,8 +22956,10 @@ EXPFPCMP:
 .GA0:	MOVE.L	2(A7),A0
 .GA00:	MOVE.L	(A7),A0
 .ERR:	CMP.W	#17,(A3)
-	BEQ	ERROR54
-	BRA	ERROR42
+	BEQ.S	.ERR54
+	JMP	ERROR42
+.ERR54
+  JMP ERROR54
 .GOBJ:	MOVE.L	4(A4),A1
 .MEMBERASMETHOD:			;-membcall
 	MOVE.L	LASTMEMBER(PC),D1
