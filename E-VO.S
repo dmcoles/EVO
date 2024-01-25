@@ -10085,7 +10085,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.7.0-dev',160
-			DC.B	'(23.01.2024)'
+			DC.B	'(25.01.2024)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -13552,7 +13552,7 @@ LDEF:	MACRO
 
 .2:	ADDQ.L	#2,A3
 .AGAIN:
-	CMP.W	#IOFF+44,(A3)+
+	CMP.W	#IOFF+44,(A3)+      ;PTR
 	BEQ.S	.PTR
 	BSET #7,VARFLAGS(a0) ;set LONG var flag
 	CMP.W	#IOFF+20,-2(A3)		; a:LONG
@@ -13571,7 +13571,8 @@ LDEF:	MACRO
 	BEQ	.1
 	BRA.S	.AGAIN
 .PTR:
-    CMP.W   #IOFF+39,(A3)+
+    MOVE.W  #0,VAR_PTRREPCOUNT(A0)           ; references
+    CMP.W   #IOFF+39,(A3)+  ;TO
 	BNE	ERROR33
     CMP.W   #IOFF+44,(A3)	;PTR TO PTR
     BEQ .MULTIPTR
@@ -13581,7 +13582,6 @@ LDEF:	MACRO
 
 	;handle repeated ptr to ptr to ptr etc
 .MULTIPTR:
-    MOVE.W  #0,VAR_PTRREPCOUNT(A0)           ; references
 .MULTI_00:
     CMP.W   #IOFF+44,(A3)
     BNE .PTR_BACK
@@ -13657,7 +13657,7 @@ LDEF:	MACRO
 	BSR.W	.5			; a[100]:ARRAY OF <TYPE>
 	BRA	.1
 .ARR_00:
-	MOVE.W  #0,VAR_PTRREPCOUNT(A0)
+	MOVE.W  #-1,VAR_PTRREPCOUNT(A0)
 	LSL.L   #2,D2
 .ARR_01:
 	CMP.W   #IOFF+44,(A3)	;PTR
@@ -13749,6 +13749,8 @@ LDEF:	MACRO
 	CMP.L #5,A6
 	BCS .G3
 
+	MOVE.W VAR_PTRREPCOUNT(A0),.PTRREP
+
 	TSTMOD
 	BNE .skipDEL
 
@@ -13790,7 +13792,15 @@ LDEF:	MACRO
 
 .arrloop:
 	BSR .recurseinit
+	CMP.W #0,.PTRREP
+	BLT.S .nptr
+
+	ADD.W #4,D0
+	BRA.S .sptr
+.nptr:
 	ADD.W OSIZE(A6),D0
+.sptr:
+
 	CMP.L D0,D2
 	BNE.S .arrloop
 
@@ -13810,6 +13820,8 @@ LDEF:	MACRO
 .LD1  MOVEQ #0,D1
 	MOVE.W #1,D1
 .LOBJ2: LEA 0(A0,D1.L),A1
+
+.PTRREP: DC.W 0
 
 .recurseinit:
 
@@ -13888,7 +13900,14 @@ LDEF:	MACRO
 
 .arrloop2
 	BSR .recurseinit
+	CMP.W #0,.PTRREP
+	BLT.S .nptr2
+
+	ADD.W #4,D0
+	BRA.S .sptr2
+.nptr2:
 	ADD.W OSIZE(A6),D0
+.sptr2:
 	DBF D1,.arrloop2
 
 	MOVEM.L (A7)+,D0/A6
@@ -17414,11 +17433,11 @@ dval2:  DC.L 0
 	BEQ .nodimdata
 	MOVE.L D1,A1
 	MOVE.W (A1),D1
+	MOVE.W D1,ARRAY_DIMS
 	SUBQ.W #1,D1
 	beq .nodimdata
 	MOVE.L A1,DIMSPTR
 	MOVE.L A1,FIRSTPTR
-	MOVE.W D1,ARRAY_DIMS
   
 .nodimdata:
 	MOVE.W VAR_PTRREPCOUNT(A0),TYPERF_XXX  ; number of PTR TOs
@@ -17426,10 +17445,12 @@ dval2:  DC.L 0
 	CMP.W	#33,D1			; SEE IF IDENT++
 	BPL	PLX
 PLB:
-    CMP.W   #41,D1
+    CLR.L CASTSPEC
+    CMP.W   #41,D1        ;   ::
     BNE     .0
     CMP.W   #31,(A3)+
     BNE ERROR42
+    MOVE.L  (A3),CASTSPEC
     MOVE.L  (A3),.SPEC1
     MOVE.L  (A3),.SSPEC1
     MOVE.L  (A3),.SPEC
@@ -17451,33 +17472,23 @@ PLB:
     BEQ .0_2                    ; self cant be a ptr to ptr ... - problems
 
 .NDIM:
-    TST.W   ARRAY_DIMS
-    BGT     .AD0_0
+    CMP.W   #1,ARRAY_DIMS
+    BNE     .0_2
     
     TST.W   TYPERF_XXX
-    BGT     .0_0
-    BMI     .0_2
-    ;TYPERF_XXX is = 0
-    MOVE.L  .SPEC1,.SPEC
-    MOVE.L	.SSPEC1,.SSPEC
+    BPL     .0_0
     BRA     .0_1
-
-.AD0_0:
-    bra     .0_2
     
 .0_0:
-    ;TYPERF_XXX is >0
     MOVE.L  #4,.SPEC
     MOVE.L  #4,.SSPEC
-.0_1:
     SUBQ.W  #1,TYPERF_XXX
-    TST.W   TYPERF_XXX
-    BPL .0_2
+    BMI .0_2
+.0_1:
     CMP.W   #29,d1      ;[
     beq     .0_2
     MOVE.L  .SPEC1,.SPEC
     MOVE.L	.SSPEC1,.SSPEC
-    subq.w  #1,TYPERF_XXX
 .0_2:
 
 	AND.L	#$FFFF,D0
@@ -17642,8 +17653,9 @@ PLB:
 	BNE	ERROR34
 	MOVE.W	(A3)+,D1
   
-	TST.W ARRAY_DIMS
-	BEQ .8
+	CMP.W #1,ARRAY_DIMS
+	BLT .8
+	BEQ .8a
 
 	SUBQ.W  #1,ARRAY_DIMS
   
@@ -17652,17 +17664,23 @@ PLB:
 	SUB.W #2,A3
 	BRA ERROR83
 
+.8a:
+	SUBA.L	A1,A1			; A1=OBJECT (member/NIL)
+	SUBA.L	A6,A6			; A6=OBJECT (HEAD/NIL)
+	BRA	.11
+
 ;no more dims
 .8: 
 	SUBA.L	A1,A1			; A1=OBJECT (member/NIL)
 	SUBA.L	A6,A6			; A6=OBJECT (HEAD/NIL)
 	CMP.W	#41,D1			; CHECK FOR POINTERTYPE
 	BNE.S	.NCAST
-	CMP.W	#31,(A3)+       ; .
+	CMP.W	#31,(A3)+       ; objecttype
 	BNE	ERROR40
 	MOVE.L	(A3)+,A6
+	MOVE.L A6,CASTSPEC
 	MOVE.L	A6,.SSPEC		; -
-    MOVE.L  A6,.SSPEC1
+	MOVE.L  A6,.SSPEC1
 	MOVE.W	(A3)+,D1
 .NCAST:	CMP.W	#35,D1      ;should be .
 	BNE	.11
@@ -17685,9 +17703,9 @@ PLB:
 .notmeth:
 	MOVE.L	.SSPEC(PC),.SPEC
     MOVE.L	.SSPEC(PC),.SPEC1
-	CMP.W	#39,(A3)+
+	CMP.W	#39,(A3)+     ; object member
 	BNE	ERROR40
-	CMP.W	#17,4(A3)
+	CMP.W	#17,4(A3)     ;  "("
 ;	BEQ	.EADDRMETHOD2
 
  	BNE.S .notmeth2
@@ -17709,7 +17727,7 @@ PLB:
 	MOVE.L	.SPEC(PC),D1
 	CMP.L	#MAXOBJSIZE,D1
 	BMI	ERROR40
-	MOVE.L	(A3)+,A1		; A1=FIRST MATCH MEMBER
+	MOVE.L	(A3)+,A1		; A1=F.IRST MATCH MEMBER
 	MOVE.L	A6,D2
 	BNE.S	.CASTO
 	MOVE.L	D1,A6			; A6=OBJECTHEAD
@@ -17722,24 +17740,25 @@ PLB:
 .SKM:
 	CMP.L #0,A1
 	BEQ .noobj1
+	CLR.W ARRAY_DIMS
 	MOVE.L DIMDATA(A1),D1
 	BEQ .nodimdata
 	MOVE.L D1,A2
 	MOVE.W (A2),D1
+	MOVE.W D1,ARRAY_DIMS
 	SUBQ.W #1,D1
 	BEQ .nodimdata
 	MOVE.L A2,DIMSPTR
 	MOVE.L A2,FIRSTPTR
-	MOVE.W D1,ARRAY_DIMS
   
 .nodimdata:
 	MOVE.W PTRREPCOUNT(A1),TYPERF_XXX  ; number of PTR TOs
 .noobj1:
-	MOVE.L	.SPEC(PC),D5
+	MOVE.L	.SPEC(PC),D5    ;object
 	CMP.L #5,D5
 	BMI.S  .12
 	MOVE.L	D5,A2
-	MOVE.W	4(A2),D5
+	MOVE.W	4(A2),D5    ;OSIZE
 	BRA.S	.12
 .11:	MOVE.L	.SPEC(PC),D5		; D5=OBJSIZE
 	CMP.L	#MAXOBJSIZE,D5
@@ -17767,8 +17786,17 @@ PLB:
 	CMP.L	#$10000,D0
 	BMI.W	.nmeth3
 	CLR.W METHCALL
+	TST.L CASTSPEC
+	BEQ.S .nxx
+	TST.B	.TDRF
+
+	BNE.S	.nxx
+	MOVE.W	.OPC(PC),(A4)+		; MOVE.L X(A5),A0
+	BSR	GVA0D1_0
+.nxx:
 	BRA .EADDRMETHOD3
 .nmeth3
+	CLR.L CASTSPEC
 	BRA.W	.CONT
 
 ; eXPRESSION Index
@@ -17827,7 +17855,7 @@ PLB:
 .IO:	MOVEQ	#0,D1			
 	CMP.L	A1,D1
 	BEQ.S	.14
-	MOVE.W	(A1),D1
+	MOVE.W	(A1),D1     ;A1=MEMBER, (A1)=OOFF
 .14:	MOVE.L	D3,D4
 	MULU	D5,D4
 	ADD.L	D4,D1
@@ -17838,6 +17866,13 @@ PLB:
 	CMP.L	#$10000,D0
 	BMI.W	.nmeth4
 	CLR.W METHCALL
+	TST.L CASTSPEC
+	BEQ.S .nxx1
+	;TST.B	.TDRF
+	;BNE.S	.nxx1
+	MOVE.W	.OPC(PC),(A4)+		; MOVE.L X(A5),A0
+	BSR	GVA0D1_0
+.nxx1:
 	BRA .EADDRMETHOD3
 .nmeth4
 
@@ -18761,6 +18796,7 @@ GENADD:	TST.L	D1			; value in d1
 
 
 XIT:	MOVEM.L	(A7)+,D3-D5/A1
+	CLR.L CASTSPEC
 	RTS
 
 
@@ -19495,11 +19531,19 @@ MOVED0FP0: MACRO
 	SUBQ #1,D1
 	MOVEM.L D0/A6,-(A7)
 	ADD.W  OOFF(A6),D0
+	MOVE.W PTRREPCOUNT(A6),.PTRREP
 	MOVE.L OPTRTYPE(A6),A6
 
 .arrloop
 	BSR .RECURSEINIT
+	CMP.W #0,.PTRREP
+	BLT.S .nptr
+
+	ADD.W #4,D0
+	BRA.S .sptr
+.nptr:
 	ADD.W OSIZE(A6),D0
+.sptr:
 	DBF D1,.arrloop
 
 	MOVEM.L (A7)+,D0/A6
@@ -19511,6 +19555,7 @@ MOVED0FP0: MACRO
 	MOVEM.L (A7)+,D0/D1/A1/A6
  RTS
 
+.PTRREP DC.W 0
 .SINGL:	DC.W	0
 .ISM:	DC.W	0
 .MV:	MOVE.L	2(A5),D0
@@ -22770,7 +22815,7 @@ EXPFPCMP:
 .2:	CMP.W	#35,D0
 	BNE.W	.3
 	TST.B	4(A0)
-	BEQ	ERROR22
+	BEQ.S .ERR22
 	ADDQ.L	#2,A3
 	MOVE.L	A0,METHODIDENT		; DO METHOD CALL HERE!
 	MOVE.L LABLOG,-(A7)
@@ -22791,6 +22836,9 @@ EXPFPCMP:
 	MOVEQ	#1,D5
 	BRA	EXPLOOP
 
+.ERR22:
+  JMP ERROR22
+
 	CPU040
 .c0:FMOVE.S FP0,D0
 .c1:FMOVE.S D0,FP0
@@ -22799,6 +22847,7 @@ EXPFPCMP:
 
 	METHODIDENT:	DC.L	0
 	METHODSPEC:	DC.L	0
+	CASTSPEC:	DC.L	0
 	METHODFREEZ:	DC.L	0	; FROZEN CALL WITH THIS OBJECT
 
 ; WANTS   OBJ=A6,NAME=D0
@@ -22822,13 +22871,19 @@ EXPFPCMP:
 
       EXPCALLMETHOD:			; IDENTENTRY IN METHODIDENT,
 	CMP.W	#42,(A3)+		; A3 JUST PAST "."
-	BNE	ERROR40
+	BNE	.ERR40
+	TST.L CASTSPEC
+	BEQ.S .NC
+	MOVE.L CASTSPEC,METHODSPEC
+
+	CLR.L CASTSPEC
+.NC:
 	MOVE.L	METHODSPEC(PC),D0
 	BNE.S	.NS1
 	MOVE.L	METHODIDENT(PC),A6
 	MOVE.L	(A6),D0
 .NS1:	CMP.L	#5,D0
-	BMI	ERROR40
+	BMI	.ERR40
 	MOVE.L	D0,A6			; A6=OBJECT
 	MOVE.L	A6,-(A7)		;-membcall
 	CLR.L	.MEMBCALL		;-membcall
@@ -22882,6 +22937,8 @@ EXPFPCMP:
 	BRA.S	.MS3
 .ERR23
 	JMP ERROR23
+.ERR40
+	JMP ERROR40
 .MS2:	MOVE.L	METHODSPEC(PC),A0
 	TST.W	D0
 	BNE.S	.MNOT0
@@ -22906,11 +22963,11 @@ EXPFPCMP:
 	BRA.S	.DCALL
 .SKI:
 	TST.W	ODELOFF(A0)
-	BMI	ERROR71
+	BMI.S	.ERR71
 	BHI	.U
 	MOVE.W	.6(PC),(A4)+
 .UB:	BRA.S	.NFR
-
+.ERR71: JMP ERROR71
 .FR:	MOVEM.L	A0/A6,-(A7)		; FREEZ!
 	MOVE.L	METHODFREEZ(PC),A6
 	GETM	A0			; ADD TO SUPER-ACCESS
