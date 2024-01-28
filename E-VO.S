@@ -10085,7 +10085,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.7.0-dev',160
-			DC.B	'(26.01.2024)'
+			DC.B	'(28.01.2024)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -13888,7 +13888,8 @@ LDEF:	MACRO
 	BEQ.S .nodim
 	MOVE.L DIMDATA(A6),A1
 	MOVE.L D0,-(A7)
-	MOVE.W (A1)+,D0
+	MOVE.W (A1),D0
+	ADD.W D0,D0
 	MOVE.W (A1,D0),D1 ;get the last dimsize (which will be the whole size)
 	MOVE.L (A7)+,D0
 
@@ -17472,22 +17473,34 @@ PLB:
     BEQ .0_2                    ; self cant be a ptr to ptr ... - problems
 
 .NDIM:
-    CMP.W   #1,ARRAY_DIMS
-    BNE     .0_2
+   
+    TST.W .SPSET
+    BEQ.S .nr
+
+    MOVE.L  .SPEC1,.SPEC
+    MOVE.L	.SSPEC1,.SSPEC
+    CLR.W .SPSET
+.nr
+    TST.W ARRAY_DIMS
+    BNE.S .arr
     
     TST.W   TYPERF_XXX
-    BPL     .0_0
-    BRA     .0_1
+    BMI     .0_2
+
+    SUB.W #1,TYPERF_XXX
+    BMI     .0_2
+
+    BRA     .0_0
+
+.arr    
+    TST.W   TYPERF_XXX
+    BMI     .0_2
     
 .0_0:
     MOVE.L  #4,.SPEC
     MOVE.L  #4,.SSPEC
-    BMI .0_2
-.0_1:
-    CMP.W   #29,d1      ;[
-    beq     .0_2
-    MOVE.L  .SPEC1,.SPEC
-    MOVE.L	.SSPEC1,.SSPEC
+    MOVE.W #-1,.SPSET
+
 .0_2:
 
 	AND.L	#$FFFF,D0
@@ -17581,6 +17594,7 @@ PLB:
 	MOVE.L	.SSPEC,-(A7)
 	MOVE.L	.SPEC(PC),-(A7)
 	MOVE.L	TYPERF_XXX,-(A7)
+	MOVE.L	.SPSET,-(A7)
 	MOVE.L	.TDRF(PC),-(A7)
 	CMP.W	#-1,D5
 	BEQ.S	.31
@@ -17638,6 +17652,7 @@ PLB:
 	MOVE.W	.30(PC),(A4)+
 .32:	MOVE.L	(A7)+,.TDRF
 
+	MOVE.L	(A7)+,.SPSET
 	MOVE.L	(A7)+,TYPERF_XXX
 	MOVE.L	(A7)+,.SPEC
 	MOVE.L	(A7)+,.SSPEC
@@ -17659,11 +17674,12 @@ PLB:
 	BNE .dims
 
 	CMP.L #5,.SPEC
-	BMI.S .8a
+	BMI.S .zz
 
 	TST.W TYPERF_XXX
 	BMI.S .8
 
+.zz
 	SUBQ.W  #1,TYPERF_XXX
 	BRA.S .8a
 .dims:
@@ -17677,12 +17693,14 @@ PLB:
 .8a:
 	SUBA.L	A1,A1			; A1=OBJECT (member/NIL)
 	SUBA.L	A6,A6			; A6=OBJECT (HEAD/NIL)
+	CLR.L DIMSPTR
 	BRA	.11
 
 ;no more dims
 .8: 
 	SUBA.L	A1,A1			; A1=OBJECT (member/NIL)
 	SUBA.L	A6,A6			; A6=OBJECT (HEAD/NIL)
+	CLR.L DIMSPTR
 	CMP.W	#41,D1			; CHECK FOR POINTERTYPE
 	BNE.S	.NCAST
 	CMP.W	#31,(A3)+       ; objecttype
@@ -18582,6 +18600,7 @@ PLB:
 	MOVE.B	.ORIGD0(PC),D0
 	BRA.W	.DREFL
 	
+.SPSET DC.W 0
 .SSPEC:	DC.L	0
 .SPEC:	DC.L	0			; 2 LONGWORDS <-> SAVE
 .SSPEC1:	DC.L	0
@@ -19566,7 +19585,8 @@ MOVED0FP0: MACRO
 	BEQ.S .nodim
 	MOVE.L DIMDATA(A6),A1
 	MOVE.L D0,-(A7)
-	MOVE.W (A1)+,D0
+	MOVE.W (A1),D0
+	ADD.W D0,D0
 	MOVE.W (A1,D0),D1 ;get the last dimsize (which will be the whole size)
 	MOVE.L (A7)+,D0
 
