@@ -13721,7 +13721,8 @@ LDEF:	MACRO
 .L1:	ADDQ.L	#8,GLOBSTACK
 	BRA	.1
 
-.5:	CMP.L	#1,D2			; INIT ARRAY
+.5:	MOVE.W D2,.SZ
+	CMP.L	#1,D2			; INIT ARRAY
 	BMI	ERROR31
 	BTST	#0,D2
 	BEQ.S	.7
@@ -13788,11 +13789,11 @@ LDEF:	MACRO
 	MOVE.L tempspacedataptr(PC),A0
 
 ;figure out how many elements to initialise
-;using osize(a6) vs d2
+;using osize(a6) vs sz
 
 .arrloop:
-	BSR .recurseinit
-	CMP.W #0,.PTRREP
+	BSR.S .recurseinit
+	TST.W .PTRREP
 	BLT.S .nptr
 
 	ADD.W #4,D0
@@ -13801,7 +13802,7 @@ LDEF:	MACRO
 	ADD.W OSIZE(A6),D0
 .sptr:
 
-	CMP.L D0,D2
+	CMP.W .SZ,D0
 	BNE.S .arrloop
 
 	TST.L D7
@@ -13822,6 +13823,7 @@ LDEF:	MACRO
 .LOBJ2: LEA 0(A0,D1.L),A1
 
 .PTRREP: DC.W 0
+.SZ: DC.W 0
 
 .recurseinit:
 
@@ -20019,7 +20021,9 @@ EXPQMARK:
 	MOVEM.L	D0/D1/A6,-(A7)
 	MOVE.L	A0,D0
 	MOVEA.L	.OBJ(PC),A6
+	MOVE.L A6,-(A7)
 	BSR.W	FINDMETHOD
+	MOVE.L (A7)+,A6
 	TST.L	D1
 	BEQ.W	ERROR40			; ERROR54
 	TST.W	ODELOFF(A6)
@@ -22805,7 +22809,7 @@ EXPFPCMP:
 	CMP.W	#36,D0
 	BPL	EXPVARCBACK
 .3:	TST.B	4(A0)
-	BEQ	ERROR22
+	BEQ	.ERR22
 	CMP.B	#LAB,4(A0)
 	BEQ	.ERR6
 	CMP.W	#42,2(A3)
@@ -22918,7 +22922,7 @@ EXPFPCMP:
 	METHODFREEZ:	DC.L	0	; FROZEN CALL WITH THIS OBJECT
 
 ; WANTS   OBJ=A6,NAME=D0
-; TRASHES A0
+; TRASHES A0/a6
 ; RETURNS D1=METHOD | NIL
 
       FINDMETHOD:
