@@ -20,7 +20,6 @@ jobs:
       - name: run build
         run: |
            vamos -c /usr/amiga/.vamosrc -H disable -m 20000 --cwd esource: -V system:/usr/amiga -V esource:$GITHUB_WORKSPACE make EVO
-
       - name: add build artifacts to publish
         run: |
           mkdir output
@@ -28,13 +27,6 @@ jobs:
           cd output
           lha a ../evo-dev${{ github.sha }}.lha *
 
-      - name: Update nightly release
-        uses: pyTooling/Actions/releaser@main
-        with:
-          tag: dev-build
-          rm: true
-          token: ${{ secrets.GITHUB_TOKEN }}
-          files: evo-dev${{ github.sha }}.lha
       - name: Get current date
         id: date
         run: |
@@ -44,4 +36,5 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: dev-build
-          name: automated dev build ${{ env.date }}
+          name: automated dev build ${{ env.date }} (nightly)
+          files: evo-dev${{ github.sha }}.lha
