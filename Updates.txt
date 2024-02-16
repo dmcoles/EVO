@@ -527,6 +527,8 @@ Development restarted as E-VO by Darren Coles
    - NOT operator was very broken (inconsistently applied and in some cases
      not applied at all)
    - Added EVO_3_7_0 define
+   - casting and PTR TO PTR handling is improved and should now work in all
+     use cases.
 
 DATE HISTORY:
     3.3b    20.11.1999 -> 12.12.1999
