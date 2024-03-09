@@ -2,7 +2,7 @@ Short:        E-VO: Amiga E Evolution
 Author:       darren_m_coles@yahoo.co.uk (Darren Coles)
 Uploader:     darren_m_coles@yahoo.co.uk (Darren Coles)
 Type:         dev/e
-Version:      3.6.1
+Version:      3.7.0
 Replaces:     dev/e/evo.lha
 Architecture: m68k-amigaos >= 2.0.4
 Distribution: Aminet
@@ -12,24 +12,21 @@ by Wouter van Oortmerssen. It adds many new features, bug fixes and
 optimisations including object UNIONs, string merging, non word-aligned
 objects and many more.
 
-This version is a minor update which contains the following changes:
+Just a small sample of the changes in this release:
 
-  add checks for object going over 64k
-  
-  fix 020 optimised address calculation for array of object (or ptr to
-  object) indexing
-  
-  added EXENAME and DESTDIR command line arguments to override the output
-  file name.
-  
-  EDBG: Setting breakpoint caused crashes on certain versions of graphics.library
-  
-  fix casing for IeeeDPFloor and IeeeDPCeil
-  
-  Extend lists to handle 64k items instead of 32k.
-  
-  Fix #else preprocessor parsing issues
-
+   added PSIZEOF operator
+   
+   added ARRAYSIZE operator
+   
+   added SelectFirst function
+   
+   added debug symbols for methods
+   
+   allow CONT and EXIT within SELECT statement
+   
+   skip NameFromFH call on kick 1.3 meaning the compiler now works
+     on that OS again
+   
 E is an object oriented / procedural / unpure functional higher programming
 language, mainly influenced by languages such as C++, Ada, Lisp etc.  It is a
 general-purpose programming language, and the Amiga implementation is

@@ -346,6 +346,66 @@ NOTE: in most cases you won't need to use any of these options
 0D. changes / history / new features
 ------------------------------------
 
+ New in E-VO  (3.7.0)
+   - Compiler sometimes produced garbage error message with an error at the very
+     end of the file.
+   - Reformatted the Amigaguide document to better fit in 80 columns.
+   - added Arexx compile scripts
+   - allow creating a new object directly into an object member
+     eg. self.a:=NEW self.a.method()
+   - method table was not correctly initialised for objects declared as
+     eg. DEF a:b OR DEF a[5]:ARRAY OF b
+   - heap in compiler is allocated with MEMF_CLEAR in compiler to ensure all
+     data in the exe is initialised to 0 and not contain random data from
+     memory
+   - calling a method on an array element of an object did did not calculate
+     the correct address for the method.
+   - compiler was creating 020 opcodes when accessing an array of objects
+   - added NIL pointer checks when calling methods on array of objects
+   - self variable was set incorrectly for methods declared with an exception
+     handler
+   - fix issue with wrong opcode being generated in this code
+        DEF a
+        DEF b:PTR TO LONG
+        a:=[0,b[0]:=5]
+     resulting in the value not being stored correctly
+   - include textfield module  
+   - fix bug in reaction_lib with the freeClickTabs, freeChooserLabels and
+     freeRadioButtons functions not looping through the list correctly.
+   - add support for long branch 020 instruction.
+   - fix invalid memory access when casting the result of a procedure call
+     to an object
+   - fix inconsistencies with SIZEOF command
+   - fix error in branching code for the == operator
+   - add missing listview module
+   - add some extra functions in reaction_lib (openClass, openLibs,
+     closeLibs, libDoGadgetMethodA)
+   - added PSIZEOF operator
+   - added ARRAYSIZE operator
+   - added SelectFirst function
+   - added debug symbols for methods
+   - allow CONT and EXIT within SELECT statement
+   - updated Rnd() function to be pure
+   - flagged openw, opwns, boolgad, settopaz, sets, gets functions as not pure
+   - added WARN TRUE/FALSE to enable/disable warnings
+   - added Rol() and Ror() functions
+   - the 020 variant of Mod() was not correctly used by the compiler and
+     was also taking the parameters the wrong way around
+   - added 020 variant of ListItem function
+   - track line numbers for warnings
+   - NOREGS option was not correctly parsed on methods
+   - taking a reference to a method {obj.method} did not return the
+     correct address
+   - 1.3 startup code now updates stack pointers to allow stack space
+     functions to return the correct values.
+   - skip NameFromFH call on kick 1.3 meaning the compiler now works
+     on that OS again
+   - NOT operator was very broken (inconsistently applied and in some cases
+     not applied at all)
+   - Added EVO_3_7_0 define
+   - casting and PTR TO PTR handling is improved and should now work in all
+     use cases.
+
  New in E-VO  (3.6.1)
 
     - add checks for object going over 64k
@@ -946,7 +1006,7 @@ v3.4.1  19.10.2021 -> 23.10.2021
 v3.5.0  04.11.2021 -> 14.07.2022
 v3.6.0  12.09.2022 -> 19.04.2023
 v3.6.1  24.04.2023 -> 16.06.2023
-v3.7.0  30.06.2023 -> ?
+v3.7.0  30.06.2023 -> 09.03.2024
 
 @endnode
 @node CH_0E

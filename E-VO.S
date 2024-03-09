@@ -10084,8 +10084,8 @@ SRCFN: DC.L 0
 	EROBJLINE:	DC.B	'WITH: %s',10,0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
-			DC.B	'/Assembler/Linker/PP',160,'v3.7.0-dev',160
-			DC.B	'(16.02.2024)'
+			DC.B	'/Assembler/Linker/PP',160,'v3.7.0',160
+			DC.B	'(09.03.2024)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
