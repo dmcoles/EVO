@@ -4,7 +4,7 @@ Uploader:     darren_m_coles@yahoo.co.uk (Darren Coles)
 Type:         dev/e
 Version:      3.7.0
 Replaces:     dev/e/evo.lha
-Architecture: m68k-amigaos >= 2.0.4
+Architecture: m68k-amigaos
 Distribution: Aminet
 
 E-VO Amiga E Compiler is a derivative of the original Amiga E compiler written
