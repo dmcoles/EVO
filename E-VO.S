@@ -203,8 +203,9 @@ MIDHEAVY	= $100
 VARFLAGS=5
 VARLINENO = 12      ; OFFSET AT WHICH LINENUM IN ID
 VARHEAVY	= 14			; OFFSET AT WHICH HEAVYINFOS IN ID
-VAR_PTRREPCOUNT = 18  ; OFFSET USED TO COUNT PTR TO PTR
-VAR_DIMDATA = 20			; OFFSET RESERVED FOR ARRAY MULTI-DIMENSION DATA
+VAR_NAME = 18
+VAR_PTRREPCOUNT = 22  ; OFFSET USED TO COUNT PTR TO PTR
+VAR_DIMDATA = 24			; OFFSET RESERVED FOR ARRAY MULTI-DIMENSION DATA
 
 MINSTACKSIZE	= 10000			; van gen. code
 MINSTACKSIZELIB	= 1500
@@ -3020,7 +3021,7 @@ HEAVYTABLE:
 ;*-*
 
       PARSEENDLINE:
-	CMP.L	ENDECODE(PC),A0
+	CMP.L	ENDECODE,A0
 	BPL.W	.SKIP
   
 	CMP.W	#IOFF+109,D4
@@ -3880,6 +3881,7 @@ PURECHECK: DC.W 0
 	BNE.S	.CLH
 	MOVE.L	#MIDHEAVY*3,(A6)+	; VARHEAVY: USED 3x (FAKE)
 .CLHB:
+	CLR.L (A6)+     ;VAR_NAME
 	MOVE.W #-1,(A6)+  ;VAR_PTRREPCOUNT
 	CLR.L (A6)+ ;VAR_DIMDATA
 
@@ -4571,6 +4573,7 @@ CPUTAB:
 	BNE.S	.NS
 	MOVE.L	A6,CURSELF
 .NS: 
+	CLR.L (A3)+     ;VAR_NAME
 	MOVE.W #-1,(A3)+  ;VAR_PTRREPCOUNT
 	CLR.L (A3)+ ;VAR_DIMDATA
   
@@ -8729,6 +8732,7 @@ iERROR105 JMP ERROR105
 .1:	MOVE.L	-(A4),A4
 	MOVE.L	A4,D0
 	BEQ.S	.1A
+	MOVE.L (A4),VAR_NAME(A4)  ;save name
 	BTST	#0,5(A4)		; SEE IF UNREFERENCED
 	BEQ	.UNREF
 .UNRB:	MOVE.B	4(A4),D0
@@ -10084,8 +10088,8 @@ SRCFN: DC.L 0
 	EROBJLINE:	DC.B	'WITH: %s',10,0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
-			DC.B	'/Assembler/Linker/PP',160,'v3.7.0',160
-			DC.B	'(09.03.2024)'
+			DC.B	'/Assembler/Linker/PP',160,'v3.8.0-dev',160
+			DC.B	'(21.03.2024)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -10794,11 +10798,13 @@ SYMEND:
 	TST.L	(A5)
 	BEQ.W	.OUT
 .L:	MOVE.L	(A5),D0
-	BEQ.S	.X
+	BEQ	.X
 	MOVE.L	D0,A5
 	MOVEQ	#0,D3			; D3=WLEN
 	CMP.W	#4,4(A5)
 	BNE.S	.1
+
+	;PROC definition
 	MOVE.W	6(A5),D3
 	LSR.W	#1,D3
 	ADDQ.L	#1,D3
@@ -10808,16 +10814,39 @@ SYMEND:
 .2:	LEA	4(A5),A0
 .CL:	MOVE.W	(A0)+,(A4)+
 	DBRA	D3,.CL
+.DBN
 	CHESTB	A4,D0,3,ERROR37
 
 	CMP.W	#4,4(A5)
 	BNE.S	.NSELF
+
+	CMP.W #7,(A0)    ; proc details
+	BNE.S .n7
+	MOVE.W	(A0)+,(A4)+	;jobcode
+	MOVE.W	(A0)+,(A4)+	;proc line number
+.n7:
 	CMP.W	#5,(A0)
 	BNE.S	.NSELF
 	MOVE.L	(A0)+,(A4)+
 	MOVE.L	(A0)+,(A4)+
 .NSELF:
-	BRA.S	.L
+	CMP.W #6,(A0)    ;	var details
+	BNE .n6
+	MOVE.W (A0)+,(A4)+  ;copy jobcode
+	MOVE.W (A0)+,(A4)+  ;copy lineno
+
+	MOVE.W	(A0)+,D3
+	MOVE.W D3,(A4)+     ;copy count
+	SUBQ.L	#1,D3
+.NCL:	MOVE.L A1,-(A7)
+	MOVE.L (A0)+,A1 ;get variable
+	BSR DOVARDEBUGINFO
+	MOVE.L (A7)+,A1
+	DBRA	D3,.NCL
+	BRA .DBN
+
+.n6:  
+	BRA	.L
 .X:	MOVE.L	A4,D3
 	SUB.L	D4,D3
 	BTST	#1,D3
@@ -10832,6 +10861,106 @@ SYMEND:
 	MOVE.L	D4,D2
 	BSR	WRITEFILE
 .OUT:	RTS
+
+      DOVARDEBUGINFO:
+
+  MOVEM.L D0-D2/A2,-(A7)
+  move.l (a1),d0
+  cmp.l #1,d0
+  bne.s .n1
+  moveq #7,d0 ;vartype 7 (PTR TO CHAR)
+  btst #6,VARFLAGS(a1)  ;force signed
+  beq.s .is1
+  moveq #8,d0 ;vartype 8 (PTR TO BYTE)
+
+.n1:
+  cmp.l #2,d0
+  bne.s .n2
+  moveq #9,d0 ;vartype 9 (PTR TO INT)
+  btst #5,VARFLAGS(a1)  ;force unsigned
+  beq.s .is1
+  moveq #10,d0 ;vartype 10 (PTR TO WORD)
+  bra.s .is1
+.n2:
+  cmp.l #4,d0
+  bne.s .n3
+  moveq #11,d0 ;vartype 11 (PTR TO LONG)
+  btst #6,VARFLAGS(a1)  ;is long
+  beq.s .is1
+  moveq #7,d0 ;vartype 7 (PTR TO CHAR)
+  bra.s .is1
+.n3:
+  moveq #6,d0 ;vartype 6 (OBJECT)
+  
+  cmp.w #0,VAR_PTRREPCOUNT(a1)
+  bne.s .is1
+
+  moveq #12,d0 ;vartype 12 (PTR TO OBJECT)
+
+.is1:  
+  cmp.w #-1,VAR_PTRREPCOUNT(a1)
+  beq.s .nptrrep
+  
+  cmp.w #0,VAR_PTRREPCOUNT(a1)
+  beq.s .nptrrep
+  
+  moveq #13,d0 ;vartype 13 (PTR TO PTR TO...) 
+.nptrrep:
+
+  tst.l VAR_DIMDATA(a1)
+  beq.s .narr
+  addq  #7,d0 ;array types offset
+.narr:
+  
+  
+	MOVE.W D0,(A4)+ ;save type
+
+  MOVEQ #0,D0
+  cmp.l #5,(a1)
+  BMI.S	.N0
+  MOVE.L (A1),A2
+  MOVE.W OID(A2),D0
+.N0:
+  MOVE.W D0,(A4)+     ;object id
+
+  CLR.W (A4)+      ;number of array dimensiosn
+  
+  tst.l VAR_DIMDATA(a1)
+  beq.s .narr2
+  move.l VAR_DIMDATA(a1),a2
+  move.w (a2)+,d0
+  move.w d0,-2(a4)   ;overwrite number of dimensions
+  subq.w #1,d0
+  moveq #1,d1
+.copydim:
+  moveq #0,d2
+  move.w (a2),d2  ;get dimension
+  divu d1,d2      ;div by previous
+  move.w (a2)+,d1 ;set new previous
+  
+  move.w d2,(a4)+ ;save dim info
+  dbf d0,.copydim
+.narr2:  
+  
+	MOVE.L A4,A2
+	CLR.W (A4)+   ;varname length
+	MOVE.L VAR_NAME(A1),A1
+	MOVEQ #0,D0
+.CP: 
+	TST.B (A1)
+	BEQ.S .CPE
+	ADDQ.L #1,D0
+	MOVE.B (A1)+,(A4)+  ;copy varname
+	BRA.S .CP
+.CPE:
+	BTST #0,D0
+	BEQ.S .evn
+	ADDQ.L #1,D0
+	CLR.B (A4)+     ;pad varname
+.evn:
+	MOVE.W D0,(A2)  ;var name length
+  MOVEM.L (A7)+,D0-D2/A2
+  RTS
 
       WRITEDEBUGINFOS:
 	TST.L	LINEBUF
@@ -12898,7 +13027,10 @@ LIBINFO:	DC.L	0
 	MOVEQ	#-1,D1
 	MOVE.W	D1,PROCF
 	MOVE.W	D1,DEFFLAG
-	CLR.W	HANDLEFLAG
+	TST.L	LINEBUF
+	BEQ.S	.0
+	JSR	ADDLINEDBG
+.0:	CLR.W	HANDLEFLAG
 	MOVE.L	CURIDENTREC(PC),A0	; NOW GET NR OF LOC VARS
 	MOVE.L	6(A0),A0
 	MOVE.L	A0,COMPILEPROC
@@ -13212,6 +13344,7 @@ LDEF:	MACRO
 	DBTAIL:	DC.L	0
 	DBBEG:	DC.L	0
 	DBCUR:	DC.L	0		; =end after one, ISDEBUG FLAG
+	DBCNT:	DC.L	0
 
 
       SKIPDEFLOCAL:			; 33
@@ -13220,6 +13353,7 @@ LDEF:	MACRO
 
 	MOVE.L #TEMPSPACEDATABUF,tempspacedataptr
 	CLR.L	DBCUR
+	CLR.L DBCNT
 	BTST	#6,CODEPREFS+1
 	BEQ.W	.NDB			; NOW __DEBUG__ SPECIFIC
 	CMP.W	#1,D5
@@ -13260,10 +13394,13 @@ LDEF:	MACRO
 	SUB.L	A6,D0
 	MOVE.W	D0,-2(A6)
 
+	MOVE.W 	#7,(A0)+			;define proc linenum
+	MOVE.W	LINENUM(PC),(A0)+	;write linenum
+
 	MOVE.L	D1,A1			; THIS BIT ADDS A "5" SELF EXTENSION
 	MOVE.L	18(A1),D0
 	BEQ.S	.NSELF
-	MOVE.L 	#$50004,(A0)+
+	MOVE.L 	#$50004,(A0)+	;self definition
 	MOVE.W	LINENUM(PC),(A0)+
 	MOVE.L	D0,A1
 	MOVE.W	10(A1),(A0)+
@@ -13274,9 +13411,9 @@ LDEF:	MACRO
 .NN:	GETM	A0			; START REGULAR VAR DEBUG, 10 BYTES
 	MOVE.L	A0,DBBEG
 	CLR.L	(A0)+
-	MOVE.W	D5,(A0)+
+	MOVE.W	D5,(A0)+	;debug vars jobcode
 	MOVE.W	LINENUM(PC),(A0)+
-	CLR.W	(A0)+
+	CLR.W	(A0)+	;count
 	MOVE.L	A0,DBCUR
 
 .NDB:	TST.W	SCOPE
@@ -13405,7 +13542,10 @@ LDEF:	MACRO
 	BTST	#3,5(A0)
 	BEQ.S	.NREG
 	ADD.W	#30000,D2
-.NREG:	MOVE.W	D2,(A6)+
+.NREG:	MOVE.W	D2,(A6)+  ; add regoff
+	MOVE.L A0,-(A7) ;save variable
+	ADD.L #1,DBCNT
+
 	MOVE.L	A6,DBCUR
 .NDBA:
 	CMP.W	#COM,(A3)+
@@ -13414,18 +13554,37 @@ LDEF:	MACRO
 	BEQ	.BRCL
 	
 .E:
+	MOVE.L	DBCUR,D0
+	BEQ.S .cnt0
+	MOVE.L D0,A0
+	MOVE.L DBCNT,D0
+	BEQ.S .cnt0
+	MOVE.W	#6,(A0)+	;debugvars2 jobcode
+	MOVE.W	LINENUM(PC),(A0)+	
+	MOVE.W	D0,(A0)+	
+	LSL.W #2,D0
+	LEA (A7,D0),A7
+	MOVE.L A7,A1
+	LSR.W #2,D0
+	SUBQ #1,D0
+
+.copyvars:
+	MOVE.L  -(A1),(A0)+ ;copy saved variable
+	DBF D0,.copyvars
+	MOVE.L	A0,DBCUR
+	
+.cnt0:
 	MOVE.L	DBCUR(PC),D0		; FINISH DEBUG INFOS
 	BEQ.S	.NDBF
 	MOVE.L	DBBEG(PC),A0
 	MOVE.L	A0,D1
-	ADD.L	#10,D1
 	MOVE.L	D0,A1
-	SUB.L	D1,D0
+	MOVE.L DBCNT,D0
 	BNE.S	.NZ
 	DONEM	A0
 	BRA.S	.NDBF
-.NZ:	LSR.W	#1,D0
-	MOVE.W	D0,8(A0)
+.NZ:
+	MOVE.W	D0,8(A0)  ;update length
 	DONEH	A1
 	MOVE.L	DBTAIL(PC),D0
 	BNE.S	.LA2
@@ -17226,14 +17385,14 @@ DOOPT:	MOVE.W	EAREQUEST(PC),D3
 	MOVE.W	(A2),-(A7)
 	MOVE.W	(A1),(A2)
 	MOVE.L	EAIDENT(PC),A6
-	BSR	GVA6D3_9
+	JSR	GVA6D3_9
 	MOVE.W	(A2),(A1)
 	MOVE.W	(A7)+,(A2)
 	MOVE.L	D0,A6
 	MOVE.L	D4,A2
 	RTS
 GRUNT:	MOVE.L	EAIDENT(PC),A6
-	BSR	GVA6D3_9
+	JSR	GVA6D3_9
 	MOVE.L	D0,A6
 	MOVE.L	D4,A2
 	RTS
@@ -17385,11 +17544,16 @@ OPTMQADD:
 
 TYPERF_XXX:
         DC.W    0
-ARRAY_DIMS:
+DIMS_REMAIN:
+        DC.W    0
+FIRST_DIM:
+        DC.B    0
+DIM_VALUE:
+        DC.B    0
+
+ELEMENT_COUNT:
         DC.W    0
 DIMSPTR:
-        DC.L   0
-FIRSTPTR:
         DC.L   0
 
 
@@ -17404,9 +17568,11 @@ dval2:  DC.L 0
       EADDRESSMODI:			; D5=-1/OTHER,A3=VOOR HELE EXP
 	MOVEM.L	D3-D5/A1,-(A7)		; D0=[0=-->D0,1=-->D1,2=D0-->]
 
-	CLR.W ARRAY_DIMS
+	CLR.W DIMS_REMAIN
 	CLR.L DIMSPTR
-	CLR.L FIRSTPTR
+	CLR.W ELEMENT_COUNT
+	CLR.B DIM_VALUE
+	MOVE.B #1,FIRST_DIM
 	MOVE.W #-1,TYPERF_XXX
 
 	CMP.W	#-1,D5			;     SET(D5) PAR     PAR
@@ -17435,12 +17601,17 @@ dval2:  DC.L 0
 	MOVE.L VAR_DIMDATA(A0),D1  
 	BEQ .nodimdata
 	MOVE.L D1,A1
-	MOVE.W (A1),D1
-	MOVE.W D1,ARRAY_DIMS
+	MOVEQ #0,D1
+	MOVE.W (A1)+,D1
+	MOVE.W D1,DIMS_REMAIN
+	MOVE.B #1,FIRST_DIM
+
 	SUBQ.W #1,D1
 	beq .nodimdata
 	MOVE.L A1,DIMSPTR
-	MOVE.L A1,FIRSTPTR
+	ADD.L D1,D1
+	MOVE.W (A1,D1.L),D1
+	MOVE.W D1,ELEMENT_COUNT
   
 .nodimdata:
 	MOVE.W VAR_PTRREPCOUNT(A0),TYPERF_XXX  ; number of PTR TOs
@@ -17483,7 +17654,7 @@ PLB:
     MOVE.L	.SSPEC1,.SSPEC
     CLR.W .SPSET
 .nr
-    TST.W ARRAY_DIMS
+    TST.W DIMS_REMAIN
     BNE.S .arr
     
     TST.W   TYPERF_XXX
@@ -17515,35 +17686,51 @@ PLB:
 	CMP.W	#30,(A3)
 	BEQ.W	.10
 	CMP.W	#VALUE,(A3)
-	BNE.S	.9
+	BNE	.9
 	CMP.W	#30,6(A3)   ;next is "]" ?
-	BNE.S	.9
+	BNE	.9
   
 	MOVE.L DIMSPTR,D1
 	BEQ .nodp
-	CMP.L FIRSTPTR,D1
-	BEQ .first
   
 	MOVE.L D1,A6
-	MOVE.W (A6)+,D1
-	MOVE.W	.dimsaddd2(PC),(A4)+
+	MOVEQ #0,D1
+	MOVE.W ELEMENT_COUNT,D1
+	DIVU  (A6)+,D1
 
+	TST.B FIRST_DIM
+	BEQ.S .notfirst1
+	MOVE.W	.dimsmoved2(PC),(A4)+     ;tested
 	MOVE.L	2(A3),D3		; D3=VALUE
 	MULU D1,D3
-.fcon
 	MOVE.L D3,(A4)+
+	CLR.B FIRST_DIM
+	BRA.S .contf1
+
+.notfirst1
+	MOVE.L	2(A3),D3		; D3=VALUE
+	MULU D1,D3
+	TST.L D3
+	BEQ.S .contf1
+
+	TST.B DIM_VALUE
+	BNE.S .dval
+
+	MOVE.W	.dimsaddd2(PC),(A4)+    ;tested
+	MOVE.L D3,(A4)+
+	BRA.S .contf1
+
+.dval
+	ADD.L -4(A4),D3
+	MOVE.L D3,-4(A4)
+
+.contf1
+	MOVE.B #1,DIM_VALUE
 	ADDQ.L	#6,A3
 	MOVE.L A6,DIMSPTR
 	MOVEQ	#-1,D3
 	BRA.W	.10
 
-.first
-	MOVE.W	.dimsmoved2(PC),(A4)+
-	ADDQ.L #2,D1
-	MOVE.L D1,A6
-	MOVE.L	2(A3),D3		; D3=VALUE
-	BRA .fcon
-  
 .dimsaddd2 ADD.L #0,D2
 .dimsmoved2 MOVE.L #0,D2
 
@@ -17553,37 +17740,45 @@ PLB:
 	BRA.W	.10
 
 .9:	CMP.W	#IDENT,(A3)
-	BNE.S	.9B
+	BNE	.9B
 	CMP.W	#30,6(A3)   ;"]"
-	BNE.S	.9B
+	BNE	.9B
 
-	MOVE.L DIMSPTR,D1
-	BEQ .nodp2
-	CMP.L FIRSTPTR,D1
-	BEQ .first2
-  
-	MOVE.L D1,A6
-	MOVE.W (A6)+,D1
-	MOVE.W	.dimsmuld2(PC),(A4)+
-	MOVE.W D1,(A4)+
-	MOVE.L A6,DIMSPTR
+	CLR.B DIM_VALUE
 
-	MOVE.L	2(A3),A6
-	MOVE.W	.OPTIADDD2(PC),(A4)+
-	BSR	GVA6D3_0
-	ADDQ.L	#6,A3
-	MOVEQ	#-1,D3
-	BRA.W	.10
+	TST.B FIRST_DIM
+	BNE.S .first2
+
+	MOVE.W	.SAVD2(PC),(A4)+
 
 .first2
-	ADD.L #2,DIMSPTR
-
-.nodp2
 	MOVE.L	2(A3),A6
 	MOVE.W	.OPTID2(PC),(A4)+
-	BSR	GVA6D3_0                    ;generate array index into d2
+	BSR	GVA6D3_0                    ;generate array index into d2 / tested
 	ADDQ.L	#6,A3
 	MOVEQ	#-1,D3
+
+	TST.L DIMSPTR
+	BEQ .10
+
+	MOVE.L D1,A6
+	MOVEQ #0,D1
+	MOVE.W ELEMENT_COUNT,D1
+	DIVU  (A6)+,D1
+	CMP.W #1,D1
+	BEQ.S .nomul1
+	MOVE.W	.dimsmuld2(PC),(A4)+
+	MOVE.W D1,(A4)+
+.nomul1:
+	MOVE.L A6,DIMSPTR
+
+	TST.B FIRST_DIM
+	BNE.S .first3
+
+	MOVE.W	.RETADDD2(PC),(A4)+
+
+.first3:
+	CLR.B FIRST_DIM
 	BRA.W	.10
 
 .9B:	MOVEM.L	D0/D3/A0,-(A7)
@@ -17607,50 +17802,65 @@ PLB:
 
 	MOVE.L DIMSPTR,D1
 	BEQ .nodp3
-	CMP.L FIRSTPTR,D1
-	BEQ .first3
   
 	MOVE.L D1,A6
-	MOVE.W (A6)+,D1
-	MOVE.W	.dimsmuld2(PC),(A4)+
+	MOVEQ #0,D1
+	MOVE.W ELEMENT_COUNT,D1
+	DIVU  (A6)+,D1
+	CMP.W #1,D1
+	BEQ.S .nomul3
+	MOVE.W	.dimsmuld0(PC),(A4)+    ;tesed
 	MOVE.W D1,(A4)+
+.nomul3:
 	MOVE.L A6,DIMSPTR
 
-	MOVE.L	.dimsaddmoved2(PC),(A4)+
+	CLR.B DIM_VALUE
+
+	TST.B FIRST_DIM
+	BNE.S .nodp3
+
+	MOVE.L	.dimsaddmoved2(PC),(A4)+    ;tested
 	BRA.S	.32
 
+.nodp3
+	CLR.B FIRST_DIM
+	MOVE.L	.27(PC),(A4)+
+	BRA.S	.32
+
+.dimsmuld0 MULU #0,D0
 .dimsmuld2 MULU #0,D2
 .dimsaddd0d2 ADD.L D0,D2
 .dimsaddmoved2 ADD.L D0,D2
 	MOVE.L (A7)+,D0
 
-.first3
-	ADD.L #2,DIMSPTR
-
-.nodp3
-	MOVE.L	.27(PC),(A4)+
-	BRA.S	.32
 .31: MOVE.L A0,-(A7) 
 	BSR	EXP
 	MOVE.L (A7)+,A0
 
+	CLR.B DIM_VALUE
+
 	MOVE.L DIMSPTR,D1
 	BEQ .nodp4
-	CMP.L FIRSTPTR,D1
-	BEQ .first4
   
 	MOVE.L D1,A6
-	MOVE.W (A6)+,D1
-	MOVE.W	.dimsmuld2(PC),(A4)+
+	MOVEQ #0,D1
+	MOVE.W ELEMENT_COUNT,D1
+	DIVU  (A6)+,D1
+	CMP.W #1,D1
+	BEQ.S .nomul4
+	MOVE.W	.dimsmuld0(PC),(A4)+
 	MOVE.W D1,(A4)+
+.nomul4:
 	MOVE.L A6,DIMSPTR
+
+	TST.B FIRST_DIM
+	BNE.S .nodp4
 
 	MOVE.W	.dimsaddd0d2(PC),(A4)+
 	BRA.S	.32
 
-.first4
-	ADD.L #2,DIMSPTR
 .nodp4
+	CLR.B FIRST_DIM
 	MOVE.W	.30(PC),(A4)+
 .32:	MOVE.L	(A7)+,.TDRF
 
@@ -17669,10 +17879,10 @@ PLB:
 	BNE	ERROR34
 	MOVE.W	(A3)+,D1
   
-	CMP.W #1,ARRAY_DIMS
+	CMP.W #1,DIMS_REMAIN
 	BLT .8
 
-	CMP.W #1,ARRAY_DIMS
+	CMP.W #1,DIMS_REMAIN
 	BNE .dims
 
 	CMP.L #5,.SPEC
@@ -17685,7 +17895,7 @@ PLB:
 	SUBQ.W  #1,TYPERF_XXX
 	BRA.S .8a
 .dims:
-	SUBQ.W  #1,ARRAY_DIMS
+	SUBQ.W  #1,DIMS_REMAIN
   
 	CMP.W #29,D1  ; [ expected
 	BEQ .NDIM
@@ -17772,16 +17982,22 @@ PLB:
 .SKM:
 	CMP.L #0,A1
 	BEQ .noobj1
-	CLR.W ARRAY_DIMS
+	CLR.W DIMS_REMAIN
+	CLR.W ELEMENT_COUNT
 	MOVE.L DIMDATA(A1),D1
 	BEQ .nodimdata
 	MOVE.L D1,A2
-	MOVE.W (A2),D1
-	MOVE.W D1,ARRAY_DIMS
+	MOVEQ #0,D1
+	MOVE.W (A2)+,D1
+	MOVE.W D1,DIMS_REMAIN
+	MOVE.B #1,FIRST_DIM
 	SUBQ.W #1,D1
 	BEQ .nodimdata
+	ADD.L D1,D1
+	MOVE.W (A2,D1.L),D1
+	MOVE.W D1,ELEMENT_COUNT
+
 	MOVE.L A2,DIMSPTR
-	MOVE.L A2,FIRSTPTR
   
 .nodimdata:
 	MOVE.W PTRREPCOUNT(A1),TYPERF_XXX  ; number of PTR TOs
@@ -18612,6 +18828,8 @@ PLB:
 .KEEPD5:DC.W	0
 .SAVA0:	MOVE.L	A0,-(A7)
 .RETA0:	MOVE.L	(A7)+,A0
+.SAVD2:	MOVE.L	D2,-(A7)
+.RETADDD2:	ADD.L	(A7)+,D2
 .OPTID2:MOVE.L	2(A5),D2
 .OPTIADDD2:ADD.L	2(A5),D2
 
@@ -19178,7 +19396,8 @@ FAKEIDENT:
 	DC.W	0	; INFO
 	DC.W	0	; LINENUM
 	DC.L	0	; HEAVY
-	DC.L	0	; PTRREPCOUNT
+	DC.L	0	; VAR_NAME
+	DC.L	0	; VAR_PTRREPCOUNT
 	DC.L	0	; DIMDATA
 	DC.L	0	; ONEXT
 FAKEOBJ:
@@ -24787,7 +25006,8 @@ VREF:	MOVE.L	A1,A3			; SEARCH FOR VAR
 	MOVE.L	A5,D2
  	MOVE.W  LINENUM,(A5)+ ;SET line num
 	CLR.L (A5)+ ;VARHEAVY
-    MOVE.W #-1,(A5)+ ;VAR_PTRREPCOUNT
+	CLR.L (A5)+ ;VAR_NAME
+	MOVE.W #-1,(A5)+ ;VAR_PTRREPCOUNT
 	CLR.L (A5)+ ;VAR_DIMDATA
 	SUBQ.L	#8,D2
 	SUBQ.L	#4,D2
@@ -25498,9 +25718,14 @@ i2ERROR39:
 	SUBQ.W	#4,NRGLOB
 	MOVE.W	NRGLOB,(A5)+		; SET OFFS
 	MOVE.W	LINENUM,(A5)+		; SET line num
+	CLR.W (A5)+   ;varheavy
+	CLR.L (A5)+   ;var_name
+	CLR.W (A5)+   ;VAR_PTRREPCOUNT
+	CLR.L (A5)+   ;VAR_DIMDATA
+
 	DONEM	A5
       BLURP:
-	LEA	-14(A5),A5
+	LEA	-26(A5),A5
 	TSTMOD
 	BEQ.S	.3			; REMEMBER OFFSET
 	GETML	A1
@@ -27223,8 +27448,9 @@ NSENDC:
 	MOVE.W	D6,(A5)+		; SET OFFS
 	MOVE.W	LINENUM,(A5)+		; set line num
 	CLR.L   (A5)+           ;varheavy
-    MOVE.W  #-1,(A5)+       ;ptrrepcount
-    CLR.L   (A5)+           ;dimdata
+	CLR.L   (A5)+           ;var_name
+	MOVE.W  #-1,(A5)+       ;var_ptrrepcount
+	CLR.L   (A5)+           ;var_dimdata
 
 	BRA.S	.1
 .2:	DONEH	A5

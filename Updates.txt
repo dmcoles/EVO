@@ -530,6 +530,15 @@ Development restarted as E-VO by Darren Coles
    - casting and PTR TO PTR handling is improved and should now work in all
      use cases.
 
+   (3.8.0)
+   - Added variable names + types and procedure line numbers to EVAR debug
+     info
+   - Made multi-dimensional arrays memory layout more logical (first
+     dimension is most significant)
+   - Line number debug info is generated for PROC definition lines
+   - Fix global variable structure generated for library definitions
+   - Update EDBG to parse new EVAR structures
+   
 DATE HISTORY:
     3.3b    20.11.1999 -> 12.12.1999
     3.3c    15.12.1999 -> 12.01.2000
@@ -544,3 +553,4 @@ DATE HISTORY:
     3.6.0   12.09.2022 -> 19.04.2023
     3.6.1   24.04.2023 -> 16.06.2023
     3.7.0   30.06.2023 -> 09.03.2024
+    3.8.0   13.03.2024 ->

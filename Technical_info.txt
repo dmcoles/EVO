@@ -176,6 +176,7 @@ OBJECT ident_lex_parse
   info:INT                      10
   lineNUM:INT                   12 (VARLINENO)
   heavy:LONG                    VARHEAVY
+  varname                       VAR_NAME 
   ptrrepcount                   VAR_PTRREPCOUNT used to count ptr to ptr
   dimdata                       VAR_DIMDATA used to track multi-dimensional arrays
 ENDOBJECT
@@ -188,6 +189,7 @@ info = [if_arg_then_offset,0,lab=-1 | proc=-2 | -3/-4 code in other module]
 offset = +arg, -localvar
 lineNUM = line number of declaration used in reporting unused variables
 heavy: only for local+reg_alloc | labels from module [NIL|PTR TO procclass]
+varname (used to save name when it is overwritten as etype in checkidents)
 ptrrepcount - used to track number of PTR TO PTR references
 dimdata - ptr to dim data used to track the dimensions of an array
 
@@ -809,6 +811,40 @@ OBJECT emodule
 					regoffs[len]:INT
         ENOBJECT
 
+        OBJECT debugvars2
+					lineNum: INT
+					len:INT
+          repeat len times
+            vartype:INT (see below)
+            oid:INT       object id
+            dimcount:INT  number of dimensions
+            dimsizes:ARRAY[dimcount] OF INT
+            namelen:INT (always padded to even length)
+            varname:ARRAY[namelen] OF CHAR
+        ENOBJECT
+
+ vartypes
+  1: CHAR
+  2: BYTE
+  3: INT
+  4: WORD
+  5: LONG
+  6: Object
+  7: PTR TO CHAR
+  8: PTR TO BYTE
+  9: PTR TO INT
+  10: PTR TO WORD
+  11: PTR TO LONG
+  12: PTR TO Object
+  13: PTR TO PTR
+  14: ARRAY OF CHAR
+  15: ARRAY OF BYTE
+  16: ARRAY OF INT
+  17: ARRAY OF WORD
+  18: ARRAY OF LONG
+  19: ARRAY OF Object
+  20: ARRAY OF PTR
+
         OBJECT selfdef
 				  len:INT
 					lineNum:INT
@@ -823,11 +859,14 @@ OBJECT emodule
             line -> len_name_in_longs:LONG
                     name[len]:ARRAY OF LONG
                     linedebug:ARRAY OF (linenum:LONG,offs:LONG)
-            evar -> job:INT (1..5)
+            evar -> job:INT (1..7)
                     1,2: local variables (see OBJECT debugvars)
 										3 global variables (see OBJECT debugvars)
                     4: len:INT, name[len]:ARRAY - proc definition
 										5: self definition (see object selfdef)
+
+                    6 - var details (see OBJECT debugvars2)
+                    7 - lineno:INT - proc details
         ENDOBJECT
 
 11      OBJECT macros

@@ -232,9 +232,10 @@ PROC grabvdbginfo(sources,o:PTR TO LONG,end)
 ENDPROC
 
 PROC grabvarinfo(src:PTR TO e_source,o:PTR TO INT,end)
-  DEF pr=NIL:PTR TO e_proc,job,v
+  DEF pr=NIL:PTR TO e_proc,job,v,cnt,i,line
   WHILE (job:=o[]++) BUT o<end
-    SELECT 6 OF job
+    ->WriteF('job=\d\n',job)
+    SELECT 8 OF job
       CASE 1,2
         o,v:=collectvars(o,pr.vars,src,pr,job)
         pr.vars:=v
@@ -254,6 +255,18 @@ PROC grabvarinfo(src:PTR TO e_source,o:PTR TO INT,end)
         v:=o[]++
         newself(pr,o[],o[1])
         o:=o+v
+      CASE 6
+        line:=o[]++   //line num
+        cnt:=o[]++    //count
+        FOR i:=1 TO cnt
+          o:=o+4      //vartype and OID
+          v:=o[]++    //dimcount
+          o:=o+(v*2)  //dimsizes
+          v:=o[]++    //var name length
+          o:=o+v
+        ENDFOR
+      CASE 7
+        o[]++ //skip line no
       DEFAULT
         Raise("eexe")
     ENDSELECT
