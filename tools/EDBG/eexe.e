@@ -235,7 +235,7 @@ PROC grabvarinfo(src:PTR TO e_source,o:PTR TO INT,end)
   DEF pr=NIL:PTR TO e_proc,job,v,cnt,i,line
   WHILE (job:=o[]++) BUT o<end
     ->WriteF('job=\d\n',job)
-    SELECT 8 OF job
+    SELECT 9 OF job
       CASE 1,2
         o,v:=collectvars(o,pr.vars,src,pr,job)
         pr.vars:=v
@@ -261,17 +261,35 @@ PROC grabvarinfo(src:PTR TO e_source,o:PTR TO INT,end)
         FOR i:=1 TO cnt
           o:=o+4      //vartype and OID
           v:=o[]++    //dimcount
+          IF v<0 THEN v:=0
           o:=o+(v*2)  //dimsizes
           v:=o[]++    //var name length
           o:=o+v
         ENDFOR
       CASE 7
         o[]++ //skip line no
+      CASE 8
+        o[]++ //skip oid
+        o[]++ //skip flags + pad
+        v:=o[]++ //name length
+        o:=o+v
+        
+        v:=o[]++ //vartype
+        WHILE v
+          o[]++ //  oid
+          o[]++ //  size
+          v:=o[]++ //array dimcount
+          IF v<0 THEN v:=0
+          o:=o+(v*2)  //dimsizes
+          v:=o[]++    //member name length
+          o:=o+v
+          v:=o[]++ //next vartype (or 0 to end)
+        ENDWHILE
+        
       DEFAULT
         Raise("eexe")
     ENDSELECT
   ENDWHILE
-->WriteF('\n')
 ENDPROC
 
 CONST REGVARLIM=30000
