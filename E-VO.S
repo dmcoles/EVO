@@ -3085,8 +3085,8 @@ HEAVYTABLE:
 	CMP.B	#10,-1(A0)
 	BNE.S	.2
 	ADDQ.W	#1,LINENUM		; COUNT LINES
-	MOVE.W	LINENUM(PC),LINENUM2
-.2:	MOVE.L	STARTINTERIM(PC),A0	; SEE IF WE PARSED AN EMPTY LINE
+	MOVE.W	LINENUM,LINENUM2
+.2:	MOVE.L	STARTINTERIM,A0	; SEE IF WE PARSED AN EMPTY LINE
 	CMP.L	A1,A0
 	BEQ.S	.1
 	MOVE.L	A1,CURINTERIM
@@ -10089,7 +10089,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.8.0-dev',160
-			DC.B	'(21.03.2024)'
+			DC.B	'(27.03.2024)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -10794,6 +10794,55 @@ SYMEND:
 	CLR.L	(A4)+			; HUNKLEN
 	CLR.L	(A4)+
 	MOVE.L	#"EVAR",(A4)+		; "EVAR"
+
+	TSTMOD
+	BNE.S	.ODONE
+
+	LEA	OLIST+4(PC),A0		; A0=LINKED LIST
+.DEBUGOBJ
+	MOVE.L	ONEXT(A0),A0
+	MOVE.L	A0,D0
+	BEQ.S	.ODONE
+
+	MOVE.W	#8,(A4)+	;jobcode
+	MOVE.W	OID(A0),(A4)+	;oid
+	MOVE.B  OFLAGS(A0),(A4)+  ;flags
+	CLR.B   (A4)+ ;pad
+	MOVE.W  OSIZE(A0),(A4)+  ;object size
+	MOVEM.L A1/A2,-(A7)
+	MOVE.L  OASCII(A0),A1 ;object name
+
+	MOVE.L A4,A2
+	CLR.W (A4)+   ;name length
+	MOVEQ #0,D0
+.CP: 
+	TST.B (A1)
+	BEQ.S .CPE
+	ADDQ.L #1,D0
+	MOVE.B (A1)+,(A4)+  ;copy object name
+	BRA.S .CP
+.CPE:
+	BTST #0,D0
+	BEQ.S .evn
+	ADDQ.L #1,D0
+	CLR.B (A4)+     ;pad name
+.evn:
+	MOVE.W D0,(A2)  ;object name length
+	MOVE.L OMEMB(A0),D0
+.nextmemb
+	BEQ.S .membsdone
+	MOVE.L D0,A1
+	BSR DOMEMBDEBUGINFO
+
+	MOVE.L ONEXT(A1),D0
+	BRA.S .nextmemb
+
+.membsdone:
+	CLR.W (A4)+ ; end of members
+	MOVEM.L (A7)+,A1/A2
+	BRA.S .DEBUGOBJ
+
+.ODONE
 	LEA	DBLIST(PC),A5		; A5=LIST
 	TST.L	(A5)
 	BEQ.W	.OUT
@@ -10862,6 +10911,140 @@ SYMEND:
 	BSR	WRITEFILE
 .OUT:	RTS
 
+      DOMEMBDEBUGINFO:
+	MOVEM.L D0-D2/A1/A2,-(A7)
+	TST.L OASCII(a1)
+	BEQ .dont
+
+	CLR.W D1
+	move.w OSIZE(a1),d0
+	btst #1,OFLAGS(A1)
+	BNE.S .extra
+
+	cmp.w #1,d0
+	bne.s .n1a
+	moveq #1,d0 ;vartype 1 (CHAR)
+	btst #3,OFLAGS(a1)  ;force signed
+	beq .is1
+	moveq #2,d0 ;vartype 2 (BYTE)
+
+.n1a:
+	cmp.w #2,d0
+	bne.s .n2a
+	moveq #3,d0 ;vartype 3 (INT)
+	btst #4,OFLAGS(a1)  ;force unsigned
+	beq.s .is1
+	moveq #4,d0 ;vartype 4 (WORD)
+	bra.s .is1
+.n2a:
+	cmp.w #4,d0
+	bne.s .n3a
+	moveq #7,d0 ;vartype 7 (PTR TO CHAR)
+	bra.s .is1
+.n3a:
+	MOVE.L D0,A2
+	MOVE.W OID(A2),D1
+	moveq #6,d0 ;vartype 6 (OBJECT)
+
+	cmp.w #0,PTRREPCOUNT(a1)
+	bne.s .is1
+
+	moveq #12,d0 ;vartype 12 (PTR TO OBJECT)
+	bra.s .is1
+
+.extra
+	move.l OPTRTYPE(a1),d0
+	cmp.w #1,d0
+	bne.s .n1
+	moveq #7,d0 ;vartype 7 (PTR TO CHAR)
+	btst #3,OFLAGS(a1)  ;force signed
+	beq.s .is1
+	moveq #8,d0 ;vartype 8 (PTR TO BYTE)
+
+.n1:
+	cmp.w #2,d0
+	bne.s .n2
+	moveq #9,d0 ;vartype 9 (PTR TO INT)
+	btst #4,OFLAGS(a1)  ;force unsigned
+	beq.s .is1
+	moveq #10,d0 ;vartype 10 (PTR TO WORD)
+	bra.s .is1
+.n2:
+	cmp.w #4,d0
+	bne.s .n3
+	moveq #7,d0 ;vartype 7 (PTR TO CHAR)
+	bra.s .is1
+.n3:
+	MOVE.L D0,A2
+	MOVE.W OID(A2),D1
+	moveq #6,d0 ;vartype 6 (OBJECT)
+
+	tst.l DIMDATA(a1)
+	bne.s .isarr
+
+	cmp.w #0,OSIZE(a1)
+	beq.s .is1
+
+.isarr
+	moveq #12,d0 ;vartype 12 (PTR TO OBJECT)
+
+.is1:
+	cmp.w #-1,PTRREPCOUNT(a1)
+	beq.s .nptrrep
+
+	cmp.w #0,PTRREPCOUNT(a1)
+	beq.s .nptrrep
+
+  moveq #13,d0 ;vartype 13 (PTR TO PTR TO...) 
+.nptrrep:
+
+	tst.l DIMDATA(a1)
+	beq.s .narr
+	addq  #7,d0 ;array types offset
+.narr:
+
+	MOVE.W D0,(A4)+ ;save type
+	MOVE.W D1,(A4)+     ;oid
+	CLR.W (A4)+      ;number of array dimensiosn
+
+	tst.l DIMDATA(a1)
+	beq.s .narr2
+	move.l DIMDATA(a1),a2
+	move.w (a2)+,d0
+	move.w d0,-2(a4)   ;overwrite number of dimensions
+	subq.w #1,d0
+	moveq #1,d1
+.copydim:
+	moveq #0,d2
+	move.w (a2),d2  ;get dimension
+	divu d1,d2      ;div by previous
+	move.w (a2)+,d1 ;set new previous
+
+	move.w d2,(a4)+ ;save dim info
+	dbf d0,.copydim
+.narr2:
+
+	MOVE.L A4,A2
+	CLR.W (A4)+   ;name length
+	MOVE.L OASCII(A1),A1
+	MOVEQ #0,D0
+.CP: 
+	TST.B (A1)
+	BEQ.S .CPE
+	ADDQ.L #1,D0
+	MOVE.B (A1)+,(A4)+  ;copy name
+	BRA.S .CP
+.CPE:
+	BTST #0,D0
+	BEQ.S .evn
+	ADDQ.L #1,D0
+	CLR.B (A4)+     ;pad name
+.evn:
+	MOVE.W D0,(A2)  ;name length
+.dont
+	MOVEM.L (A7)+,D0-D2/A1/A2
+	RTS
+
       DOVARDEBUGINFO:
 
   MOVEM.L D0-D2/A2,-(A7)
@@ -10896,6 +11079,7 @@ SYMEND:
   bne.s .is1
 
   moveq #12,d0 ;vartype 12 (PTR TO OBJECT)
+  bra.s .nptrrep
 
 .is1:  
   cmp.w #-1,VAR_PTRREPCOUNT(a1)
@@ -10909,6 +11093,12 @@ SYMEND:
 
   tst.l VAR_DIMDATA(a1)
   beq.s .narr
+  cmp.w #6,d0
+  bne.s .notobj
+
+  moveq #19,d0
+  bra.s .narr
+.notobj
   addq  #7,d0 ;array types offset
 .narr:
   
@@ -17700,7 +17890,7 @@ PLB:
 
 	TST.B FIRST_DIM
 	BEQ.S .notfirst1
-	MOVE.W	.dimsmoved2(PC),(A4)+     ;tested
+	MOVE.W	.dimsmoved2(PC),(A4)+
 	MOVE.L	2(A3),D3		; D3=VALUE
 	MULU D1,D3
 	MOVE.L D3,(A4)+
@@ -17758,7 +17948,7 @@ PLB:
 	ADDQ.L	#6,A3
 	MOVEQ	#-1,D3
 
-	TST.L DIMSPTR
+	MOVE.L DIMSPTR,D1
 	BEQ .10
 
 	MOVE.L D1,A6
@@ -17809,7 +17999,7 @@ PLB:
 	DIVU  (A6)+,D1
 	CMP.W #1,D1
 	BEQ.S .nomul3
-	MOVE.W	.dimsmuld0(PC),(A4)+    ;tesed
+	MOVE.W	.dimsmuld0(PC),(A4)+
 	MOVE.W D1,(A4)+
 .nomul3:
 	MOVE.L A6,DIMSPTR

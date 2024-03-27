@@ -823,6 +823,23 @@ OBJECT emodule
             varname:ARRAY[namelen] OF CHAR
         ENOBJECT
 
+		OBJECT objectdef
+			oid:INT
+			flags:CHAR
+			pad:CHAR
+			size:INT 		;object size
+			len:INT
+			name[len]:ARRAY OF CHAR ; object name
+			repeat
+				membertype:INT
+				member oid:INT
+				dimcount:INT  number of dimensions
+				dimsizes:ARRAY[dimcount] OF INT
+				len:INT
+				name[len]:ARRAY OF CHAR ; object name
+			membertype 0 (end)
+		ENDOBJECT
+
  vartypes
   1: CHAR
   2: BYTE
@@ -867,6 +884,7 @@ OBJECT emodule
 
                     6 - var details (see OBJECT debugvars2)
                     7 - lineno:INT - proc details
+                    8 - object definition (see OBJECT objectdef)
         ENDOBJECT
 
 11      OBJECT macros
