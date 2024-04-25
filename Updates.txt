@@ -535,8 +535,8 @@ Development restarted as E-VO by Darren Coles
      info
    - Made multi-dimensional arrays memory layout more logical (first
      dimension is most significant)
-   - Line number debug info is generated for PROC definition lines
    - Fix global variable structure generated for library definitions
+   - Added object definitions to debug info
    - Update EDBG to parse new EVAR structures
    
 DATE HISTORY:

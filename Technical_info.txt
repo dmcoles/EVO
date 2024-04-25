@@ -765,6 +765,7 @@ OBJECT emodule
                         11 = creative
                         12 = v3.5.0 (PTR TO PTR types and Multi-dimensional arrays)
                         13 = v3.6.0 (add BYTE and WORD types)
+                        14 = v3.8.0 (add regoffs to global variables)
 
 
 6       LIBDEF
@@ -782,6 +783,7 @@ OBJECT emodule
         ENDOBJECT
 
 8       OBJECT globals
+          oldoffs                       (vers>=14) original regoffs value (-1 also signals end)
           len:INT                       any #until len=-1 (*)
           ascii[len]:ARRAY              if len>0
           codeoff[]:ARRAY OF off        (vers>=10)?(LONG,opersize:INT):LONG
@@ -833,6 +835,7 @@ OBJECT emodule
 			repeat
 				membertype:INT
 				member oid:INT
+				member ooff:INT
 				dimcount:INT  number of dimensions
 				dimsizes:ARRAY[dimcount] OF INT
 				len:INT
@@ -881,7 +884,6 @@ OBJECT emodule
 										3 global variables (see OBJECT debugvars)
                     4: len:INT, name[len]:ARRAY - proc definition
 										5: self definition (see object selfdef)
-
                     6 - var details (see OBJECT debugvars2)
                     7 - lineno:INT - proc details
                     8 - object definition (see OBJECT objectdef)
@@ -1413,6 +1415,7 @@ has to become (ends with):      FOR/WHILE/UNTIL:        lab,jumpback,id
 102             sorry, feature is not available yet
 103             object too large
 104             invalid array dimension
+105             global map workspace full
 
 WARNINGS:
 

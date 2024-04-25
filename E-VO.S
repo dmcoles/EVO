@@ -192,8 +192,8 @@ CVAL	= 8
 CFLAGS	= 12
 
 LEGACYVERSION = 10
-CURVERSION	= 13			; IMPORTANT, MODULE VERSION!!
-MAXVERSION = 13             ; max supported module version
+CURVERSION	= 14			; IMPORTANT, MODULE VERSION!!
+MAXVERSION = 14             ; max supported module version
 
 SKIPMARK	= $8000
 
@@ -222,10 +222,10 @@ NEWTABMAX	= 256
 IOFF		= 100
 KB		= 1024
 MAXIDENT	= 1000			; size of *one* identifier
-MAXSTACK	= 50000			; each rec.step=6-10b+rec.databuffer
+MAXSTACK	= 150000			; each rec.step=6-10b+rec.databuffer
 MAXLIBRAISE	= 200			; EACH = 10 BYTES
 
-MINIMUM_ACODE	= 100*KB		; GENERATED CODE-BUF
+MINIMUM_ACODE	= 200*KB		; GENERATED CODE-BUF
 
 ; MACRO SECTION
 
@@ -8714,6 +8714,7 @@ iERROR102 JMP ERROR102
 iERROR103 JMP ERROR103
 iERROR104 JMP ERROR104
 iERROR105 JMP ERROR105
+iERROR106 JMP ERROR106
 ;*-*
 ;;CHIDENT
 
@@ -10089,7 +10090,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.8.0-dev',160
-			DC.B	'(27.03.2024)'
+			DC.B	'(25.04.2024)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -10685,8 +10686,8 @@ SRCFN: DC.L 0
 	MOVE.L	D2,A0
 	MOVE.L	4(A0),D3
 	MOVE.L	8(A5),D0
-	OR.L	#$4C000000,D0
-	MOVE.L	D0,12(A0)
+	;OR.L	#$4C000000,D0	no idea what this was
+	MOVE.L	D0,8(A0)
 	LSL.L	#2,D3
 	ADDQ.L	#8,D3
 	CMP.L	#$3F1,0(A0,D3.L)
@@ -10795,9 +10796,6 @@ SYMEND:
 	CLR.L	(A4)+
 	MOVE.L	#"EVAR",(A4)+		; "EVAR"
 
-	TSTMOD
-	BNE.S	.ODONE
-
 	LEA	OLIST+4(PC),A0		; A0=LINKED LIST
 .DEBUGOBJ
 	MOVE.L	ONEXT(A0),A0
@@ -10876,8 +10874,12 @@ SYMEND:
 .n7:
 	CMP.W	#5,(A0)
 	BNE.S	.NSELF
-	MOVE.L	(A0)+,(A4)+
-	MOVE.L	(A0)+,(A4)+
+	MOVE.W  (A0)+,D3
+	MOVE.W  D3,(A4)+
+	SUBQ.W #1,D3
+.copyself
+	MOVE.W	(A0)+,(A4)+
+	DBF D3,.copyself
 .NSELF:
 	CMP.W #6,(A0)    ;	var details
 	BNE .n6
@@ -11005,6 +11007,7 @@ SYMEND:
 
 	MOVE.W D0,(A4)+ ;save type
 	MOVE.W D1,(A4)+     ;oid
+	MOVE.W OOFF(A1),(A4)+     ;offset
 	CLR.W (A4)+      ;number of array dimensiosn
 
 	tst.l DIMDATA(a1)
@@ -11683,6 +11686,7 @@ SYMEND:
 	MOVE.L	A5,A1			; A1=BACKUP A5
 	MOVE.L	D0,A0			; A0=GLOBINFO
 	ADDQ.L	#1,D1
+	MOVE.W 10(A4),(A5)+    ;save regoffs
 	BTST	#2,5(A4)
 	BEQ.S	.NNAME
 	MOVE.L	(A0),A3			; ASCIIPTR
@@ -11702,8 +11706,8 @@ SYMEND:
 .NNAME:	CLR.W	(A5)+
 .2:	CHESTB	A5,D0,5,ERROR37
 	MOVE.L	4(A0),A0
-	MOVE.L	A0,D0
-	BEQ.S	.DEL
+	;MOVE.L	A0,D0
+	;BEQ.S	.DEL	;dont remove unused exported global vars
 	BRA.S	.GLT
 .GLL:	MOVE.L	4(A0),D0
 	SUB.L	D3,D0
@@ -12288,6 +12292,8 @@ ERROR103:	MOVEQ	#103,D0
 ERROR104:	MOVEQ	#104,D0
 		BRA	LEAVEERROR
 ERROR105:	MOVEQ	#105,D0
+		BRA	LEAVEERROR
+ERROR106:	MOVEQ	#106,D0
 		BRA	LEAVEERROR
 
 ; ************************************************************* ;
@@ -13585,12 +13591,17 @@ LDEF:	MACRO
 	MOVE.W	LINENUM(PC),(A0)+	;write linenum
 
 	MOVE.L	D1,A1			; THIS BIT ADDS A "5" SELF EXTENSION
-	MOVE.L	18(A1),D0
+	MOVE.L	18(A1),D0 ;self ident
 	BEQ.S	.NSELF
-	MOVE.L 	#$50004,(A0)+	;self definition
+	MOVE.L 	#$50006,(A0)+	;self definition
 	MOVE.W	LINENUM(PC),(A0)+
 	MOVE.L	D0,A1
 	MOVE.W	10(A1),(A0)+
+
+	MOVE.L	D1,A1
+	MOVE.L	10(A1),A1 ;obj header
+	MOVE.W 6(A1),(A0)+  ;obj oid
+  
 .NSELF:
 	CLR.W	(A0)+			; TO BE ABLE TO DETECT A 5
 	DONEM	A0
@@ -14318,6 +14329,7 @@ TERES:  DC.L  0
 BEGDEF:	DC.L	0
 DONEDEL: DC.W 0
 tempspacedataptr: DC.L 0
+globmapptr: DC.L 0
 
 CHECKLASTIDENT:
 	MOVE.L A2,-(A7)
@@ -16215,10 +16227,7 @@ AAAAAA:	BLOCK2	#8,#IOFF+12
 .CODE:	MOVE.L	A0,2(A5)
 
       SAVEREGSPROC:			; 73
-	TST.L	LINEBUF
-	BEQ.S	.0
-	JSR	ADDLINEDBG
-.0:	LEA	SAVEDREGSPTR(PC),A0
+	LEA	SAVEDREGSPTR(PC),A0
 	MOVE.L	A4,(A0)
 	MOVE.L	COMPILEPROC(PC),A0	; COMPUTE MOVEMMASK
 	MOVE.B	3(A0),D0
@@ -19587,7 +19596,7 @@ FAKEIDENT:
 	DC.W	0	; LINENUM
 	DC.L	0	; HEAVY
 	DC.L	0	; VAR_NAME
-	DC.L	0	; VAR_PTRREPCOUNT
+	DC.W	0	; VAR_PTRREPCOUNT
 	DC.L	0	; DIMDATA
 	DC.L	0	; ONEXT
 FAKEOBJ:
@@ -24992,6 +25001,7 @@ NumHunks:
       MODULESTART:
 	MOVE.W	D1,MMODE
 	CLR.W	LOADEDVERSION
+	MOVE.L #globmapbuf,globmapptr
       DOMODULEJOB:			; A0=PTR JOBCODE
 	MOVE.W	MMODE(PC),D1
 	MOVE.W	(A0)+,D0		; CAN TRASH ANYTHING
@@ -25019,7 +25029,7 @@ NumHunks:
 	CMP.W	#11,D0
 	BEQ.S	ADDMACROS
 	JMP	ERROR36			; SUPPOSED TO BE OTHER JOBCODES
-.1:	RTS
+.1:	  RTS
 
       ADDMACROS:
 	JSR	PREPREADMACROS
@@ -25051,6 +25061,10 @@ NumHunks:
 	DONEM	A2
 .NL:	CMP.L	#$3F1,(A0)
 	BNE.S	.NL2
+	CMP.L #"EVAR",12(A0)
+	BNE.S .NEVAR
+	JSR FIXUPREGVARS
+.NEVAR:
 	MOVE.L	4(A0),D0
 	ADDQ.L	#2,D0
 	LSL.L	#2,D0
@@ -25135,6 +25149,13 @@ NumHunks:
 	BNE.W	DOMODULEJOB
 	INTERN	103
       ADDGLOBS:
+	CLR.W OLDOFFS
+	CMP.W	#14,LOADEDVERSION
+	BMI.S .nooffs
+	MOVE.W	(A0)+,OLDOFFS		; D0=old offs
+	CMP.W #-1,OLDOFFS
+	BEQ	DOMODULEJOB
+.nooffs:      
 	MOVE.W	(A0)+,D0		; D0=LEN
 	BMI.W	DOMODULEJOB
 	MOVE.L	A0,A1			; A1=NAME
@@ -25157,6 +25178,7 @@ NumHunks:
 	CLR.L	(A5)+
 	SUBQ.W	#4,NRGLOB
 	MOVE.W	NRGLOB,D2
+	BSR ADDGLOBMAP
 	MOVE.W	D2,(A5)+		; SET OFFS
 	EXT.L	D2
 	MOVE.L	A5,D2
@@ -25182,8 +25204,12 @@ VREF:	MOVE.L	A1,A3			; SEARCH FOR VAR
 	TST.B	-1(A5)
 	BNE.S	.CL
 	BSET	#0,5(A4)		; SET TO REF
+
+	MOVE.W 10(A4),D2
+	BSR ADDGLOBMAP
+
 	MOVE.L	A4,D2			; JAAAH, BESTAAT REEDS!
-	BRA.S	ODONE
+	BRA	ODONE
 .NOTF:	GETML	A5			; LINKED INTO HASH TABLE!
 	MOVE.L	(A3),(A5)+
 	MOVE.L	A5,(A3)
@@ -25193,6 +25219,10 @@ VREF:	MOVE.L	A1,A3			; SEARCH FOR VAR
 	CLR.L	(A5)+
 	SUBQ.W	#4,NRGLOB
 	MOVE.W	NRGLOB,(A5)+		; SET OFFS
+
+	MOVE.W NRGLOB,D2
+	BSR ADDGLOBMAP
+
 	MOVE.L	A5,D2
  	MOVE.W  LINENUM,(A5)+ ;SET line num
 	CLR.L (A5)+ ;VARHEAVY
@@ -25218,6 +25248,21 @@ ODONE:	GETML	A3			; GOT VAR IN D2, NOW HANG IN CODEREM LIST
 	MOVE.W	LOADEDVERSION,(A3)+
 	DONEM	A3
 	BRA	ADDGLOBS
+
+  OLDOFFS: DC.W 0
+
+ADDGLOBMAP:
+	MOVE.L A5,-(A7)
+	MOVE.L globmapptr,A5
+	CMP.L   #globmapbuffend-2,A5
+	BPL.S   .ERR105
+
+  MOVE.W OLDOFFS,(A5)+
+	MOVE.W D2,(A5)+
+	MOVE.L A5,globmapptr
+	MOVE.L (a7)+,A5
+	RTS
+.ERR105  JMP ERROR105
 
       ADDCODE:
 	MOVE.L	(A0)+,D7
@@ -25401,6 +25446,84 @@ ODONE:	GETML	A3			; GOT VAR IN D2, NOW HANG IN CODEREM LIST
 	CLR.L	(A4)+			; PC_ACC
 	BRA.S	.2
 
+      FIXUPREGVARS:
+  MOVEM.L A0-A6/D0-D7,-(A7)
+ 
+  LEA 16(A0),A0
+  MOVE.L A0,A2
+.nextjob
+  MOVE.W (A0)+,D0 ;jobcode
+  BEQ .DONE
+  
+  CMP.W #3,D0
+  BNE.S .nglob
+;type 3  
+  ADD.L #2,A0
+  MOVE.W (A0)+,D1
+.process
+  MOVE.W (A0),D0
+
+  LEA globmapbuf,A1
+.find1
+  CMP.L globmapptr,A1
+  BNE.S .find
+  ADDQ #2,A0
+  BRA.S .skip1
+  
+.find:
+  CMP.W (A1),D0
+  BEQ.S .found
+  
+  ADDQ #4,A1
+  BRA.S .find1
+
+.found:
+  MOVE.W 2(A1),(A0)+
+.skip1
+  SUBQ.W #1,D1
+  BNE.S .process
+  BRA.S .nextjob
+.nglob
+  CMP.W #6,D0
+  BNE.S .nvardet
+;type 6 (var extra info)
+  ADD.L #2,A0
+  MOVE.W (A0)+,D1
+.skip
+  ADD.L #4,A0
+  MOVEQ #0,D2
+  MOVE.W (A0)+,D2
+  ADD.L D2,A0
+  ADD.L D2,A0
+  MOVE.W (A0)+,D2
+  ADD.L D2,A0
+  SUBQ.W #1,D1
+  BNE.S .skip
+  BRA.S .nextjob
+.nvardet
+  CMP.W #8,D0
+  BNE.S .nobjdef
+
+;type 8 (object def)
+  ADD.L #6,A0
+  MOVEQ #0,D1
+  MOVE.W (A0)+,D1
+  ADD.L D1,A0
+.memb
+  TST.W (A0)+
+  BEQ.S .nextjob
+  ADD.L #4,A0
+  MOVEQ #0,D2
+  MOVE.W (A0)+,D2
+  ADD.L D2,A0
+  ADD.L D2,A0
+  MOVE.W (A0)+,D2
+  ADD.L D2,A0
+  BRA.S .memb
+.nobjdef
+.DONE:
+  MOVEM.L (A7)+,A0-A6/D0-D7
+  RTS
 
       FIXPROCCODE:			; RESOLVE ADDRESSES OF CODE IN MODULES
 	MOVEM.L	A0-A3/D0-D4/A5,-(A7)	; EXPECTS CODE IN A4
@@ -25908,14 +26031,14 @@ i2ERROR39:
 	SUBQ.W	#4,NRGLOB
 	MOVE.W	NRGLOB,(A5)+		; SET OFFS
 	MOVE.W	LINENUM,(A5)+		; SET line num
-	CLR.W (A5)+   ;varheavy
+	CLR.L (A5)+   ;varheavy
 	CLR.L (A5)+   ;var_name
 	CLR.W (A5)+   ;VAR_PTRREPCOUNT
 	CLR.L (A5)+   ;VAR_DIMDATA
 
 	DONEM	A5
-      BLURP:
-	LEA	-26(A5),A5
+    BLURP:
+	LEA	-28(A5),A5
 	TSTMOD
 	BEQ.S	.3			; REMEMBER OFFSET
 	GETML	A1
@@ -29926,7 +30049,7 @@ fatalerr: DC.L 0
 	DC.L	.81,.82,.83,.84,.85,.86,.87,.88
 	DC.L	.89,.90,.91,.92,.93,.94,.95,.96
 	DC.L	.97,.98,.99,.100,.101,.102,.103,.104
-	DC.L	.105
+	DC.L	.105,.106
 
 .0:	DC.B	'syntax error',0
 .1:	DC.B	'unknown keyword/const',0
@@ -30033,7 +30156,8 @@ fatalerr: DC.L 0
 .102:   DC.B    'sorry, feature is not available yet',0
 .103:   DC.B    'object too large',0
 .104:   DC.B    'invalid array dimension',0
-.105:   DC.B 0
+.105:   DC.B    'global map workspace full',0
+.106:   DC.B 0
 
 	EVEN
 
@@ -35264,6 +35388,8 @@ WORKBUF:	DS.B	MAXIDENT+2
 		EVEN
 TEMPSPACEDATABUF:  DS.B 10000
 tempspacebuffend:
+globmapbuf:  DS.B 15000
+globmapbuffend:
 ;ESTACKBUF:	DS.B	MAXSTACK+2
 ;		EVEN
 EFUNCBYTE:	DS.B	NREFUNC+10
