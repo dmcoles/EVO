@@ -13,12 +13,12 @@ CONST REGEX2 = '((https?://)[^\\s/\a\q<>]+/?[^\\s\a\q<>]*)'
 CONST URLSTR = '<img src=\qHTTPS://FOO.COM/x?b#c=tab1\q/>   <a href=\qhttp://cesanta.com\q>some link</a>'
 
 
-PROC fail(str,test)
-  WriteF('Fail on test \d: [\s]\n', test, str);
+PROC fail(str,test,line)
+  WriteF('Fail on test \d: (line \d) [\s]\n', test, line, str);
   static_failed_tests++
 ENDPROC
 
-#define ASSERT(expr) IF (expr)=0 THEN fail('', (static_total_tests++)+1) ELSE static_total_tests++
+#define ASSERT(expr) IF (expr)=0 THEN fail('', (static_total_tests++)+1,_SRCLINE_) ELSE static_total_tests++
 
 /* Regex must have exactly one bracket pair */
 PROC slre_replace(regex:PTR TO CHAR, buf:PTR TO CHAR, sub: PTR TO CHAR)

@@ -2411,6 +2411,7 @@ CURBRACK:	DC.L	0
 	BNE.S	.DONE
 .EP:	CLR.W	INPROC
     CLR.W   SCOPE
+    JSR ENDPROCDEF
 	BSR.S	.BRAK
 
 	BRA	.DONE
@@ -3085,6 +3086,7 @@ HEAVYTABLE:
 	CMP.B	#10,-1(A0)
 	BNE.S	.2
 	ADDQ.W	#1,LINENUM		; COUNT LINES
+	JSR LINEDEF
 	MOVE.W	LINENUM,LINENUM2
 .2:	MOVE.L	STARTINTERIM,A0	; SEE IF WE PARSED AN EMPTY LINE
 	CMP.L	A1,A0
@@ -3267,7 +3269,7 @@ CONTINUEKEY:
 .CE:DONEH   A4
     move.w  d7,(a6)
     bra     .MAINLOOP
-  
+
 .OPT:	CMP.W	#1,STATS		; OPT
 	BNE	ERROR35
 	CLR.W	STATS
@@ -3701,15 +3703,16 @@ PURECHECK: DC.W 0
 
       PROCPARSE:			; PARSE 'PROC bla(a,b,c=1) OF o IS x\0'
     CLR.W   .REGCNT
-	GETM	A6			; DEFARGSLIST
-	CLR.W	(A6)+
-	MOVE.L	A6,.A6ST
 	CLR.W	.CNT
 	CMP.W	#IDENT,(A3)+
 	BNE	ERROR4
 	MOVE.L	(A3)+,A2		; A2=PROCNAMEVAR
 	CMP.B	#LAB,4(A2)
 	BNE	ERROR4
+	JSR PROCDEF
+	GETM	A6			; DEFARGSLIST
+	CLR.W	(A6)+
+	MOVE.L	A6,.A6ST
 	MOVE.W	#-2,10(A2)
 	MOVE.L	6(A2),A4
 	MOVE.L	A2,14(A4)		; SET PROC.IDENT
@@ -10090,7 +10093,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.8.0-dev',160
-			DC.B	'(25.04.2024)'
+			DC.B	'(24.05.2024)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -10929,7 +10932,7 @@ SYMEND:
 	btst #3,OFLAGS(a1)  ;force signed
 	beq .is1
 	moveq #2,d0 ;vartype 2 (BYTE)
-
+	bra .is1
 .n1a:
 	cmp.w #2,d0
 	bne.s .n2a
@@ -10962,7 +10965,7 @@ SYMEND:
 	btst #3,OFLAGS(a1)  ;force signed
 	beq.s .is1
 	moveq #8,d0 ;vartype 8 (PTR TO BYTE)
-
+	bra.s .is1
 .n1:
 	cmp.w #2,d0
 	bne.s .n2
@@ -27791,7 +27794,7 @@ BURP:	MOVEQ	#NRSYSCONST,D0
 	BNE.S	.SL
 	MOVE.L	A0,STRLENADR
 .SL:	MOVE.L	(A1)+,(A0)+
-	CLR.W	(A0)+
+	CLR.W (A0)+
 	DBRA	D0,.3
 	DONEH	A0
 	RTS
@@ -34706,6 +34709,76 @@ I_STRCOMPARE:
 
 I_CODEEND:
 
+LINEDEF:
+  MOVE.W #1,EVODEFFLAG
+  MOVEM.L D0-D7/A0-A6,-(A7)
+  MOVE.W LINENUM,D0
+  ADDQ.W #1,D0
+  
+  LEA .ldeftxt+15(PC),A0
+  lea .hextxt(PC),A1
+  MOVE.W #3,D2
+.lnum
+  MOVE.W D0,D1
+  AND.W #$F,D1
+  LSR.W #4,D0
+  MOVE.B (A1,D1.W),-(A0)
+  DBF D2,.lnum
+  
+  LEA .ldeftxt(PC),A0
+  MOVE.B #10,9(A0)
+  JSR UNDEFMAIN
+  LEA .ldeftxt(PC),A0
+  MOVE.B #32,9(A0)
+  JSR DEFMAIN
+  CLR.W EVODEFFLAG
+  MOVEM.L (A7)+,D0-D7/A0-A6
+  RTS
+
+  LEA .ldeftxt(PC),A0
+.ldeftxt DC.B "_SRCLINE_ $0000",0
+.hextxt DC.B "0123456789ABCDEF"
+
+PROCDEF:
+  MOVE.W #1,EVODEFFLAG
+  MOVEM.L D0-D7/A0-A6,-(A7)
+  MOVE.l (A2),A0
+  
+  LEA .pdeftxt+11(PC),A1
+.copyproc
+  TST.B (A0)
+  BEQ.S .maxproc
+  MOVE.B (A0)+,(A1)+
+  CMP.B #39,(A1)
+  BEQ.S .maxproc
+  BRA.S .copyproc
+.maxproc:
+  MOVE.B #39,(A1)+
+  CLR.B (A1)+
+  
+  LEA .pdeftxt(PC),A0
+  MOVE.B #10,9(A0)
+  JSR UNDEFMAIN
+  LEA .pdeftxt(PC),A0
+  MOVE.B #32,9(A0)
+  JSR DEFMAIN
+  CLR.W EVODEFFLAG
+  MOVEM.L (A7)+,D0-D7/A0-A6
+  RTS
+.pdeftxt DC.B "_SRCPROC_ '000000000000000000000000000000'",0
+
+  even
+ENDPROCDEF:
+  MOVE.W #1,EVODEFFLAG
+  MOVEM.L D0-D7/A0-A6,-(A7)
+  LEA .pdeftxt2(PC),A0
+  JSR UNDEFMAIN
+  MOVEM.L (A7)+,D0-D7/A0-A6
+  CLR.W EVODEFFLAG
+  RTS
+
+.pdeftxt2 DC.B "_SRCPROC_",10
+
 DOARGMACROS:
 
 	LEA .evodef(PC),A0
@@ -34747,6 +34820,7 @@ DOARGMACROS:
 	DC.B 'EVO_3_5_0',0
 	DC.B 'EVO_3_6_0',0
 	DC.B 'EVO_3_7_0',0
+	DC.B 'EVO_3_8_0',0
 	DC.B 0,0
 
     EVEN
