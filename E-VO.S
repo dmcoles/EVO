@@ -10093,7 +10093,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.8.0-dev',160
-			DC.B	'(24.05.2024)'
+			DC.B	'(26.05.2024)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -10929,7 +10929,7 @@ SYMEND:
 	cmp.w #1,d0
 	bne.s .n1a
 	moveq #1,d0 ;vartype 1 (CHAR)
-	btst #3,OFLAGS(a1)  ;force signed
+	btst #3,OFLAGS(a1)  ;force unsigned
 	beq .is1
 	moveq #2,d0 ;vartype 2 (BYTE)
 	bra .is1
@@ -10937,7 +10937,7 @@ SYMEND:
 	cmp.w #2,d0
 	bne.s .n2a
 	moveq #3,d0 ;vartype 3 (INT)
-	btst #4,OFLAGS(a1)  ;force unsigned
+	btst #4,OFLAGS(a1)  ;force signed
 	beq.s .is1
 	moveq #4,d0 ;vartype 4 (WORD)
 	bra.s .is1
@@ -10962,7 +10962,7 @@ SYMEND:
 	cmp.w #1,d0
 	bne.s .n1
 	moveq #7,d0 ;vartype 7 (PTR TO CHAR)
-	btst #3,OFLAGS(a1)  ;force signed
+	btst #3,OFLAGS(a1)  ;force unsigned
 	beq.s .is1
 	moveq #8,d0 ;vartype 8 (PTR TO BYTE)
 	bra.s .is1
@@ -10970,14 +10970,14 @@ SYMEND:
 	cmp.w #2,d0
 	bne.s .n2
 	moveq #9,d0 ;vartype 9 (PTR TO INT)
-	btst #4,OFLAGS(a1)  ;force unsigned
+	btst #4,OFLAGS(a1)  ;force signed
 	beq.s .is1
 	moveq #10,d0 ;vartype 10 (PTR TO WORD)
 	bra.s .is1
 .n2:
 	cmp.w #4,d0
 	bne.s .n3
-	moveq #7,d0 ;vartype 7 (PTR TO CHAR)
+	moveq #11,d0 ;vartype11 (PTR TO LONG)
 	bra.s .is1
 .n3:
 	MOVE.L D0,A2
@@ -11058,15 +11058,16 @@ SYMEND:
   cmp.l #1,d0
   bne.s .n1
   moveq #7,d0 ;vartype 7 (PTR TO CHAR)
-  btst #6,VARFLAGS(a1)  ;force signed
+  btst #5,VARFLAGS(a1)  ;force unsigned
   beq.s .is1
   moveq #8,d0 ;vartype 8 (PTR TO BYTE)
+  bra.s .is1
 
 .n1:
   cmp.l #2,d0
   bne.s .n2
   moveq #9,d0 ;vartype 9 (PTR TO INT)
-  btst #5,VARFLAGS(a1)  ;force unsigned
+  btst #6,VARFLAGS(a1)  ;force signed
   beq.s .is1
   moveq #10,d0 ;vartype 10 (PTR TO WORD)
   bra.s .is1
@@ -11074,22 +11075,17 @@ SYMEND:
   cmp.l #4,d0
   bne.s .n3
   moveq #11,d0 ;vartype 11 (PTR TO LONG)
-  btst #6,VARFLAGS(a1)  ;is long
-  beq.s .is1
-  moveq #7,d0 ;vartype 7 (PTR TO CHAR)
   bra.s .is1
 .n3:
-  moveq #6,d0 ;vartype 6 (OBJECT)
-  
-  cmp.w #0,VAR_PTRREPCOUNT(a1)
-  bne.s .is1
-
   moveq #12,d0 ;vartype 12 (PTR TO OBJECT)
-  bra.s .nptrrep
 
 .is1:  
+  subq  #7,d0 ;ptr types offset (not a ptr type)
+
   cmp.w #-1,VAR_PTRREPCOUNT(a1)
   beq.s .nptrrep
+
+  addq  #7,d0 ;ptr types offset (restore old value, was a ptr type)
   
   cmp.w #0,VAR_PTRREPCOUNT(a1)
   beq.s .nptrrep
@@ -11099,13 +11095,13 @@ SYMEND:
 
   tst.l VAR_DIMDATA(a1)
   beq.s .narr
-  cmp.w #6,d0
+  cmp.w #6,d0     ;object type
   bne.s .notobj
 
-  moveq #19,d0
+  moveq #19,d0    ;ptr to object
   bra.s .narr
 .notobj
-  addq  #7,d0 ;array types offset
+  add.l  #14,d0 ;array types offset
 .narr:
   
   
@@ -11253,7 +11249,7 @@ SYMEND:
     ;handle byte and word types
 
     MOVE.B OFLAGS(A0),D0
-    AND.W #%11000,D0	;forcesigned and forceunsigned flags
+    AND.W #%11000,D0	;forceunsigned and forcesigned flags
     ROR.W #3,D0   ;shift flags into lowest bits
 
     MOVE.W D0,(A5)+
@@ -13917,9 +13913,12 @@ LDEF:	MACRO
 	BSET #7,VARFLAGS(a0) ;set LONG var flag
 	CMP.W	#IOFF+20,-2(A3)		; a:LONG
 	BEQ	.1
-	CMP.W	#IOFF+61,-2(A3)		; a:REAL
-	BNE	.REG
-	BRA	.1
+	;this was from E v3.3a
+	;but makes no sense as REAL is not an actual type
+	;IOFF+61 is "END"
+	;CMP.W	#IOFF+61,-2(A3)		; a:REAL
+	;BNE	.REG
+	;BRA	.1
 .REG:	CMP.W	#IOFF+60,-2(A3)		; a:REG
 	BNE	.OBJ
 
@@ -25815,7 +25814,7 @@ i2ERROR39:
 	BMI.S	.not13
 
 	MOVE.W	(A0)+,D0
-	ROL.W   #3,D0         ; shift bits into positions 3 and 4 (forcesigned and forceunsigned flags)
+	ROL.W   #3,D0         ; shift bits into positions 3 and 4 (forceunsigned and forcesigned flags)
 	OR.B    D0,-16(A5)    ; flags
 .not13
 	MOVE.W	(A0)+,-6(A5)	; PTRREPCOUNT
