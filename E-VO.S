@@ -10944,7 +10944,7 @@ SYMEND:
 .n2a:
 	cmp.w #4,d0
 	bne.s .n3a
-	moveq #7,d0 ;vartype 7 (PTR TO CHAR)
+	moveq #8,d0 ;vartype 8 (PTR TO CHAR)
 	bra.s .is1
 .n3a:
 	MOVE.L D0,A2
@@ -10954,30 +10954,30 @@ SYMEND:
 	cmp.w #0,PTRREPCOUNT(a1)
 	bne.s .is1
 
-	moveq #12,d0 ;vartype 12 (PTR TO OBJECT)
+	moveq #13,d0 ;vartype 13 (PTR TO OBJECT)
 	bra.s .is1
 
 .extra
 	move.l OPTRTYPE(a1),d0
 	cmp.w #1,d0
 	bne.s .n1
-	moveq #7,d0 ;vartype 7 (PTR TO CHAR)
+	moveq #8,d0 ;vartype 8 (PTR TO CHAR)
 	btst #3,OFLAGS(a1)  ;force unsigned
 	beq.s .is1
-	moveq #8,d0 ;vartype 8 (PTR TO BYTE)
+	moveq #9,d0 ;vartype 9 (PTR TO BYTE)
 	bra.s .is1
 .n1:
 	cmp.w #2,d0
 	bne.s .n2
-	moveq #9,d0 ;vartype 9 (PTR TO INT)
+	moveq #10,d0 ;vartype 10 (PTR TO INT)
 	btst #4,OFLAGS(a1)  ;force signed
 	beq.s .is1
-	moveq #10,d0 ;vartype 10 (PTR TO WORD)
+	moveq #11,d0 ;vartype 11 (PTR TO WORD)
 	bra.s .is1
 .n2:
 	cmp.w #4,d0
 	bne.s .n3
-	moveq #11,d0 ;vartype11 (PTR TO LONG)
+	moveq #12,d0 ;vartype 12 (PTR TO LONG)
 	bra.s .is1
 .n3:
 	MOVE.L D0,A2
@@ -10991,7 +10991,7 @@ SYMEND:
 	beq.s .is1
 
 .isarr
-	moveq #12,d0 ;vartype 12 (PTR TO OBJECT)
+	moveq #13,d0 ;vartype 13 (PTR TO OBJECT)
 
 .is1:
 	cmp.w #-1,PTRREPCOUNT(a1)
@@ -11000,12 +11000,12 @@ SYMEND:
 	cmp.w #0,PTRREPCOUNT(a1)
 	beq.s .nptrrep
 
-  moveq #13,d0 ;vartype 13 (PTR TO PTR TO...) 
+  moveq #14,d0 ;vartype 14 (PTR TO PTR TO...) 
 .nptrrep:
 
 	tst.l DIMDATA(a1)
 	beq.s .narr
-	addq  #7,d0 ;array types offset
+	add.l  #14,d0 ;array types offset
 .narr:
 
 	MOVE.W D0,(A4)+ ;save type
@@ -11057,27 +11057,27 @@ SYMEND:
   move.l (a1),d0
   cmp.l #1,d0
   bne.s .n1
-  moveq #7,d0 ;vartype 7 (PTR TO CHAR)
+  moveq #8,d0 ;vartype 8 (PTR TO CHAR)
   btst #5,VARFLAGS(a1)  ;force unsigned
   beq.s .is1
-  moveq #8,d0 ;vartype 8 (PTR TO BYTE)
+  moveq #9,d0 ;vartype 9 (PTR TO BYTE)
   bra.s .is1
 
 .n1:
   cmp.l #2,d0
   bne.s .n2
-  moveq #9,d0 ;vartype 9 (PTR TO INT)
+  moveq #10,d0 ;vartype 10 (PTR TO INT)
   btst #6,VARFLAGS(a1)  ;force signed
   beq.s .is1
-  moveq #10,d0 ;vartype 10 (PTR TO WORD)
+  moveq #11,d0 ;vartype 11 (PTR TO WORD)
   bra.s .is1
 .n2:
   cmp.l #4,d0
   bne.s .n3
-  moveq #11,d0 ;vartype 11 (PTR TO LONG)
+  moveq #12,d0 ;vartype 12 (PTR TO LONG)
   bra.s .is1
 .n3:
-  moveq #12,d0 ;vartype 12 (PTR TO OBJECT)
+  moveq #13,d0 ;vartype 13 (PTR TO OBJECT)
 
 .is1:  
   subq  #7,d0 ;ptr types offset (not a ptr type)
@@ -11090,7 +11090,7 @@ SYMEND:
   cmp.w #0,VAR_PTRREPCOUNT(a1)
   beq.s .nptrrep
   
-  moveq #13,d0 ;vartype 13 (PTR TO PTR TO...) 
+  moveq #14,d0 ;vartype 14 (PTR TO PTR TO...) 
 .nptrrep:
 
   tst.l VAR_DIMDATA(a1)
@@ -11098,12 +11098,18 @@ SYMEND:
   cmp.w #6,d0     ;object type
   bne.s .notobj
 
-  moveq #19,d0    ;ptr to object
+  moveq #20,d0    ;ptr to object
   bra.s .narr
 .notobj
   add.l  #14,d0 ;array types offset
 .narr:
   
+  CMP.W #6,D0
+  BGE.S .typeok
+  
+  MOVE.L #8,D0 ;ptr to char
+  
+.typeok
   
 	MOVE.W D0,(A4)+ ;save type
 
