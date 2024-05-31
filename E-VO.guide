@@ -1,10 +1,10 @@
 @database "e.guide"
 @node MAIN
-@title "Amiga E-VO v3.7.0"
+@title "Amiga E-VO v3.8.0"
 
                 +-----------------------------------------------+
                 |                                               |
-                |               Amiga E-VO v3.7.0               |
+                |               Amiga E-VO v3.8.0               |
                 |          Compiler for The E Language          |
                 |     Originally By Wouter van Oortmerssen      |
                 |           Updates By GRIO 1999-2003           |
@@ -7175,6 +7175,15 @@ The currently defined version macro's are
 So if this is not defined then you are not compiling under E-VO. Further
 defines will be added for each new revision of the E-VO compiler so you can
 test for a specific minimum version.
+
+Two macros have also been defined to aid with debugging and/or unit testing
+
+  _SRCLINE_
+  _SRCPROC_
+  
+These two macros will be updated during the compilation process to reflect
+the current line number and the current PROC name.
+
 
         #date - allows you to insert the current date into a a macro.
   

@@ -538,6 +538,9 @@ Development restarted as E-VO by Darren Coles
    - Fix global variable structure generated for library definitions
    - Added object definitions to debug info
    - Update EDBG to parse new EVAR structures
+   - Add _SRCLINE_ define (current line number)
+   - Add _SRCPROC_ define (current proc name)
+   - Added EVO_3_8_0 define
    
 DATE HISTORY:
     3.3b    20.11.1999 -> 12.12.1999
