@@ -10093,7 +10093,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.8.0-dev',160
-			DC.B	'(26.05.2024)'
+			DC.B	'(02.06.2024)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -10924,89 +10924,67 @@ SYMEND:
 	CLR.W D1
 	move.w OSIZE(a1),d0
 	btst #1,OFLAGS(A1)
-	BNE.S .extra
+	BEQ.S .nextra
+
+	move.l OPTRTYPE(a1),d0
+.nextra:
 
 	cmp.w #1,d0
 	bne.s .n1a
-	moveq #1,d0 ;vartype 1 (CHAR)
+	moveq #8,d0 ;vartype 8 (PTR TO CHAR)
 	btst #3,OFLAGS(a1)  ;force unsigned
 	beq .is1
-	moveq #2,d0 ;vartype 2 (BYTE)
+	moveq #9,d0 ;vartype 9 (PTR TO BYTE)
 	bra .is1
 .n1a:
 	cmp.w #2,d0
 	bne.s .n2a
-	moveq #3,d0 ;vartype 3 (INT)
-	btst #4,OFLAGS(a1)  ;force signed
-	beq.s .is1
-	moveq #4,d0 ;vartype 4 (WORD)
-	bra.s .is1
-.n2a:
-	cmp.w #4,d0
-	bne.s .n3a
-	moveq #8,d0 ;vartype 8 (PTR TO CHAR)
-	bra.s .is1
-.n3a:
-	MOVE.L D0,A2
-	MOVE.W OID(A2),D1
-	moveq #6,d0 ;vartype 6 (OBJECT)
-
-	cmp.w #0,PTRREPCOUNT(a1)
-	bne.s .is1
-
-	moveq #13,d0 ;vartype 13 (PTR TO OBJECT)
-	bra.s .is1
-
-.extra
-	move.l OPTRTYPE(a1),d0
-	cmp.w #1,d0
-	bne.s .n1
-	moveq #8,d0 ;vartype 8 (PTR TO CHAR)
-	btst #3,OFLAGS(a1)  ;force unsigned
-	beq.s .is1
-	moveq #9,d0 ;vartype 9 (PTR TO BYTE)
-	bra.s .is1
-.n1:
-	cmp.w #2,d0
-	bne.s .n2
 	moveq #10,d0 ;vartype 10 (PTR TO INT)
 	btst #4,OFLAGS(a1)  ;force signed
 	beq.s .is1
 	moveq #11,d0 ;vartype 11 (PTR TO WORD)
 	bra.s .is1
-.n2:
+.n2a:
 	cmp.w #4,d0
-	bne.s .n3
+	bne.s .n3a
 	moveq #12,d0 ;vartype 12 (PTR TO LONG)
 	bra.s .is1
-.n3:
+.n3a:
 	MOVE.L D0,A2
 	MOVE.W OID(A2),D1
-	moveq #6,d0 ;vartype 6 (OBJECT)
-
-	tst.l DIMDATA(a1)
-	bne.s .isarr
-
-	cmp.w #0,OSIZE(a1)
-	beq.s .is1
-
-.isarr
-	moveq #13,d0 ;vartype 13 (PTR TO OBJECT)
+	moveq #13,d0 ;vartype 3 (PTR TO OBJECT)
 
 .is1:
-	cmp.w #-1,PTRREPCOUNT(a1)
-	beq.s .nptrrep
+  subq  #7,d0 ;ptr types offset (not a ptr type)
 
-	cmp.w #0,PTRREPCOUNT(a1)
-	beq.s .nptrrep
+  cmp.w #-1,PTRREPCOUNT(a1)
+  beq.s .nptrrep
 
+  addq  #7,d0 ;ptr types offset (restore old value, was a ptr type)
+  
+  cmp.w #0,PTRREPCOUNT(a1)
+  beq.s .nptrrep
+  
   moveq #14,d0 ;vartype 14 (PTR TO PTR TO...) 
 .nptrrep:
 
-	tst.l DIMDATA(a1)
-	beq.s .narr
-	add.l  #14,d0 ;array types offset
+  tst.l DIMDATA(a1)
+  beq.s .narr
+  cmp.w #6,d0     ;object type
+  bne.s .notobj
+
+  moveq #20,d0    ;ptr to object
+  bra.s .narr
+.notobj
+  add.l  #14,d0 ;array types offset
 .narr:
+  
+  CMP.W #6,D0
+  BGE.S .typeok
+  
+  MOVE.L #8,D0 ;ptr to char
+  
+.typeok
 
 	MOVE.W D0,(A4)+ ;save type
 	MOVE.W D1,(A4)+     ;oid
@@ -15195,6 +15173,7 @@ CHECKPR:	MACRO			; \1=TR.DX
 	CMP.W	#IOFF+45,(A3)		; OF?
 	BNE.S	.A2
 	ADDQ.L	#2,A3
+	MOVE.W #-1,PTRREPCOUNT(a0)
 .DG:	BSR	.GETT
 	MOVEQ	#-16,D3			; $FFFFFFF0
 	AND.L	D0,D3
@@ -15221,9 +15200,20 @@ CHECKPR:	MACRO			; \1=TR.DX
 	BRA	.O2
 .GETT:	MOVE.W	(A3)+,D0		; TRASHES ONLY D0 (TYPE)
 	CMP.W	#31,D0			; PTR/ARRAY OF/TO <OBJECT>
-	BNE.S	.GT1
+	BNE.S	.GTPTR
 	MOVE.L	(A3)+,D0
 	BRA.S	.GTE
+.GTPTR
+	CMP.W	#IOFF+44,D0		; PTR
+	BNE.S .GT1
+
+	ADD.W  #1,PTRREPCOUNT(A0)
+
+	MOVE.W	(A3)+,D0
+	CMP.W	#IOFF+39,D0		; TO
+	BNE	ERROR33
+	BRA .GETT
+
 .GT1:	CMP.W	#IOFF+20,D0		; LONG
 	BNE.S	.GT2
 	MOVEQ	#4,D0
@@ -15252,6 +15242,10 @@ CHECKPR:	MACRO			; \1=TR.DX
 	BSET	#4,OFLAGS(A0)
 .GTE:	MOVE.L	D0,OPTRTYPE(A0)
 	BSET	#1,OFLAGS(A0)
+  TST.W PTRREPCOUNT(A0)
+  BMI.S .NOTPTR
+  MOVE.L #4,D0
+.NOTPTR
 	RTS
 .MUT:	CMP.W	#45,D0			; MUTUALLY RECURSIVE PTR TO <OBJ>
 	BNE	ERROR33
@@ -15514,6 +15508,7 @@ ALIGN:	DC.W	0
 	CMP.W	#IOFF+45,(A3)		; OF?
 	BNE.S	.A2
 	ADDQ.L	#2,A3
+	MOVE.W #-1,PTRREPCOUNT(a0)
 .DG:	BSR	.GETT
 	MOVEQ	#-16,D3			; $FFFFFFF0
 	AND.L	D0,D3
@@ -15540,10 +15535,22 @@ ALIGN:	DC.W	0
 	BRA	.O2
 .GETT:	MOVE.W	(A3)+,D0		; TRASHES ONLY D0 (TYPE)
 	CMP.W	#31,D0			; PTR/ARRAY OF/TO <OBJECT>
-	BNE.S	.GT1
+	BNE.S	.GTPTR
 	MOVE.L	(A3)+,D0
 	BRA.S	.GTE
-.GT1:	CMP.W	#IOFF+20,D0		; LONG
+.GTPTR
+	CMP.W	#IOFF+44,D0		; PTR
+	BNE.S .GT1
+
+	ADD.W  #1,PTRREPCOUNT(A0)
+
+	MOVE.W	(A3)+,D0
+	CMP.W	#IOFF+39,D0		; TO
+	BNE	ERROR33
+	BRA .GETT
+
+.GT1:
+	CMP.W	#IOFF+20,D0		; LONG
 	BNE.S	.GT2
 	MOVEQ	#4,D0
 	BRA.S	.GTE
@@ -15570,6 +15577,10 @@ ALIGN:	DC.W	0
 	BSET	#4,OFLAGS(A0)
 .GTE:	MOVE.L	D0,OPTRTYPE(A0)
 	BSET	#1,OFLAGS(A0)
+	TST.W PTRREPCOUNT(A0)
+	BMI.S .NOTPTR
+	MOVE.L #4,D0
+.NOTPTR  
 	RTS
 .MUT:	CMP.W	#45,D0			; MUTUALLY RECURSIVE PTR TO <OBJ>
 	BNE	ERROR33
@@ -17857,8 +17868,8 @@ PLB:
     TST.W .SPSET
     BEQ.S .nr
 
-    MOVE.L  .SPEC1,.SPEC
-    MOVE.L	.SSPEC1,.SSPEC
+    MOVE.L  .SPEC2,.SPEC
+    MOVE.L	.SSPEC2,.SSPEC
     CLR.W .SPSET
 .nr
     TST.W DIMS_REMAIN
@@ -17877,6 +17888,8 @@ PLB:
     BMI     .0_2
     
 .0_0:
+    MOVE.L  .SPEC,.SPEC2
+    MOVE.L  .SSPEC,.SSPEC2
     MOVE.L  #4,.SPEC
     MOVE.L  #4,.SSPEC
     MOVE.W #-1,.SPSET
@@ -17993,6 +18006,8 @@ PLB:
 	BEQ.S	.NDR1
 	MOVE.W	.SAVA0(PC),(A4)+
 .NDR1:
+	MOVE.L	.SSPEC2,-(A7)
+	MOVE.L	.SPEC2,-(A7)
 	MOVE.L	.SSPEC1,-(A7)
 	MOVE.L	.SPEC1,-(A7)
 	MOVE.L	.SSPEC,-(A7)
@@ -18077,6 +18092,8 @@ PLB:
 	MOVE.L	(A7)+,.SSPEC
 	MOVE.L	(A7)+,.SPEC1
 	MOVE.L	(A7)+,.SSPEC1
+	MOVE.L	(A7)+,.SPEC2
+	MOVE.L	(A7)+,.SSPEC2
 	TST.B	.TDRF
 	BEQ.S	.NDR2
 	MOVE.W	.RETA0(PC),(A4)+
@@ -19029,7 +19046,9 @@ PLB:
 .SSPEC:	DC.L	0
 .SPEC:	DC.L	0			; 2 LONGWORDS <-> SAVE
 .SSPEC1:	DC.L	0
+.SSPEC2:	DC.L	0
 .SPEC1:	DC.L	0
+.SPEC2:	DC.L	0
 .TDRF:	DC.B	0
 .ORIGD0:DC.B	0
 .KEEPD5:DC.W	0
