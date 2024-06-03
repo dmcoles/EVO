@@ -10093,7 +10093,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.8.0-dev',160
-			DC.B	'(02.06.2024)'
+			DC.B	'(03.06.2024)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -10931,58 +10931,53 @@ SYMEND:
 
 	cmp.w #1,d0
 	bne.s .n1a
-	moveq #8,d0 ;vartype 8 (PTR TO CHAR)
+	moveq #$21,d0 ;vartype $21 (PTR TO CHAR)
 	btst #3,OFLAGS(a1)  ;force unsigned
 	beq .is1
-	moveq #9,d0 ;vartype 9 (PTR TO BYTE)
+	moveq #$22,d0 ;vartype $22 (PTR TO BYTE)
 	bra .is1
 .n1a:
 	cmp.w #2,d0
 	bne.s .n2a
-	moveq #10,d0 ;vartype 10 (PTR TO INT)
+	moveq #$23,d0 ;vartype $23 (PTR TO INT)
 	btst #4,OFLAGS(a1)  ;force signed
 	beq.s .is1
-	moveq #11,d0 ;vartype 11 (PTR TO WORD)
+	moveq #$24,d0 ;vartype $24 (PTR TO WORD)
 	bra.s .is1
 .n2a:
 	cmp.w #4,d0
 	bne.s .n3a
-	moveq #12,d0 ;vartype 12 (PTR TO LONG)
+	moveq #$25,d0 ;vartype $25 (PTR TO LONG)
 	bra.s .is1
 .n3a:
 	MOVE.L D0,A2
 	MOVE.W OID(A2),D1
-	moveq #13,d0 ;vartype 3 (PTR TO OBJECT)
+	moveq #$26,d0 ;vartype $26 (PTR TO OBJECT)
 
 .is1:
-  subq  #7,d0 ;ptr types offset (not a ptr type)
+  sub.l  #$20,d0 ;ptr types offset (not a ptr type)
 
   cmp.w #-1,PTRREPCOUNT(a1)
   beq.s .nptrrep
 
-  addq  #7,d0 ;ptr types offset (restore old value, was a ptr type)
+  add.l  #$20,d0 ;ptr types offset (restore old value, was a ptr type)
   
   cmp.w #0,PTRREPCOUNT(a1)
   beq.s .nptrrep
   
-  moveq #14,d0 ;vartype 14 (PTR TO PTR TO...) 
+  moveq #$27,d0 ;vartype $27 (PTR TO PTR TO...) 
 .nptrrep:
 
   tst.l DIMDATA(a1)
   beq.s .narr
-  cmp.w #6,d0     ;object type
-  bne.s .notobj
-
-  moveq #20,d0    ;ptr to object
-  bra.s .narr
-.notobj
-  add.l  #14,d0 ;array types offset
+  
+  add.l  #$40,d0 ;array types offset
 .narr:
   
-  CMP.W #6,D0
-  BGE.S .typeok
+  CMP.W #5,D0
+  BNE.S .typeok
   
-  MOVE.L #8,D0 ;ptr to char
+  MOVE.L #$21,D0 ;ptr to char
   
 .typeok
 
@@ -11035,57 +11030,51 @@ SYMEND:
   move.l (a1),d0
   cmp.l #1,d0
   bne.s .n1
-  moveq #8,d0 ;vartype 8 (PTR TO CHAR)
+  moveq #$21,d0 ;vartype $21 (PTR TO CHAR)
   btst #5,VARFLAGS(a1)  ;force unsigned
   beq.s .is1
-  moveq #9,d0 ;vartype 9 (PTR TO BYTE)
+  moveq #$22,d0 ;vartype $22(PTR TO BYTE)
   bra.s .is1
 
 .n1:
   cmp.l #2,d0
   bne.s .n2
-  moveq #10,d0 ;vartype 10 (PTR TO INT)
+  moveq #$23,d0 ;vartype $23 (PTR TO INT)
   btst #6,VARFLAGS(a1)  ;force signed
   beq.s .is1
-  moveq #11,d0 ;vartype 11 (PTR TO WORD)
+  moveq #$24,d0 ;vartype $24 (PTR TO WORD)
   bra.s .is1
 .n2:
   cmp.l #4,d0
   bne.s .n3
-  moveq #12,d0 ;vartype 12 (PTR TO LONG)
+  moveq #$25,d0 ;vartype $25 (PTR TO LONG)
   bra.s .is1
 .n3:
-  moveq #13,d0 ;vartype 13 (PTR TO OBJECT)
+  moveq #$26,d0 ;vartype $26 (PTR TO OBJECT)
 
 .is1:  
-  subq  #7,d0 ;ptr types offset (not a ptr type)
+  sub.l  #$20,d0 ;ptr types offset (not a ptr type)
 
   cmp.w #-1,VAR_PTRREPCOUNT(a1)
   beq.s .nptrrep
 
-  addq  #7,d0 ;ptr types offset (restore old value, was a ptr type)
+  add.l  #$20,d0 ;ptr types offset (restore old value, was a ptr type)
   
   cmp.w #0,VAR_PTRREPCOUNT(a1)
   beq.s .nptrrep
   
-  moveq #14,d0 ;vartype 14 (PTR TO PTR TO...) 
+  moveq #$27,d0 ;vartype $27 (PTR TO PTR TO...) 
 .nptrrep:
 
   tst.l VAR_DIMDATA(a1)
   beq.s .narr
-  cmp.w #6,d0     ;object type
-  bne.s .notobj
-
-  moveq #20,d0    ;ptr to object
-  bra.s .narr
-.notobj
-  add.l  #14,d0 ;array types offset
+  add.l  #$40,d0 ;array types offset
 .narr:
   
   CMP.W #6,D0
   BGE.S .typeok
   
-  MOVE.L #8,D0 ;ptr to char
+  MOVE.L #$21,D0 ;ptr to char
   
 .typeok
   
