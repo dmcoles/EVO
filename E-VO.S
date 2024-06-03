@@ -15053,24 +15053,7 @@ CHECKPR:	MACRO			; \1=TR.DX
 .PTR:	CMP.W	#IOFF+39,(A3)+
 	BNE	ERROR33
   
-    MOVE.W  #-1,PTRREPCOUNT(A0)           ; references
-    CMP.W   #IOFF+44,(A3)	;PTR TO PTR
-    BNE .NOMULTI1
-
-    BTST #5,ICODEPREFS+3        ;LEGACY MODE
-    BNE     ERROR90
-
-    MOVE.W  #0,PTRREPCOUNT(A0)           ; references
-.MULTI_100:
-    CMP.W   #IOFF+44,(A3)                 ; PTR
-    BNE .NOMULTI1
-    ADDQ.L  #2,A3
-    CMP.W   #IOFF+39,(A3)+                 ; TO
-    BNE ERROR33                         
-    ADDQ.W  #1,PTRREPCOUNT(A0)
-    
-    BRA .MULTI_100
-.NOMULTI1:
+  MOVE.W  #0,PTRREPCOUNT(A0)
 	BSR	.GETT
 	MOVEQ	#4,D2
 	MOVEQ	#4,D3
@@ -15162,8 +15145,9 @@ CHECKPR:	MACRO			; \1=TR.DX
 	CMP.W	#IOFF+45,(A3)		; OF?
 	BNE.S	.A2
 	ADDQ.L	#2,A3
-	MOVE.W #-1,PTRREPCOUNT(a0)
-.DG:	BSR	.GETT
+.DG:
+  MOVE.W #-1,PTRREPCOUNT(a0)
+	BSR	.GETT
 	MOVEQ	#-16,D3			; $FFFFFFF0
 	AND.L	D0,D3
 	BEQ.S	.A3
@@ -15197,6 +15181,11 @@ CHECKPR:	MACRO			; \1=TR.DX
 	BNE.S .GT1
 
 	ADD.W  #1,PTRREPCOUNT(A0)
+	BEQ.S .first
+
+	BTST #5,ICODEPREFS+3        ;LEGACY MODE
+	BNE     ERROR90
+.first
 
 	MOVE.W	(A3)+,D0
 	CMP.W	#IOFF+39,D0		; TO
@@ -15396,25 +15385,7 @@ ALIGN:	DC.W	0
 .PTR:	CMP.W	#IOFF+39,(A3)+
 	BNE	ERROR33
 
-    MOVE.W  #-1,PTRREPCOUNT(A0)           ; references
-
-    CMP.W   #IOFF+44,(A3)	;PTR TO PTR
-    BNE .NOMULTI2
-
-    BTST #5,ICODEPREFS+3        ;LEGACY MODE
-    BNE     ERROR90
-
-    MOVE.W  #0,PTRREPCOUNT(A0)           ; references
-.MULTI_200:
-    CMP.W   #IOFF+44,(A3)                 ; PTR
-    BNE .NOMULTI2
-    ADDQ.L  #2,A3
-    CMP.W   #IOFF+39,(A3)+                 ; TO
-    BNE ERROR33                         
-    ADDQ.W  #1,PTRREPCOUNT(A0)
-    BRA .MULTI_200
-
-.NOMULTI2
+	MOVE.W  #0,PTRREPCOUNT(A0)           ; references
 	BSR	.GETT
 	MOVEQ	#4,D2
 	MOVEQ	#4,D3
@@ -15497,8 +15468,9 @@ ALIGN:	DC.W	0
 	CMP.W	#IOFF+45,(A3)		; OF?
 	BNE.S	.A2
 	ADDQ.L	#2,A3
+.DG:
 	MOVE.W #-1,PTRREPCOUNT(a0)
-.DG:	BSR	.GETT
+	BSR	.GETT
 	MOVEQ	#-16,D3			; $FFFFFFF0
 	AND.L	D0,D3
 	BEQ.S	.A3
@@ -15532,6 +15504,11 @@ ALIGN:	DC.W	0
 	BNE.S .GT1
 
 	ADD.W  #1,PTRREPCOUNT(A0)
+	BEQ.S .first
+
+	BTST #5,ICODEPREFS+3        ;LEGACY MODE
+	BNE     ERROR90
+.first
 
 	MOVE.W	(A3)+,D0
 	CMP.W	#IOFF+39,D0		; TO
@@ -17748,7 +17725,8 @@ OPTMQADD:
 .ERA3:	MOVEM.L	(A7)+,D0/D3/A3-A5
 	BRA	ERROR42
 
-
+SPSET:
+        DC.W 0
 TYPERF_XXX:
         DC.W    0
 DIMS_REMAIN:
@@ -17779,6 +17757,7 @@ dval2:  DC.L 0
 	CLR.L DIMSPTR
 	CLR.W ELEMENT_COUNT
 	CLR.B DIM_VALUE
+	CLR.W SPSET
 	MOVE.B #1,FIRST_DIM
 	MOVE.W #-1,TYPERF_XXX
 
@@ -17854,12 +17833,12 @@ PLB:
 
 .NDIM:
    
-    TST.W .SPSET
+    TST.W SPSET
     BEQ.S .nr
 
     MOVE.L  .SPEC2,.SPEC
     MOVE.L	.SSPEC2,.SSPEC
-    CLR.W .SPSET
+    CLR.W SPSET
 .nr
     TST.W DIMS_REMAIN
     BNE.S .arr
@@ -17881,7 +17860,7 @@ PLB:
     MOVE.L  .SSPEC,.SSPEC2
     MOVE.L  #4,.SPEC
     MOVE.L  #4,.SSPEC
-    MOVE.W #-1,.SPSET
+    MOVE.W #-1,SPSET
 
 .0_2:
 
@@ -18002,7 +17981,7 @@ PLB:
 	MOVE.L	.SSPEC,-(A7)
 	MOVE.L	.SPEC(PC),-(A7)
 	MOVE.L	TYPERF_XXX,-(A7)
-	MOVE.L	.SPSET,-(A7)
+	MOVE.L	SPSET,-(A7)
 	MOVE.L	.TDRF(PC),-(A7)
 	CMP.W	#-1,D5
 	BEQ.S	.31
@@ -18074,8 +18053,7 @@ PLB:
 	CLR.B FIRST_DIM
 	MOVE.W	.30(PC),(A4)+
 .32:	MOVE.L	(A7)+,.TDRF
-
-	MOVE.L	(A7)+,.SPSET
+	MOVE.L	(A7)+,SPSET
 	MOVE.L	(A7)+,TYPERF_XXX
 	MOVE.L	(A7)+,.SPEC
 	MOVE.L	(A7)+,.SSPEC
@@ -19031,7 +19009,6 @@ PLB:
 	MOVE.B	.ORIGD0(PC),D0
 	BRA.W	.DREFL
 	
-.SPSET DC.W 0
 .SSPEC:	DC.L	0
 .SPEC:	DC.L	0			; 2 LONGWORDS <-> SAVE
 .SSPEC1:	DC.L	0
