@@ -541,6 +541,7 @@ Development restarted as E-VO by Darren Coles
    - Add _SRCLINE_ define (current line number)
    - Add _SRCPROC_ define (current proc name)
    - Added EVO_3_8_0 define
+   - Added support for ARRAY OF PTR TO ... in objects
    
 DATE HISTORY:
     3.3b    20.11.1999 -> 12.12.1999

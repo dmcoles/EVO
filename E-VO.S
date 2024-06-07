@@ -10093,7 +10093,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.8.0-dev',160
-			DC.B	'(03.06.2024)'
+			DC.B	'(07.06.2024)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -14837,6 +14837,8 @@ DONE1:	MOVE.L	D1,SUPERSIZE		; STACK NEW OSIZE FROM SUPER
 	MOVE.W	OBJCOUNT(PC),(A4)+	; .ID
 	CLR.L	(A4)+			; .ASCII (PRIVATE)
 	LEA	-12(A4),A5
+	MOVE.W	#-1,(A4)+			; PTR REP
+	CLR.L	(A4)+			; DIMDATA
 	MOVE.L	A5,(A2)
 	LEA	ONEXT(A5),A2
 	CLR.L	(A2)

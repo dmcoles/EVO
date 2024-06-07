@@ -7171,8 +7171,9 @@ The currently defined version macro's are
         EVO_3_5_0
         EVO_3_6_0
         EVO_3_7_0
+        EVO_3_8_0
     
-So if this is not defined then you are not compiling under E-VO. Further
+So if EVO_3_4_0 is not defined then you are not compiling under E-VO. Further
 defines will be added for each new revision of the E-VO compiler so you can
 test for a specific minimum version.
 
@@ -8119,8 +8120,7 @@ Programming
 
 - can I create an array of typed pointers, eg ARRAY OF PTR TO LONG
 
-  um... no. you'll have to use an ARRAY OF LONG instead.
-
+  Yes, it was added in E-Vo 3.7.0 and futher improved in 3.8.0
 
 <more of these specific questions are to be added>
 
