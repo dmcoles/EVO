@@ -43,7 +43,10 @@ PROC process(o:PTR TO LONG,len) HANDLE
   codeadr:=o
   o:=codesize*4+o
   WHILE (hunk:=o[]++)<>HUNK_END
-    IF hunk=HUNK_RELOC32
+    IF hunk=HUNK_DEBUG
+      n:=o[]++
+      o:=n*4+o
+    ELSEIF hunk=HUNK_RELOC32
       IF relocadr THEN Raise("1REL")
       n:=o[]++
       IF o[]++ THEN Raise("1REL")
@@ -52,19 +55,26 @@ PROC process(o:PTR TO LONG,len) HANDLE
       IF o[]++ THEN Raise("1REL")
       relocsize:=n
     ELSEIF hunk=HUNK_EXT
-      WHILE Char(o)=EXT_DEF
-        n:=o[]++ AND $FFFFFF
-        s:=NewR(SIZEOF syminfo)
-        s.sym:=o
-        c:=Char(o)
-        IF (c>="A") AND (c<="Z") THEN PutChar(o,c+32)
-        s.len:=n*4
-        s.next:=slist
-        slist:=s
-        o:=n*4+o
-        s.val:=o[]++
-      ENDWHILE
-      IF o[]++ THEN Raise("DEF")
+      REPEAT
+        IF Char(o)=EXT_DEF
+          n:=o[]++ AND $FFFFFF
+          s:=NewR(SIZEOF syminfo)
+          s.sym:=o
+          c:=Char(o)
+          IF (c>="A") AND (c<="Z") THEN PutChar(o,c+32)
+          s.len:=n*4
+          s.next:=slist
+          slist:=s
+          o:=n*4+o
+          s.val:=o[]++
+        ELSE
+          n:=o[]++ AND $FFFFFF
+          WriteF('unknown \s\n',o)
+          o:=n*4+o
+          o++
+        ENDIF
+      UNTIL o[]++=0
+      ->IF o[]++ THEN Raise("DEF")
     ELSE
       Raise("HUNK")
     ENDIF
