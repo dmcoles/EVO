@@ -10093,7 +10093,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.8.0-dev',160
-			DC.B	'(07.06.2024)'
+			DC.B	'(24.06.2024)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -17545,7 +17545,9 @@ tinyent:
 .OUT:	MOVEM.L	(A7)+,A1/A2/D3/D4
 	RTS
 
-DOOPT:	MOVE.W	EAREQUEST(PC),D3
+DOOPT:
+	CLR.W odoset
+	MOVE.W	EAREQUEST(PC),D3
 	CMP.W	#17,D3			; A1=OPCODE
 	BPL.S	.VAR
 	CMP.W	#16,D3
