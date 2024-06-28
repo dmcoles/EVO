@@ -542,6 +542,8 @@ Development restarted as E-VO by Darren Coles
    - Add _SRCPROC_ define (current proc name)
    - Added EVO_3_8_0 define
    - Added support for ARRAY OF PTR TO ... in objects
+   - Fixed issue where two variables declared with the same initial value
+     did not get set correctly.
    
 DATE HISTORY:
     3.3b    20.11.1999 -> 12.12.1999
@@ -557,4 +559,4 @@ DATE HISTORY:
     3.6.0   12.09.2022 -> 19.04.2023
     3.6.1   24.04.2023 -> 16.06.2023
     3.7.0   30.06.2023 -> 09.03.2024
-    3.8.0   13.03.2024 ->
+    3.8.0   13.03.2024 -> 28.06.2024
