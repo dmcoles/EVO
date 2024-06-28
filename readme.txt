@@ -2,7 +2,7 @@ Short:        E-VO: Amiga E Evolution
 Author:       darren_m_coles@yahoo.co.uk (Darren Coles)
 Uploader:     darren_m_coles@yahoo.co.uk (Darren Coles)
 Type:         dev/e
-Version:      3.7.0
+Version:      3.8.0
 Replaces:     dev/e/evo.lha
 Architecture: m68k-amigaos
 Distribution: Aminet
@@ -12,20 +12,10 @@ by Wouter van Oortmerssen. It adds many new features, bug fixes and
 optimisations including object UNIONs, string merging, non word-aligned
 objects and many more.
 
-Just a small sample of the changes in this release:
-
-   added PSIZEOF operator
-   
-   added ARRAYSIZE operator
-   
-   added SelectFirst function
-   
-   added debug symbols for methods
-   
-   allow CONT and EXIT within SELECT statement
-   
-   skip NameFromFH call on kick 1.3 meaning the compiler now works
-     on that OS again
+The main changes in this release are to provide enhanced debugging
+capabilities. E-VO support is being added to CodeCraft (a fully featured
+development environment) which will allow the full capabilities of its
+debugger to be utilised with E-VO.
    
 E is an object oriented / procedural / unpure functional higher programming
 language, mainly influenced by languages such as C++, Ada, Lisp etc.  It is a
