@@ -25,7 +25,10 @@ ENUM JOB_DONE,JOB_CONST,JOB_OBJ,JOB_CODE,JOB_PROCS,
 ENUM ER_NONE,ER_FILE,ER_MEM,ER_USAGE,ER_JOBID,
      ER_BREAK,ER_FILETYPE,ER_TOONEW
 
-CONST MODVERS=13,     -> upto which version we understand , MODVER = 11 for Creative, MODVER=12 for Evo 3.5.0
+CONST MODVERS=14,     -> upto which version we understand 
+                      -> MODVER = 11 for Creative, MODVER=12 for Evo 3.5.0
+                      -> MODVER=13 FOR Evo 3.6.0
+                      -> MODVER=14 FOR Evo 3.8.0
       SKIPMARK=$FFFF8000
 
 DEF flen,o:PTR TO INT,mem,handle=NIL,file[250]:STRING,thisvers=0,cmode=FALSE,emode=FALSE
@@ -358,7 +361,12 @@ PROC process()
       CASE JOB_GLOBS
         c:=0; f:=TRUE
         IF o[]=SKIPMARK THEN o:=o+6
-        WHILE (len:=o[]++)>=0
+        IF thisvers>=14
+          val:=o[]++
+        ELSE
+          val:=0
+        ENDIF
+        WHILE (val<>-1) ANDALSO ((len:=o[]++)>=0)
           IF len
             IF f
               PutS('DEF ')
@@ -372,6 +380,11 @@ PROC process()
             c++
           ENDIF
           WHILE ^o++ DO IF thisvers>=10 THEN o++
+          IF thisvers>=14
+            val:=o[]++
+          ELSE
+            val:=0
+          ENDIF          
         ENDWHILE
         IF f=FALSE THEN PutS('\n')
         IF c THEN PutF('/* \d private global variable(s) in this module */\n',c)

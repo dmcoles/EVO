@@ -10092,8 +10092,8 @@ SRCFN: DC.L 0
 	EROBJLINE:	DC.B	'WITH: %s',10,0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
-			DC.B	'/Assembler/Linker/PP',160,'v3.8.0',160
-			DC.B	'(28.06.2024)'
+			DC.B	'/Assembler/Linker/PP',160,'v3.8.1-dev',160
+			DC.B	'(08.07.2024)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -11658,8 +11658,11 @@ SYMEND:
 	MOVE.L	A5,A1			; A1=BACKUP A5
 	MOVE.L	D0,A0			; A0=GLOBINFO
 	ADDQ.L	#1,D1
+	BTST #5,ICODEPREFS+3        ;LEGACY MODE
+	BNE.S .LEG
 	MOVE.W 10(A4),(A5)+    ;save regoffs
-	BTST	#2,5(A4)
+.LEG
+  BTST	#2,5(A4)
 	BEQ.S	.NNAME
 	MOVE.L	(A0),A3			; ASCIIPTR
 	MOVE.L	A5,A2

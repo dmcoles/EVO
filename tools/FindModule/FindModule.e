@@ -6,7 +6,10 @@ ENUM ABORT=0,ERR_OPEN,ERR_NOMEM,ERR_TOONEW,ERR_JOBID,ERR_TEMP
 ENUM JOB_DONE,JOB_CONST,JOB_OBJ,JOB_CODE,JOB_PROCS,
      JOB_SYS,JOB_LIB,JOB_RELOC,JOB_GLOBS,JOB_MODINFO,JOB_DEBUG,JOB_MACROS
 
-CONST MODVERS=13,     -> upto which version we understand , MODVER = 11 for Creative, MODVER=12 for Evo 3.5.0
+CONST MODVERS=14,     -> upto which version we understand 
+                      -> MODVER = 11 for Creative, MODVER=12 for Evo 3.5.0
+                      -> MODVER=13 FOR Evo 3.6.0
+                      -> MODVER=14 FOR Evo 3.8.0
       SKIPMARK=$FFFF8000
 
 DEF caseSensitive=TRUE
@@ -396,7 +399,12 @@ PROC search(mem,flen,filename:PTR TO CHAR) HANDLE
       CASE JOB_GLOBS
         c:=0;
         IF o[]=SKIPMARK THEN o:=o+6
-        WHILE (len:=o[]++)>=0
+        IF thisvers>=14
+          val:=o[]++
+        ELSE
+          val:=0
+        ENDIF
+        WHILE (val<>-1) ANDALSO ((len:=o[]++)>=0)
           IF aborted THEN Raise(ABORT)
           IF len
             match:=searchCompare(o)
@@ -406,6 +414,11 @@ PROC search(mem,flen,filename:PTR TO CHAR) HANDLE
             c++
           ENDIF
           WHILE ^o++ DO IF thisvers>=10 THEN o++
+          IF thisvers>=14
+            val:=o[]++
+          ELSE
+            val:=0
+          ENDIF                    
         ENDWHILE
       CASE JOB_MODINFO
         o:=o+4

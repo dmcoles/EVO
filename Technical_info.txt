@@ -783,15 +783,16 @@ OBJECT emodule
         ENDOBJECT
 
 8       OBJECT globals
-          oldoffs                       (vers>=14) original regoffs value (-1 also signals end)
-          len:INT                       any #until len=-1 (*)
+          oldoffs:INT                   (vers>=14) original regoffs value (-1 also signals end) (***)
+          len:INT                       any #until len=-1 (*) (****)
           ascii[len]:ARRAY              if len>0
           codeoff[]:ARRAY OF off        (vers>=10)?(LONG,opersize:INT):LONG
           NIL:LONG
         ENDOBJECT
 
         (*) also 0 for private globals
-            also $8000: next LONG is skipsize. real len follows (off=6)
+        (***) version>=14 also $8000: next LONG is skipsize. real len follows (off=6)
+        (****) version<14 also $8000: next LONG is skipsize. real len follows (off=6)
 
 9       OBJECT modinfo
           skiplen:LONG
