@@ -544,6 +544,13 @@ Development restarted as E-VO by Darren Coles
    - Added support for ARRAY OF PTR TO ... in objects
    - Fixed issue where two variables declared with the same initial value
      did not get set correctly.
+
+   (3.8.1)
+   - FindModule: add module version 14 support
+   - Showmodule: add module version 14 support
+   - fix legacy compile mode so it doesnt include changes in module
+     version 14
+   - Fix reaction texteditor tag values 
    
 DATE HISTORY:
     3.3b    20.11.1999 -> 12.12.1999
@@ -560,3 +567,4 @@ DATE HISTORY:
     3.6.1   24.04.2023 -> 16.06.2023
     3.7.0   30.06.2023 -> 09.03.2024
     3.8.0   13.03.2024 -> 28.06.2024
+    3.8.1   08.07.2024 -> 09.07.2024

@@ -1,10 +1,10 @@
 @database "e.guide"
 @node MAIN
-@title "Amiga E-VO v3.8.0"
+@title "Amiga E-VO v3.8.1"
 
                 +-----------------------------------------------+
                 |                                               |
-                |               Amiga E-VO v3.8.0               |
+                |               Amiga E-VO v3.8.1               |
                 |          Compiler for The E Language          |
                 |     Originally By Wouter van Oortmerssen      |
                 |           Updates By GRIO 1999-2003           |
@@ -346,6 +346,13 @@ NOTE: in most cases you won't need to use any of these options
 0D. changes / history / new features
 ------------------------------------
 
+ New in E-VO  (3.8.1)
+   - FindModule: add module version 14 support
+   - Showmodule: add module version 14 support
+   - fix legacy compile mode so it doesnt include changes in module
+     version 14
+   - Fix reaction texteditor tag values 
+   
  New in E-VO  (3.8.0)
    - Added variable names + types and procedure line numbers to EVAR debug
      info
@@ -362,7 +369,7 @@ NOTE: in most cases you won't need to use any of these options
      did not get set correctly.
  
  New in E-VO  (3.7.0)
-    - Compiler sometimes produced garbage error message with an error at the very
+   - Compiler sometimes produced garbage error message with an error at the very
      end of the file.
    - Reformatted the Amigaguide document to better fit in 80 columns.
    - added Arexx compile scripts
