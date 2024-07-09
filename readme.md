@@ -3,11 +3,14 @@ by Wouter van Oortmerssen. It adds many new features, bug fixes and
 optimisations including object UNIONs, string merging, non word-aligned
 objects and many more.
 
-This version brings in many of the features from the creativE E compiler and
-also adds many new features unique to E-VO as well (see updates.txt for
-complete change list).
+  Changes in E-VO 3.8.1:
+   - FindModule: add module version 14 support
+   - Showmodule: add module version 14 support
+   - fix legacy compile mode so it doesnt include changes in module
+     version 14
+   - Fix reaction texteditor tag values 
 
-E is an object oriented / procedural / unpure functional higher programming
+   E is an object oriented / procedural / unpure functional higher programming
 language, mainly influenced by languages such as C++, Ada, Lisp etc.  It is a
 general-purpose programming language, and the Amiga implementation is
 specifically targeted at programming system applications.
