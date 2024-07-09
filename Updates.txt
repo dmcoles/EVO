@@ -550,7 +550,7 @@ Development restarted as E-VO by Darren Coles
    - Showmodule: add module version 14 support
    - fix legacy compile mode so it doesnt include changes in module
      version 14
-   - Fix reaction texteditor tag values 
+   - Fix reaction texteditor tag values in gadgets/texteditor.m
    
 DATE HISTORY:
     3.3b    20.11.1999 -> 12.12.1999

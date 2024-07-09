@@ -351,7 +351,7 @@ NOTE: in most cases you won't need to use any of these options
    - Showmodule: add module version 14 support
    - fix legacy compile mode so it doesnt include changes in module
      version 14
-   - Fix reaction texteditor tag values 
+   - Fix reaction texteditor tag values in gadgets/texteditor.m
    
  New in E-VO  (3.8.0)
    - Added variable names + types and procedure line numbers to EVAR debug

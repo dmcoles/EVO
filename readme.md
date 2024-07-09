@@ -8,7 +8,7 @@ objects and many more.
    - Showmodule: add module version 14 support
    - fix legacy compile mode so it doesnt include changes in module
      version 14
-   - Fix reaction texteditor tag values 
+   - Fix reaction texteditor tag values in gadgets/texteditor.m
 
    E is an object oriented / procedural / unpure functional higher programming
 language, mainly influenced by languages such as C++, Ada, Lisp etc.  It is a
