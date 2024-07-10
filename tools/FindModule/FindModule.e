@@ -187,7 +187,11 @@ PROC search(mem,flen,filename:PTR TO CHAR) HANDLE
           StrCopy(ptrRepText,'')
           StrCopy(dimsText,'')
           dimscount:=0
+          fl:=0
           IF thisvers>=12
+            IF thisvers>=13
+              fl:=o[]++
+            ENDIF
             ptrrep:=o[]++
             WHILE (ptrrep>0)
               StrAdd(ptrRepText,'PTR TO ')
@@ -203,9 +207,6 @@ PROC search(mem,flen,filename:PTR TO CHAR) HANDLE
             ENDWHILE
           ENDIF
           IF thisvers>=6
-            IF thisvers>=13
-              fl:=o[]++
-            ENDIF
             IF (c:=o[]++)>=0
               IF c=0
                 IF match2 THEN WriteF(':\s\n',types[val])

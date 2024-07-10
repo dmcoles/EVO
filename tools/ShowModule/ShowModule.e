@@ -152,6 +152,7 @@ PROC process()
           StrCopy(ptrRepText,'')
           StrCopy(dimsText,'')
           dimscount:=0
+          fl:=0
           IF thisvers>=12
             IF thisvers>=13
               fl:=o[]++
