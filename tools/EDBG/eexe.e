@@ -271,6 +271,7 @@ PROC grabvarinfo(src:PTR TO e_source,o:PTR TO INT,end)
       CASE 8
         o[]++ //skip oid
         o[]++ //skip flags + pad
+        o[]++ //object size
         v:=o[]++ //name length
         o:=o+v
         
