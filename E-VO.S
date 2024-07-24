@@ -10689,7 +10689,8 @@ SRCFN: DC.L 0
 	MOVE.L	D2,A0
 	MOVE.L	4(A0),D3
 	MOVE.L	8(A5),D0
-	;OR.L	#$4C000000,D0	no idea what this was
+	;OR.L	#$4C000000,D0	;old LXXX debug hunk
+	;MOVE.L	D0,12(A0)   ;updated to write to LINE offset field
 	MOVE.L	D0,8(A0)
 	LSL.L	#2,D3
 	ADDQ.L	#8,D3

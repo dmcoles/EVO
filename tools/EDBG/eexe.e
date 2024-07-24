@@ -234,8 +234,10 @@ ENDPROC
 PROC grabvarinfo(src:PTR TO e_source,o:PTR TO INT,end)
   DEF pr=NIL:PTR TO e_proc,job,v,cnt,i,line
   WHILE (job:=o[]++) BUT o<end
-    ->WriteF('job=\d\n',job)
+    //WriteF('job=\d\n',job)
     SELECT 9 OF job
+      CASE 0
+      
       CASE 1,2
         o,v:=collectvars(o,pr.vars,src,pr,job)
         pr.vars:=v
@@ -445,10 +447,9 @@ PROC load(name,trap1,trap2) OF e_exe
               ldbg:=TRUE
             ELSE
               ldbg:=FALSE
-              IF (o[]++<>0) THEN Raise("eexe")
+              add:=o[]++
               IF o[]="LINE"
-                add:=0
-                
+                //use add from line above
               ELSEIF Char(o)="L"
                 add:=o[] AND $FFFFFF
               ELSE
