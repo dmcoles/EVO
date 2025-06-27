@@ -12,7 +12,8 @@ DEF slist=NIL
 
 PROC main() HANDLE
   DEF infile[100]:STRING, outfile[100]:STRING, m, l
-  WriteF('o2m v0.1 by $#%! 1993\n')
+  WriteF('o2m v0.2 by Darren Coles 2025')
+  WriteF('Originally by $#%! 1993\n')
   StringF(infile,'\s.o',arg)
   StringF(outfile,'\s.m',arg)
   WriteF('Converting "\s" to "\s"\n',infile,outfile)
@@ -46,6 +47,15 @@ PROC process(o:PTR TO LONG,len) HANDLE
     IF hunk=HUNK_DEBUG
       n:=o[]++
       o:=n*4+o
+    ELSEIF hunk=HUNK_SYMBOL
+      REPEAT
+        n:=o[]++
+        IF n
+          o++
+          o:=n*4+o
+        ENDIF
+      UNTIL n=0
+
     ELSEIF hunk=HUNK_RELOC32
       IF relocadr THEN Raise("1REL")
       n:=o[]++
