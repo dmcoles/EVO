@@ -25,20 +25,52 @@ ENUM JOB_DONE,JOB_CONST,JOB_OBJ,JOB_CODE,JOB_PROCS,
 ENUM ER_NONE,ER_FILE,ER_MEM,ER_USAGE,ER_JOBID,
      ER_BREAK,ER_FILETYPE,ER_TOONEW
 
-CONST MODVERS=14,     -> upto which version we understand 
+CONST MODVERS=15,     -> upto which version we understand 
                       -> MODVER = 11 for Creative, MODVER=12 for Evo 3.5.0
                       -> MODVER=13 FOR Evo 3.6.0
                       -> MODVER=14 FOR Evo 3.8.0
+                      -> MODVER=15 FOR Evo 3.9.0
       SKIPMARK=$FFFF8000
 
 DEF flen,o:PTR TO INT,mem,handle=NIL,file[250]:STRING,thisvers=0,cmode=FALSE,emode=FALSE
 
+DEF objNames=0
+DEF objOids=0
+DEF objCount=0,objAlloc=0
+
+PROC addObj(name,oid)
+  DEF newNames,newOids
+  IF objCount=objAlloc
+    objAlloc:=objAlloc+100
+    newNames:=List(objAlloc)
+    newOids:=List(objAlloc)
+    IF objNames
+      ListAdd(newNames,objNames)
+      DisposeLink(objNames)
+    ENDIF
+    IF objOids
+      ListAdd(newOids,objOids)
+      DisposeLink(objOids)
+    ENDIF
+    objNames:=newNames
+    objOids:=newOids
+  ENDIF
+  ListAddItem(objNames,AstrClone(name))
+  ListAddItem(objOids,oid)
+ENDPROC
+
+PROC findObj(oid)
+  DEF i
+  FOR i:=0 TO ListLen(objNames)-1
+    IF ListItem(objOids,i)=oid THEN RETURN ListItem(objNames,i)
+  ENDFOR
+ENDPROC
 
 PROC main() HANDLE
   DEF a,b,ae
   PutF('ShowModule v1.\d (c) 1992 $#%!\n'+
        'Update by grio 2001 (4 Kick V\d)\n'+
-       'and by Darren Coles 2022 for E-vo\n',MODVERS,KICK)
+       'and by Darren Coles 2025 for E-vo\n',MODVERS,KICK)
   IF StrCmp(arg,'',1) OR StrCmp(arg,'?',2)
     Raise(ER_USAGE)
   ELSE
@@ -92,8 +124,9 @@ EXCEPT
 ENDPROC
 
 PROC process()
-  DEF end,job,len,val,f,off,types:PTR TO LONG,types2:PTR TO LONG,c,r,c2,l,narg,priv,darg:PTR TO LONG
+  DEF end,job,len,val,i,defval,vartype,varflags,varoid,varptrrep,vardimscount,vardims,f,off,types:PTR TO LONG,types2:PTR TO LONG,c,r,c2,l,narg,priv,darg:PTR TO LONG
   DEF fl,dimscount,ptrrep,ptrRepText[255]:STRING,dimsText[255]:STRING,tempstr[10]:STRING,d
+  DEF objoid=0
   o:=mem
   end:=o+flen
   types:=['substructure','CHAR','INT','','LONG']
@@ -131,8 +164,10 @@ PROC process()
         ENDWHILE
       CASE JOB_OBJ
         IF thisvers>=6 THEN o:=o+4
+        IF thisvers>=15 THEN objoid:=o[]++    
         priv:=0
         l:=o[]++;
+        addObj(o+4,objoid)
         PutF('\s\s \s\s\n',IF emode THEN '' ELSE '(----) ',IF cmode THEN 'struct' ELSE 'OBJECT',o+4,IF cmode THEN ' {' ELSE '')
         o:=o+4+l
         WHILE l:=o[]++
@@ -373,10 +408,74 @@ PROC process()
               PutS('DEF ')
               f:=FALSE
             ELSE
-              PutS(',')
+              PutS('\nDEF ')
+              ->PutS(',')
             ENDIF
             PutF('\s',o)
             o:=o+len
+            IF thisvers>=15
+              defval:=Long(o)
+              o:=o+4
+              varflags:=Char(o)
+              o:=o+1
+              vartype:=Char(o)
+              o:=o+1
+              varoid:=o[]++
+              varptrrep:=o[]++
+              vardimscount:=o[]++
+              vardims:=0
+              IF vardimscount>=0
+                vardims:=o
+                o:=o+vardimscount+vardimscount
+              ENDIF
+              IF vardims>0
+                PutF('[')  
+                d:=1
+                FOR i:=0 TO vardimscount-1
+                  IF i>0 THEN PutF('][')
+                  PutF('\d',Div(Word(vardims+i+i),d))
+                  d:=Word(vardims+i+i)
+                ENDFOR
+                PutF(']')  
+              ENDIF
+              IF (vardims=0) AND ((varoid=0) OR (varptrrep<>-1)) AND (defval<>0)
+                PutF('=\d',defval)
+              ENDIF
+              IF varflags AND $80
+                PutF(':LONG')
+              ENDIF
+              IF (vardims>0) OR (varptrrep<>-1) OR (varoid<>0)
+                PutF(':')
+                IF vardims>0
+                  PutF('ARRAY OF ')  
+                ENDIF
+                IF varptrrep<>-1
+                  FOR i:=0 TO varptrrep
+                    PutF('PTR TO ')
+                  ENDFOR
+                ENDIF
+                IF (vartype=0)
+                  PutF('\s',findObj(varoid))
+                ELSE
+                  SELECT vartype
+                    CASE 1
+                      IF varflags AND $20
+                        PutF('BYTE')
+                      ELSE
+                        PutF('CHAR')
+                      ENDIF
+                    CASE 2
+                      IF varflags AND $40
+                        PutF('WORD')
+                      ELSE
+                        PutF('INT')
+                      ENDIF
+                    CASE 4
+                      PutF('LONG')
+                  ENDSELECT
+                ENDIF
+              ENDIF
+            ENDIF
           ELSE
             c++
           ENDIF

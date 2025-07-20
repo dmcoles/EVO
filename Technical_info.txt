@@ -162,6 +162,8 @@ those with "" are actual addressable variables
 -128    opened files list
 -132    utilitybase
 -136    rnd seed
+-140    nil exception handler
+-144    stackcheck handler
 
 +---------------------------------------------------------------+
 |       structures                                              |
@@ -177,6 +179,8 @@ OBJECT ident_lex_parse
   lineNUM:INT                   12 (VARLINENO)
   heavy:LONG                    VARHEAVY
   varname                       VAR_NAME 
+  defvalue                      VAR_DEFVALUE
+  importdata                    VAR_IMPORTDATA
   ptrrepcount                   VAR_PTRREPCOUNT used to count ptr to ptr
   dimdata                       VAR_DIMDATA used to track multi-dimensional arrays
 ENDOBJECT
@@ -559,7 +563,8 @@ store = set to current variables
 85      start new section
 86      set iflag if statement matches following jobcode or clear iflag otherwise
 87      invert immediately previous branch (eg beq becomes bne) if iflag is set
-
+88      stack check
+89      stack update
 +---------------------------------------------------------------+
 |       OPT bits and cli-flags                                  |
 +---------------------------------------------------------------+
@@ -679,6 +684,7 @@ OBJECT emodule
 
 2       OBJECT objectdef
           skipsize:LONG                 if vers>=6
+          objectid                      if vers>=15
           -> any # until len=0
           len:INT                       if -1 then no id, private (only v4)
           size:INT                      either membersize or -1 if objhead
@@ -687,7 +693,7 @@ OBJECT emodule
             flags:INT                       if version>=13 (forcesigned and forceunsigned flags bits 0+1)
             ptrrepcount:INT                 if version>=12 (count of PTR TO PTR)
             dimdatacount:INT                if version>=12 (number of array dimensions)
-              dimoffset:INT                 if version>=12 array dimension offset (repeated for each dimension above)
+            dimoffset:INT                 if version>=12 array dimension offset (repeated for each dimension above)
             ptrtype:INT                 if vers>=6
                                         [0=none,1=char,2=int,4=long,-1=obj]
               len:INT                   if ptrtype=obj
@@ -766,6 +772,7 @@ OBJECT emodule
                         12 = v3.5.0 (PTR TO PTR types and Multi-dimensional arrays)
                         13 = v3.6.0 (add BYTE and WORD types)
                         14 = v3.8.0 (add regoffs to global variables)
+                        15 = v3.9.0 (add default value to global variables)
 
 
 6       LIBDEF
@@ -786,6 +793,13 @@ OBJECT emodule
           oldoffs:INT                   (vers>=14) original regoffs value (-1 also signals end) (***)
           len:INT                       any #until len=-1 (*) (****)
           ascii[len]:ARRAY              if len>0
+          defvalue:LONG                 if vers>=15
+          flags: char                   if vers>=15
+          vartype: char                 if vers>=15
+          oid: INT                      if vers>=15
+          varptrrepcount:INT            if vers>=15
+          dimscount: INT                if vers>=15
+          vardims[dimscount]:ARRAY OF IN if vers>=15T
           codeoff[]:ARRAY OF off        (vers>=10)?(LONG,opersize:INT):LONG
           NIL:LONG
         ENDOBJECT
