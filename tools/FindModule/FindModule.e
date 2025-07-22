@@ -6,10 +6,11 @@ ENUM ABORT=0,ERR_OPEN,ERR_NOMEM,ERR_TOONEW,ERR_JOBID,ERR_TEMP
 ENUM JOB_DONE,JOB_CONST,JOB_OBJ,JOB_CODE,JOB_PROCS,
      JOB_SYS,JOB_LIB,JOB_RELOC,JOB_GLOBS,JOB_MODINFO,JOB_DEBUG,JOB_MACROS
 
-CONST MODVERS=14,     -> upto which version we understand 
+CONST MODVERS=15,     -> upto which version we understand 
                       -> MODVER = 11 for Creative, MODVER=12 for Evo 3.5.0
                       -> MODVER=13 FOR Evo 3.6.0
                       -> MODVER=14 FOR Evo 3.8.0
+                      -> MODVER=15 FOR Evo 3.9.0
       SKIPMARK=$FFFF8000
 
 DEF caseSensitive=TRUE
@@ -24,6 +25,38 @@ DEF searchGad,dirPathGad,statusGad,outputGad,errorGad
 DEF outputList=NIL
 DEF error
 DEF aborted
+
+DEF objNames=0
+DEF objOids=0
+DEF objCount=0,objAlloc=0
+
+PROC addObj(name,oid)
+  DEF newNames,newOids
+  IF objCount=objAlloc
+    objAlloc:=objAlloc+100
+    newNames:=List(objAlloc)
+    newOids:=List(objAlloc)
+    IF objNames
+      ListAdd(newNames,objNames)
+      DisposeLink(objNames)
+    ENDIF
+    IF objOids
+      ListAdd(newOids,objOids)
+      DisposeLink(objOids)
+    ENDIF
+    objNames:=newNames
+    objOids:=newOids
+  ENDIF
+  ListAddItem(objNames,AstrClone(name))
+  ListAddItem(objOids,oid)
+ENDPROC
+
+PROC findObj(oid)
+  DEF i
+  FOR i:=0 TO ListLen(objNames)-1
+    IF ListItem(objOids,i)=oid THEN RETURN ListItem(objNames,i)
+  ENDFOR
+ENDPROC
 
 PROC readPrefs()
   DEF temptext[100]:STRING
@@ -110,7 +143,9 @@ PROC search(mem,flen,filename:PTR TO CHAR) HANDLE
   DEF temp2[100]:STRING
   DEF p1,p2
   DEF tfile=-1,ofile=-1
- 
+  DEF objoid=0
+  DEF i,defval,vartype,varflags,varoid,varptrrep,vardimscount,vardims
+
   o:=mem
   end:=o+flen
   types:=['substructure','CHAR','INT','','LONG']
@@ -161,8 +196,11 @@ PROC search(mem,flen,filename:PTR TO CHAR) HANDLE
         ENDWHILE
       CASE JOB_OBJ
         IF thisvers>=6 THEN o:=o+4
+        IF thisvers>=15 THEN objoid:=o[]++    
+
         priv:=0
         l:=o[]++;
+        addObj(o+4,objoid)
         
         match:=searchCompare(o+4)
         p1:=o+4
@@ -411,6 +449,73 @@ PROC search(mem,flen,filename:PTR TO CHAR) HANDLE
             match:=searchCompare(o)
             IF match THEN WriteF('\s - DEF \s',filename,o)
             o:=o+len
+
+            IF thisvers>=15
+              defval:=Long(o)
+              o:=o+4
+              varflags:=Char(o)
+              o:=o+1
+              vartype:=Char(o)
+              o:=o+1
+              varoid:=o[]++
+              varptrrep:=o[]++
+              vardimscount:=o[]++
+              vardims:=0
+              IF vardimscount>=0
+                vardims:=o
+                o:=o+vardimscount+vardimscount
+              ENDIF
+              IF match
+                IF vardims>0
+                  WriteF('[')  
+                  d:=1
+                  FOR i:=0 TO vardimscount-1
+                    IF i>0 THEN WriteF('][')
+                    WriteF('\d',Div(Word(vardims+i+i),d))
+                    d:=Word(vardims+i+i)
+                  ENDFOR
+                  WriteF(']')  
+                ENDIF
+                IF (vardims=0) AND ((varoid=0) OR (varptrrep<>-1)) AND (defval<>0)
+                  WriteF('=\d',defval)
+                ENDIF
+                IF varflags AND $80
+                  WriteF(':LONG')
+                ENDIF
+                IF (vardims>0) OR (varptrrep<>-1) OR (varoid<>0)
+                  WriteF(':')
+                  IF vardims>0
+                    WriteF('ARRAY OF ')  
+                  ENDIF
+                  IF varptrrep<>-1
+                    FOR i:=0 TO varptrrep
+                      WriteF('PTR TO ')
+                    ENDFOR
+                  ENDIF
+                  IF (vartype=0)
+                    WriteF('\s',findObj(varoid))
+                  ELSE
+                    SELECT vartype
+                      CASE 1
+                        IF varflags AND $20
+                          WriteF('BYTE')
+                        ELSE
+                          WriteF('CHAR')
+                        ENDIF
+                      CASE 2
+                        IF varflags AND $40
+                          WriteF('WORD')
+                        ELSE
+                          WriteF('INT')
+                        ENDIF
+                      CASE 4
+                        WriteF('LONG')
+                    ENDSELECT
+                  ENDIF
+                ENDIF
+              ENDIF
+            ENDIF
+
           ELSE
             c++
           ENDIF

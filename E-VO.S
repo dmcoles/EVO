@@ -8,7 +8,7 @@
 ;     in 2021-2024
 ; ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, ;
 
-;debug=1
+debug=1
 
   ifd __VASM
 	output EVO
@@ -4275,6 +4275,12 @@ CPUTAB:
 	MOVE.L	D6,D1
 	MOVEQ	#IOFF,D0
 	ADD.W	D1,D0			; STAY: 0..20, 50..59, 62..
+
+	CMP.W	#IOFF+93,D4		; SECTION
+	BNE.S	.notsec
+	ST.B SectionUsed
+.notsec
+
 	CMP.W	#IOFF+20,D0
 	BPL.S	.4
 	MOVE.W	D1,CURINS
@@ -8739,6 +8745,7 @@ iERROR103 JMP ERROR103
 iERROR104 JMP ERROR104
 iERROR105 JMP ERROR105
 iERROR106 JMP ERROR106
+iERROR107 JMP ERROR107
 ;*-*
 ;;CHIDENT
 
@@ -10018,6 +10025,7 @@ PORTCOOKIE	= $DEADBEEF
 .DBG50: DC.L  0
 .NIL:	DC.L	0
 STACKCHECK: DC.L 0
+ARRAYCHECK: DC.L 0
 SHOWFN: DC.L  0
 MCRS:	DC.L    0
 DOS_RDA:DC.L    0
@@ -10028,7 +10036,7 @@ SRCFN: DC.L 0
 			DC.B	'QUIET/S,ASM/S,ERRLINE/S,ERRBYTE/S,'
 			DC.B	'SHOWBUF/S,ADDBUF/N/K,COMPILESTACK/N/K,DDIR=DESTDIR/K,EXENAME/K,IC=IGNORECACHE/S,'
 			DC.B	'HOLD/S,WB/S,LINEDEBUG/S,OPTI/S,LEGACY/S,LEGACYINT/S,'
-			DC.B	'DEBUG/S,DEBUG50/S,NILCHECK/S,STACKCHECK/S,SHOWFNAME/S,DEFINE/M',0
+			DC.B	'DEBUG/S,DEBUG50/S,NILCHECK/S,STACKCHECK/S,ARRAYCHECK/S,SHOWFNAME/S,DEFINE/M',0
 			EVEN
 	KICKVERS:	DC.W	0
 	ARGLEN:		DC.L	0	; =0 IF NO ARGS
@@ -10055,7 +10063,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.9.0-dev',160
-			DC.B	'(20.07.2025)'
+			DC.B	'(22.07.2025)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -12269,6 +12277,8 @@ ERROR105:	MOVEQ	#105,D0
 		BRA	LEAVEERROR
 ERROR106:	MOVEQ	#106,D0
 		BRA	LEAVEERROR
+ERROR107:	MOVEQ	#107,D0
+		BRA	LEAVEERROR
 
 ; ************************************************************* ;
 ;	The COMPILER Part !!!!!!				;
@@ -12872,6 +12882,8 @@ NEWOP020: DC.W  0       ; 0=NoBcc.L, X=NEWOP
 	BEQ.S	.NL
 	BTST	#2,CODEPREFS+3
 	BEQ.S	.NL
+	TST.W   SectionUsed   ;dont do JSR to BSR.L optimisations with multiple sections
+	BNE     .LONG
 	TST.W   NEWOP020
 	BEQ     .LONG
 	CMP.W   #1,ECPU
@@ -13272,7 +13284,7 @@ LIBINFO:	DC.L	0
 ;	BEQ.S	.4
 	RESTR	PROCMASKREV
 	BEQ.S	.4
-	BSR.W	OPTIMOVEMR
+	JSR	OPTIMOVEMR
 .4:
 	BRA	JOBLOOP
 .3:	MOVEM.L	(A7)+,D3-D7
@@ -16974,7 +16986,7 @@ STACK_UPDATE:
     NEG.W D0
     ADD.L XTRASTACK,D0
     ADD.L XTRASTACK2,D0
-    ADD.L #1024+50,D0
+    ADD.L #256+50,D0
     MOVE.W PROCMASK,D1
 .3    TST.W D1
     BEQ.S .4
@@ -17583,19 +17595,18 @@ ESYMS:
     EXT.L   D0
     AND.L   D0,SYMADDR
     TST.L   D0
-	BEQ.S	NOSYM
+	BEQ.S	NOSYM2
 	CLR.L	(A4)+
     MOVE.L  A4,SYMEND
     
     BSR SETHUNKSYMPTRS
-
-NOSYM:
-
+NOSYM2:
     ADD.L    #1,hunknum
     MOVE.L   hunknum,D2
     CMP.L   NumHunks,d2
     BNE     nexthunk
 
+NOSYM:
     MOVEM.L	(A7)+,D0-D7/A0-A3/A5/A6
 	RTS
 
@@ -18201,6 +18212,14 @@ PLB:
 	ADDQ.L	#4,A3			; SKIP ]OFFSET
 	CMP.W	#30,(A3)
 	BEQ.W	.10
+
+	CMP.W #8,(A3)   ;special case for checking negative values
+	BNE.S .notminus
+	TST.L VAR_DIMDATA(A0)
+	BEQ.S .notminus
+	BRA.W ERROR106
+.notminus
+
 	CMP.W	#VALUE,(A3)
 	BNE	.9
 	CMP.W	#30,6(A3)   ;next is "]" ?
@@ -18218,13 +18237,31 @@ PLB:
 	BEQ.S .notfirst1
 	MOVE.W	.dimsmoved2(PC),(A4)+
 	MOVE.L	2(A3),D3		; D3=VALUE
+
+	MOVE.L D0,-(A7)
+	MOVE.W -(A6),D0
+	ADDQ.L #2,A6
+	CMP.W D0,D3
+	BCC ERROR106
+	MOVE.L (A7)+,D0
+
 	MULU D1,D3
 	MOVE.L D3,(A4)+
+
 	CLR.B FIRST_DIM
 	BRA.S .contf1
 
 .notfirst1
 	MOVE.L	2(A3),D3		; D3=VALUE
+
+	MOVE.L D0,-(A7)
+	MOVE.W -(A6),D0
+	DIVU -(A6),D0
+	ADDQ.L #4,A6
+	CMP.W D0,D3
+	BCC ERROR106
+	MOVE.L (A7)+,D0
+
 	MULU D1,D3
 	TST.L D3
 	BEQ.S .contf1
@@ -18252,6 +18289,18 @@ PLB:
 
 .nodp:
 	MOVE.L	2(A3),D3		; D3=VALUE
+	MOVEM.L D0/A1,-(A7)
+	MOVE.L VAR_DIMDATA(A0),D0
+	BEQ.S .nodim
+	MOVE.L D0,A1
+	MOVE.W 2(A1),D0 ;always a single dim
+	CMP.W D0,D3
+	BCS.S .nodim
+	BRA ERROR106
+
+.nodim
+	MOVEM.L (A7)+,D0/A1
+  
 	ADDQ.L	#6,A3
 	BRA.W	.10
 
@@ -18277,6 +18326,30 @@ PLB:
 	MOVE.L DIMSPTR,D1
 	BEQ .10
 
+;array check range
+	TST.L ARRAYCHECK 
+	BEQ.S .noarrcheck
+
+ 	MOVE.L D0,-(A7)
+	MOVE.W .arrycheckd2,(A4)+
+	MOVE.L D1,A6
+	MOVEQ #0,D0
+	MOVE.W (A6),D0
+	TST.B FIRST_DIM
+	BNE.S .first4
+	DIVU -(A6),D0
+.first4
+	MOVE.W D0,(A4)+
+
+	LEA .arrycheckd2+4(PC),A6
+.copyrest
+	MOVE.W (A6)+,(A4)+
+	CMP.L #.arrokd2,A6
+	BNE.S .copyrest
+ 	MOVE.W (A6)+,(A4)+
+
+	MOVE.L (A7)+,D0
+.noarrcheck
 	MOVE.L D1,A6
 	MOVEQ #0,D1
 	MOVE.W ELEMENT_COUNT,D1
@@ -18312,7 +18385,7 @@ PLB:
 	MOVE.L	SPSET,-(A7)
 	MOVE.L	.TDRF(PC),-(A7)
 	CMP.W	#-1,D5
-	BEQ.S	.31
+	BEQ.W	.31
 	MOVE.W	.26(PC),(A4)+
 	MOVE.L A0,-(A7) 
 	BSR	EXP
@@ -18321,6 +18394,33 @@ PLB:
 	MOVE.L DIMSPTR,D1
 	BEQ .nodp3
   
+;array check range
+	TST.L ARRAYCHECK 
+	BEQ.S .noarrcheck4
+
+	MOVE.L D0,-(A7)
+	MOVE.W .arrycheckd2,(A4)
+	AND.W #$FBFF,(A4)+      ;change D2 to D0
+
+	MOVE.L D1,A6
+	MOVEQ #0,D0
+	MOVE.W (A6),D0
+	TST.B FIRST_DIM
+	BNE.S .first6
+	DIVU -(A6),D0
+.first6
+	MOVE.W D0,(A4)+
+
+	LEA .arrycheckd2+4(PC),A6
+.copyrest4
+	MOVE.W (A6)+,(A4)+
+	CMP.L #.arrokd2,A6
+	BNE.S .copyrest4
+	MOVE.W (A6)+,(A4)+
+
+	MOVE.L (A7)+,D0
+.noarrcheck4
+
 	MOVE.L D1,A6
 	MOVEQ #0,D1
 	MOVE.W ELEMENT_COUNT,D1
@@ -18335,21 +18435,56 @@ PLB:
 	CLR.B DIM_VALUE
 
 	TST.B FIRST_DIM
-	BNE.S .nodp3
+	BNE.S .nodp3a
 
 	MOVE.L	.dimsaddmoved2(PC),(A4)+    ;tested
-	BRA.S	.32
+	BRA.W	.32
 
 .nodp3
+
+
+;array check range
+	TST.L ARRAYCHECK 
+	BEQ.S .noarrcheck5
+
+	MOVEM.L D0/A0,-(A7)
+	MOVE.W .arrycheckd2,(A4)
+	AND.W #$FBFF,(A4)+      ;change D2 to D0
+
+	MOVE.L VAR_DIMDATA(A0),D0
+	BEQ.S .noarrcheck5
+	MOVE.L D0,A0
+	MOVE.W 2(A0),(A4)+    ;always single dim
+
+	LEA .arrycheckd2+4(PC),A0
+.copyrest5
+	MOVE.W (A0)+,(A4)+
+	CMP.L #.arrokd2,A0
+	BNE.S .copyrest5
+	MOVE.W (A0)+,(A4)+
+
+	MOVEM.L (A7)+,D0/A0
+
+.noarrcheck5
+
+.nodp3a
 	CLR.B FIRST_DIM
 	MOVE.L	.27(PC),(A4)+
-	BRA.S	.32
+	BRA.W	.32
 
 .dimsmuld0 MULU #0,D0
 .dimsmuld2 MULU #0,D2
 .dimsaddd0d2 ADD.L D0,D2
 .dimsaddmoved2 ADD.L D0,D2
 	MOVE.L (A7)+,D0
+
+.arrycheckd2
+	CMP.W #0,D2
+	BCS.S .arrokd2
+	MOVE.L	#"INDX",-84(A4)
+ 	MOVE.L -140(A4),A0
+	JMP (A0)
+.arrokd2
 
 .31: MOVE.L A0,-(A7) 
 	BSR	EXP
@@ -18358,8 +18493,35 @@ PLB:
 	CLR.B DIM_VALUE
 
 	MOVE.L DIMSPTR,D1
-	BEQ .nodp4
+	BEQ .nodp4a
   
+;array check range
+	TST.L ARRAYCHECK 
+	BEQ.S .noarrcheck2
+
+	MOVE.L D0,-(A7)
+	MOVE.W .arrycheckd2,(A4)
+	AND.W #$FBFF,(A4)+      ;change D2 to D0
+
+	MOVE.L D1,A6
+	MOVEQ #0,D0
+	MOVE.W (A6),D0
+	TST.B FIRST_DIM
+	BNE.S .first5
+	DIVU -(A6),D0
+.first5
+	MOVE.W D0,(A4)+
+
+	LEA .arrycheckd2+4(PC),A6
+.copyrest2
+	MOVE.W (A6)+,(A4)+
+	CMP.L #.arrokd2,A6
+	BNE.S .copyrest2
+	MOVE.W (A6)+,(A4)+
+
+	MOVE.L (A7)+,D0
+.noarrcheck2
+
 	MOVE.L D1,A6
 	MOVEQ #0,D1
 	MOVE.W ELEMENT_COUNT,D1
@@ -18372,12 +18534,34 @@ PLB:
 	MOVE.L A6,DIMSPTR
 
 	TST.B FIRST_DIM
-	BNE.S .nodp4
+	BNE.S .nodp4a
 
 	MOVE.W	.dimsaddd0d2(PC),(A4)+
 	BRA.S	.32
-
 .nodp4
+
+;array check range
+	TST.L ARRAYCHECK 
+	BEQ.S .noarrcheck3
+
+	MOVE.W .arrycheckd2,(A4)
+	AND.W #$FBFF,(A4)+      ;change D2 to D0
+
+	MOVE.L VAR_DIMDATA(A0),D0
+	BEQ.S .noarrcheck3
+	MOVE.L D0,A0
+	MOVE.W 2(A0),(A4)+    ;always single dim
+
+	LEA .arrycheckd2+4(PC),A0
+.copyrest3
+	MOVE.W (A0)+,(A4)+
+	CMP.L #.arrokd2,A0
+	BNE.S .copyrest3
+	MOVE.W (A0)+,(A4)+
+
+.noarrcheck3
+
+.nodp4a
 	CLR.B FIRST_DIM
 	MOVE.W	.30(PC),(A4)+
 .32:	MOVE.L	(A7)+,.TDRF
@@ -23032,10 +23216,10 @@ EXPFPVAL:
     BTST    #5,CODEPREFS
     BNE     EXPFPVAL
     CMP.L   #EXPCMP,A1
-	BMI	ERROR0
+	BMI.S	.ERR0
 	TST.W	D5
 	BMI.S	.3
-	BHI.W	ERROR0
+	BHI.S	.ERR0
 	MOVE.W	.1(PC),(A4)+
 	MOVE.L	(A3)+,(A4)+
 	BSR	MAKEFLTOPER
@@ -23046,6 +23230,8 @@ EXPFPVAL:
 	BSR.W	DOEXTL
 .2:	MOVEQ	#1,D5
 	BRA	EXPLOOP
+.ERR0:
+  JMP ERROR0
 .1:	MOVE.L	#1,D1
 .3:	MOVE.W	.4(PC),(A4)+
 	MOVE.L	(A3)+,(A4)+
@@ -23116,7 +23302,9 @@ EXPFPVAL:
       EXPVAR:
     CLR.L   LAST_CMD_ADR
 	CMP.W	#1,D5
-	BEQ	ERROR0
+  BNE.S .ok
+	JMP	ERROR0
+.ok
 	MOVE.L	(A3)+,A0
     MOVE.L  A0,LASTVAR
 	BTST	#3,5(A0)
@@ -23148,7 +23336,7 @@ EXPEXTBACK:
 	MOVE.W	10(A0),D0		; D0=VAROFFSET
 	MOVE.B	4(A0),D2		; D2=TYPE
 	CMP.B	#3,D2
-	BEQ	ERROR23
+	BEQ	.E23
 	CMP.W	#2,D4
 	BEQ	EXPVARCMP
 	CMP.W	#3,D4
@@ -23213,6 +23401,7 @@ EXPEXTBACK:
 	BEQ.S	.R1
 	MOVE.W	EXPMUL2+6(PC),(A4)+
 	BRA	EXPLOOP
+.E23 JMP ERROR23
 .R1:	MOVE.W	-(A4),-(A7)
 	MOVE.W	EXPMUL2+6(PC),(A4)+
 	MOVE.W	(A7)+,(A4)+
@@ -24241,7 +24430,7 @@ lERROR25: JMP ERROR25
     BRA.S   .D
 .MINM:  MOVE.W  .1L(PC),(A4)+       ; ADR OF LABEL OF OTHER MODULE
     MOVEM.L A1/A6,-(A7)
-    GETM    A6
+    GETML    A6
     MOVE.L  VARHEAVY(A0),A1     ; A1=PTR TO PROCCLASS
     MOVE.L  PC_ACC(A1),D0
     MOVE.L  A6,PC_ACC(A1)
@@ -25352,6 +25541,7 @@ NumHunks:
     DC.L    1
 
       MMODE:	DC.W	0		; =D1
+      SectionUsed:   DC.W 0
       THISMOD:	DC.L	0
 
       MINIMUMMODULE:
@@ -26619,6 +26809,8 @@ i2ERROR39:
 	SUB.L	A4,D0
 	CMP.L	#-32000,D0
 	BMI	.LL
+	CMP.L #1,NumHunks
+	BNE.S .LL
 	SUBQ.L	#2,D0
 	MOVE.W	.BSR(PC),(A4)+
 	MOVE.W	D0,(A4)+
@@ -28134,7 +28326,7 @@ NSMAKEINITCODE:
     BSR COPYC
     MOVE.L  NSST2,(A4)+
 
-    LEA NOST_ERRTHROW(PC),A0
+    LEA NOST_STACKCHK(PC),A0
     MOVE.L  #NSENDC,D0
     BSR COPYC
     BSR FIXPROCCODE
@@ -30692,7 +30884,7 @@ fatalerr: DC.L 0
 	DC.L	.81,.82,.83,.84,.85,.86,.87,.88
 	DC.L	.89,.90,.91,.92,.93,.94,.95,.96
 	DC.L	.97,.98,.99,.100,.101,.102,.103,.104
-	DC.L	.105,.106
+	DC.L	.105,.106,.107
 
 .0:	DC.B	'syntax error',0
 .1:	DC.B	'unknown keyword/const',0
@@ -30800,7 +30992,8 @@ fatalerr: DC.L 0
 .103:   DC.B    'object too large',0
 .104:   DC.B    'invalid array dimension',0
 .105:   DC.B    'global map workspace full',0
-.106:   DC.B 0
+.106:   DC.B    'array index out of range',0
+.107:   DC.B 0
 
 	EVEN
 
