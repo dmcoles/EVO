@@ -193,7 +193,7 @@ PROC process()
               fl:=o[]++
             ENDIF
             ptrrep:=o[]++
-            WHILE (ptrrep>0)
+            WHILE (ptrrep>=0)
               StrAdd(ptrRepText,'PTR TO ')
               ptrrep--
             ENDWHILE
@@ -217,7 +217,7 @@ PROC process()
               ELSE
                 IF val
                   PutF(
-                    '\s:\sPTR TO \s\n',
+                    '\s:\s\s\n',
                     '',
                     ptrRepText,
                     IF fl THEN ListItem(['','BYTE','WORD','','LONG'],c) ELSE ListItem(['','CHAR','INT','','LONG'],c)
@@ -225,8 +225,9 @@ PROC process()
                 ELSE
                   IF EstrLen(dimsText)=0 THEN StringF(dimsText,'[\d]',Int(o+IF o[] THEN 4 ELSE 2)-off/c,)
                   PutF(
-                    '\s:ARRAY OF \s\n',
+                    '\s:ARRAY OF \s\s\n',
                     dimsText,
+                    ptrRepText,
                     IF fl THEN ListItem(['','BYTE','WORD','','LONG'],c) ELSE ListItem(['','CHAR','INT','','LONG'],c)
                   )
                 ENDIF
@@ -235,9 +236,18 @@ PROC process()
               l:=o[]++
               ->PutF(IF val THEN ':PTR TO \s\n' ELSE ':\s (or ARRAY OF \s)\n',o,o)
               IF emode
-                IF val THEN PutF(':\sPTR TO \s\n',ptrRepText,o) ELSE PutF(':\s\n',o)
+                IF thisvers>=12
+                  IF val THEN PutF('\s:\s\s\n',dimsText,ptrRepText,o) ELSE PutF('\s:ARRAY OF \s\s\n',dimsText,ptrRepText,o)
+                ELSE
+                  IF val THEN PutF(':\s\s\n',ptrRepText,o) ELSE PutF(':\s\n',o)
+                ENDIF
               ELSE
-                IF val THEN PutF(':\sPTR TO \s\n',ptrRepText,o) ELSE PutF(':\s (or ARRAY OF \s)\n',o,o)
+                IF thisvers>=12
+                  IF val THEN PutF('\s:\s\s\n',dimsText,ptrRepText,o) ELSE PutF('\s:ARRAY OF \s\s\n',dimsText,ptrRepText,o)
+                ELSE
+                  IF val THEN PutF(':PTR TO \s\n',o) ELSE PutF(':\s (or ARRAY OF \s)\n',o,o)
+                ENDIF
+
               ENDIF
               o:=o+l
             ENDIF
