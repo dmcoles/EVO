@@ -5,10 +5,10 @@
 ;	GRIO Amiga E Compiler/Assembler/Linker by grio	 		;
 ;			in 1999-2003					;
 ;	E-VO Amiga E Compiler/Assembler/Linker by Darren Coles	 		;
-;     in 2021-2024
+;     in 2021-2025
 ; ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, ;
 
-debug=1
+;debug=1
 
   ifd __VASM
 	output EVO
