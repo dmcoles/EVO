@@ -8805,7 +8805,12 @@ iERROR107 JMP ERROR107
 .1:	MOVE.L	-(A4),A4
 	MOVE.L	A4,D0
 	BEQ.S	.1A
+	CMP.B #3,4(A4)    ;label
+	BEQ.S .notvar
+	TST.B 4(A4)       ;ndef
+	BEQ.S .notvar
 	MOVE.L (A4),VAR_NAME(A4)  ;save name
+.notvar
 	BTST	#0,5(A4)		; SEE IF UNREFERENCED
 	BEQ	.UNREF
 .UNRB:	MOVE.B	4(A4),D0
@@ -18322,10 +18327,16 @@ PLB:
 	CMP.W	#30,(A3)
 	BEQ.W	.10
 
-	CMP.W #8,(A3)   ;special case for checking negative values
+	CMP.W #8,(A3)   ;special case for checking negative values immeditely followed by ]
 	BNE.S .notminus
 	TST.L VAR_DIMDATA(A0)
 	BEQ.S .notminus
+
+	CMP.W	#VALUE,2(A3)
+	BNE	.notminus
+	CMP.W	#30,8(A3)   ;next is "]" ?
+	BNE	.notminus
+
 	BRA.W ERROR106
 .notminus
 
@@ -26131,7 +26142,7 @@ ADDGLOBMAP:
     moveq   #0,d0
     MOVE.W  (A0),D0
     ADD.L   D0,D0
-    BSET    #5,-4(a4)
+    BSET    #5,-4(a4)   ;set noregs in proc flags
     move.l  a0,(a4)+
     ADD.L   D0,A0
     ADDQ.L  #2,A0
