@@ -317,6 +317,15 @@ PROC process()
             narg:=o[]++
             o++
             c2:=o[]++
+            IF c2=-1      //special case for NOREGS
+              c2:=o[]++
+              o:=c2*2+o
+              c2:=o[]++
+            ENDIF
+            IF c2=-2    //special case for CLEANUP and STARTUP
+              o[]++
+              c2:=o[]++
+            ENDIF
             darg:=o
             o:=c2*4+o
             c:=o[]++

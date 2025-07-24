@@ -115,7 +115,8 @@ from offset IOFF
  105    IFN              106    ELSEIFN          107    EXITN
  108    CONTN            109    BYTE             110    WORD
  111    LEGACYINT        112    PSIZEOF          113    ARRAYSIZE
- 114    STACKCHECK       115    GETA4
+ 114    STACKCHECK       115    GETA4            116    SETUP
+ 117    CLEANUP
  
 |       = significant for idents
 
@@ -223,7 +224,7 @@ OBJECT proc
   nrargs:INT                    0
                                            0          1        2         3         4      5      6      7
   flags:CHAR                    2, SET COMPILE_RTD,METHOD,NO_REGALLOC,HAS_TAB,SAFEPROC,NOREGS,FROMMOD,STACK_CHECK,                                  
-  numregvars:CHAR               3, 0..3     also flags2 (top 4 bits reserved, bit 7 = GETA4FLAG for proc)
+  numregvars:CHAR               3, 0..3     also flags2 (top 4 bits reserved, bit 5 = setup, bit 6 = cleanup, bit 7 = GETA4FLAG for proc)
   nrloc:INT                     4, -(nrloc*4)
   defargs:PTR TO vallist        6
   of_object:PTR TO objectheader 10
@@ -567,6 +568,7 @@ store = set to current variables
 87      invert immediately previous branch (eg beq becomes bne) if iflag is set
 88      stack check
 89      stack update
+90      autoproc
 +---------------------------------------------------------------+
 |       OPT bits and cli-flags                                  |
 +---------------------------------------------------------------+
@@ -742,7 +744,7 @@ OBJECT emodule
           type:INT                      1=proc, 2=lab
           nrarg:INT                     from here only if proc!
           nrloc:INT                     -(loc*4)
-          numdefargs:INT
+          numdefargs:INT (if numdefargs =-1,numdefargs = -2 special cases)
           defargs[num]:ARRAY OF LONG    if >0
           arglen:INT
           argstring[arglen]:ARRAY       if >0
