@@ -2369,9 +2369,9 @@ CURBRACK:	DC.L	0
 	DC.L	.WARN,.DONE,.DONE,.DONE,.DONE,.DONE ; 84 WARN .. UTILLIB
 	DC.L	.DONE,.DONE,.DONE,.DONE,.DONE,.DONE ; 90 INLINE .. DATA
 	DC.L	.DONE,.DONE,.DONE,.DONE,.DONE,.DONE ; 96 CHIP .. ENDTRY
-	DC.L  .DONE,.DONE,.DONE,.DONE,.DONE,.DONE ; 102 UNTILN .. EXITN
-	DC.L  .DONE,.DONE,.DONE,.DONE,.DONE,.DONE ; 108 CONTN .. ARRAYSIZE
-	DC.L  .STACKCHECK,.GETA4                  ; 114 STACKCHECK
+	DC.L	.DONE,.DONE,.DONE,.DONE,.DONE,.DONE ; 102 UNTILN .. EXITN
+	DC.L	.DONE,.DONE,.DONE,.DONE,.DONE,.DONE ; 108 CONTN .. ARRAYSIZE
+	DC.L	.STACKCHECK,.GETA4,.DONE,.DONE      ; 114 STACKCHECK
 
 .WARN:  
 	MOVE.W	#1,CHECKPARSEWARN
@@ -3131,8 +3131,8 @@ CONTINUEKEY:
 		DC.B	0,0,0,0,0,0,0,0,0,0,0,0 ; 72 UNIO .. FATAL
 		DC.B	0,0,0,0,0,0,0,0,0,0,0,0 ; 84 WARN .. DATA
 		DC.B	0,0,0,0,0,0,0,0,0,0,0,0 ; 96 CHIP .. EXITN
-		DC.B  0,0,0,0,0,0,0,0,0,0,0,0 ; 108 CONTN..ARRAYSIZE
-		DC.B  0,0                     ; 114 STACKCHECK..
+		DC.B	0,0,0,0,0,0,0,0,0,0,0,0 ; 108 CONTN..ARRAYSIZE
+		DC.B	0,0,0,0                 ; 114 STACKCHECK..
 		EVEN
 
 
@@ -10106,7 +10106,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.9.0-dev',160
-			DC.B	'(23.07.2025)'
+			DC.B	'(24.07.2025)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -11607,6 +11607,20 @@ SYMEND:
     move.l  #0,(a5)+
     BRA .LOOP
 .NOREGS:
+
+    BTST    #5,3(A3)      ;SETUP in flags2
+    BNE     .SETUPCLEANUP
+    BTST    #6,3(A3)      ;CLEANUP in flags2
+    BEQ     .OTHER_STUFF
+.SETUPCLEANUP:
+    MOVE.W  #-2,(A5)+
+    MOVE.B  3(A3),D0
+    and.w   #64+32,d0   ;get flags2 bits
+    MOVE.W  D0,(A5)+
+    CLR.L   (A5)+
+    BRA .LOOP
+.OTHER_STUFF:
+
 	MOVE.L	6(A3),D0
 	BEQ.S	.DZERO
 	MOVE.L	D0,A3
@@ -12649,6 +12663,7 @@ ERROR107:	MOVEQ	#107,D0
 	DC.L	FILLEXIT,DOSUPER,DOUBLEIF,INCDEC,EXPECT3	   ; 75
 	DC.L	JOBOUT,JOBOUT,FILLCONT,DOFATAL,DOWARN	   ; 80
 	DC.L	JOB_SECTION, INS_FLAG, INVERT_BRANCH, STACK_CHECK, STACK_UPDATE  ;85
+	DC.L	JOB_AUTOPROC        ;90
 
       DOBECOMESMETHOD:
 	CMP.W	#42,6(A3)
@@ -17074,6 +17089,27 @@ STACK_UPDATE:
     
 .1  bra         JOBLOOP
 
+;90        Automatic procedure
+JOB_AUTOPROC:
+    CMP.W   #IOFF+116,(A3)     ;SETUP
+    BMI     JOBLOOP
+    CMP.W   #IOFF+117,(A3)     ;CLEANUP
+    BGT     JOBLOOP
+    TSTMOD
+    BEQ     ERROR49
+    MOVE.L  COMPILEPROC(PC),A0
+    TST.W   (A0)
+    BNE     ERROR23
+    BTST    #1,2(A0)
+    BNE     ERROR39
+
+    MOVEQ   #0,D0
+    MOVE.W  (A3)+,D0
+    SUB.W   #IOFF+116-5,D0  ;bits 5 and 6 for SETUP and CLEANUP
+    BSET    D0,3(A0)        ;set in flags2
+    MOVE.L  14(A0),A0
+    BSET    #2,5(A0)        ;set export
+    BRA JOBLOOP
 
 ;*-*
 
@@ -25613,6 +25649,11 @@ HunkList:
 NumHunks:
     DC.L    1
 
+SetupMod:
+    DC.L    0
+CleanupMod:
+    DC.L    0
+
       MMODE:	DC.W	0		; =D1
       SectionUsed:   DC.W 0
       THISMOD:	DC.L	0
@@ -26056,7 +26097,7 @@ ADDGLOBMAP:
 	ADD.L	D0,A0
 	MOVE.L	(A0)+,D7		; D7=OFFSET
 	CMP.W	#1,(A0)+
-	BNE.S	.LAB
+	BNE.W	.LAB
 	LEA	16(A4),A3		; note: 16
 	MOVE.L	A3,(A4)+		; PROC
 	MOVE.W	#-2,(A4)+
@@ -26070,8 +26111,8 @@ ADDGLOBMAP:
     MOVE.W  (A0)+,(A4)+     ; nr loc vars
     CMP.W   #-1,(A0)
     BEQ     .REGSONLY
-    ;CMP.W   #-2,(A0)
-    ;BEQ     .MORE_STUFF
+    CMP.W   #-2,(A0)
+    BEQ     .MORE_STUFF
     MOVE.L  A0,(A4)+        ; DEFARGS
 .REGSBACK:
 	CLR.L	(A4)+			; of_object
@@ -26095,7 +26136,28 @@ ADDGLOBMAP:
     ADD.L   D0,A0
     ADDQ.L  #2,A0
     bra     .REGSBACK
-    
+
+.MORE_STUFF:
+    ADDQ.L  #2,A0
+    MOVEM.L D0-D7/A1-A6,-(A7)
+    MOVEQ   #8,D0
+    JSR NEW
+    MOVE.L  D0,A1
+    cmp.w   #32,(a0)+   ;test bit 6
+    BEQ     .M2
+    MOVE.L  CleanupMod(PC),(A1)+
+    MOVe.L  A1,CleanupMod
+    BSET    #6,-3(A4)     ;cleanup in flags2
+    BRA     .M1
+.M2:MOVE.L  SetupMod(PC),(A1)+
+    MOVe.L  A1,SetupMod
+    BSET    #5,-3(A4)     ;setup in flags2
+.M1:MOVE.L  A4,(A1)
+    SUB.L   #6,(A1)+
+    MOVEM.L (A7)+,D0-D7/A1-A6
+    CLR.L   (A4)+
+    BRA .REGSBACK
+
 .LAB:	CLR.L	(A4)+			; LABEL
 	MOVE.W	#-1,(A4)+
 	MOVE.W LINENUM,(A4)+
@@ -29127,11 +29189,11 @@ UTIL:
     DC.L    .ERROR,.ERROR,.TRY,.CATCH,.ENDTRY,.UNTIL     ; 97-102
     DC.L    .WHILE,.ELSEWHILE,.IF,.ELSEIF,.EXIT,.JCONT			; 103 - 108
     DC.L    .ERROR,.ERROR,.ERROR,.ERROR,.ERROR             ; 109 - 113
-    DC.L    .ERROR,.ERROR                                  ; 114-
+    DC.L    .ERROR,.ERROR,.ERROR,.ERROR                    ; 114-
 
 .PROC:		DC.W	50,19,17,36,33,1,37,88,10
 		LINK	A5,#-27*4
-		DC.W	34,73,72,63,5,1,70,7,1,65,16,18,9
+		DC.W	34,73,72,90,63,5,1,70,7,1,65,16,18,9
 		UNLK	A5
 		DC.W	68,0
 
@@ -29322,7 +29384,7 @@ UTIL:
 	DC.L  .82,0,.83,0,.84,0,.85,0,.86,0,.87,0,.88,0,.89,0,.90,0,.91,0
 	DC.L  .92,0,.93,0,.94,0,.95,0,.96,0,.97,0,.98,0,.99,0,.100,0,.101,0
 	DC.L  .102,0,.103,0,.104,0,.105,0,.106,0,.107,0,.108,0,.109,0,.110,0
-	DC.L	.111,0,.112,0,.113,0,.114,0,.115,0,0,0
+	DC.L	.111,0,.112,0,.113,0,.114,0,.115,0,.116,0,.117,0,0,0
 
 .0:	DC.B	'PROC',0
 .1:	DC.B	'ENDPROC',0
@@ -29440,6 +29502,8 @@ UTIL:
 .113:  DC.B	'ARRAYSIZE',0
 .114:  DC.B 'STACKCHECK',0
 .115:  DC.B 'GETA4',0
+.116:  DC.B 'SETUP',0
+.117:  DC.B 'CLEANUP',0
 
 	EVEN
 
@@ -38965,11 +39029,26 @@ ShortDays:
   MOVE.L  #CHECK_OSVERSION_END,D0
   BSR CCOPY
 .00:
+    LEA  SetupMod+4,A0
+.A: MOVE.L  -4(A0),D0
+    BEQ     .C
+    MOVE.L  D0,A0
+    MOVE.W  .U(PC),(A4)+
+    MOVE.L  A0,-(A7)
+    MOVE.L  (A0),A0
+    MOve.L  14(A0),A0
+    MOVEQ   #0,D0
+    MOVE.W  10(A0),D0
+    JSR     ADDBRANCHRELOC
+    MOVE.L  (A7)+,A0
+    BRA     .A
+.C:
   RTS
 
 .T:	MOVEQ	#-1,D2
     SUB.L A2,A2
-    
+.U: JSR     .U   
+ 
 .iERROR50 JMP ERROR50
 
       MATHEXITETC:
@@ -38980,6 +39059,22 @@ ShortDays:
 	MOVE.L	CURACODE,A4		; A4=CODE
 	MOVEQ	#8,D0
 	JSR	ADDLABEL
+
+    LEA  CleanupMod+4,A0
+.8: MOVE.L  -4(A0),D0
+    BEQ     .9
+    MOVE.L  D0,A0
+    MOVE.W  .JSR(PC),(A4)+
+    MOVE.L  A0,-(A7)
+    MOVE.L  (A0),A0
+    MOve.L  14(A0),A0
+    MOVEQ   #0,D0
+    MOVE.W  10(A0),D0
+    JSR     ADDBRANCHRELOC
+    MOVE.L  (A7)+,A0
+    BRA     .8
+.9:
+
 	BTST	#3,CODEPREFS+1
 	BEQ.S	.1
 	LEA	CLOSEMATHBAS(PC),A0
@@ -39026,6 +39121,8 @@ ShortDays:
 	JSR	CHECK3
 .EX:
 .RTS:	RTS
+.JSR:   JSR .JSR
+
 .iERROR50   JMP ERROR50
 
 .CLEANCON:
