@@ -396,7 +396,7 @@ LSAVER:	MACRO				; \1=SAVEMASK.EA.W, \2=RETURN_SMASK.DX
 	BITM	5,\2
 	BITM	4,\2
 	BITM	3,\2
-	CLR.B	\2
+	EOR.B \2,\2   ;CLR.B	\2
 	MOVE.W	\2,(A4)+
 	MOVE.W	SMASK,\2
 .NOSR:					; \2 IS HERE ATLEAST BOOL
@@ -413,7 +413,7 @@ SAVER:	MACRO				; \1=SAVEMASK.EA.W, \2=RETURN_SMASK.DX
 	BITM	5,\2
 	BITM	4,\2
 	BITM	3,\2
-	CLR.B	\2
+	EOR.B   \2,\2   ;CLR.B	\2
 	MOVE.W	\2,(A4)+
 	MOVE.W	SMASK,\2
 .NOSR:					; \2 IS HERE ATLEAST BOOL
@@ -2721,7 +2721,7 @@ HEAVYTABLE:
 
 	MOVEM.L D0-D1/A0,-(A7)
   
- 	CLR.L D7
+ 	MOVEQ #0,D7
  	TST.W ECPU
 	BEQ.S .b1
   
@@ -8113,7 +8113,7 @@ _BRACKET:
     cmp.b   #$ff,d4
     bne iERROR94
 .BRI_0:
-    clr.b   d4
+    eor.b d4,d4   ;clr.b   d4
     rol.w   #8,d4
     bsr ASM_COMMA
     cmp.b   #5,(a3)
@@ -8382,7 +8382,7 @@ ASM_GRABVALUE:
 .XL:
     MOVEQ   #0,D2           ; D2<>0 --> NEGATE
 .XL1:
-    CLR.L D3
+    MOVEQ #0,D3
     MOVE.W  (A3)+,D3
     CMP.W   #52,D3		      ; do nothing marker
     BEQ     .XL
@@ -8627,12 +8627,12 @@ ASM_GRABVALUE:
     SWAP    D3
     MULU    D1,D3
     SWAP    D3
-    CLR.W   D3
+    EOR.W   D3,D3   ;CLR.W   D3
     ADD.L   D3,D4
     SWAP    D1
     MULU    D1,D2
     SWAP    D2
-    CLR.W   D2
+    EOR.W   D2,D2   ;CLR.W   D2
     ADD.L   D2,D4
     MOVE.L  D4,D1
     BRA .XB
@@ -8956,7 +8956,7 @@ iERROR107 JMP ERROR107
 	MOVEM.L	D0-D3/A0-A3,-(A7)
 	LEA	.lnumt(PC),A0
 	LEA	.lnum(PC),A1
- 	CLR.L D0
+ 	MOVEQ #0,D0
 	MOVE.W	VARLINENO(A4),D0
  	ADDQ.L #1,D0
 	MOVE.L	D0,(A1)
@@ -10589,8 +10589,8 @@ SRCFN: DC.L 0
     BSR     WRITEFILE
 
     MOVE.L  HANDLE,D1
-    CLR.L   D2
-    CLR.L   D3
+    MOVEQ #0,D2
+    MOVEQ #0,D3
     JSR     -66(A6) ;seek
     BTST    #1,D0
     BEQ     .EOPTI
@@ -10913,7 +10913,7 @@ SYMEND:
 	TST.L OASCII(a1)
 	BEQ .dont
 
-	CLR.W D1
+	EOR.W D1,D1   ;CLR.W D1
 	move.w OSIZE(a1),d0
 	btst #1,OFLAGS(A1)
 	BEQ.S .nextra
@@ -13670,12 +13670,12 @@ LDEF:	MACRO
  	MOVE.L A6,-(A7)
   
 	MOVE.L tempspacedataptr(PC),A6
-    CMP.L   #tempspacebuffend-8,A6
-    BPL     ERROR84
+  CMP.L   #tempspacebuffend-8,A6
+  BPL     ERROR84
 	MOVE.W #1,(A6)+
 	MOVE.L A0,(A6)+
  	CLR.W (A6)+
-    CLR.W .dcount
+  CLR.W .dcount
 
 .nextdim
 	ADD.W #1,.dcount
@@ -15411,7 +15411,7 @@ CHECKPR:	MACRO			; \1=TR.DX
   	;CMP.W #4,D0
   	;BEQ .singledim
   	MOVE.L A6,DIMDATA(A0)
-    CLR.L D3
+    MOVEQ #0,D3
     MOVE.W .dcount,D3
     
   	MOVE.W .dcount,(A6)
@@ -17661,7 +17661,7 @@ hunknum    DC.L 0
 OFFSETFRONHUNKSTART:
     MOVEM.L D2-A6,-(A7)
 
-    CLR.L   D4
+    MOVEQ #0,D4
     MOVE.L  HunkList(PC),D3
 .1: MOVE.L  D3,A1
     CMP.L   H_ADDR(A1),D1
@@ -21489,7 +21489,7 @@ EXPQMARK:
   MOVEM.L A1/D1,-(A7)
 	MOVE.L	(A3)+,A1		; A1=MEMBER
 	BSR	FINDMEMBER		; D1=TRASH,a1=first->REAL,a6=obj
-  CLR.L D0
+	MOVEQ #0,D0
 	MOVE.W	OOFF(A1),D0
   MOVEM.L (A7)+,A1/D1
 
@@ -21649,7 +21649,7 @@ EXPQMARK:
     MOVEM.L A1/D1,-(A7)
     MOVE.L	(A3)+,A1		; A1=MEMBER
     BSR	FINDMEMBER		; D1=TRASH,a1=first->REAL,a6=obj
-    CLR.L D0
+    MOVEQ #0,D0
     MOVE.W	OSIZE(A1),D0
     BEQ.S .z
     CMP.W #4,D0
@@ -21763,7 +21763,7 @@ EXPQMARK:
     MOVEM.L A1/D1,-(A7)
     MOVE.L	(A3)+,A1		; A1=MEMBER
     BSR	FINDMEMBER		; D1=TRASH,a1=first->REAL,a6=obj
-    CLR.L D0
+    MOVEQ #0,D0
     MOVE.W	OSIZE(A1),D0
     BEQ.S .z1
     CMP.W #4,D0
@@ -23015,7 +23015,7 @@ STRLH:
 	MOVE.W	.CLR(PC),(A4)+
 	BRA		.4
 .TST:	TST.L	D0
-.CLR:	CLR.L D0
+.CLR:	MOVEQ #0,D0
 
 .MD:	TST.W	ECPU
 	BEQ.S	.1
@@ -32156,12 +32156,12 @@ ASM_INSJOB:
 	SWAP    D3
 	MULU    D1,D3
 	SWAP    D3
-	CLR.W   D3
+	EOR.W   D3,D3   ;CLR.W   D3
 	ADD.L   D3,D0
 	SWAP    D1
 	MULU    D1,D2
 	SWAP    D2
-	CLR.W   D2
+	EOR.W   D2,D2 ;CLR.W   D2
 	ADD.L   D2,D0
 	MOVE.L	(A7)+,D3
 	RTS
@@ -32205,7 +32205,7 @@ ASM_INSJOB:
 	SWAP     D1
 	MOVE.W   D1,D3
 	MOVE.W   D0,D2
-	CLR.W    D0
+	EOR.W    D0,D0   ;CLR.W    D0
 	SWAP     D0
 	DIVU     D3,D0
 	MOVE.L   D0,D1
@@ -32213,7 +32213,7 @@ ASM_INSJOB:
 	MOVE.W   D2,D1
 	DIVU     D3,D1
 	MOVE.W   D1,D0
-	CLR.W    D1
+	EOR.W    D1,D1  ;CLR.W    D1
 	SWAP     D1
 	MOVE.L   (A7)+,D3
 	RTS      
@@ -33040,7 +33040,7 @@ BIN:	ADDQ.L	#1,A2
 .error:	MOVEQ	#-1,D0
 	MOVEQ	#0,D4
 	BRA.S	.exit
-.quit:	CLR.L   D0
+.quit:	MOVEQ #0,D0
 .exit:	CLR.B	0(A2,D4.L)
 	MOVE.W	D4,-2(A2)		; CURRENT LEN
 	MOVEM.L	(A7)+,D3/D4
@@ -33565,7 +33565,7 @@ BIN:	ADDQ.L	#1,A2
 	SWAP	D0
 	BRA.S	.5
 .4:	MULU	D2,D0
-.5:	CLR.W	D0
+.5:	EOR.W D0,D0   ;CLR.W	D0
 	SWAP	D0
 	RTS
 .SET:	NEG.L	D2
@@ -35584,7 +35584,7 @@ I_LISTSWAPITEM:
 	BMI.S .1
 	MOVE.L	12(A7),A1		; SRC
 	MOVE.L A1,A2
-	CLR.L D1
+	MOVEQ #0,D1
 	MOVE.W	-2(A1),D1 ;length
 	CMP.W	-4(A1),D1 ;max
 	BEQ.S .1
@@ -36238,7 +36238,7 @@ E_LOWERSTRNIL:
 .error:	MOVEQ	#-1,D0
 	MOVEQ	#0,D4
 	BRA.S	.exit
-.quit:	CLR.L   D0
+.quit:	MOVEQ #0,D0
 .exit:	CLR.B	0(A2,D4.L)
 	MOVE.W	D4,-2(A2)		; CURRENT LEN
 	MOVEM.L	(A7)+,D3/D4
@@ -37029,7 +37029,7 @@ I_LISTSWAPITEMNIL:
 	MOVE.L	8(A7),D0		; POS 2
 	BMI.S .1
 	MOVE.L A1,A2
-	CLR.L D1
+	MOVEQ #0,D1
 	MOVE.W	-2(A1),D1 ;length
 	CMP.W	-4(A1),D1 ;max
 	BEQ.S .1
