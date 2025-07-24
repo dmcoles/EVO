@@ -115,6 +115,7 @@ from offset IOFF
  105    IFN              106    ELSEIFN          107    EXITN
  108    CONTN            109    BYTE             110    WORD
  111    LEGACYINT        112    PSIZEOF          113    ARRAYSIZE
+ 114    STACKCHECK       115    GETA4
  
 |       = significant for idents
 
@@ -220,8 +221,9 @@ ENDOBJECT
 OBJECT proc
   next:PTR TO proc              -4
   nrargs:INT                    0
-  flags:CHAR                    2, SET COMPILE_RTD,METHOD,NO_REGALLOC,HAS_TAB,SAFEPROC,NOREGS,FROMMOD
-  numregvars:CHAR               3, 0..3
+                                           0          1        2         3         4      5      6      7
+  flags:CHAR                    2, SET COMPILE_RTD,METHOD,NO_REGALLOC,HAS_TAB,SAFEPROC,NOREGS,FROMMOD,STACK_CHECK,                                  
+  numregvars:CHAR               3, 0..3     also flags2 (top 4 bits reserved, bit 7 = GETA4FLAG for proc)
   nrloc:INT                     4, -(nrloc*4)
   defargs:PTR TO vallist        6
   of_object:PTR TO objectheader 10
@@ -1443,6 +1445,7 @@ has to become (ends with):      FOR/WHILE/UNTIL:        lab,jumpback,id
 103             object too large
 104             invalid array dimension
 105             global map workspace full
+106             array index out of range
 
 WARNINGS:
 
