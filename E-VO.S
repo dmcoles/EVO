@@ -18576,11 +18576,12 @@ PLB:
 	BEQ.S .noarrcheck5
 
 	MOVEM.L D0/A0,-(A7)
+	MOVE.L VAR_DIMDATA(A0),D0
+	BEQ.S .noarrcheckrest5
+
 	MOVE.W .arrycheckd2,(A4)
 	AND.W #$FBFF,(A4)+      ;change D2 to D0
 
-	MOVE.L VAR_DIMDATA(A0),D0
-	BEQ.S .noarrcheck5
 	MOVE.L D0,A0
 	MOVE.W 2(A0),(A4)+    ;always single dim
 
@@ -18591,6 +18592,7 @@ PLB:
 	BNE.S .copyrest5
 	MOVE.W (A0)+,(A4)+
 
+.noarrcheckrest5
 	MOVEM.L (A7)+,D0/A0
 
 .noarrcheck5
