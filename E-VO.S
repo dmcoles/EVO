@@ -10549,6 +10549,7 @@ SRCFN: DC.L 0
 
     MOVE.L  H_RELO(A5),D0
     moveq   #0,d5           ; num relocs
+    moveq   #1,d6
 .LOOPC2:
     MOVE.L  D0,A4
     addq.l  #1,d5
@@ -10595,7 +10596,11 @@ SRCFN: DC.L 0
     beq     .NXT3
     move.w  d4,-(a3)
     move.w  d5,-(a3)
+    tst.l d6
+    beq.s .notfirst
     MOVE.L  #$3f7,-(a3)
+    moveq #0,d6
+.notfirst
     move.l  a3,d2
     MOVE.L  (A7),D3
     sub.l   a3,d3
