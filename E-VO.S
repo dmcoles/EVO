@@ -10111,7 +10111,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.9.0-dev',160
-			DC.B	'(25.07.2025)'
+			DC.B	'(26.07.2025)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -17056,16 +17056,20 @@ STACK_CHECK:
     BEQ.S .1
 .2
     LEA .MOVE1(PC),A0
+    MOVE.L (A0)+,(A4)+
     MOVE.W (A0)+,(A4)+
     MOVE.L A4,STACKMODADDR
     MOVE.L (A0)+,(A4)+
     MOVE.L (A0)+,(A4)+
     MOVE.W (A0)+,(A4)+
+    MOVE.L (A0)+,(A4)+
 .1  bra         JOBLOOP
 
-.MOVE1: MOVE.L #0,D0
+.MOVE1: MOVEM.L A0/D0,-(A7)
+        MOVE.L #0,D0
         MOVE.L -144(A4),A0
         JSR (A0)
+        MOVEM.L (A7)+,A0/D0
 STACKMODADDR: DC.L 0
 XTRASTACK2: DC.L 0
 
@@ -17080,8 +17084,9 @@ STACK_UPDATE:
     BEQ.S .1
 .5
     CLR.B STACKCHECKPROCFLAG
-    MOVE.L STACKMODADDR,A0
+    MOVE.L STACKMODADDR,D0
     BEQ.S .1
+    MOVE.L D0,A0
     MOVEQ #0,D0
     MOVE.W NRLOC,D0
     NEG.W D0
