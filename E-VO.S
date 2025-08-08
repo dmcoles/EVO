@@ -7258,11 +7258,15 @@ ASM_MULDIV:
     BSR     ASM_GETEA
     TST.W   D0
     BNE     iERROR19
-.X1:LSL.W   #8,D3
+.X2:LSL.W   #8,D3
     LSL.W   #4,D3
     OR.W    D3,2(A1)
     OR.W    D7,2(A1)
     RTS
+.X1
+    AND.W    #$FFFF-$400,2(A1)   ;convert to 32 bit
+    BRA.S   .X2
+
 .WRD:
     ADDQ.L  #4,A0
     BSR     ASM_GETEA
@@ -10111,7 +10115,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.9.0-dev',160
-			DC.B	'(26.07.2025)'
+			DC.B	'(08.08.2025)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -13275,7 +13279,7 @@ LIBINFO:	DC.L	0
 .M:	MOVE.L	D0,D0
 .R:	MOVE.L	(A7)+,D0
       MAKEMOVEQ:
-	MOVE.W	EXPSTART(PC),(A4)+
+	MOVE.W	EXPSTART,(A4)+
 	BRA	JOBLOOP
       MAKED0:
 	ADDQ.L	#2,A3
@@ -18206,6 +18210,8 @@ ELEMENT_COUNT:
         DC.W    0
 DIMSPTR:
         DC.L   0
+DIMSPTR2:
+        DC.L   0
 
 
 dtext:  DC.B 'debug %lx - %lx',10,0
@@ -18221,6 +18227,7 @@ dval2:  DC.L 0
 
 	CLR.W DIMS_REMAIN
 	CLR.L DIMSPTR
+	CLR.L DIMSPTR2
 	CLR.W ELEMENT_COUNT
 	CLR.B DIM_VALUE
 	CLR.W SPSET
@@ -18257,6 +18264,7 @@ dval2:  DC.L 0
 	MOVE.W (A1)+,D1
 	MOVE.W D1,DIMS_REMAIN
 	MOVE.B #1,FIRST_DIM
+	MOVE.L A1,DIMSPTR2
 
 	SUBQ.W #1,D1
 	beq .nodimdata
@@ -18342,7 +18350,7 @@ PLB:
 
 	CMP.W #8,(A3)   ;special case for checking negative values immeditely followed by ]
 	BNE.S .notminus
-	TST.L VAR_DIMDATA(A0)
+	TST.L DIMSPTR2
 	BEQ.S .notminus
 
 	CMP.W	#VALUE,2(A3)
@@ -18414,6 +18422,7 @@ PLB:
 	MOVE.B #1,DIM_VALUE
 	ADDQ.L	#6,A3
 	MOVE.L A6,DIMSPTR
+	MOVE.L A6,DIMSPTR2
 	MOVEQ	#-1,D3
 	BRA.W	.10
 
@@ -18423,10 +18432,10 @@ PLB:
 .nodp:
 	MOVE.L	2(A3),D3		; D3=VALUE
 	MOVEM.L D0/A1,-(A7)
-	MOVE.L VAR_DIMDATA(A0),D0
+	MOVE.L DIMSPTR2,D0
 	BEQ.S .nodim
 	MOVE.L D0,A1
-	MOVE.W 2(A1),D0 ;always a single dim
+	MOVE.W (A1),D0
 	CMP.W D0,D3
 	BCS.S .nodim
 	BRA ERROR106
@@ -18452,14 +18461,14 @@ PLB:
 .first2
 	MOVE.L	2(A3),A6
 	MOVE.W	.OPTID2(PC),(A4)+
-	BSR	GVA6D3_0                    ;generate array index into d2 / tested
+	JSR	GVA6D3_0                    ;generate array index into d2 / tested
 	ADDQ.L	#6,A3
 	MOVEQ	#-1,D3
 
-	MOVE.L DIMSPTR,D1
-	BEQ .10
-
 ;array check range
+	MOVE.L DIMSPTR2,D1
+	BEQ.S .noarrcheck
+  
 	TST.L ARRAYCHECK 
 	BEQ.S .noarrcheck
 
@@ -18479,10 +18488,13 @@ PLB:
 	MOVE.W (A6)+,(A4)+
 	CMP.L #.arrokd2,A6
 	BNE.S .copyrest
- 	MOVE.W (A6)+,(A4)+
 
 	MOVE.L (A7)+,D0
 .noarrcheck
+
+	MOVE.L DIMSPTR,D1
+	BEQ .10
+
 	MOVE.L D1,A6
 	MOVEQ #0,D1
 	MOVE.W ELEMENT_COUNT,D1
@@ -18493,6 +18505,7 @@ PLB:
 	MOVE.W D1,(A4)+
 .nomul1:
 	MOVE.L A6,DIMSPTR
+	MOVE.L A6,DIMSPTR2
 
 	TST.B FIRST_DIM
 	BNE.S .first3
@@ -18524,10 +18537,10 @@ PLB:
 	BSR	EXP
 	MOVE.L (A7)+,A0
 
-	MOVE.L DIMSPTR,D1
-	BEQ .nodp3
-  
 ;array check range
+	MOVE.L DIMSPTR2,D1
+	BEQ.S .noarrcheck4
+
 	TST.L ARRAYCHECK 
 	BEQ.S .noarrcheck4
 
@@ -18549,11 +18562,13 @@ PLB:
 	MOVE.W (A6)+,(A4)+
 	CMP.L #.arrokd2,A6
 	BNE.S .copyrest4
-	MOVE.W (A6)+,(A4)+
 
 	MOVE.L (A7)+,D0
 .noarrcheck4
 
+	MOVE.L DIMSPTR,D1
+	BEQ .nodp3
+  
 	MOVE.L D1,A6
 	MOVEQ #0,D1
 	MOVE.W ELEMENT_COUNT,D1
@@ -18564,6 +18579,7 @@ PLB:
 	MOVE.W D1,(A4)+
 .nomul3:
 	MOVE.L A6,DIMSPTR
+	MOVE.L A6,DIMSPTR2
 
 	CLR.B DIM_VALUE
 
@@ -18574,34 +18590,6 @@ PLB:
 	BRA.W	.32
 
 .nodp3
-
-
-;array check range
-	TST.L ARRAYCHECK 
-	BEQ.S .noarrcheck5
-
-	MOVEM.L D0/A0,-(A7)
-	MOVE.L VAR_DIMDATA(A0),D0
-	BEQ.S .noarrcheckrest5
-
-	MOVE.W .arrycheckd2,(A4)
-	AND.W #$FBFF,(A4)+      ;change D2 to D0
-
-	MOVE.L D0,A0
-	MOVE.W 2(A0),(A4)+    ;always single dim
-
-	LEA .arrycheckd2+4(PC),A0
-.copyrest5
-	MOVE.W (A0)+,(A4)+
-	CMP.L #.arrokd2,A0
-	BNE.S .copyrest5
-	MOVE.W (A0)+,(A4)+
-
-.noarrcheckrest5
-	MOVEM.L (A7)+,D0/A0
-
-.noarrcheck5
-
 .nodp3a
 	CLR.B FIRST_DIM
 	MOVE.L	.27(PC),(A4)+
@@ -18627,10 +18615,10 @@ PLB:
 
 	CLR.B DIM_VALUE
 
-	MOVE.L DIMSPTR,D1
-	BEQ .nodp4a
-  
 ;array check range
+	MOVE.L DIMSPTR2,D1
+	BEQ.S .noarrcheck2
+
 	TST.L ARRAYCHECK 
 	BEQ.S .noarrcheck2
 
@@ -18652,10 +18640,12 @@ PLB:
 	MOVE.W (A6)+,(A4)+
 	CMP.L #.arrokd2,A6
 	BNE.S .copyrest2
-	MOVE.W (A6)+,(A4)+
 
 	MOVE.L (A7)+,D0
 .noarrcheck2
+
+	MOVE.L DIMSPTR,D1
+	BEQ .nodp4a
 
 	MOVE.L D1,A6
 	MOVEQ #0,D1
@@ -18667,34 +18657,13 @@ PLB:
 	MOVE.W D1,(A4)+
 .nomul4:
 	MOVE.L A6,DIMSPTR
+	MOVE.L A6,DIMSPTR2
 
 	TST.B FIRST_DIM
 	BNE.S .nodp4a
 
 	MOVE.W	.dimsaddd0d2(PC),(A4)+
 	BRA.S	.32
-.nodp4
-
-;array check range
-	TST.L ARRAYCHECK 
-	BEQ.S .noarrcheck3
-
-	MOVE.W .arrycheckd2,(A4)
-	AND.W #$FBFF,(A4)+      ;change D2 to D0
-
-	MOVE.L VAR_DIMDATA(A0),D0
-	BEQ.S .noarrcheck3
-	MOVE.L D0,A0
-	MOVE.W 2(A0),(A4)+    ;always single dim
-
-	LEA .arrycheckd2+4(PC),A0
-.copyrest3
-	MOVE.W (A0)+,(A4)+
-	CMP.L #.arrokd2,A0
-	BNE.S .copyrest3
-	MOVE.W (A0)+,(A4)+
-
-.noarrcheck3
 
 .nodp4a
 	CLR.B FIRST_DIM
@@ -18827,6 +18796,7 @@ PLB:
 	MOVE.L D1,A2
 	MOVEQ #0,D1
 	MOVE.W (A2)+,D1
+	MOVE.L A2,DIMSPTR2
 	MOVE.W D1,DIMS_REMAIN
 	MOVE.B #1,FIRST_DIM
 	SUBQ.W #1,D1
@@ -18897,11 +18867,11 @@ PLB:
     CMP.W   #1,ECPU
     BPL     .020_SCALE_FACTOR
 	CMP.W	#2,D5
-	BEQ.S	.S1
+	BEQ.W	.S1
 	CMP.W	#4,D5
-	BEQ.S	.S2
+	BEQ.W	.S2
 	CMP.W	#8,D5
-	BEQ.S	.S3
+	BEQ.W	.S3
 .020_SCALE_FACTOR:
     CMP.W   #2,D5
     BEQ     .SF1
@@ -18910,10 +18880,65 @@ PLB:
     CMP.W   #8,D5
     BEQ     .SF3
 	CMP.W	#16,D5
-	BEQ.S	.S4
-	MOVE.W	.28(PC),(A4)+   ; generate muls
+	BEQ.W	.S4
+
+	TST.L DIMSPTR2
+	BNE.S .arrayindex
+
+	MOVEM.L D0-D7,-(A7)
+	MOVEQ #0,D7
+	MOVE.W D5,D7
+	MOVE.L A4,-(A7)
+	BSR makesoftmuls
+
+	CMP.W D5,D6
+	BLE.S .mulsdone
+	MOVE.L (A7)+,A4
+	MOVEM.L (A7)+,D0-D7 
+
+	CMP.W   #1,ECPU
+	BPL     .020_MULS
+
+	MOVE.L A0,-(A7)
+	LEA .longmuls(PC),A0
+.copylongmuls
+	MOVE.W (A0)+,(A4)+
+	CMP.L #.longmulsend,A0
+	BNE.S .copylongmuls
+
+	MOVE.W	D5,.longmuls1-.longmulsend+2(A4)
+	MOVE.W	D5,.longmuls2-.longmulsend+2(A4)
+	MOVE.L (A7)+,A0
+	BRA.S	.SO
+
+.020_MULS
+	MOVE.L	.28_020(PC),(A4)+   ; generate muls.l
+	MOVE.W  #0,(A4)+
 	MOVE.W	D5,(A4)+        ; object size
 	BRA.S	.SO
+
+.mulsdone
+	ADDQ.L #4,A7
+	MOVEM.L (A7)+,D0-D7 
+	BRA.S	.SO
+
+.arrayindex
+	MOVE.W	.28(PC),(A4)+   ; generate mulu
+	MOVE.W	D5,(A4)+        ; object size
+	BRA.S	.SO
+ 
+.longmuls
+	MOVE.L D2,D1
+.longmuls1
+	MULU #1,D1
+	SWAP D2
+.longmuls2
+	MULS #1,D2
+	SWAP D2
+	EOR.W D2,D2
+	ADD.L D1,D2
+.longmulsend
+
 .S4:	MOVE.W	.29+6(PC),(A4)+		; OBJ OF 16
 	BRA.S	.SO
 .S3:	MOVE.W	.29+4(PC),(A4)+		; OBJ OF 8
@@ -18942,8 +18967,18 @@ PLB:
 	CMP.L	A1,D1
 	BEQ.S	.14
 	MOVE.W	(A1),D1     ;A1=MEMBER, (A1)=OOFF
-.14:	MOVE.L	D3,D4
+.14:
+
+	MOVE.L D5,-(A7)
+	MOVE.L D3,D4
+	SWAP D4
 	MULU	D5,D4
+	MULU D3,D5
+	SWAP D4
+	EOR.W D4,D4
+	ADD.L D5,D4
+	MOVE.L (A7)+,D5
+
 	ADD.L	D4,D1
 	BSR	GEND2
 
@@ -19049,13 +19084,13 @@ PLB:
 	ADDQ.W	#4,D0			; SET TO GET POINTER TO SUBSTRUCT
 	BRA.S	.18
 .NP:	BSR	.MOVEQ
-.18:	MOVEQ	#0,D7
+.18:	MOVE.W	#0,EAOFFSET
 	CMP.W	#2,D0
 	BPL.S	.18A
 	CMP.W	#ASSGN,(A3)
 	BNE.S	.18A
 .ED:	ADDQ.L	#2,A3
-	MOVEQ	#8,D7
+	MOVE.W	#8,EAOFFSET
 	MOVEM.L	D0-D3/D7/A0,-(A7)
 	MOVEQ	#0,D2
 	CMP.L	#$10000,D0
@@ -19094,6 +19129,7 @@ PLB:
     BEQ     .EXPEXT0
 .E0_B0:
 	LSL.W	#2,D0
+	MOVE.W EAOFFSET,D7
 	ADD.W	D0,D7
 	LSR.W	#2,D0
 	MOVE.L A4,.tmpA4
@@ -19218,6 +19254,7 @@ PLB:
     MOVE.W  #51,(A3)
 
     LSL.W   #2,D0
+    MOVE.W EAOFFSET,D7
   	ADD.W	D0,D7
     LSR.W   #2,D0
     MOVE.L A4,.tmpA4
@@ -19314,6 +19351,7 @@ PLB:
     beq     .DO
     bra     .21
 .E1_B00:
+	MOVE.W EAOFFSET,D7
  	LSR.W #1,D7
 	ADD.W	D0,D7
 	ADD.W	D0,D7
@@ -19383,6 +19421,7 @@ PLB:
     MOVE.W  (A3),2(A3)
     MOVE.W  #51,(A3)
 
+    MOVE.W EAOFFSET,D7
     LSR.W #1,D7
     ADD.W   D0,D7
     ADD.W   D0,D7
@@ -19446,6 +19485,7 @@ PLB:
 
 .E2_B0
 	LSL.W	#2,D0
+	MOVE.W EAOFFSET,D7
 	ADD.W	D0,D7
 	LSR.W	#2,D0
 	MOVE.L  A4,.tmpA4
@@ -19518,6 +19558,7 @@ PLB:
     MOVE.W  #51,(A3)
 
     LSL.W   #2,D0
+    MOVE.W EAOFFSET,D7
     ADD.W   D0,D7
     LSR.W   #2,D0
     MOVE.L  A4,.tmpA4
@@ -19684,10 +19725,13 @@ PLB:
 .27:	MOVE.L	(A7)+,D2
 	EXG.L	D0,D2
 .28:	MULU	#1,D2
-.29:	LSL.L	#1,D2
-	LSL.L	#2,D2
-	LSL.L	#3,D2
-	LSL.L	#4,D2
+  CPU020
+.28_020: MULS.L	#1,D2
+  CPU000
+.29:	ASL.L	#1,D2
+	ASL.L	#2,D2
+	ASL.L	#3,D2
+	ASL.L	#4,D2
 .30:	MOVE.L	D0,D2
 .19C:	EXT.W	D0
 	EXT.W	D1
@@ -19767,11 +19811,249 @@ PLB:
 	MOVEQ	#1,D5
 	ADDQ.L	#4,A7			; FLUSH RTS
 	BRA	EXPLOOP
+EAOFFSET: DC.W 0
 LASTMEMBER:	DC.L	0
 FORCEUNSIGNED: DC.W 0
 FORCESIGNED: DC.W 0
 METHCALL:    DC.W 0
 THE_OFFSET:  DC.L    0
+
+makesoftmuls:
+	moveq #0,d6
+
+	moveq #0,d5
+	moveq.l #32-1,d1
+.cnt
+	btst d1,d7
+	beq.s .z
+	addq #1,d5
+.z
+	dbf d1,.cnt
+	cmp.w #1,d5
+	ble.s .noinit
+	move.w moveinit,(a4)+
+  add.l #3,d6
+  tst.w ECPU
+  bne.s .noinit
+	add.l #1,d6   ;68000 is 4 cycles
+.noinit
+	add.l d5,d5
+	add.l #24+38+38,d5
+
+ 	cmp.w   #1,ECPU
+	bmi.s   .cpu68000
+  
+	moveq #44,d5
+
+.cpu68000
+	move.l d7,d0
+	move.l d7,-(a7)
+	moveq #1,d7
+	moveq.l #32-1,d1
+	moveq #-1,d3
+findnext
+	moveq.l #0,d2
+find1
+	btst #31,d0
+	bne.s found1
+	lsl.l #1,d0
+	addq.w #1,d2
+	dbf d1,find1
+
+	tst.l d3
+	bne.s allzeros
+	tst.w d2
+	beq.s nozeros3
+	bsr.w doshift
+nozeros3
+alldone
+	move.l (a7)+,d7
+	rts
+
+allzeros
+	move.w moveq0,(a4)+
+	add.l #3,d6
+  tst.w ECPU
+  bne.s alldone
+	add.l #1,d6   ;68000 is 4 cycles
+	bra.s alldone
+	
+found1
+	tst.w d1
+	beq.w just1
+	btst #30,d0
+	beq.w just1
+
+	cmp.w #1,d1
+	beq.s just2
+
+	btst #29,d0
+	beq.s just2
+
+	tst.l d3
+	bne.s nozeros0
+	bsr doshift
+nozeros0
+	
+	lsl.l #2,d0
+	moveq.l #2,d2
+	sub.w #2,d1
+	
+count
+	tst.w d1
+	bmi.s counted
+	btst #31,d0
+	beq.s counted
+	add.l d0,d0
+	addq.w #1,d2
+	subq.w #1,d1
+	bra.s count
+	
+counted
+	tst.w d7
+	bne.s .skipfirstadd
+	add.l #3,d6
+  tst.w ECPU
+  bne.s .n68k1
+	add.l #5,d6
+.n68k1
+	move.w addd0,(a4)+
+.skipfirstadd
+	moveq #0,d7
+	bsr doshift
+	add.l #3,d6
+  tst.w ECPU
+  bne.s .n68k2
+	add.l #5,d6
+.n68k2
+	move.w subd0,(a4)+
+	moveq #0,d3
+
+	tst.w d1
+	bpl.w findnext
+	bra.w alldone
+
+just2
+	tst.l d3
+	bne.s nozeros1
+
+	addq.l #1,d2
+	bsr.s doshift
+nozeros1
+
+	lsl.l #1,d0
+	tst.w d7
+	bne.s .skipfirstadd
+	add.l #3,d6
+  tst.w ECPU
+  bne.s .n68k3
+	add.l #5,d6
+.n68k3
+	move.w addd0,(a4)+
+.skipfirstadd
+	add.l #3,d6
+  tst.w ECPU
+  bne.s .n68k4
+	add.l #5,d6
+.n68k4
+	moveq #0,d7
+	move.w shiftleft1,(a4)+
+	sub.w #1,d1
+	bra.w nozeros2
+	
+just1
+	tst.l d3
+	bne.s nozeros2
+
+	addq.l #1,d2
+	bsr.s doshift
+
+nozeros2
+	moveq #0,d3
+	lsl.l #1,d0
+	tst.w d7
+	bne.s .skipfirstadd
+	add.l #3,d6
+  tst.w ECPU
+  bne.s .n68k5
+	add.l #5,d6
+.n68k5
+	move.w addd0,(a4)+
+.skipfirstadd
+	moveq #0,d7
+	dbf d1,findnext
+	bra.w alldone
+
+doshift	
+	cmp.w #16,d2
+	bne.s not16
+	add.l #7,d6
+  tst.w ECPU
+  bne.s .n68k6
+	add.l #5,d6
+.n68k6
+	move.w swapd2,(a4)+
+	move.w cleard2,(a4)+
+	bra.s shiftdone
+not16
+	cmp.w #1,d2
+	bne.s not1
+
+	add.l #3,d6
+  tst.w ECPU
+  bne.s .n68k7
+	add.l #5,d6
+.n68k7
+	move.w shiftleft1,(a4)+
+	bra.s shiftdone
+
+not1
+	cmp.w #9,d2
+	blt.s lessthan9
+
+	add.l #8,d6
+  tst.w ECPU
+  bne.s .n68k8
+	add.l #16,d6
+.n68k8
+	move.w lslimmd2,(a4)+
+	subq.w #8,d2
+	bra.s not1
+	
+lessthan9
+
+	add.l #8,d6
+  tst.w ECPU
+  bne.s .n68k9
+	add.l d2,d6
+	add.l d2,d6
+.n68k9
+
+	move.w lslimmd2,(a4)
+	and.w #7,d2
+
+	lsl.w #8,d2
+	add.l d2,d2
+	or.w d2,(a4)+
+shiftdone
+	rts
+
+moveinit
+	move.l d2,d1
+moveq0
+	moveq #0,d2
+shiftleft1
+	add.l d2,d2
+lslimmd2
+	asl.l #8,d2
+addd0
+	add.l d1,d2
+subd0
+	sub.l d1,d2
+swapd2
+	swap d2
+cleard2
+	eor.w d2,d2
 
 
 PLX:	CMP.W	#35,D1			; p++  p--
@@ -19967,6 +20249,8 @@ XIT:	MOVEM.L	(A7)+,D3-D5/A1
     BCLR    #2,ICODEPREFS+3
     MOVE.L  #0,LASTVAR
 	MOVEM.L	D3-D5/A1/A2,-(A7)	; WE DO HEAVY RECURSION
+	MOVE.W EAOFFSET,-(A7)
+	CLR.W EAOFFSET
 	MOVE.W IFLAG,-(A7)
 	CLR.W IFLAG
 	MOVE.W METHCALL,-(A7)
@@ -20105,6 +20389,7 @@ XIT:	MOVEM.L	(A7)+,D3-D5/A1
 	MOVE.W	(A7)+,FORCESIGNED
 	MOVE.W	(A7)+,METHCALL
 	MOVE.W	(A7)+,IFLAG
+	MOVE.W	(A7)+,EAOFFSET
 	MOVEM.L	(A7)+,D3-D5/A1/A2
 	RTS
 	CPU040
@@ -23185,7 +23470,7 @@ EXPDIVPROD:
 	CMP.L	#4,D1
 	BEQ.W	OPTI
 .S1:	MOVE.W	D1,(A4)+
-	BEQ	ERROR15
+	BEQ.S	.ERR15
 	SWAP	D1
 	TST.W	D1
 	BNE.S	.2
@@ -23196,8 +23481,10 @@ EXPDIVPROD:
 	MOVE.W	D0EXT(PC),(A4)+
 .1:	BRA	EXPLOOP
 .2:	CMP.W	#-1,D1
-	BNE	ERROR11
+	BNE.S	.ERR11
 	BRA.S	.3
+.ERR11: JMP ERROR11
+.ERR15: JMP ERROR15
 
 EXPSHORT2:
 	CMP.L	#255,D1
@@ -23266,7 +23553,7 @@ OPTI2:
 
 EXPFPVAL:
     CMP.W   #1,D5
-    BEQ     ERROR0
+    BEQ.S     .ERR0
     CMP.L   #EXPCMP,A1      ; NO AND/OR
     BMI.W   VALFLTBACK
     CMP.W   #-1,D5
@@ -23282,7 +23569,7 @@ EXPFPVAL:
     beq     .FDIV
     cmp.l   #EXPCMP,a1
     beq     .FCMP
-    bra     ERROR0
+    bra.s     .ERR0
 .FADD:
     cmp.w   #2,ECPU
     spl     d0
@@ -23290,6 +23577,9 @@ EXPFPVAL:
     lea     .FC,a1
     add.l   d0,a1
     bra     .FFIX
+.ERR0:
+	JMP ERROR0
+
 .FSUB:
     cmp.w   #2,ECPU
     spl     d0
