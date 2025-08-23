@@ -370,7 +370,8 @@ NOTE: in most cases you won't need to use any of these options
    - Added CharInStr(str,char) function to search for a char in a string
    - Added CharInStri(str,char) function, as CharInStr but case insensitive
    - Added MemCompare(mem1,mem2,len) function to compare two memory areas,
-     returns TRUE or FALSE
+     returns -1 (mem1 contents less),1 (mem2 contents less) or 0
+     (both equal)
    - Optimised WriteF, PrintF, PutF, TextF to skip the formatting part if no
      additional parameters are passed after the format string
    - Add NILCHECK variants of many E functions that raise a "NIL" exception
@@ -4206,8 +4207,9 @@ As above but performing a string comparison on a and b.
 
   r:=MemCompare(a,b,len)
 
-This is a direct memory compare function.it should be noted that it returns
-TRUE or FALSE and checks exactly len bytes of a and b for a match.
+This is a direct memory compare function. It is essentially the same as the
+StrCompare function except that it will not stop if it its the NIL termiator
+character found at the end of a string.
 
 
 

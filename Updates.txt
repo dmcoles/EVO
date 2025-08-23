@@ -569,7 +569,8 @@ Development restarted as E-VO by Darren Coles
    - Added CharInStr(str,char) function to search for a char in a string
    - Added CharInStri(str,char) function, as CharInStr but case insensitive
    - Added MemCompare(mem1,mem2,len) function to compare two memory areas,
-     returns TRUE or FALSE
+     returns -1 (mem1 contents less),1 (mem2 contents less) or 0
+     (both equal)
    - Optimised WriteF, PrintF, PutF, TextF to skip the formatting part if no
      additional parameters are passed after the format string
    - Add NILCHECK variants of many E functions that raise a "NIL" exception
