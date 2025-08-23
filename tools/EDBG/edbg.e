@@ -1542,4 +1542,4 @@ EXCEPT DO
   IF rexxsysbase THEN CloseLibrary(rexxsysbase)
 ENDPROC
 
-CHAR 0, '$VER: EDBG 3.8.2', 0, 0
+CHAR 0, '$VER: EDBG 3.9.0', 0, 0

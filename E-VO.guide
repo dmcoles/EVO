@@ -1,14 +1,14 @@
 @database "e.guide"
 @node MAIN
-@title "Amiga E-VO v3.8.1"
+@title "Amiga E-VO v3.9.0"
 
                 +-----------------------------------------------+
                 |                                               |
-                |               Amiga E-VO v3.8.1               |
+                |               Amiga E-VO v3.9.0               |
                 |          Compiler for The E Language          |
                 |     Originally By Wouter van Oortmerssen      |
                 |           Updates By GRIO 1999-2003           |
-                |          and Darren Coles 2022 - 2024         |
+                |          and Darren Coles 2022 - 2025         |
                 |                                               |
                 +-----------------------------------------------+
 
@@ -260,7 +260,7 @@ syntax of the compiler (2.04+):
 SOURCE/A,REG=NUMREGALLOC/N/K,LARGE/S,SYM=SYMBOLHUNK/S,NOWARN/S
 QUIET/S,ASM/S,ERRLINE/S,ERRBYTE/S,SHOWBUF/S,ADDBUF/N/K,COMPILESTACK/N/K,
 IC=IGNORECACHE/S,HOLD/S,WB/S,LINEDEBUG/S,OPTI/S,LEGACY/S,LEGACYINT/S,
-DEBUG/S,DEBUG50/S,NILCHECK/S,SHOWFNAME/S,DEFINE/M',0
+DEBUG/S,DEBUG50/S,NILCHECK/S,STACKCHECK/S,ARRAYCHECK/S,SHOWFNAME/S,DEFINE/M',0
 
 for 1.2 to 2.03:
 
@@ -331,7 +331,15 @@ DEBUG50          attach debug infos to executable/module in a way that
                  allows debugging under OS 4.x (see @{" 17K " link CH_17K })
 NILCHECK         insert code at every "." or "[]" dereference to check
                  for a NIL pointer. Will throw an exception of the form
-                 Throw("NIL",source_line_number)
+                 Throw("NIL",source_line_number). Using this option will also
+                 result in NIL checking being enforced in many of the E built
+                 in functions which accept pointers.
+ARRAYCHECK       insert code at every array access to check for array bounds. Will
+                 throw an exception of the form Throw("INDX",source_line_number)
+STACKCHECK       add code to the start each PROC to check for enough stack space.
+                 Will throw an exception of the form
+                 Throw("STCK",source_line_number)
+
 SHOWFNAME        Displays the filename of the E file being compiled.
 DEFINE           Equivalent to #DEFINE in your code, defines a macro
 
@@ -345,6 +353,65 @@ NOTE: in most cases you won't need to use any of these options
 @title "0D. changes / history / new features"
 0D. changes / history / new features
 ------------------------------------
+ New in E-VO  (3.9.0)
+   - FindModule: fix division by 0 error
+   - FindModule: updated to handle module format version 15
+   - EDBG: fix issues loading files generated with E-VO 3.8.x
+   - O2M: Added support for symbol hunks
+   - ShowModule: Updated to handle module format version 15
+   - Warnings are now displayed when encountered rather than at the
+     end of the compile
+   - Add "assign of ARRAY/STRING/LIST variable" warning
+   - Allow objects to be constructed using NEW objectname as well as
+     NEW objectvar
+   - When using OPT POOL, all memory allocation/free via NEW, String(),
+     List(), New(), FastNew(), NewR(), END, Dispose(), FastDispose(),
+     FastDisposeList() will be done from the pool
+   - Added CharInStr(str,char) function to search for a char in a string
+   - Added CharInStri(str,char) function, as CharInStr but case insensitive
+   - Added MemCompare(mem1,mem2,len) function to compare two memory areas,
+     returns TRUE or FALSE
+   - Optimised WriteF, PrintF, PutF, TextF to skip the formatting part if no
+     additional parameters are passed after the format string
+   - Add NILCHECK variants of many E functions that raise a "NIL" exception
+   - Small changes to ASTRCLONE and STRREM to remove unnecessary instructions
+   - Exception raising code reworked to remove some code duplication
+   - Global variables with default values now allowed in modules
+   - Global array of object variables now allowed in modules
+   - Added STACKCHECK command line option to add code to each PROC to check
+     for enough stack space
+   - Fix astrclone to always clear first byte of result if the length is 0
+   - Fix for NILCHECK version of DoMethod which was not setting up d0
+     correctly
+   - Updated module format version to 15
+   - Added STACKCHECK procedure modifier to enable stack checking for a
+     particular procedure
+   - Added GETA4 procedure modifier to restore A4 at the start of the
+     procedure
+   - Replaced all CLR <reg> to MOVEQ #x,<reg> or EOR as appropriate
+   - add PROC x() SETUP and PROC x() CLEANUP - from creative
+   - Fix memory corruption issue during parsing
+   - fix error generating HUNK_DREL32SHORT hunk causing corrupt exe
+   - fix legacy mode memory corruption creating corrupt module
+   - increase fixed buffer sizes
+   - fix assembler error with MULS.L and DIVSL.L commands generating
+     incorrect opcodes
+   - PTR indexes are now 32 bit so can be >65535 and <0
+   - indexed ptr to object code generation optimised for 68020
+     (to use MULS.L) and to generate add/shift/subtract combinations
+     instead of MULS where appropriate
+   - Fix for obj.prop+=2 which was broken due to register value not
+     being preserved.
+   - Add NIL test in Free()
+   - disable 020 JSR to BSR.L optimisation when multiple sections in
+     use (which was causing invalid code generation)
+   - Add compile time array bounds checking (for constant array indexes)
+   - Add ARRAYCHECK command line parameter to add code to each array access
+     to check array bounds
+   - Fix symbol hunks being generated incorrectly when multiple sections
+     in use
+   - added EVO_3_9_0 define
+   - added newer version of cybergraphics module
 
  New in E-VO  (3.8.1)
    - FindModule: add module version 14 support
@@ -1662,6 +1729,35 @@ write things like
 in the examples, the pointer 'a' is not affected, the pointer 'b' in the 'a'
 object is used.
 
+It is also possible to use NEW to create objects without having to declare
+a variable of that specific type by using an object after the NEW command
+
+eg.
+
+OBJECT obj
+  x:INT
+  y:INT
+ENDOBJECT
+
+PROC create() OF obj
+  self.x:=0
+  self.y:=0
+ENDPROC
+
+a:= NEW obj
+
+or
+
+a:= NEW obj.create()
+
+Using this syntax the variable "a" does not need to be declared of the specific
+object type. If you wish to call a method or access a member then it would need
+to be assigned to a variable of the correct type first.
+
+This can be useful if you have several child classes and you may wish to create
+an instance of any one of those child classes but store it in the same variable.
+
+
 NEW allocated lists are not to be used with the Link() functions (see @{" 9H " link CH_9H }).
 
 (see @{" 5M " link CH_5M }, END)
@@ -2430,6 +2526,21 @@ variables or those allocated to registers by the optmimiser). If you
 write your own ASM code however you may want tell E to store the
 registers on the stack - of course you can do this in your own ASM code
 but this is an easier way.
+
+PROC GETA4 func()..
+
+The GETA4 modifier for a PROC definition tells the E compiler to add a small
+block of code to the start of the PROC call to restore the A4 register.
+This is useful if the procedure is being called as a hook or as a new
+thread.
+
+PROC STACKCHECK func()..
+
+Enables the STACKCHECK option for this procedure only. See the STACKCHECK
+command line option for more details. This is useful for adding stack checking
+to recursive function calls if you need to check to ensure that there is enough
+stack space available. It will generate an "STCK" exception in the event that
+the stack space is too low.
 
 NOREGS - This is an extra option you can add on the end of a proc statement
 
@@ -3365,6 +3476,15 @@ was found, else -1.
 
 Same as InStr but with a case insensitive comparison.
 
+        foundpos:=CharInStr(string,char,startpos=0)
+
+Same as InStr but searches for a single character in string.
+
+        foundpos:=CharInStri(string,char,startpos=0)
+
+Same as InStri but searches for a single character in string.
+
+
         newstringadr:=TrimStr(string)
 
 returns the *address* of the first character in a string, i.e., after
@@ -4084,6 +4204,12 @@ As above but treating a and b as floating point values
 As above but performing a string comparison on a and b.
 (see @{" 9B " link CH_9B } on string functions for more details)
 
+  r:=MemCompare(a,b,len)
+
+This is a direct memory compare function.it should be noted that it returns
+TRUE or FALSE and checks exactly len bytes of a and b for a match.
+
+
 
 @endnode
 @node CH_9H
@@ -4477,11 +4603,6 @@ the need for individual EXPORT keywords.
 global variables require extra attention:
 - try to avoid global variables. having lots of globals
   in modules makes projects messy and error-prone
-- globals in a module cannot have initialisations directly
-  in the DEF statement (reason for this will become clear
-  below). for example:
-  DEF a             not     DEF a=1
-  DEF a:PTR TO x    not     DEF a[10]:ARRAY OF x
 - globals in a module which are not exported function as
   local for the module, i.e. they'll never clash with globals
   in other modules. those who _are_ exported though, are
@@ -4506,6 +4627,25 @@ global variables require extra attention:
   in use from more than one other module, in which case
   it may be unclear who is responsable for resources.
   take good care of this.
+
+
+Module startup and module cleanup code
+
+It is possible to declare one or more PROC in a module that will
+automatically be executed during the program initialisation and cleanup.
+
+PROC x() SETUP
+...
+ENDPROC
+
+PROC x() CLEANUP
+..
+ENDPROC
+
+The SETUP and CLEANUP tells the compiler that these procedures are to be
+called automatically. This allows you to initialise any variables during
+the program startup and free up resources at the end.
+
 
 Using modules in modules
 
@@ -5190,7 +5330,8 @@ by your program, follow the following guidelines:
 
   "MEM"         out of memory
   "FLOW"        (nearly) stack overflow
-  "STCK"        garbage collector has stack problems
+  "STCK"        garbage collector has stack problems or stack checking failure
+  "INDX"        array index out of range
   "^C"          Control-C break
   "ARGS"        bad args
 
@@ -5846,7 +5987,8 @@ POOL(memtype, puddlesize, threshsize)
                 create pool that can be used later in
                 your program using Alloc() and Free(). Parameters are
                 optional and default to $10001 (MEMF_CLEAR|MEMF_PUBLIC),
-                10240 and 256.
+                10240 and 256. When using OPT POOL memory for e-lists, objects
+                and other memory functions will be allocated from the POOL.
                 Pools are only availablein OS v39 and above.
 FPEXP           Tells the compiler to generate FPU based floating point math
                 code. You also need to specify either the cpu like 040/060
@@ -6019,6 +6161,20 @@ something might be wrong, but is not really an error.
 
 - 'code outside PROCs'
   You wrote E code in between PROCs, which is only rarely useful.
+
+- 'REG var used after EXCEPT'
+
+- 'member used as method'
+  similar to variable used as function warning but for members/methods
+
+- 'OPT PURE recommended for libraries'
+  suggestion when compiling a library that OPT PURE should be used to
+  enable checking for E language features that generate non-pure code.
+
+- 'assign of ARRAY/STRING/LIST variable.'
+  if a variable is declared as an ARRAY/STRING/LIST then assigning to
+  this variable may well not be the intended action.
+
 
 Errors.
 The compiler will print the source-code-line that caused the error below it,
@@ -7199,6 +7355,7 @@ The currently defined version macro's are
         EVO_3_6_0
         EVO_3_7_0
         EVO_3_8_0
+        EVO_3_9_0
     
 So if EVO_3_4_0 is not defined then you are not compiling under E-VO. Further
 defines will be added for each new revision of the E-VO compiler so you can
@@ -7466,8 +7623,8 @@ objdecl         = "OBJECT" ident [ "NOALIGN" ] [ "OF" ident ] eol
 constdecl       = "CONST" { ( constant "=" constexp ) "," }+ |
                   "ENUM" { ( constant | constant "=" constexp ) "," }+ |
                   "SET" { constant "," }+
-procdecl        = [ "EXPORT" ] "PROC" [ "SAFE" ] ident "(" argdecllist ")"
-                  [ "OF" ident ] ["NOREGS"] [ "HANDLE" ]
+procdecl        = [ "EXPORT" ] "PROC" [ "SAFE" ] [ "GETA4" ] [ "STACKCHECK" ] ident "(" argdecllist ")"
+                  [ "OF" ident ] ["SETUP" | "CLEANUP"] ["NOREGS"] [ "HANDLE" ]
                   ( ( "RETURN" | "IS" ) { exp "," }* |
                      eol defstat* stats 
                      [ "EXCEPT" eol stats ]
@@ -8178,7 +8335,6 @@ Bugs
 Future Features
 
 Will E have...
-- Initialisation for globals in modules?
 - Bitfields?
 - Startup code that doesn't open intuition etc.?
 - A feature to automatically include all modules used by a module?

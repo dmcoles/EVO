@@ -10115,7 +10115,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.9.0-dev',160
-			DC.B	'(08.08.2025)'
+			DC.B	'(23.08.2025)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -31011,7 +31011,7 @@ EFUNCENTRYSIZE=16   ;size of efunctab entry (eg 4 LONGWORD entries)
 .199: DC.B    'ListItem',0   ;020 variant
 .200: DC.B    'CharInstr',0
 .201: DC.B    'CharInstri',0
-.202: DC.B    'MemCmp',0
+.202: DC.B    'MemCompare',0
 
      EVEN
       EFUNCSIZES:
@@ -36213,8 +36213,8 @@ E_STRCOMPARE:
       E_LISTITEM020:
 
       I_CHARINSTR:
-	MOVE.L	8(A7),A0		; THE STRING
-	MOVE.L	12(A7),D0		; CHAR TO FIND
+	MOVE.L	12(A7),A0		; THE STRING
+	MOVE.L	8(A7),D0		; CHAR TO FIND
 	MOVE.L	A0,D2
 	ADD.L	4(A7),A0
 .1:
@@ -36232,8 +36232,8 @@ E_STRCOMPARE:
       E_CHARINSTR:
 
       I_CHARINSTRI:
-	MOVE.L	8(A7),A0		; THE STRING
-	MOVE.L	12(A7),D0		; CHAR TO FIND
+	MOVE.L	12(A7),A0		; THE STRING
+	MOVE.L	8(A7),D0		; CHAR TO FIND
 	MOVE.L	A0,D2
 	ADD.L	4(A7),A0
 
@@ -37551,10 +37551,10 @@ E_STRCOMPARENIL:
 
 ; CHARINSTR (nilcheck variant)
       I_CHARINSTRNIL:
-	MOVE.L	8(A7),A0		; THE STRING
+	MOVE.L	12(A7),A0		; THE STRING
   MOVE.L A0,D0
   BEQ.S .NIL
-	MOVE.L	12(A7),D0		; CHAR TO FIND
+	MOVE.L	8(A7),D0		; CHAR TO FIND
 	MOVE.L	A0,D2
 	ADD.L	4(A7),A0
 .1:
@@ -37576,10 +37576,10 @@ E_CHARINSTRNIL:
 
 ; CHARINSTRI (nilcheck variant)
       I_CHARINSTRINIL:
-	MOVE.L	8(A7),A0		; THE STRING
+	MOVE.L	12(A7),A0		; THE STRING
   MOVE.L A0,D0
   BEQ.S .NIL
-	MOVE.L	12(A7),D0		; CHAR TO FIND
+	MOVE.L	8(A7),D0		; CHAR TO FIND
 	MOVE.L	A0,D2
 	ADD.L	4(A7),A0
 

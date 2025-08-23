@@ -164,7 +164,7 @@ those with "" are actual addressable variables
 -128    opened files list
 -132    utilitybase
 -136    rnd seed
--140    nil exception handler
+-140    exception handler
 -144    stackcheck handler
 
 +---------------------------------------------------------------+
@@ -627,7 +627,7 @@ bit     flags           opt             clear   set
 4
 5       LEGACY                                  produce old module version format 10 and no new system constants
 6       LEGACYINT                               Int() function not sign extended
-7
+7       LONGPTRINDEX
 
 
 
@@ -744,7 +744,7 @@ OBJECT emodule
           type:INT                      1=proc, 2=lab
           nrarg:INT                     from here only if proc!
           nrloc:INT                     -(loc*4)
-          numdefargs:INT (if numdefargs =-1,numdefargs = -2 special cases)
+          numdefargs:INT (if numdefargs =-1 then noregs,if numdefargs = -2 then setup/clean flag follows)
           defargs[num]:ARRAY OF LONG    if >0
           arglen:INT
           argstring[arglen]:ARRAY       if >0
