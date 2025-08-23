@@ -67,7 +67,7 @@ PROC main() HANDLE
   DEF options:PTR TO LONG,rdargs=NIL,exename[100]:STRING,e:PTR TO dbgwin,
       pubconname[200]:STRING, i
   DEF gb:PTR TO gfxbase
-  title:='EDBG v3.8.2, The E Debugger! © 1994-1997 Wouter (and Jason), 2021-2024 Darren Coles'
+  title:='EDBG v3.9.0, The E Debugger! © 1994-1997 Wouter (and Jason), 2021-2025 Darren Coles'
   reqtitle:='EDBG'
   vars:=newlist()
   options:=[0,0,0,0]
