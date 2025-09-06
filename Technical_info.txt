@@ -115,8 +115,8 @@ from offset IOFF
  105    IFN              106    ELSEIFN          107    EXITN
  108    CONTN            109    BYTE             110    WORD
  111    LEGACYINT        112    PSIZEOF          113    ARRAYSIZE
- 114    STACKCHECK       115    GETA4            116    SETUP
- 117    CLEANUP
+ 114    STACKCHECK       115    GETA4            116    MODSETUP
+ 117    MODCLEANUP
  
 |       = significant for idents
 

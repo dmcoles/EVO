@@ -1,4 +1,4 @@
-E-VO v3.7.0 :
+E-VO v3.9.0 :
 
 Formerly : GRIO Amiga E Compiler !
 
@@ -587,7 +587,8 @@ Development restarted as E-VO by Darren Coles
    - Added GETA4 procedure modifier to restore A4 at the start of the
      procedure
    - Replaced all CLR <reg> to MOVEQ #x,<reg> or EOR as appropriate
-   - add PROC x() SETUP and PROC x() CLEANUP - from creative
+   - add PROC x() MODSETUP and PROC x() MODCLEANUP - from creative but with
+     name changed from SETUP/CLEANUP due to naming clashes
    - Fix memory corruption issue during parsing
    - fix error generating HUNK_DREL32SHORT hunk causing corrupt exe
    - fix legacy mode memory corruption creating corrupt module
@@ -627,4 +628,4 @@ DATE HISTORY:
     3.7.0   30.06.2023 -> 09.03.2024
     3.8.0   13.03.2024 -> 28.06.2024
     3.8.1   08.07.2024 -> 09.07.2024
-    3.9.0   10.07.2024 -> xx.xx.2025
+    3.9.0   10.07.2024 -> 06.09.2025

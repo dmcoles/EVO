@@ -390,7 +390,8 @@ NOTE: in most cases you won't need to use any of these options
    - Added GETA4 procedure modifier to restore A4 at the start of the
      procedure
    - Replaced all CLR <reg> to MOVEQ #x,<reg> or EOR as appropriate
-   - add PROC x() SETUP and PROC x() CLEANUP - from creative
+   - add PROC x() MODSETUP and PROC x() MODCLEANUP - from creative but with
+     name changed from SETUP/CLEANUP due to naming clashes
    - Fix memory corruption issue during parsing
    - fix error generating HUNK_DREL32SHORT hunk causing corrupt exe
    - fix legacy mode memory corruption creating corrupt module
@@ -4636,15 +4637,15 @@ Module startup and module cleanup code
 It is possible to declare one or more PROC in a module that will
 automatically be executed during the program initialisation and cleanup.
 
-PROC x() SETUP
+PROC x() MODSETUP
 ...
 ENDPROC
 
-PROC x() CLEANUP
+PROC x() MODCLEANUP
 ..
 ENDPROC
 
-The SETUP and CLEANUP tells the compiler that these procedures are to be
+The MODSETUP and MODCLEANUP tells the compiler that these procedures are to be
 called automatically. This allows you to initialise any variables during
 the program startup and free up resources at the end.
 
@@ -7626,7 +7627,7 @@ constdecl       = "CONST" { ( constant "=" constexp ) "," }+ |
                   "ENUM" { ( constant | constant "=" constexp ) "," }+ |
                   "SET" { constant "," }+
 procdecl        = [ "EXPORT" ] "PROC" [ "SAFE" ] [ "GETA4" ] [ "STACKCHECK" ] ident "(" argdecllist ")"
-                  [ "OF" ident ] ["SETUP" | "CLEANUP"] ["NOREGS"] [ "HANDLE" ]
+                  [ "OF" ident ] ["MODSETUP" | "MODCLEANUP"] ["NOREGS"] [ "HANDLE" ]
                   ( ( "RETURN" | "IS" ) { exp "," }* |
                      eol defstat* stats 
                      [ "EXCEPT" eol stats ]

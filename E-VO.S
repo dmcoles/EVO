@@ -10115,7 +10115,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.9.0',160
-			DC.B	'(23.08.2025)'
+			DC.B	'(06.09.2025)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -29818,8 +29818,8 @@ UTIL:
 .113:  DC.B	'ARRAYSIZE',0
 .114:  DC.B 'STACKCHECK',0
 .115:  DC.B 'GETA4',0
-.116:  DC.B 'SETUP',0
-.117:  DC.B 'CLEANUP',0
+.116:  DC.B 'MODSETUP',0
+.117:  DC.B 'MODCLEANUP',0
 
 	EVEN
 
