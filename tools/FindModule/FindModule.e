@@ -228,11 +228,13 @@ PROC search(mem,flen,filename:PTR TO CHAR) HANDLE
           StrCopy(dimsText,'')
           dimscount:=0
           fl:=0
+          StrCopy(ptrRepText,'PTR TO ')
           IF thisvers>=12
             IF thisvers>=13
               fl:=o[]++
             ENDIF
             ptrrep:=o[]++
+            StrCopy(ptrRepText,'')
             WHILE (ptrrep>=0)
               StrAdd(ptrRepText,'PTR TO ')
               ptrrep--
@@ -249,14 +251,20 @@ PROC search(mem,flen,filename:PTR TO CHAR) HANDLE
           IF thisvers>=6
             IF (c:=o[]++)>=0
               IF c=0
-                IF match2 THEN WriteF(':\s\n',types[val])
+                IF match2
+                  IF fl
+                    WriteF(':\s\n',types2[val])
+                  ELSE
+                    WriteF(':\s\n',types[val])
+                  ENDIF
+                ENDIF
               ELSE
                 IF val
                   IF match2 THEN WriteF(
                     '\s:\s\s\n',
                     '',
                     ptrRepText,
-                    IF fl THEN ListItem(['','CHAR','INT','','LONG'],c) ELSE ListItem(['','BYTE','WORD','','LONG'],c) 
+                    IF fl THEN ListItem(['','BYTE','WORD','','LONG'],c) ELSE ListItem(['','CHAR','INT','','LONG'],c)
                   )
                 ELSE
                   IF EstrLen(dimsText)=0 THEN StringF(dimsText,'[\d]',Int(o+IF o[] THEN 4 ELSE 2)-off/c,)
@@ -264,7 +272,7 @@ PROC search(mem,flen,filename:PTR TO CHAR) HANDLE
                     '\s:ARRAY OF \s\s\n',
                     dimsText,
                     ptrRepText,
-                    IF fl THEN ListItem(['','CHAR','INT','','LONG'],c) ELSE ListItem(['','BYTE','WORD','','LONG'],c)
+                    IF fl THEN ListItem(['','BYTE','WORD','','LONG'],c) ELSE ListItem(['','CHAR','INT','','LONG'],c)
                   )
                 ENDIF
               ENDIF

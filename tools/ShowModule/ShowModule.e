@@ -30,6 +30,7 @@ CONST MODVERS=15,     -> upto which version we understand
                       -> MODVER=13 FOR Evo 3.6.0
                       -> MODVER=14 FOR Evo 3.8.0
                       -> MODVER=15 FOR Evo 3.9.0
+      SUBREV=1,       -> sub version info
       SKIPMARK=$FFFF8000
 
 DEF flen,o:PTR TO INT,mem,handle=NIL,file[250]:STRING,thisvers=0,cmode=FALSE,emode=FALSE
@@ -68,9 +69,9 @@ ENDPROC
 
 PROC main() HANDLE
   DEF a,b,ae
-  PutF('ShowModule v1.\d (c) 1992 $#%!\n'+
+  PutF('ShowModule v1.\d.\d (c) 1992 $#%!\n'+
        'Update by grio 2001 (4 Kick V\d)\n'+
-       'and by Darren Coles 2025 for E-vo\n',MODVERS,KICK)
+       'and by Darren Coles 2025 for E-vo\n',MODVERS,SUBREV,KICK)
   IF StrCmp(arg,'',1) OR StrCmp(arg,'?',2)
     Raise(ER_USAGE)
   ELSE
@@ -188,11 +189,13 @@ PROC process()
           StrCopy(dimsText,'')
           dimscount:=0
           fl:=0
+          StrCopy(ptrRepText,'PTR TO ')
           IF thisvers>=12
             IF thisvers>=13
               fl:=o[]++
             ENDIF
             ptrrep:=o[]++
+            StrCopy(ptrRepText,'')
             WHILE (ptrrep>=0)
               StrAdd(ptrRepText,'PTR TO ')
               ptrrep--
