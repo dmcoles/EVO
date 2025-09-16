@@ -10114,8 +10114,8 @@ SRCFN: DC.L 0
 	EROBJLINE:	DC.B	'WITH: %s',10,0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
-			DC.B	'/Assembler/Linker/PP',160,'v3.9.0',160
-			DC.B	'(06.09.2025)'
+			DC.B	'/Assembler/Linker/PP',160,'v3.9.1-dev',160
+			DC.B	'(16.09.2025)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -32742,19 +32742,21 @@ ASM_INSJOB:
 
       I_TEXTF:
 	MOVE.L	4(A7),D0
-	MOVE.L	8(A7,D0.L),A0
-	TST.L D0
+	MOVE.L	8(A7,D0.L),D2
 	BEQ.S .4
 
+	MOVE.L D2,A0
 	LEA	8(A7),A1
 	LEA     .3(PC),A2
 	MOVE.L  4.W,A6
 	MOVE.L  -64(A4),A3		;stack bottom
 	MOVE.L  A3,D2
 	JSR     -522(A6)      ;rawdofmt
+.4:
 	MOVE.L	-16(A4),A1
 	MOVE.L	A1,D0
 	BEQ.S	.1
+
 	MOVE.L	-52(A4),A6
 	MOVE.L	4(A7),D0
 	MOVE.L	12(A7,D0.L),D1
@@ -32762,7 +32764,7 @@ ASM_INSJOB:
 	JSR	-240(A6)	
 	MOVE.L	-16(A4),A1
 	MOVE.L	D2,A0
-.4: MOVE.L	A0,A2
+    MOVE.L	A0,A2
 .2:	TST.B	(A2)+
 	BNE.S	.2
 	MOVE.L	A2,D0
