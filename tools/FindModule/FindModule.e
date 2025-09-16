@@ -204,7 +204,9 @@ PROC search(mem,flen,filename:PTR TO CHAR) HANDLE
         
         match:=searchCompare(o+4)
         p1:=o+4
-        IF match THEN WriteF('\s - OBJECT \s\n',filename,o+4)
+        IF match 
+          WriteF('\s - OBJECT \s\n',filename,o+4)
+        ENDIF
         o:=o+4+l
         WHILE l:=o[]++
           IF aborted THEN Raise(ABORT)
@@ -270,9 +272,9 @@ PROC search(mem,flen,filename:PTR TO CHAR) HANDLE
               l:=o[]++
               IF match2 
                 IF thisvers>=12
-                  IF val THEN PutF('\s:\s\s\n',dimsText,ptrRepText,o) ELSE PutF('\s:ARRAY OF \s\s\n',dimsText,ptrRepText,o)
+                  IF val THEN WriteF('\s:\s\s\n',dimsText,ptrRepText,o) ELSE WriteF('\s:ARRAY OF \s\s\n',dimsText,ptrRepText,o)
                 ELSE
-                  IF val THEN PutF(':PTR TO \s\n',o) ELSE PutF(':\s (or ARRAY OF \s)\n',o,o)
+                  IF val THEN WriteF(':PTR TO \s\n',o) ELSE WriteF(':\s (or ARRAY OF \s)\n',o,o)
                 ENDIF
               ENDIF
               o:=o+l
