@@ -11,6 +11,7 @@ CONST MODVERS=15,     -> upto which version we understand
                       -> MODVER=13 FOR Evo 3.6.0
                       -> MODVER=14 FOR Evo 3.8.0
                       -> MODVER=15 FOR Evo 3.9.0
+      SUBREV=1,       -> sub version info
       SKIPMARK=$FFFF8000
 
 DEF caseSensitive=TRUE
@@ -791,9 +792,11 @@ PROC searchTextUpdate(p,x) IS StrCopy(searchText,x)
 PROC donothing(p,x) IS EMPTY
 
 PROC main() 
+  DEF title[30]:STRING
   StrCopy(dirPath,'EModules:')
+  StringF(title,'FindModule \d.\d',MODVERS,SUBREV)
   readPrefs()
-  easyguiA('FindModule',
+  easyguiA(title,
             [ROWS,
               searchGad:=[STR,{searchTextUpdate},'_Find:',searchText,255,10,0,0,"f"],
               [COLS,[SPACEH],[CHECK,{caseSensitiveUpdate},'_Case sensitive?',caseSensitive,TRUE,0,"c"],[CHECK,{substringUpdate},'S_ub-string?',subString,TRUE,0,"u"]],
