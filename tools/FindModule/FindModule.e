@@ -794,7 +794,7 @@ PROC donothing(p,x) IS EMPTY
 PROC main() 
   DEF title[30]:STRING
   StrCopy(dirPath,'EModules:')
-  StringF(title,'FindModule \d.\d',MODVERS,SUBREV)
+  StringF(title,'FindModule 1.\d.\d',MODVERS,SUBREV)
   readPrefs()
   easyguiA(title,
             [ROWS,
