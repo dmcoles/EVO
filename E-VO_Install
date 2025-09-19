@@ -61,13 +61,6 @@
       (command (cat "Path \"" #bin-dir "\" add"))
       (confirm "expert")
     )
-    (startup @app-name
-      (set #bin-dir (tackon #evo-dir "Bin") )
-      (prompt #AddUserStartup)
-      (help #AddUserStartupHelp)
-      (command (cat "Path \"" #bin-dir "\" add"))
-      (confirm "expert")
-    )
   )
 )
 

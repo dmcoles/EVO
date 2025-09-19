@@ -10115,7 +10115,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.9.1-dev',160
-			DC.B	'(16.09.2025)'
+			DC.B	'(19.09.2025)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -11224,10 +11224,10 @@ SYMEND:
 .L:	MOVE.L	ONEXT(A3),A3
 	MOVE.L	A3,D0
 	BEQ.W	.E
-	TST.L	OACC(A3)		; ; TEMP: HAVE TO EXPORT
-	BNE.S	.1			; ;
-	BTST	#0,OFLAGS(A3)
-	BEQ.S	.L
+	;TST.L	OACC(A3)		; ; TEMP: HAVE TO EXPORT
+	;BNE.S	.1			; ;
+	;BTST	#0,OFLAGS(A3)
+	;BEQ.S	.L
 .1:	BTST	#1,OFLAGS(A3)		; ;
 	BNE.S	.L			; ;
 	ADDQ.L	#1,D7
@@ -11239,6 +11239,14 @@ SYMEND:
 .legacy
 	MOVE.W	OSIZE(A3),D1		; D1=OHEADSIZE
 	MOVE.W	#-1,OSIZE(A3)
+
+	BTST	#0,OFLAGS(A3)
+	BNE.S	.notpriv
+	MOVE.L OASCII(A3),A0
+	CMP.L #0,A0
+	BEQ.S .notpriv
+	CLR.B (A0)
+.notpriv
 	MOVE.L	A3,A0
 	BSR	.DOREC
 	LEA	OMEMB+4(A3),A4
@@ -14733,7 +14741,7 @@ DOCHAR:               ; 41
 	BNE.S	.LOOP
 
 	TST.L VAR_IMPORTDATA(A3)
-	BEQ.S .noimport
+	BEQ.W .noimport
 
     MOVEM.L A4/A5/D0/D1,-(A7)
     MOVE.L VAR_IMPORTDATA(A3),A4
@@ -14762,7 +14770,12 @@ DOCHAR:               ; 41
     MOVE.W (A4),D0
     MOVE.W (A4)+,(A5)+
     DBF D1,.cc
-    MULU OSIZE(A3),D0
+    CMP.L #4,(A3)
+    BLE.S .noid1a
+    MOVE.L (A3),A4  ;get object
+    MOVE.W D0,D1
+    MULU OSIZE(A4),D1
+.noid1a
     MOVE.W D0,.SZ
     DONEM A5
 .nodim
@@ -14774,17 +14787,23 @@ DOCHAR:               ; 41
   MOVEM.L A0/A5/D0/D1/D7,-(A7)
   MOVE.L VAR_IMPORTDATA(A3),A5
 	MOVE.W VAR_PTRREPCOUNT(A3),.PTRREP
+  
   MOVE.W 8(A5),D1        ;varptrrepcount
   BPL.W .nooid2
   
   MOVE.W 6(A5),D1     ;varoid
   BEQ.W .nooid2
+  
+  ;array of object
   JSR FINDOID
   MOVE.L D0,A5
   MOVEQ #0,D1
   MOVE.W OSIZE(A5),D1
+  
+  BSR .getarraytotsize
+  MULU D0,D1
   MOVE.W D1,.SZ
-
+  
   ADD.L D1,GLOBSTACK
   NEG.W D1
   
@@ -14825,8 +14844,58 @@ DOCHAR:               ; 41
 	SUBQ #2,A4
 .some:
   DONEM A0
-.nooid2
+  MOVEM.L (A7)+,A0/A5/D0/D1/D7
+  BRA .noimp2
 
+.getarraytotsize:
+  MOVEQ #1,D0
+  MOVEM.L A0/D1,-(A7)
+  TST.L VAR_DIMDATA(A3)
+  BEQ.S .g1
+
+  MOVE.L VAR_DIMDATA(A3),A0
+  MOVE.W (A0),D0
+  ADD.W D0,D0
+  MOVE.W (A0,D0),D0
+.g1
+  MOVEM.L (A7)+,A0/A1
+  
+  RTS
+
+.nooid2
+  MOVEQ #0,D1
+  TST.L VAR_DIMDATA(A3)     ;if its not an array then size will be 0
+  BEQ.S .notarr
+  
+  MOVEQ #4,D1
+  TST.W VAR_PTRREPCOUNT(A3) ;if its an array of ptr then size will be 4*elements
+  BPL.S .isptr2
+  
+  MOVEQ #0,D1
+  MOVE.B 5(A5),D1   ;array element type (1/2/4)
+.isptr2
+  MOVE.W D1,.SZ
+  BSR .getarraytotsize
+  MULU D0,D1
+  ADD.L #1,D1
+  AND.L #$fffffffe,D1
+
+.notarr
+  TST.L D1
+  BEQ.S .noinit
+  ADD.L D1,GLOBSTACK
+  NEG.W D1
+  
+  MOVE.L A5,-(A7)
+  LEA .I1(PC),A5
+  MOVE.W (A5)+,(A4)+
+  MOVE.W D1,(A4)+
+  LEA .I2(PC),A5
+  MOVE.W (A5)+,(A4)+
+  MOVE.W 10(A3),(A4)+
+
+  MOVE.L (A7)+,A5
+.noinit
   MOVEM.L (A7)+,A0/A5/D0/D1/D7
 
 .noimp2
@@ -23292,7 +23361,9 @@ STRLH:
 	CMP.W	#-1,D5
 	BNE.S	EXPNOTFIRST
 	CMP.W	#8,D0
-	BNE	ERROR0
+	BEQ.S .nerr
+	JMP ERROR0
+.nerr:
     TST.W   FLTFLAG
     BEQ     .0
     BTST    #5,CODEPREFS
@@ -23315,11 +23386,13 @@ STRLH:
 	SUBQ.L	#2,A3
 	CMP.W	#-1,D5
 	BEQ.S	NEGBACK
-	BRA	ERROR0
+	JMP	ERROR0
 
       NEGVALUE:
 	CMP.W	#8,D0
-	BNE	ERROR0
+	BEQ	.1
+	JMP ERROR0
+.1
 	CMP.W	#43,(A3)
 	BEQ	EXPNEGFLOAT
 	CMP.W	#VALUE,(A3)+
@@ -23328,7 +23401,9 @@ STRLH:
       EXPVALUE:				; ENTRY
     CLR.L   LAST_CMD_ADR
 	CMP.W	#1,D5
-	BEQ	ERROR0
+	BNE .1
+	JMP ERROR0
+.1
 	TST.W	FLTFLAG
 	BNE.W	VALUEFLOAT
       VALFLTBACK:

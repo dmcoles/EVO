@@ -32,7 +32,9 @@ DEF objOids=0
 DEF objCount=0,objAlloc=0
 
 PROC addObj(name,oid)
-  DEF newNames,newOids
+  DEF newNames,newOids,res
+  DEF tempName:PTR TO CHAR
+
   IF objCount=objAlloc
     objAlloc:=objAlloc+100
     newNames:=List(objAlloc)
@@ -48,9 +50,17 @@ PROC addObj(name,oid)
     objNames:=newNames
     objOids:=newOids
   ENDIF
-  ListAddItem(objNames,AstrClone(name))
+  IF StrLen(name)=0
+    tempName:=String(20)
+    StringF(tempName,'privateObj_\d',oid)
+    ListAddItem(objNames,tempName)
+    res:=tempName
+  ELSE
+    res:=AstrClone(name)
+    ListAddItem(objNames,res)
+  ENDIF
   ListAddItem(objOids,oid)
-ENDPROC
+ENDPROC res
 
 PROC findObj(oid)
   DEF i
@@ -144,7 +154,7 @@ PROC search(mem,flen,filename:PTR TO CHAR) HANDLE
   DEF temp2[100]:STRING
   DEF p1,p2
   DEF tfile=-1,ofile=-1
-  DEF objoid=0
+  DEF objoid=0,name
   DEF i,defval,vartype,varflags,varoid,varptrrep,vardimscount,vardims
 
   o:=mem
@@ -201,12 +211,12 @@ PROC search(mem,flen,filename:PTR TO CHAR) HANDLE
 
         priv:=0
         l:=o[]++;
-        addObj(o+4,objoid)
+        name:=addObj(o+4,objoid)
         
-        match:=searchCompare(o+4)
-        p1:=o+4
+        match:=searchCompare(name)
+        p1:=name
         IF match 
-          WriteF('\s - OBJECT \s\n',filename,o+4)
+          WriteF('\s - OBJECT \s\n',filename,name)
         ENDIF
         o:=o+4+l
         WHILE l:=o[]++
@@ -470,7 +480,8 @@ PROC search(mem,flen,filename:PTR TO CHAR) HANDLE
         ELSE
           val:=0
         ENDIF
-        WHILE (val<>-1) ANDALSO ((len:=o[]++)>=0)
+        WHILE (val<>-1)
+          len:=o[]++
           IF aborted THEN Raise(ABORT)
           IF len
             match:=searchCompare(o)
@@ -544,6 +555,13 @@ PROC search(mem,flen,filename:PTR TO CHAR) HANDLE
             ENDIF
 
           ELSE
+            IF thisvers>=15
+              o:=o+10
+              vardimscount:=o[]++
+              IF vardimscount>=0
+                o:=o+vardimscount+vardimscount
+              ENDIF
+            ENDIF
             c++
           ENDIF
           WHILE ^o++ DO IF thisvers>=10 THEN o++

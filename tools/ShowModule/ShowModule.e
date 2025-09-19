@@ -40,7 +40,8 @@ DEF objOids=0
 DEF objCount=0,objAlloc=0
 
 PROC addObj(name,oid)
-  DEF newNames,newOids
+  DEF newNames,newOids,res
+  DEF tempName:PTR TO CHAR
   IF objCount=objAlloc
     objAlloc:=objAlloc+100
     newNames:=List(objAlloc)
@@ -56,9 +57,17 @@ PROC addObj(name,oid)
     objNames:=newNames
     objOids:=newOids
   ENDIF
-  ListAddItem(objNames,AstrClone(name))
+  IF StrLen(name)=0
+    tempName:=String(20)
+    StringF(tempName,'privateObj_\d',oid)
+    ListAddItem(objNames,tempName)
+    res:=tempName
+  ELSE
+    res:=AstrClone(name)
+    ListAddItem(objNames,res)
+  ENDIF
   ListAddItem(objOids,oid)
-ENDPROC
+ENDPROC res
 
 PROC findObj(oid)
   DEF i
@@ -127,7 +136,7 @@ ENDPROC
 PROC process()
   DEF end,job,len,val,i,defval,vartype,varflags,varoid,varptrrep,vardimscount,vardims,f,off,types:PTR TO LONG,types2:PTR TO LONG,c,r,c2,l,narg,priv,darg:PTR TO LONG
   DEF fl,dimscount,ptrrep,ptrRepText[255]:STRING,dimsText[255]:STRING,tempstr[10]:STRING,d
-  DEF objoid=0
+  DEF objoid=0,name
   o:=mem
   end:=o+flen
   types:=['substructure','CHAR','INT','','LONG']
@@ -168,8 +177,8 @@ PROC process()
         IF thisvers>=15 THEN objoid:=o[]++    
         priv:=0
         l:=o[]++;
-        addObj(o+4,objoid)
-        PutF('\s\s \s\s\n',IF emode THEN '' ELSE '(----) ',IF cmode THEN 'struct' ELSE 'OBJECT',o+4,IF cmode THEN ' {' ELSE '')
+        name:=addObj(o+4,objoid)
+        PutF('\s\s \s\s\n',IF emode THEN '' ELSE '(----) ',IF cmode THEN 'struct' ELSE 'OBJECT',name,IF cmode THEN ' {' ELSE '')
         o:=o+4+l
         WHILE l:=o[]++
           val:=o[]++
@@ -424,7 +433,8 @@ PROC process()
         ELSE
           val:=0
         ENDIF
-        WHILE (val<>-1) ANDALSO ((len:=o[]++)>=0)
+        WHILE (val<>-1)
+          len:=o[]++
           IF len
             IF f
               PutS('DEF ')
@@ -499,6 +509,13 @@ PROC process()
               ENDIF
             ENDIF
           ELSE
+            IF thisvers>=15
+              o:=o+10
+              vardimscount:=o[]++
+              IF vardimscount>=0
+                o:=o+vardimscount+vardimscount
+              ENDIF
+            ENDIF
             c++
           ENDIF
           WHILE ^o++ DO IF thisvers>=10 THEN o++
