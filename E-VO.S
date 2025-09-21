@@ -8791,6 +8791,7 @@ iERROR104 JMP ERROR104
 iERROR105 JMP ERROR105
 iERROR106 JMP ERROR106
 iERROR107 JMP ERROR107
+iERROR108 JMP ERROR108
 ;*-*
 ;;CHIDENT
 
@@ -10115,7 +10116,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.9.1-dev',160
-			DC.B	'(19.09.2025)'
+			DC.B	'(21.09.2025)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -12361,6 +12362,8 @@ ERROR106:	MOVEQ	#106,D0
 		BRA	LEAVEERROR
 ERROR107:	MOVEQ	#107,D0
 		BRA	LEAVEERROR
+ERROR108:	MOVEQ	#108,D0
+		BRA	LEAVEERROR
 
 ; ************************************************************* ;
 ;	The COMPILER Part !!!!!!				;
@@ -14049,6 +14052,20 @@ LDEF:	MACRO
 	BNE	ERROR33
 	;LDEF
 	MOVE.L	(A3)+,A6
+
+;check EXPORTED VAR isnt referencing a private object
+  TSTMOD
+  BEQ.S .noprivchk1
+  TST.W	SCOPE
+	BNE.S	.noprivchk1
+
+  BTST #2,VARFLAGS(A0)
+  BEQ.S .noprivchk1
+  BTST #0,OFLAGS(A6)
+  BNE.S .noprivchk1
+  BRA.W ERROR107
+.noprivchk1
+  
 	MOVEQ #0,D2
 	MOVE.W	OSIZE(A6),D2
 	MOVE.L	D2,D7
@@ -14090,6 +14107,20 @@ LDEF:	MACRO
 .SK:	RTS
 .W5:	MOVE.L	A4,-(A7)		; "OF <object>"
 	MOVE.L	(A3)+,A4
+  
+  ;check EXPORTED VAR isnt referencing a private object
+  TSTMOD
+  BEQ.S .noprivchk2
+  TST.W	SCOPE
+	BNE.S	.noprivchk2
+
+  BTST #2,VARFLAGS(A0)
+  BEQ.S .noprivchk2
+  BTST #0,OFLAGS(A4)
+  BNE.S .noprivchk2
+  BRA.W ERROR107
+.noprivchk2
+
 	MOVE.L	A4,(A0)
 	MULU	OSIZE(A4),D2
 	MOVE.L	(A7)+,A4
@@ -23809,7 +23840,7 @@ EXPFPVAL:
     MOVE.L  A0,LASTVAR
 	BTST	#3,5(A0)
 	BEQ.S	.1
-	MOVE.W	HANDLEFLAG(PC),D0
+	MOVE.W	HANDLEFLAG,D0
 	BEQ.S	.1
 	MOVE.L	ENDPEA(PC),D0
 	BEQ.S	.1
@@ -24513,7 +24544,7 @@ EXPFPCMP:
 .ERR71: JMP ERROR71
 .FR:	MOVEM.L	A0/A6,-(A7)		; FREEZ!
 	MOVE.L	METHODFREEZ(PC),A6
-	GETM	A0			; ADD TO SUPER-ACCESS
+	GETML	A0			; ADD TO SUPER-ACCESS
 	MOVE.L	OACC(A6),(A0)
 	MOVE.L	A0,OACC(A6)
 	ADDQ.L	#4,A0
@@ -31415,7 +31446,7 @@ fatalerr: DC.L 0
 	DC.L	.81,.82,.83,.84,.85,.86,.87,.88
 	DC.L	.89,.90,.91,.92,.93,.94,.95,.96
 	DC.L	.97,.98,.99,.100,.101,.102,.103,.104
-	DC.L	.105,.106,.107
+	DC.L	.105,.106,.107,.108
 
 .0:	DC.B	'syntax error',0
 .1:	DC.B	'unknown keyword/const',0
@@ -31524,7 +31555,8 @@ fatalerr: DC.L 0
 .104:   DC.B    'invalid array dimension',0
 .105:   DC.B    'global map workspace full',0
 .106:   DC.B    'array index out of range',0
-.107:   DC.B 0
+.107:   DC.B    'cant export private object',0
+.108:   DC.B 0
 
 	EVEN
 
