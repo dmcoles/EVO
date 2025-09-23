@@ -63,11 +63,15 @@ PROC addObj(name,oid)
 ENDPROC res
 
 PROC findObj(oid)
-  DEF i
+  DEF i,newname
   FOR i:=0 TO ListLen(objNames)-1
     IF ListItem(objOids,i)=oid THEN RETURN ListItem(objNames,i)
   ENDFOR
-ENDPROC
+  
+  newname:=String(20)   
+  StringF(newname,'importedObj_\d',oid)
+  addObj(newname,oid)
+ENDPROC newname
 
 PROC readPrefs()
   DEF temptext[100]:STRING
