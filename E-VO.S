@@ -11227,9 +11227,9 @@ SYMEND:
 	BEQ.W	.E
 	;TST.L	OACC(A3)		; ; TEMP: HAVE TO EXPORT
 	;BNE.S	.1			; ;
-	;BTST	#0,OFLAGS(A3)
+	;BTST	#0,OFLAGS(A3)       ;   export?
 	;BEQ.S	.L
-.1:	BTST	#1,OFLAGS(A3)		; ;
+.1:	BTST	#1,OFLAGS(A3)		  ;   imported?
 	BNE.S	.L			; ;
 	ADDQ.L	#1,D7
 	MOVE.W	#2,(A5)+
@@ -14063,6 +14063,8 @@ LDEF:	MACRO
   BEQ.S .noprivchk1
   BTST #0,OFLAGS(A6)
   BNE.S .noprivchk1
+  BTST #1,OFLAGS(A6)
+  BNE.S .noprivchk1
   BRA.W ERROR107
 .noprivchk1
   
@@ -14117,6 +14119,8 @@ LDEF:	MACRO
   BTST #2,VARFLAGS(A0)
   BEQ.S .noprivchk2
   BTST #0,OFLAGS(A4)
+  BNE.S .noprivchk2
+  BTST #1,OFLAGS(A4)
   BNE.S .noprivchk2
   BRA.W ERROR107
 .noprivchk2
@@ -26924,6 +26928,7 @@ i2ERROR39:
 	BMI.S	.2
 	MOVE.W (A0)+,D5
 	ADD.W MODOBJCOUNT,D5
+	SUB.W #1,D5
 .2
 	GETML	A5
 	MOVE.W	(A0)+,D0		; D0=LEN ASC
