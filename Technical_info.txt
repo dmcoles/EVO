@@ -263,7 +263,7 @@ extra: PTRTO/ARRAYOF INT/CHAR/LONG/<obj>
 OBJECT objectheader
   onext:PTR TO member           -4
   odel:INT                      0, delegate size + IS_OO flag
-  otype:CHAR                    2, flags: bit 0=export, 1=import , 2=unions
+  otype:CHAR                    2, flags: bit 0=export, 1=import ,2=unions, 3=used
   dummy:CHAR                    3, _empty_spot_
   osize:INT                     4, sizeof object
   oid:INT                       6, object ID
@@ -693,7 +693,7 @@ OBJECT emodule
           len:INT                       if -1 then no id, private (only v4)
           size:INT                      either membersize or -1 if objhead
           offset:INT                    zero for objhead
-          id[len]:ARRAY
+          id[len]:ARRAY                 name
             flags:INT                       if version>=13 (forcesigned and forceunsigned flags bits 0+1)
             ptrrepcount:INT                 if version>=12 (count of PTR TO PTR)
             dimdatacount:INT                if version>=12 (number of array dimensions)
@@ -930,7 +930,14 @@ OBJECT emodule
           body[len]:ARRAY
         ENDOBJECT
 
+12      OBJECT importedObjects
+            oid:INT  (ends with -1)
+            len:INT
+            name[len]:ARRAY
+        ENDOBJECT
+
 ENDOBJECT
+
 
                         0       1       2       skip
 
@@ -945,7 +952,7 @@ ENDOBJECT
 9       modinfo         r [x]   S [x]   r [x]   ok
 10      debug           r       S       r
 11      macros          r       r       S
-
+12      importedobjects S       S       S
 
 0 = normal module            in main source
 2 = module from other module in main source

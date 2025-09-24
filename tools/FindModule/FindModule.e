@@ -4,14 +4,15 @@ MODULE 'tools/EasyGUI','tools/constructors','asl','libraries/Asl','dos/dos','exe
 ENUM ABORT=0,ERR_OPEN,ERR_NOMEM,ERR_TOONEW,ERR_JOBID,ERR_TEMP
 
 ENUM JOB_DONE,JOB_CONST,JOB_OBJ,JOB_CODE,JOB_PROCS,
-     JOB_SYS,JOB_LIB,JOB_RELOC,JOB_GLOBS,JOB_MODINFO,JOB_DEBUG,JOB_MACROS
+     JOB_SYS,JOB_LIB,JOB_RELOC,JOB_GLOBS,JOB_MODINFO,JOB_DEBUG,JOB_MACROS,JOB_IMPORTOBJ
 
-CONST MODVERS=15,     -> upto which version we understand 
+CONST MODVERS=16,     -> upto which version we understand 
                       -> MODVER = 11 for Creative, MODVER=12 for Evo 3.5.0
                       -> MODVER=13 FOR Evo 3.6.0
                       -> MODVER=14 FOR Evo 3.8.0
                       -> MODVER=15 FOR Evo 3.9.0
-      SUBREV=1,       -> sub version info
+                      -> MODVER=16 FOR Evo 3.9.1
+      SUBREV=0,       -> sub version info
       SKIPMARK=$FFFF8000
 
 DEF caseSensitive=TRUE
@@ -626,6 +627,11 @@ PROC search(mem,flen,filename:PTR TO CHAR) HANDLE
           IF match THEN WriteF('\n')
           o:=o+len
         ENDWHILE
+      CASE JOB_IMPORTOBJ
+        objoid:=o[]++   
+        len:=o[]++   
+        addObj(o,objoid)
+        o:=o+len
       DEFAULT
         Raise(ERR_JOBID)
     ENDSELECT

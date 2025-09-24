@@ -20,17 +20,18 @@ OPT OSVERSION=36
 
 
 ENUM JOB_DONE,JOB_CONST,JOB_OBJ,JOB_CODE,JOB_PROCS,
-     JOB_SYS,JOB_LIB,JOB_RELOC,JOB_GLOBS,JOB_MODINFO,JOB_DEBUG,JOB_MACROS
+     JOB_SYS,JOB_LIB,JOB_RELOC,JOB_GLOBS,JOB_MODINFO,JOB_DEBUG,JOB_MACROS,JOB_IMPORTOBJ
 
 ENUM ER_NONE,ER_FILE,ER_MEM,ER_USAGE,ER_JOBID,
      ER_BREAK,ER_FILETYPE,ER_TOONEW
 
-CONST MODVERS=15,     -> upto which version we understand 
+CONST MODVERS=16,     -> upto which version we understand 
                       -> MODVER = 11 for Creative, MODVER=12 for Evo 3.5.0
                       -> MODVER=13 FOR Evo 3.6.0
                       -> MODVER=14 FOR Evo 3.8.0
                       -> MODVER=15 FOR Evo 3.9.0
-      SUBREV=1,       -> sub version info
+                      -> MODVER=16 FOR Evo 3.9.1
+      SUBREV=0,       -> sub version info
       SKIPMARK=$FFFF8000
 
 DEF flen,o:PTR TO INT,mem,handle=NIL,file[250]:STRING,thisvers=0,cmode=FALSE,emode=FALSE
@@ -589,6 +590,11 @@ PROC process()
           o:=o+len
         ENDWHILE
         PutS('\n')
+      CASE JOB_IMPORTOBJ
+        objoid:=o[]++   
+        len:=o[]++   
+        addObj(o,objoid)
+        o:=o+len
       DEFAULT
         Raise(ER_JOBID)
     ENDSELECT
