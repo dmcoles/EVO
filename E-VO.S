@@ -4324,7 +4324,12 @@ CPUTAB:
 	CMP.W	#IOFF,D4
 	BNE	ERROR0
 	BRA.S	.6
-.8:	CMP.W	#IOFF+50,D0
+.8:	
+	CMP.W #IOFF+109,D0    ;BYTE
+	BEQ.S .6
+	CMP.W #IOFF+110,D0    ;WORD
+	BEQ.S .6
+	CMP.W	#IOFF+50,D0
 	BPL.S	.5
 .6:	MOVE.W	(A7)+,CURINS
 	RTS
@@ -10116,7 +10121,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.9.1-dev',160
-			DC.B	'(24.09.2025)'
+			DC.B	'(28.09.2025)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
