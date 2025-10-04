@@ -39,6 +39,7 @@ objects and many more.
      private globals
    - Added version string to FindModule
    - Fixed installer script incorrectly removing assigns
+   - Updated module libraries/cybergraphics.m
 
    
 E is an object oriented / procedural / unpure functional higher programming

@@ -639,6 +639,7 @@ Development restarted as E-VO by Darren Coles
      private globals
    - Added version string to FindModule
    - Fixed installer script incorrectly removing assigns
+   - Updated module libraries/cybergraphics.m
 
 DATE HISTORY:
     3.3b    20.11.1999 -> 12.12.1999

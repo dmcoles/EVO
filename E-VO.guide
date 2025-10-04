@@ -382,6 +382,7 @@ NOTE: in most cases you won't need to use any of these options
      private globals
    - Added version string to FindModule
    - Fixed installer script incorrectly removing assigns
+   - Updated module libraries/cybergraphics.m
 
  New in E-VO  (3.9.0)
    - FindModule: fix division by 0 error

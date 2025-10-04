@@ -17,6 +17,21 @@ objects and many more.
      line numbers during compilation
    - Updated to module format version 16
    - Added EVO_3_9_1 define
+   - FindModule wasn't displaying PTR types correctly in older module
+     versions
+   - FindModule was showing signed / unsigned types reversed
+   - FindModule: Add support for PTR to imported object types 
+   - FindModule: updated to more correctly handle private objects and
+     private globals
+   - ShowModule wasn't displaying PTR types correctly in older module
+     versions
+   - ShowModule was showing signed / unsigned types reversed
+   - ShowModule: Add support for PTR to imported object types 
+   - ShowModule: updated to more correctly handle private objects and
+     private globals
+   - Added version string to FindModule
+   - Fixed installer script incorrectly removing assigns
+   - Updated module libraries/cybergraphics.m
 
    E is an object oriented / procedural / unpure functional higher programming
 language, mainly influenced by languages such as C++, Ada, Lisp etc.  It is a
