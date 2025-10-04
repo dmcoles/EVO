@@ -612,6 +612,34 @@ Development restarted as E-VO by Darren Coles
    - added EVO_3_9_0 define
    - added newer version of cybergraphics module
    
+   (3.9.1)
+   - Fixed issue with TextF function crashing
+   - Add cheeck for declaring exported variable that references
+     a private object
+   - Added support for PTR to imported object types in modules
+   - Fixed issue with BYTE and WORD declarations followed by comma
+   - Array of char/int/long etc declared in module caused crash
+   - Array of object declared in module was not allocated the correct
+     amount of stack space
+   - Added NOPROGRESS command line switch to disable printing of progress
+     line numbers during compilation
+   - Updated to module format version 16
+   - Added EVO_3_9_1 define
+   - FindModule wasn't displaying PTR types correctly in older module
+     versions
+   - FindModule was showing signed / unsigned types reversed
+   - FindModule: Add support for PTR to imported object types 
+   - FindModule: updated to more correctly handle private objects and
+     private globals
+   - ShowModule wasn't displaying PTR types correctly in older module
+     versions
+   - ShowModule was showing signed / unsigned types reversed
+   - ShowModule: Add support for PTR to imported object types 
+   - ShowModule: updated to more correctly handle private objects and
+     private globals
+   - Added version string to FindModule
+   - Fixed installer script incorrectly removing assigns
+
 DATE HISTORY:
     3.3b    20.11.1999 -> 12.12.1999
     3.3c    15.12.1999 -> 12.01.2000
@@ -629,3 +657,4 @@ DATE HISTORY:
     3.8.0   13.03.2024 -> 28.06.2024
     3.8.1   08.07.2024 -> 09.07.2024
     3.9.0   10.07.2024 -> 06.09.2025
+    3.9.1   16.09.2025 -> 04.10.2025

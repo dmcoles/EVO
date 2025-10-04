@@ -1,10 +1,10 @@
 @database "e.guide"
 @node MAIN
-@title "Amiga E-VO v3.9.0"
+@title "Amiga E-VO v3.9.1"
 
                 +-----------------------------------------------+
                 |                                               |
-                |               Amiga E-VO v3.9.0               |
+                |               Amiga E-VO v3.9.1               |
                 |          Compiler for The E Language          |
                 |     Originally By Wouter van Oortmerssen      |
                 |           Updates By GRIO 1999-2003           |
@@ -260,7 +260,7 @@ syntax of the compiler (2.04+):
 SOURCE/A,REG=NUMREGALLOC/N/K,LARGE/S,SYM=SYMBOLHUNK/S,NOWARN/S
 QUIET/S,ASM/S,ERRLINE/S,ERRBYTE/S,SHOWBUF/S,ADDBUF/N/K,COMPILESTACK/N/K,
 IC=IGNORECACHE/S,HOLD/S,WB/S,LINEDEBUG/S,OPTI/S,LEGACY/S,LEGACYINT/S,
-DEBUG/S,DEBUG50/S,NILCHECK/S,STACKCHECK/S,ARRAYCHECK/S,SHOWFNAME/S,DEFINE/M',0
+DEBUG/S,DEBUG50/S,NILCHECK/S,STACKCHECK/S,ARRAYCHECK/S,SHOWFNAME/S,NOPROGRESS/S,DEFINE/M',0
 
 for 1.2 to 2.03:
 
@@ -341,6 +341,7 @@ STACKCHECK       add code to the start each PROC to check for enough stack space
                  Throw("STCK",source_line_number)
 
 SHOWFNAME        Displays the filename of the E file being compiled.
+NOPROGRESS       Don't display progress line numbers during compilation
 DEFINE           Equivalent to #DEFINE in your code, defines a macro
 
 example:  evo large blabla
@@ -353,6 +354,35 @@ NOTE: in most cases you won't need to use any of these options
 @title "0D. changes / history / new features"
 0D. changes / history / new features
 ------------------------------------
+
+ New in E-VO  (3.9.1)
+   - Fixed issue with TextF function crashing
+   - Add cheeck for declaring exported variable that references
+     a private object
+   - Added support for PTR to imported object types in modules
+   - Fixed issue with BYTE and WORD declarations followed by comma
+   - Array of char/int/long etc declared in module caused crash
+   - Array of object declared in module was not allocated the correct
+     amount of stack space
+   - Added NOPROGRESS command line switch to disable printing of progress
+     line numbers during compilation
+   - Updated to module format version 16
+   - Added EVO_3_9_1 define
+   - FindModule wasn't displaying PTR types correctly in older module
+     versions
+   - FindModule was showing signed / unsigned types reversed
+   - FindModule: Add support for PTR to imported object types 
+   - FindModule: updated to more correctly handle private objects and
+     private globals
+   - ShowModule wasn't displaying PTR types correctly in older module
+     versions
+   - ShowModule was showing signed / unsigned types reversed
+   - ShowModule: Add support for PTR to imported object types 
+   - ShowModule: updated to more correctly handle private objects and
+     private globals
+   - Added version string to FindModule
+   - Fixed installer script incorrectly removing assigns
+
  New in E-VO  (3.9.0)
    - FindModule: fix division by 0 error
    - FindModule: updated to handle module format version 15
