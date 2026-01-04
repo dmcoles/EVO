@@ -5,7 +5,7 @@
 ;	GRIO Amiga E Compiler/Assembler/Linker by grio	 		;
 ;			in 1999-2003					;
 ;	E-VO Amiga E Compiler/Assembler/Linker by Darren Coles	 		;
-;     in 2021-2025
+;     in 2021-2026
 ; ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, ;
 
 ;debug=1
@@ -4374,6 +4374,7 @@ CPUTAB:
 	MOVEQ	#UNDEF,D7
 	MOVE.W	CURINS(PC),D6		; INS-ioff
 
+  ;D4 is previous token
 	CMP.W	#35,D4			; .
 	BEQ.S	.1
 	CMP.W	#IOFF+60,D4		; REG
@@ -4417,8 +4418,13 @@ CPUTAB:
 	BEQ.S	XNEXT
 	BRA.S	.XBACK
 
-.4:	CMP.W	#-1,D6
-	BNE.S	.1
+.4:	;CMP.W	#-1,D6
+	;BNE.S	.1
+  CMP.W #16,D6    ;DEF (global)
+  BEQ.S .1
+  CMP.W #17,D6    ;DEF (local)
+  BEQ.S .1
+  
 	CMP.W	#30,-4(A1)
 	BEQ.S	.1
       XNEXT:
@@ -10123,8 +10129,8 @@ SRCFN: DC.L 0
 	EROBJLINE:	DC.B	'WITH: %s',10,0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
-			DC.B	'/Assembler/Linker/PP',160,'v3.9.1',160
-			DC.B	'(04.10.2025)'
+			DC.B	'/Assembler/Linker/PP',160,'v3.9.2-dev',160
+			DC.B	'(04.01.2026)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -11258,9 +11264,9 @@ SYMEND:
 	SUB.L	D4,D0
 	MOVE.L	D4,A2
 	MOVE.W	D0,-(A2)
-	CHESTB	A5,D0,5,ERROR37
 	ADD.L D0,D7
 	ADD.L #6,D7
+	CHESTB	A5,D0,5,ERROR37
 	BRA.W .L
 .E
 	TST.L	D7
@@ -31190,8 +31196,8 @@ EFUNCENTRYSIZE=16   ;size of efunctab entry (eg 4 LONGWORD entries)
 .197:	DC.B    'Rol',0
 .198:	DC.B    'Ror',0
 .199: DC.B    'ListItem',0   ;020 variant
-.200: DC.B    'CharInstr',0
-.201: DC.B    'CharInstri',0
+.200: DC.B    'CharInStr',0
+.201: DC.B    'CharInStri',0
 .202: DC.B    'MemCompare',0
 
      EVEN
@@ -39163,6 +39169,7 @@ DOARGMACROS:
 	DC.B 'EVO_3_8_0',0
 	DC.B 'EVO_3_9_0',0
 	DC.B 'EVO_3_9_1',0
+	DC.B 'EVO_3_9_2',0
 	DC.B 0,0
 
     EVEN
