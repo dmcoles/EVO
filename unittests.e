@@ -9,7 +9,7 @@ OPT LARGE
 DEF tests_run = 0
 DEF tests_passed = 0
 DEF tests_failed = 0
-DEF stoponfail=TRUE
+DEF stoponfail=FALSE
 
 CONST TESTFAIL=1
 
