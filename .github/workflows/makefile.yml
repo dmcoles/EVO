@@ -20,6 +20,12 @@ jobs:
       - name: run build
         run: |
            vamos -c /usr/amiga/.vamosrc -H disable -m 20000 --cwd esource: -V system:/usr/amiga -V esource:$GITHUB_WORKSPACE make EVO
+      - name: compile unit tests
+        run: |
+           vamos -c /usr/amiga/.vamosrc -H disable -m 20000 --cwd esource: -V system:/usr/amiga -V esource:$GITHUB_WORKSPACE EVO unittests
+      - name: run unit tests
+        run: |
+           vamos -c /usr/amiga/.vamosrc -H disable -m 20000 --cwd esource: -V system:/usr/amiga -V esource:$GITHUB_WORKSPACE unittests          
       - name: add build artifacts to publish
         run: |
           mkdir output
