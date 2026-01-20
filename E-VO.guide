@@ -4,7 +4,7 @@
 
                 +-----------------------------------------------+
                 |                                               |
-                |               Amiga E-VO v3.9.1               |
+                |               Amiga E-VO v3.9.2               |
                 |          Compiler for The E Language          |
                 |     Originally By Wouter van Oortmerssen      |
                 |           Updates By GRIO 1999-2003           |
@@ -3576,14 +3576,14 @@ string passed in. A partial string copy can be performed by passing in a
 len value. This is a shorthand way of creating a new estring from an
 existing string.
  
-        AstrCopy(string1,string2,size)
+        AstrCopy(string1,string2,len=ALL)
 
 'Array String Copy' copies string2 into the memory area denoted by string1.
 string1 is typically not an estring but an ARRAY. size is the total #of
 chars string1 can hold, i.e. if you write 5 and string2='helloworld',
 string1 will be 'hell' + 0termination.
 
-        AstpCopy(string1,string2,size)
+        AstpCopy(string1,string2,len=ALL)
 
 This is based on the C stpcpy function. It is very similar to AstrCopy
 except that AstpCopy() returns the address of the  end of the string dest
@@ -3595,7 +3595,7 @@ multiple calls to the function.
 
         order:=OstrCmp(string1,string2,max=ALL)
 
-'Ordered String Compare' returns 1 if string2>string1, 0 for equal and -1
+'Ordered String Compare' returns 1 if string1>string2, 0 for equal and -1
 for less. only max chars are compared.
 
         StrIns(estring1,estring2,pos)
@@ -3610,7 +3610,8 @@ at position pos. The estring is returned.
         StrCompare(string1,string2,len=ALL)
         
 Compares string1 and string2 for upto "len" characters and returns -1 if
-string1<string2. 0 if string1 = string2 and +1 is string1 > string2
+string1<string2. 0 if string1 = string2 and +1 is string1 > string2 (note
+that this is the opposite way around to OstrCmp)
 
 
 for string linking functions (see @{" 9H " link CH_9H })
@@ -5032,7 +5033,7 @@ max for "n" is 8, even less if you have lots of digits leading the ".".
 an "n" of 0 will denote no fraction. The string is returned as result,
 so it can be reused in a WriteF() for example:
 
-WriteF('float = \\s\\n',RealF(s,3.14159),4) results in  'float = 3.1416\\n'
+WriteF('float = \\s\\n',RealF(s,3.14159,4)) results in  'float = 3.1416\\n'
 
 RealF() tries hard to make sensible roundings for a certain "n", as
 the example shows. negative numbers are also handled properly.
@@ -7668,7 +7669,7 @@ opts            = ( "OPT" { setting "," }+ )*           ; machine dependant
 
 vardecllist     = { vardecl "," }+
 vardecl         = ident [ "=" num ]
-                    [ ":" ( "LONG" | "REAL" | "PTR" "TO" ptrtype ) ] |
+                    [ ":" ( "LONG" | "PTR" "TO" ptrtype ) ] |
                   ident ":" objtype |
                   ident "[" num "]" ":"
                     ( "ARRAY" |
@@ -7678,7 +7679,7 @@ vardecl         = ident [ "=" num ]
                       ptrtype )
 argdecllist     = { argdecl "," }+
 argdecl         = ident [ "=" defaultarg ]
-                    [ ":" ( "LONG" | "REAL" | "PTR" "TO" ptrtype ) ]
+                    [ ":" ( "LONG" | "PTR" "TO" ptrtype ) ]
 ptrtype         = objtype | simpletype
 simpletype      = BYTE | CHAR | INT | WORD | LONG
 objtype         = ident

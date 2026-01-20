@@ -10130,7 +10130,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.9.2-dev',160
-			DC.B	'(04.01.2026)'
+			DC.B	'(20.01.2026)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -18315,7 +18315,7 @@ OPTMQADD:
 	MOVE.L A4,lastmoveshort
 	MOVE.B	.4(PC),(A4)+
 	MOVE.W  D0,-(A7)
-	ASR.B   #1,D0
+	ASR.L   #1,D0
 	MOVE.B	D0,(A4)+
 	MOVE.W	.6(PC),(A4)+
 	MOVE.W  (A7)+,D0
@@ -33346,17 +33346,20 @@ ASM_INSJOB:
 	MOVEA.L	A1,A2
 	MOVE.W	-4(A1),D0
 	CMP.W	D1,D0
-	BCC.B	.1
+	BCC.B	.0
 	MOVE.W	D0,D1
+.0:
+	MOVEQ #-1,D0
 .1:	SUBQ.W	#1,D1
 	BMI.B	.3
 	MOVE.W	D1,D0
 .2:	MOVE.B	(A0)+,(A1)+
 	DBEQ	D0,.2
+.3:
 	CLR.B	(A1)
 	SUB.W	D0,D1
 	MOVE.W	D1,-2(A2)
-.3:	MOVE.L	A2,D0
+	MOVE.L	A2,D0
 	RTS
       E_MIDSTR:
 
@@ -33836,10 +33839,20 @@ BIN:	ADDQ.L	#1,A2
 	MOVEQ	#0,D0
 	MOVE.W	6(A7),D1		; LEN
 	BPL.S	.1
+
 	MOVE.W	-2(A0),D1
-.1:	CMP.W	-2(A1),D1
-	BEQ.S	.2			; LENDEST<>LENSRC
-	RTS
+	CMP.W	-2(A1),D1
+	BEQ.S	.2			; LENDEST=LENSRC
+	RTS  
+  
+.1:	
+	CMP.W	-2(A0),D1
+	BGT.S .3
+	CMP.W	-2(A1),D1
+	BGT.S .3
+	CMP.W D1,D1
+	BRA.S .2
+
 .L:	CMPM.L	(A0)+,(A1)+
 .2:	DBNE	D1,.L
 	BNE.S	.3
@@ -34817,19 +34830,21 @@ BIN:	ADDQ.L	#1,A2
 	MOVE.W	6(A7),D1
 	MOVE.L	8(A7),A1
 	MOVE.L	12(A7),A0
-	MOVEQ	#-1,D0
+	MOVEQ	#0,D0
 	ADDQ.W	#1,D1
 .1:	SUBQ.W	#1,D1
-	BEQ.S	.3
+	BEQ.S	.4
 	CMPM.B	(A0)+,(A1)+
 	BEQ.S	.2
 	BMI.S	.3
 	MOVEQ	#1,D0
-.3:	RTS
+  RTS
+.3:	MOVEQ	#-1,D0
+	RTS
 .2:	TST.B	-1(A0)
 	BNE.S	.1
-	MOVEQ	#0,D0
-	RTS
+.4:
+  RTS
       E_OSTRCMP:
 
       I_ASTRCOPY:
@@ -36647,26 +36662,29 @@ E_RIGHTSTRNIL:
       I_MIDSTRNIL:
 	MOVE.W	6(A7),D1		; LEN
 	MOVEA.L	12(A7),A0		; STR
-  MOVE.L A0,D0
-  BEQ.S .NIL
+	MOVE.L A0,D0
+	BEQ.S .NIL
 	ADDA.L	8(A7),A0		; OFFSET
 	MOVEA.L	16(A7),A1		; ESTR
-  MOVE.L A1,D0
-  BEQ.S .NIL
+	MOVE.L A1,D0
+	BEQ.S .NIL
 	MOVEA.L	A1,A2
 	MOVE.W	-4(A1),D0
 	CMP.W	D1,D0
-	BCC.B	.1
+	BCC.B	.0
 	MOVE.W	D0,D1
+.0:
+ 	MOVEQ #-1,D0
 .1:	SUBQ.W	#1,D1
 	BMI.B	.3
 	MOVE.W	D1,D0
 .2:	MOVE.B	(A0)+,(A1)+
 	DBEQ	D0,.2
+.3:
 	CLR.B	(A1)
 	SUB.W	D0,D1
 	MOVE.W	D1,-2(A2)
-.3:	MOVE.L	A2,D0
+	MOVE.L	A2,D0
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
   MOVE.L	-140(A4),A0
@@ -36976,9 +36994,16 @@ E_LISTADDNIL:
 	MOVE.W	6(A7),D1		; LEN
 	BPL.S	.1
 	MOVE.W	-2(A0),D1
-.1:	CMP.W	-2(A1),D1
-	BEQ.S	.2			; LENDEST<>LENSRC
-	RTS
+	CMP.W	-2(A1),D1
+	BEQ.S	.2			; LENDEST=LENSRC
+	RTS  
+.1:
+	CMP.W	-2(A0),D1
+	BGT.S .3
+	CMP.W	-2(A1),D1
+	BGT.S .3
+	CMP.W D1,D1
+	BRA.S .2
 .L:	CMPM.L	(A0)+,(A1)+
 .2:	DBNE	D1,.L
 	BNE.S	.3
@@ -37040,18 +37065,22 @@ E_SETLISTNIL:
 	MOVE.L	12(A7),A0
   MOVE.L A0,D0
   BEQ.S .NIL
-	MOVEQ	#-1,D0
+	;MOVEQ	#-1,D0
+	MOVEQ	#0,D0
 	ADDQ.W	#1,D1
 .1:	SUBQ.W	#1,D1
-	BEQ.S	.3
+	BEQ.S	.4
 	CMPM.B	(A0)+,(A1)+
 	BEQ.S	.2
 	BMI.S	.3
 	MOVEQ	#1,D0
-.3:	RTS
+	RTS
+.3:
+	MOVEQ	#-1,D0
+	RTS
 .2:	TST.B	-1(A0)
 	BNE.S	.1
-	MOVEQ	#0,D0
+.4
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
   MOVE.L	-140(A4),A0

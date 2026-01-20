@@ -12,7 +12,7 @@ CONST MODVERS=16,     -> upto which version we understand
                       -> MODVER=14 FOR Evo 3.8.0
                       -> MODVER=15 FOR Evo 3.9.0
                       -> MODVER=16 FOR Evo 3.9.1
-      SUBREV=0,       -> sub version info
+      SUBREV=1,       -> sub version info
       SKIPMARK=$FFFF8000
 
 DEF caseSensitive=TRUE
@@ -487,94 +487,98 @@ PROC search(mem,flen,filename:PTR TO CHAR) HANDLE
         ENDIF
         WHILE (val<>-1)
           len:=o[]++
-          IF aborted THEN Raise(ABORT)
-          IF len
-            match:=searchCompare(o)
-            IF match THEN WriteF('\s - DEF \s',filename,o)
-            o:=o+len
+          IF len>=0
+            IF aborted THEN Raise(ABORT)
+            IF len
+              match:=searchCompare(o)
+              IF match THEN WriteF('\s - DEF \s',filename,o)
+              o:=o+len
 
-            IF thisvers>=15
-              defval:=Long(o)
-              o:=o+4
-              varflags:=Char(o)
-              o:=o+1
-              vartype:=Char(o)
-              o:=o+1
-              varoid:=o[]++
-              varptrrep:=o[]++
-              vardimscount:=o[]++
-              vardims:=0
-              IF vardimscount>=0
-                vardims:=o
-                o:=o+vardimscount+vardimscount
-              ENDIF
-              IF match
-                IF vardims>0
-                  WriteF('[')  
-                  d:=1
-                  FOR i:=0 TO vardimscount-1
-                    IF i>0 THEN WriteF('][')
-                    WriteF('\d',Div(Word(vardims+i+i),d))
-                    d:=Word(vardims+i+i)
-                  ENDFOR
-                  WriteF(']')  
+              IF thisvers>=15
+                defval:=Long(o)
+                o:=o+4
+                varflags:=Char(o)
+                o:=o+1
+                vartype:=Char(o)
+                o:=o+1
+                varoid:=o[]++
+                varptrrep:=o[]++
+                vardimscount:=o[]++
+                vardims:=0
+                IF vardimscount>=0
+                  vardims:=o
+                  o:=o+vardimscount+vardimscount
                 ENDIF
-                IF (vardims=0) AND ((varoid=0) OR (varptrrep<>-1)) AND (defval<>0)
-                  WriteF('=\d',defval)
-                ENDIF
-                IF varflags AND $80
-                  WriteF(':LONG')
-                ENDIF
-                IF (vardims>0) OR (varptrrep<>-1) OR (varoid<>0)
-                  WriteF(':')
+                IF match
                   IF vardims>0
-                    WriteF('ARRAY OF ')  
-                  ENDIF
-                  IF varptrrep<>-1
-                    FOR i:=0 TO varptrrep
-                      WriteF('PTR TO ')
+                    WriteF('[')  
+                    d:=1
+                    FOR i:=0 TO vardimscount-1
+                      IF i>0 THEN WriteF('][')
+                      WriteF('\d',Div(Word(vardims+i+i),d))
+                      d:=Word(vardims+i+i)
                     ENDFOR
+                    WriteF(']')  
                   ENDIF
-                  IF (vartype=0)
-                    WriteF('\s',findObj(varoid))
-                  ELSE
-                    SELECT vartype
-                      CASE 1
-                        IF varflags AND $20
-                          WriteF('BYTE')
-                        ELSE
-                          WriteF('CHAR')
-                        ENDIF
-                      CASE 2
-                        IF varflags AND $40
-                          WriteF('WORD')
-                        ELSE
-                          WriteF('INT')
-                        ENDIF
-                      CASE 4
-                        WriteF('LONG')
-                    ENDSELECT
+                  IF (vardims=0) AND ((varoid=0) OR (varptrrep<>-1)) AND (defval<>0)
+                    WriteF('=\d',defval)
+                  ENDIF
+                  IF varflags AND $80
+                    WriteF(':LONG')
+                  ENDIF
+                  IF (vardims>0) OR (varptrrep<>-1) OR (varoid<>0)
+                    WriteF(':')
+                    IF vardims>0
+                      WriteF('ARRAY OF ')  
+                    ENDIF
+                    IF varptrrep<>-1
+                      FOR i:=0 TO varptrrep
+                        WriteF('PTR TO ')
+                      ENDFOR
+                    ENDIF
+                    IF (vartype=0)
+                      WriteF('\s',findObj(varoid))
+                    ELSE
+                      SELECT vartype
+                        CASE 1
+                          IF varflags AND $20
+                            WriteF('BYTE')
+                          ELSE
+                            WriteF('CHAR')
+                          ENDIF
+                        CASE 2
+                          IF varflags AND $40
+                            WriteF('WORD')
+                          ELSE
+                            WriteF('INT')
+                          ENDIF
+                        CASE 4
+                          WriteF('LONG')
+                      ENDSELECT
+                    ENDIF
                   ENDIF
                 ENDIF
               ENDIF
-            ENDIF
 
-          ELSE
-            IF thisvers>=15
-              o:=o+10
-              vardimscount:=o[]++
-              IF vardimscount>=0
-                o:=o+vardimscount+vardimscount
+            ELSE
+              IF thisvers>=15
+                o:=o+10
+                vardimscount:=o[]++
+                IF vardimscount>=0
+                  o:=o+vardimscount+vardimscount
+                ENDIF
               ENDIF
+              c++
             ENDIF
-            c++
-          ENDIF
-          WHILE ^o++ DO IF thisvers>=10 THEN o++
-          IF thisvers>=14
-            val:=o[]++
+            WHILE ^o++ DO IF thisvers>=10 THEN o++
+            IF thisvers>=14
+              val:=o[]++
+            ELSE
+              val:=0
+            ENDIF                    
           ELSE
-            val:=0
-          ENDIF                    
+            val:=-1
+          ENDIF
         ENDWHILE
       CASE JOB_MODINFO
         o:=o+4

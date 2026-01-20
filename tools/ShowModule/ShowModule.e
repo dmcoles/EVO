@@ -31,7 +31,7 @@ CONST MODVERS=16,     -> upto which version we understand
                       -> MODVER=14 FOR Evo 3.8.0
                       -> MODVER=15 FOR Evo 3.9.0
                       -> MODVER=16 FOR Evo 3.9.1
-      SUBREV=0,       -> sub version info
+      SUBREV=1,       -> sub version info
       SKIPMARK=$FFFF8000
 
 DEF flen,o:PTR TO INT,mem,handle=NIL,file[250]:STRING,thisvers=0,cmode=FALSE,emode=FALSE
@@ -439,96 +439,100 @@ PROC process()
           val:=0
         ENDIF
         WHILE (val<>-1)
-          len:=o[]++
-          IF len
-            IF f
-              PutS('DEF ')
-              f:=FALSE
-            ELSE
-              PutS('\nDEF ')
-              ->PutS(',')
-            ENDIF
-            PutF('\s',o)
-            o:=o+len
-            IF thisvers>=15
-              defval:=Long(o)
-              o:=o+4
-              varflags:=Char(o)
-              o:=o+1
-              vartype:=Char(o)
-              o:=o+1
-              varoid:=o[]++
-              varptrrep:=o[]++
-              vardimscount:=o[]++
-              vardims:=0
-              IF vardimscount>=0
-                vardims:=o
-                o:=o+vardimscount+vardimscount
+          len:=o[]++         
+          IF len>=0
+            IF len
+              IF f
+                PutS('DEF ')
+                f:=FALSE
+              ELSE
+                PutS('\nDEF ')
+                ->PutS(',')
               ENDIF
-              IF vardims>0
-                PutF('[')  
-                d:=1
-                FOR i:=0 TO vardimscount-1
-                  IF i>0 THEN PutF('][')
-                  PutF('\d',Div(Word(vardims+i+i),d))
-                  d:=Word(vardims+i+i)
-                ENDFOR
-                PutF(']')  
-              ENDIF
-              IF (vardims=0) AND ((varoid=0) OR (varptrrep<>-1)) AND (defval<>0)
-                PutF('=\d',defval)
-              ENDIF
-              IF varflags AND $80
-                PutF(':LONG')
-              ENDIF
-              IF (vardims>0) OR (varptrrep<>-1) OR (varoid<>0)
-                PutF(':')
+              PutF('\s',o)
+              o:=o+len
+              IF thisvers>=15
+                defval:=Long(o)
+                o:=o+4
+                varflags:=Char(o)
+                o:=o+1
+                vartype:=Char(o)
+                o:=o+1
+                varoid:=o[]++
+                varptrrep:=o[]++
+                vardimscount:=o[]++
+                vardims:=0
+                IF vardimscount>=0
+                  vardims:=o
+                  o:=o+vardimscount+vardimscount
+                ENDIF
                 IF vardims>0
-                  PutF('ARRAY OF ')  
-                ENDIF
-                IF varptrrep<>-1
-                  FOR i:=0 TO varptrrep
-                    PutF('PTR TO ')
+                  PutF('[')  
+                  d:=1
+                  FOR i:=0 TO vardimscount-1
+                    IF i>0 THEN PutF('][')
+                    PutF('\d',Div(Word(vardims+i+i),d))
+                    d:=Word(vardims+i+i)
                   ENDFOR
+                  PutF(']')  
                 ENDIF
-                IF (vartype=0)
-                  PutF('\s',findObj(varoid))
-                ELSE
-                  SELECT vartype
-                    CASE 1
-                      IF varflags AND $20
-                        PutF('BYTE')
-                      ELSE
-                        PutF('CHAR')
-                      ENDIF
-                    CASE 2
-                      IF varflags AND $40
-                        PutF('WORD')
-                      ELSE
-                        PutF('INT')
-                      ENDIF
-                    CASE 4
-                      PutF('LONG')
-                  ENDSELECT
+                IF (vardims=0) AND ((varoid=0) OR (varptrrep<>-1)) AND (defval<>0)
+                  PutF('=\d',defval)
+                ENDIF
+                IF varflags AND $80
+                  PutF(':LONG')
+                ENDIF
+                IF (vardims>0) OR (varptrrep<>-1) OR (varoid<>0)
+                  PutF(':')
+                  IF vardims>0
+                    PutF('ARRAY OF ')  
+                  ENDIF
+                  IF varptrrep<>-1
+                    FOR i:=0 TO varptrrep
+                      PutF('PTR TO ')
+                    ENDFOR
+                  ENDIF
+                  IF (vartype=0)
+                    PutF('\s',findObj(varoid))
+                  ELSE
+                    SELECT vartype
+                      CASE 1
+                        IF varflags AND $20
+                          PutF('BYTE')
+                        ELSE
+                          PutF('CHAR')
+                        ENDIF
+                      CASE 2
+                        IF varflags AND $40
+                          PutF('WORD')
+                        ELSE
+                          PutF('INT')
+                        ENDIF
+                      CASE 4
+                        PutF('LONG')
+                    ENDSELECT
+                  ENDIF
                 ENDIF
               ENDIF
+            ELSE
+              IF thisvers>=15
+                o:=o+10
+                vardimscount:=o[]++
+                IF vardimscount>=0
+                  o:=o+vardimscount+vardimscount
+                ENDIF
+              ENDIF
+              c++
+            ENDIF
+            WHILE ^o++ DO IF thisvers>=10 THEN o++
+            IF thisvers>=14
+              val:=o[]++
+            ELSE
+              val:=0
             ENDIF
           ELSE
-            IF thisvers>=15
-              o:=o+10
-              vardimscount:=o[]++
-              IF vardimscount>=0
-                o:=o+vardimscount+vardimscount
-              ENDIF
-            ENDIF
-            c++
+            val:=-1
           ENDIF
-          WHILE ^o++ DO IF thisvers>=10 THEN o++
-          IF thisvers>=14
-            val:=o[]++
-          ELSE
-            val:=0
-          ENDIF          
         ENDWHILE
         IF f=FALSE THEN PutS('\n')
         IF c THEN PutF('/* \d private global variable(s) in this module */\n',c)
