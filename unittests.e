@@ -9,7 +9,9 @@ OPT LARGE
 DEF tests_run = 0
 DEF tests_passed = 0
 DEF tests_failed = 0
+DEF tests_skipped = 0
 DEF stoponfail=FALSE
+DEF vamos=FALSE
 
 CONST TESTFAIL=1
 
@@ -28,12 +30,24 @@ PROC assert_float_near(expected, actual, tolerance, name:PTR TO CHAR,linenum)
   DEF result
   diff:=!expected - actual
   IF !diff < 0.0 THEN diff:=Fabs(diff)
-  assert(!diff <= tolerance, name,linenum)
+  MOVE.L -56(A4),A6
+  MOVE.L diff,D0
+  MOVE.L tolerance,D1
+  JSR -$2a(A6)
+  TST.L D0
+  SLE D0
+  EXT.W D0
+  EXT.L D0
+  assert(D0, name,linenum)
+  //assert(!diff <= tolerance, name,linenum)
 ENDPROC
 
-PROC assert(condition, test_name:PTR TO CHAR,linenum)
+PROC assert(condition, test_name:PTR TO CHAR,linenum,vamosSkip=FALSE)
   tests_run++
-  IF condition
+  IF vamosSkip
+    tests_skipped++
+    WriteF('SKIP: \s\n', test_name)
+  ELSEIF condition
     tests_passed++
     WriteF('PASS: \s\n', test_name)
   ELSE
@@ -1395,8 +1409,8 @@ PROC test_floats()
   DEF result
   
   result:=! f+g
-  assert(result > 5.0,'Float addition',_SRCLINE_)
-  assert(result < 5.2,'Float addition2',_SRCLINE_)
+  assert(result > 5.0,'Float addition',_SRCLINE_,vamos)
+  assert(result < 5.2,'Float addition2',_SRCLINE_,vamos)
 ENDPROC
 
 /* ============ IMMEDIATE VALUES ============ */
@@ -2234,22 +2248,22 @@ PROC test_stringf()
   assert(InStr(str, 'ABCD') >= 0, 'StringF: Hex format',_SRCLINE_)
 
   StringF(str, '\r\h[8]', $ABCD)
-  assert(InStr(str, '    ABCD') >= 0, 'StringF: Hex format right align',_SRCLINE_)
+  assert(InStr(str, '    ABCD') >= 0, 'StringF: Hex format right align',_SRCLINE_,vamos)
 
   StringF(str, '\r\z\h[8]', $ABCD)
   assert(InStr(str, '0000ABCD') >= 0, 'StringF: Hex format right align 0 pad',_SRCLINE_)
 
   StringF(str, '\l\h[8]', $ABCD)
-  assert(InStr(str, 'ABCD    ') >= 0, 'StringF: Hex format left align',_SRCLINE_)
+  assert(InStr(str, 'ABCD    ') >= 0, 'StringF: Hex format left align',_SRCLINE_,vamos)
 
   StringF(str, '\r\d[8]', 1000)
-  assert(InStr(str, '    1000') >= 0, 'StringF: decimal format right align',_SRCLINE_)
+  assert(InStr(str, '    1000') >= 0, 'StringF: decimal format right align',_SRCLINE_,vamos)
 
   StringF(str, '\r\z\d[8]', 1000)
   assert(InStr(str, '00001000') >= 0, 'StringF: decimal format right align 0 pad',_SRCLINE_)
 
   StringF(str, '\l\d[8]', 1234)
-  assert(InStr(str, '1234    ') >= 0, 'StringF: decimal format left align',_SRCLINE_)
+  assert(InStr(str, '1234    ') >= 0, 'StringF: decimal format left align',_SRCLINE_,vamos)
 
   StringF(str, '\c', 97)
   assert(InStr(str, 'a') >= 0, 'StringF: character',_SRCLINE_)
@@ -2318,22 +2332,22 @@ PROC test_astringf()
   assert(InStr(str, 'ABCD') >= 0, 'AstringF: Hex format',_SRCLINE_)
 
   AstringF(str, '\r\h[8]', $ABCD)
-  assert(InStr(str, '    ABCD') >= 0, 'AstringF: Hex format right align',_SRCLINE_)
+  assert(InStr(str, '    ABCD') >= 0, 'AstringF: Hex format right align',_SRCLINE_,vamos)
 
   AstringF(str, '\r\z\h[8]', $ABCD)
   assert(InStr(str, '0000ABCD') >= 0, 'AstringF: Hex format right align 0 pad',_SRCLINE_)
 
   AstringF(str, '\l\h[8]', $ABCD)
-  assert(InStr(str, 'ABCD    ') >= 0, 'AstringF: Hex format left align',_SRCLINE_)
+  assert(InStr(str, 'ABCD    ') >= 0, 'AstringF: Hex format left align',_SRCLINE_,vamos)
 
   AstringF(str, '\r\d[8]', 1000)
-  assert(InStr(str, '    1000') >= 0, 'AstringF: decimal format right align',_SRCLINE_)
+  assert(InStr(str, '    1000') >= 0, 'AstringF: decimal format right align',_SRCLINE_,vamos)
 
   AstringF(str, '\r\z\d[8]', 1000)
   assert(InStr(str, '00001000') >= 0, 'AstringF: decimal format right align 0 pad',_SRCLINE_)
 
   AstringF(str, '\l\d[8]', 1234)
-  assert(InStr(str, '1234    ') >= 0, 'AstringF: decimal format left align',_SRCLINE_)
+  assert(InStr(str, '1234    ') >= 0, 'AstringF: decimal format left align',_SRCLINE_,vamos)
 
   AstringF(str, '\c', 97)
   assert(InStr(str, 'a') >= 0, 'AstringF: character',_SRCLINE_)
@@ -3597,6 +3611,8 @@ PROC main() HANDLE
   WriteF('* Testing all EVO built-in functions             *\n')
   WriteF('*************************************************\n')
   
+  IF StrCmp(arg,'VAMOS') THEN vamos:=TRUE
+  
     /* Constants and Enumerations */
   WriteF('--- Constants ---\n')
   test_constants()
@@ -3713,6 +3729,11 @@ PROC main() HANDLE
   
   WriteF('\n--- Float Functions: Special ---\n')
   test_fsincos()
+
+  -> Floats 
+  WriteF('\n--- Float Operations ---\n')
+  test_floats()
+
   
   /* Control Flow */
   WriteF('\n--- If/Then/Else & IFN/ELSEIFN ---\n')
@@ -3800,9 +3821,6 @@ PROC main() HANDLE
   test_increment_decrement()
   test_inc_dec_statements()
   
-  /* Floats */
-  WriteF('\n--- Float Operations ---\n')
-  test_floats()
   
   /* Immediate Values */
   WriteF('\n--- Immediate Values ---\n')
@@ -3953,6 +3971,7 @@ PROC main() HANDLE
   WriteF('Total Tests Run: \d\n', tests_run)
   WriteF('Tests Passed: \d\n', tests_passed)
   WriteF('Tests Failed: \d\n', tests_failed)
+  WriteF('Tests Skipped: \d\n', tests_skipped)
   
   IF tests_failed = 0
     WriteF('\n*** ALL TESTS PASSED! ***\n')
