@@ -3603,6 +3603,213 @@ PROC test_selectfirst()
   assert(result = NIL, 'SelectFirst: No match returns NIL',_SRCLINE_)
 ENDPROC
 
+->64k object
+OBJECT n
+  n[4000]:ARRAY OF CHAR
+  n2[4000]:ARRAY OF CHAR
+  n3[4000]:ARRAY OF CHAR
+  n4[4000]:ARRAY OF CHAR
+  n5[4000]:ARRAY OF CHAR
+  n6[4000]:ARRAY OF CHAR
+  n7[4000]:ARRAY OF CHAR
+  n8[4000]:ARRAY OF CHAR
+  n9[4000]:ARRAY OF CHAR
+  n10[4000]:ARRAY OF CHAR
+  n11[4000]:ARRAY OF CHAR
+  n12[4000]:ARRAY OF CHAR
+  n13[4000]:ARRAY OF CHAR
+  n14[4000]:ARRAY OF CHAR
+  n15[4000]:ARRAY OF CHAR
+  n16[4000]:ARRAY OF CHAR
+ENDOBJECT
+
+OBJECT oo
+  l1:PTR TO CHAR
+  
+  a[2]:ARRAY OF PTR TO LONG
+ENDOBJECT
+
+OBJECT oo2
+  l1:LONG
+  c[2]:ARRAY OF WORD
+  a[2]:ARRAY OF PTR TO LONG
+  b[2]:ARRAY OF PTR TO WORD
+  l2:LONG
+ENDOBJECT
+
+OBJECT n2
+ n[3]:ARRAY OF PTR TO LONG
+ENDOBJECT
+
+PROC test_miscstuff0()
+  DEF a[32700]:ARRAY OF CHAR
+  assert(TRUE,'32700 char array',_SRCLINE_)
+ENDPROC
+
+PROC test_miscstuff1()
+  DEF op:oo
+  DEF a[2]:ARRAY OF PTR TO LONG
+  DEF v,i
+  DEF n1:PTR TO n2
+  DEF l
+  DEF op2:oo2
+  
+  a[1]:={lp}
+  v:=a[1][]
+  assert(v=$55443322,'array of ptr to long',_SRCLINE_)
+
+  op.a[1]:={lp}
+  v:=op.a[1][]
+  assert(v=$55443322,'object array of ptr to long',_SRCLINE_)
+
+  NEW n1
+
+  n1.n[0]:={lp}
+
+  v:=n1.n[0]
+  assert(v={lp},'new object array of ptr to long',_SRCLINE_)
+  
+  v:=n1.n[0][]
+  assert(v=$55443322,'new object array of ptr to long 2',_SRCLINE_)
+
+  END n1
+  
+  
+  op2.l1:=$fffffff
+  op2.l2:=$fffffff
+  
+  op2.a[0]:={lp}
+  op2.a[1]:={lp}
+  op2.b[0]:={lp}
+  op2.b[1]:={lp}
+  v:=op2.a[1][]
+  assert(v=$55443322,'new object array of ptr to long 3',_SRCLINE_)
+
+  v:=op2.b[1][]
+  assert(v=$5544,'new object array of ptr to word',_SRCLINE_)
+ENDPROC
+
+PROC test_miscstuff2()
+  DEF y = 170
+
+  assert(y=170,'test const >127 going negative issue',_SRCLINE_)
+ENDPROC
+
+PROC test_miscstuff3()
+  DEF b[4]:ARRAY OF CHAR, -> compiler hangs or errors
+      c[4]:ARRAY OF CHAR
+  assert(TRUE,'compiler hang/error',_SRCLINE_)
+ENDPROC
+
+PROC test_miscstuff4()
+  DEF b[4]:ARRAY OF BYTE, -> compiler hangs or errors
+      c[4]:ARRAY OF CHAR
+  assert(TRUE,'compiler hang/error',_SRCLINE_)
+ENDPROC
+
+lp:
+LONG $55443322
+
+PROC test_miscstuff5()
+  DEF a[2][5][3][2]:ARRAY OF CHAR
+  DEF n1=1,n2=2
+  DEF b[5][5]:ARRAY OF CHAR
+
+  a[1][2][2][1]:=2
+  assert(Char(a+30+12+4+1)=2,'multi-dim array set',_SRCLINE_)
+  
+  a[n1+1-1][n2+1-1][2][1]:=3
+  assert(Char(a+30+12+4+1)=3,'multi-dim array set 2',_SRCLINE_)
+  
+  b[0][0]:=1
+  assert(Char(b)=1,'multi-dim array set 3',_SRCLINE_)
+ENDPROC
+
+OBJECT omisc6
+ x:INT
+ y:INT
+ v:INT
+ENDOBJECT
+
+PROC test_miscstuff6()
+  DEF a:PTR TO omisc6
+
+  NEW a
+
+  a.x:=2
+  a.v:=4
+  a.x+=a.v
+  
+  assert(a.x=6,'object property +=',_SRCLINE_)
+
+  END a
+  
+ENDPROC
+
+PROC test_miscstuff7()
+ DEF if
+ IF 1=1
+    assert(TRUE,'if var test',_SRCLINE_)
+  ELSE 
+    assert(FALSE,'if var test',_SRCLINE_)
+ ENDIF
+ENDPROC
+
+
+PROC test_miscstuff8()
+DEF s[10]:STRING
+  StrCopy(s,'aaa')
+  MidStr(s,'123456',2,0)  
+
+  assert(EstrLen(s)=0,'midstr 0 len',_SRCLINE_)
+ENDPROC
+
+OBJECT nmiscstuff9
+  a:CHAR
+ENDOBJECT
+
+PROC test() OF nmiscstuff9
+ NOP
+ENDPROC
+
+PROC create() OF nmiscstuff9
+ NOP
+ENDPROC
+
+PROC test2(z,b:PTR TO nmiscstuff9)
+  NOP
+  b.test()
+ENDPROC
+
+PROC test_miscstuff9()
+  DEF f:PTR TO nmiscstuff9
+  DEF n:PTR TO nmiscstuff9
+
+  n:=0
+  NEW n.create()
+  assert(n,'n.create',_SRCLINE_)
+
+  f:=NEW n.create()
+  assert(f,'f:=n.create',_SRCLINE_)
+  f.test()
+  assert(n,'n.create2 - test',_SRCLINE_)
+
+  f:=0
+  test2(1,f:=NEW n.create())
+  assert(f,'parameter create - test2',_SRCLINE_)
+ENDPROC
+
+PROC test_miscstuff10()
+  DEF a
+  a:=0
+  assert(Not(a)=-1,' Not function test',_SRCLINE_)
+  assert(NOT a = -1,' NOT operation test',_SRCLINE_)
+  REPEAT
+    NOP
+  UNTIL NOT a
+  assert(NOT a = -1,' NOT operation loop test',_SRCLINE_)
+ENDPROC
+
 /* Main test runner */
 PROC main() HANDLE
   WriteF('*************************************************\n')
@@ -3962,7 +4169,19 @@ PROC main() HANDLE
   test_listclone()
   test_setlist()
   test_selectfirst()
-  
+
+  /* Run extra tests */
+  test_miscstuff0()
+  test_miscstuff1()
+  test_miscstuff2()
+  test_miscstuff3()
+  test_miscstuff4()
+  test_miscstuff5()
+  test_miscstuff6()
+  test_miscstuff7()
+  test_miscstuff8()
+  test_miscstuff9()
+  test_miscstuff10()
   EXCEPT DO
   /* Print summary */
   WriteF('\n=================================================\n')
