@@ -1,6 +1,6 @@
 @database "e.guide"
 @node MAIN
-@title "Amiga E-VO v3.9.1"
+@title "Amiga E-VO v3.9.2"
 
                 +-----------------------------------------------+
                 |                                               |
@@ -8,7 +8,7 @@
                 |          Compiler for The E Language          |
                 |     Originally By Wouter van Oortmerssen      |
                 |           Updates By GRIO 1999-2003           |
-                |          and Darren Coles 2022 - 2025         |
+                |          and Darren Coles 2022 - 2026         |
                 |                                               |
                 +-----------------------------------------------+
 
@@ -355,6 +355,18 @@ NOTE: in most cases you won't need to use any of these options
 0D. changes / history / new features
 ------------------------------------
 
+ New in E-VO  (3.9.2)
+   - fix parsing issue with the : (colon) character could cause errors when
+     parsing expressions using the ternery operator (?)
+   - fix register corruption causing corruption of module files in some
+     scenarios
+   - fix casing of CharInstr (changed to CharInStr) and CharInstri (changed to CharInStri)
+   - added EVO_3_9_2 constant
+   - FindModule: Issue with freezing on some modules
+   - ShowModule: Issue with freezing on some modules
+   - Updated EVO Language Guide file to fix some errors / inconsistencies
+   - Added unittests.e file and set up to run this for each build.
+   
  New in E-VO  (3.9.1)
    - Fixed issue with TextF function crashing
    - Add cheeck for declaring exported variable that references

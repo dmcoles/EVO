@@ -1,4 +1,4 @@
-E-VO v3.9.1 :
+E-VO v3.9.2 :
 
 Formerly : GRIO Amiga E Compiler !
 
@@ -641,6 +641,19 @@ Development restarted as E-VO by Darren Coles
    - Fixed installer script incorrectly removing assigns
    - Updated module libraries/cybergraphics.m
 
+   (3.9.2)
+   - fix parsing issue with the : (colon) character could cause errors when
+     parsing expressions using the ternery operator (?)
+   - fix register corruption causing corruption of module files in some
+     scenarios
+   - fix casing of CharInstr (changed to CharInStr) and CharInstri (changed to CharInStri)
+   - added EVO_3_9_2 constant
+   - FindModule: Issue with freezing on some modules
+   - ShowModule: Issue with freezing on some modules
+   - Updated EVO Language Guide file to fix some errors / inconsistencies
+   - Added unittests.e file and set up to run this for each build.
+
+
 DATE HISTORY:
     3.3b    20.11.1999 -> 12.12.1999
     3.3c    15.12.1999 -> 12.01.2000
@@ -659,3 +672,4 @@ DATE HISTORY:
     3.8.1   08.07.2024 -> 09.07.2024
     3.9.0   10.07.2024 -> 06.09.2025
     3.9.1   16.09.2025 -> 04.10.2025
+    3.9.2   22.12.2025 -> 02.02.2026
