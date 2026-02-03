@@ -9488,6 +9488,7 @@ BYTEOFF:	DC.L	0
 
 ;store the (first) line numbers of the warnings
 
+  even
       WARNINGTAB:
 	DC.L	.1,.2,.3,.4,.5,.6,.7,.8,.9,.10,.11,.12
 
@@ -10129,8 +10130,8 @@ SRCFN: DC.L 0
 	EROBJLINE:	DC.B	'WITH: %s',10,0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
-			DC.B	'/Assembler/Linker/PP',160,'v3.9.2',160
-			DC.B	'(02.02.2026)'
+			DC.B	'/Assembler/Linker/PP',160,'v3.9.3-dev',160
+			DC.B	'(03.02.2026)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
