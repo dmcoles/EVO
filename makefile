@@ -1,6 +1,6 @@
 # Assemble E-VO and tools
 
-options=
+options=-align
 compiler=vasmm68k_mot
 
 all:					EVO tools
