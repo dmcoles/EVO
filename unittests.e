@@ -3802,12 +3802,35 @@ ENDPROC
 PROC test_miscstuff10()
   DEF a
   a:=0
-  assert(Not(a)=-1,' Not function test',_SRCLINE_)
-  assert(NOT a = -1,' NOT operation test',_SRCLINE_)
+  assert(Not(a)=-1,'Not function test',_SRCLINE_)
+  assert(NOT a = -1,'NOT operation test',_SRCLINE_)
   REPEAT
     NOP
   UNTIL NOT a
-  assert(NOT a = -1,' NOT operation loop test',_SRCLINE_)
+  assert(NOT a = -1,'NOT operation loop test',_SRCLINE_)
+ENDPROC
+
+PROC test_miscstuff11()
+  DEF a,b
+  a:=15
+  b:=a&0
+  assert(b=0,'a&0 test',_SRCLINE_)
+ENDPROC
+
+OBJECT aobj
+  aa:LONG
+  bb:LONG
+  cc:LONG
+ENDOBJECT
+
+PROC test_miscstuff12()
+  DEF arr[5]:ARRAY OF aobj
+  DEF i=1
+
+  arr[i].cc:=0
+  arr[i].cc+=10
+
+  assert(arr[i].cc=10,'array object field += test',_SRCLINE_)
 ENDPROC
 
 /* Main test runner */
@@ -4171,6 +4194,7 @@ PROC main() HANDLE
   test_selectfirst()
 
   /* Run extra tests */
+  WriteF('\n--- Misc tests ---\n')
   test_miscstuff0()
   test_miscstuff1()
   test_miscstuff2()
@@ -4182,6 +4206,8 @@ PROC main() HANDLE
   test_miscstuff8()
   test_miscstuff9()
   test_miscstuff10()
+  test_miscstuff11()
+  test_miscstuff12()
   EXCEPT DO
   /* Print summary */
   WriteF('\n=================================================\n')
