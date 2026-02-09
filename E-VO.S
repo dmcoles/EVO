@@ -10131,7 +10131,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.9.3-dev',160
-			DC.B	'(03.02.2026)'
+			DC.B	'(09.02.2026)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -19431,7 +19431,7 @@ PLB:
     MOVE.L .20(PC,D7.W),(A4)+      ;
 
 	MOVE.L  THE_OFFSET,D1
-	CLR.L   THE_OFFSET
+	;CLR.L   THE_OFFSET     - this is still needed later
 	CMP.L   #128,D1
 	BPL.S   .bigoff2
 	OR.W    D1,-2(A4)
@@ -20419,6 +20419,8 @@ XIT:	MOVEM.L	(A7)+,D3-D5/A1
     BCLR    #2,ICODEPREFS+3
     MOVE.L  #0,LASTVAR
 	MOVEM.L	D3-D5/A1/A2,-(A7)	; WE DO HEAVY RECURSION
+	MOVE.L THE_OFFSET,-(A7)
+	CLR.W THE_OFFSET
 	MOVE.W EAOFFSET,-(A7)
 	CLR.W EAOFFSET
 	MOVE.W IFLAG,-(A7)
@@ -20560,6 +20562,7 @@ XIT:	MOVEM.L	(A7)+,D3-D5/A1
 	MOVE.W	(A7)+,METHCALL
 	MOVE.W	(A7)+,IFLAG
 	MOVE.W	(A7)+,EAOFFSET
+ 	MOVE.L  (A7)+,THE_OFFSET
 	MOVEM.L	(A7)+,D3-D5/A1/A2
 	RTS
 	CPU040
