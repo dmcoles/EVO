@@ -3823,6 +3823,10 @@ OBJECT aobj
   cc:LONG
 ENDOBJECT
 
+PROC create() OF aobj
+  self.aa:=5
+ENDPROC
+
 PROC test_miscstuff12()
   DEF arr[5]:ARRAY OF aobj
   DEF i=1
@@ -3832,6 +3836,32 @@ PROC test_miscstuff12()
 
   assert(arr[i].cc=10,'array object field += test',_SRCLINE_)
 ENDPROC
+
+PROC test_newobj()
+  DEF n
+  DEF n2:PTR TO aobj
+  
+  n:=NEW aobj
+  
+  n2:=n
+  n2.aa:=4
+  n2.bb:=3
+  n2.cc:=n2.aa+n2.bb
+
+  assert(n2.cc=7,'NEW obj test',_SRCLINE_)
+  
+  assert(n::aobj.cc=7,'NEW obj cast test',_SRCLINE_)
+  
+  END n
+  
+  n:= NEW aobj.create()
+  n2:=n
+  assert(n2.aa=5,'NEW obj.create() test',_SRCLINE_)
+  
+  END n
+  
+ENDPROC  
+  
 
 /* Main test runner */
 PROC main() HANDLE
@@ -4208,6 +4238,7 @@ PROC main() HANDLE
   test_miscstuff10()
   test_miscstuff11()
   test_miscstuff12()
+  test_newobj()
   EXCEPT DO
   /* Print summary */
   WriteF('\n=================================================\n')
