@@ -3827,6 +3827,10 @@ PROC create() OF aobj
   self.aa:=5
 ENDPROC
 
+PROC create2(text:PTR TO CHAR) OF aobj
+  self.bb:=text
+ENDPROC
+
 PROC test_miscstuff12()
   DEF arr[5]:ARRAY OF aobj
   DEF i=1
@@ -3858,6 +3862,13 @@ PROC test_newobj()
   n2:=n
   assert(n2.aa=5,'NEW obj.create() test',_SRCLINE_)
   
+  END n
+
+  n:= NEW aobj.create2('test1')
+  n2:=n
+
+  assert(StrCmp(n2.bb,'test1'),'NEW obj.create(param) test',_SRCLINE_)
+
   END n
   
 ENDPROC  

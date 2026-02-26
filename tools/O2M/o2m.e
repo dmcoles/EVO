@@ -12,7 +12,7 @@ DEF slist=NIL
 
 PROC main() HANDLE
   DEF infile[100]:STRING, outfile[100]:STRING, m, l
-  WriteF('o2m v0.2 by Darren Coles 2025')
+  WriteF('o2m v0.3 by Darren Coles 2026')
   WriteF('Originally by $#%! 1993\n')
   StringF(infile,'\s.o',arg)
   StringF(outfile,'\s.m',arg)
@@ -83,9 +83,10 @@ PROC process(o:PTR TO LONG,len) HANDLE
           o:=n*4+o
           o++
         ENDIF
-      UNTIL o[]++=0
-      ->IF o[]++ THEN Raise("DEF")
+      UNTIL o[]=0
+      IF o[]++ THEN Raise("DEF")
     ELSE
+      WriteF('unknown hunk \h\n',hunk)
       Raise("HUNK")
     ENDIF
   ENDWHILE
@@ -105,7 +106,7 @@ PROC writeinfos()
   WriteF('codesize=\d, numreloc=\d\n',codesize*4,relocsize)
   WHILE list
     StrCopy(s,list.sym,list.len)
-    WriteF('\s=$\h ',s,list.val)
+    WriteF('\s=$\h\n',s,list.val)
     list:=list.next
   ENDWHILE
   WriteF('\n')
@@ -138,7 +139,7 @@ PROC writemodule(modname)
       Write(handle,[2]:INT,2)
     ENDIF
     list:=list.next
-    WriteF('\s/\d ',res,num)
+    WriteF('\s/\d\n',res,num)
   ENDWHILE
   Write(handle,[-1,0,0]:INT,6)
   Close(handle)

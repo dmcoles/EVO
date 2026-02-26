@@ -10150,7 +10150,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.9.3-dev',160
-			DC.B	'(24.02.2026)'
+			DC.B	'(26.02.2026)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -20909,9 +20909,9 @@ MOVED0FP0: MACRO
 	MOVEQ	#1,D5
 	BRA	EXPLOOP
 
-assignvar DC.L 0
+newobj: DC.W 0
       NEWEXP:
-  CLR.L assignvar
+	CLR.W newobj
   
 .notass
 	MOVE.W	D0,-(A7)
@@ -20926,8 +20926,9 @@ assignvar DC.L 0
 	JSR FINDOBJ
 	TST.L	D0
 	BEQ	ERROR22
-	MOVE.L assignvar,A0
+	SUB.L A0,A0
 	MOVE.W	#-1,.ISM
+	MOVE.W #-1,newobj
 	BRA.S .wasobj
 
 .isobj
@@ -21071,12 +21072,17 @@ assignvar DC.L 0
 	MOVE.L	(A7)+,METHODIDENT
 	TST.W	(A7)
 	BNE.S	.4B
+	TST.W newobj
+	BNE.S .isobj2
 	MOVE.L	METHODIDENT(PC),A0
 	CMP.L #0,A0
 	BEQ.S .noa0
 	MOVE.W	.MV(PC),(A4)+
 	BSR	GVA0D0_0
-	BRA .wasa0
+	BRA.S .wasa0
+.isobj2
+	MOVE.L .RESTA0_2,(A4)+
+	BRA.S .wasa0
 .noa0  
 	MOVE.W .RESTA0,-2(A4)
 .wasa0
@@ -21224,6 +21230,7 @@ assignvar DC.L 0
     MOVE.W #1,D1
 .LOBJ2: LEA 0(A0,D1.L),A1
 .RESTA0:	MOVE.L	(A7)+,D0
+.RESTA0_2:	MOVE.L	-4(A7),D0
 
 ; GNEW TRASHES NOTHING
 
