@@ -3873,7 +3873,16 @@ PROC test_newobj()
   
 ENDPROC  
   
-
+PROC test_immlistnot()
+  DEF a:PTR TO LONG
+  
+  a:=[0,NOT(0),1]
+  
+  assert(a[0]=0,'immediate list NOT element 0',_SRCLINE_)
+  assert(a[1]=-1,'immediate list NOT element 1',_SRCLINE_)
+  assert(a[2]=1,'immediate list NOT element 2',_SRCLINE_)
+ENDPROC
+  
 /* Main test runner */
 PROC main() HANDLE
   WriteF('*************************************************\n')
@@ -4250,6 +4259,7 @@ PROC main() HANDLE
   test_miscstuff11()
   test_miscstuff12()
   test_newobj()
+  test_immlistnot()
   EXCEPT DO
   /* Print summary */
   WriteF('\n=================================================\n')

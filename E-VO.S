@@ -8449,7 +8449,7 @@ ASM_GRABVALUE:
     BRA.S   .XL1
 .nn2:
     CMP.W   #VALUE,D3       ; VALUE ?
-    BNE.S   .X              ; sizeof or exit
+    BNE.W   .X              ; sizeof or exit
 .2: CMP.W   #-1,D0          ; SIZEOFBACK
     BNE.S   .3
     MOVEQ   #6,D0           ; ATLEAST ONE VALUE
@@ -8484,6 +8484,7 @@ ASM_GRABVALUE:
     CMP.W   #-1,D0
     BEQ.W   .5
     SUBQ.L  #2,A3
+    CLR.W NOTEXP
     RTS
 .X: CMp.W   #LIBC,D3
     BEQ .LIB
@@ -8620,7 +8621,8 @@ ASM_GRABVALUE:
     CMP.W   #-1,D0
     BEQ.S   .5
     SUBQ.L  #2,A3
-.5: RTS
+.5: CLR.W NOTEXP
+    RTS
 .dimno: DC.L 0
 .dimerrpos: DC.L 0
 .derror104: BRA ERROR104
@@ -10150,7 +10152,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.9.3-dev',160
-			DC.B	'(26.02.2026)'
+			DC.B	'(27.02.2026)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
