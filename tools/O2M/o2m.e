@@ -77,6 +77,11 @@ PROC process(o:PTR TO LONG,len) HANDLE
           slist:=s
           o:=n*4+o
           s.val:=o[]++
+        ELSEIF Char(o)==[EXT_REF16,EXT_REF32,EXT_DEXT32,EXT_DEXT16]
+          n:=o[]++ AND $FFFFFF
+          o:=n*4+o
+          n:=o[]++
+          o:=n*4+o
         ELSE
           n:=o[]++ AND $FFFFFF
           WriteF('unknown \s\n',o)
