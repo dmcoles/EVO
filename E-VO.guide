@@ -354,6 +354,13 @@ NOTE: in most cases you won't need to use any of these options
 @title "0D. changes / history / new features"
 0D. changes / history / new features
 ------------------------------------
+ New in E-VO  (3.9.3)
+   - fix address error on 68000 due to mis-aligned data causing crash on loading
+   - fix code generation error when compiling eg arr[i].bb+=10
+   - fix errors when using NEW obj.create() syntax
+   - fix error with NOT operator bleeding into next field when using eg
+       [0,NOT(0),1]
+   - O2M: improved hunk handling
 
  New in E-VO  (3.9.2)
    - fix parsing issue with the : (colon) character could cause errors when

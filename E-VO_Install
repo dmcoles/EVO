@@ -13,7 +13,7 @@
 (set #app-name "E-VO")  ; Application name
 
 (set #app-year 2026)            ; Copyright year
-(set #app-version "3.9.2")
+(set #app-version "3.9.3")
 
 (set #ModulesPath     "EModules:")
 

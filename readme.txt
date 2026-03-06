@@ -2,7 +2,7 @@ Short:        E-VO: Amiga E Evolution
 Author:       darren_m_coles@yahoo.co.uk (Darren Coles)
 Uploader:     darren_m_coles@yahoo.co.uk (Darren Coles)
 Type:         dev/e
-Version:      3.9.2
+Version:      3.9.3
 Replaces:     dev/e/evo.lha
 Architecture: m68k-amigaos
 Distribution: Aminet
@@ -12,18 +12,14 @@ by Wouter van Oortmerssen. It adds many new features, bug fixes and
 optimisations including object UNIONs, string merging, non word-aligned
 objects and many more.
 
-  Changes in E-VO 3.9.2:
+  Changes in E-VO 3.9.3:
 
-   - fix parsing issue with the : (colon) character could cause errors when
-     parsing expressions using the ternery operator (?)
-   - fix register corruption causing corruption of module files in some
-     scenarios
-   - fix casing of CharInstr (changed to CharInStr) and CharInstri (changed to CharInStri)
-   - added EVO_3_9_2 constant
-   - FindModule: Issue with freezing on some modules
-   - ShowModule: Issue with freezing on some modules
-   - Updated EVO Language Guide file to fix some errors / inconsistencies
-   - Added unittests.e file and set up to run this for each build.
+   - fix address error on 68000 due to mis-aligned data causing crash on loading
+   - fix code generation error when compiling eg arr[i].bb+=10
+   - fix errors when using NEW obj.create() syntax
+   - fix error with NOT operator bleeding into next field when using eg
+       [0,NOT(0),1]
+   - O2M: improved hunk handling
    
 E is an object oriented / procedural / unpure functional higher programming
 language, mainly influenced by languages such as C++, Ada, Lisp etc.  It is a
