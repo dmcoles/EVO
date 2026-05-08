@@ -10151,14 +10151,14 @@ SRCFN: DC.L 0
 	EROBJLINE:	DC.B	'WITH: %s',10,0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
-			DC.B	'/Assembler/Linker/PP',160,'v3.9.3',160
-			DC.B	'(06.03.2026)'
+			DC.B	'/Assembler/Linker/PP',160,'v3.9.4-beta',160
+			DC.B	'(08.05.2026)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
 			DC.B	'''1999/2003',160,'by grio',10
 			DC.B	'developing as "E-VO"',160
-			DC.B	'''2021-25',160,'by Darren Coles',10
+			DC.B	'''2021-26',160,'by Darren Coles',10
 	TITLEEND:	DC.B	0
   FNPRE: DC.B '-> '
   FNPREEND:
@@ -22672,10 +22672,11 @@ EXPSWAP:
     BEQ     ERROR0
     MOVe.L  LASTVAR,A0
     MOVE.W  .1(PC),(A4)+
-    BSR GVA0D0_0
+    BSR GVA0D0_9
     MOVe.L  (A7)+,a0
     MOVE.W  .2(PC),(A4)+
-    BSR GVA0D0_0
+    BSR GVA0D0_9
+
     BRA EXPLOOP
 
 .1: MOVE.L  D0,2(A5)

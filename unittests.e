@@ -15,6 +15,10 @@ DEF vamos=FALSE
 
 CONST TESTFAIL=1
 
+/* global variables used within tests */
+
+DEF swap_a,swap_b
+
 /* Helper procedure to report test results */
 PROC assert_equal(expected, actual, name:PTR TO CHAR,linenum)
   assert(expected=actual,name,linenum)
@@ -1471,6 +1475,16 @@ PROC test_swap_operator()
   a:=:b
   assert_equal(20, a,'Swap a',_SRCLINE_)
   assert_equal(10, b,'Swap b',_SRCLINE_)
+ENDPROC
+
+PROC test_swap_operator_global()
+  
+  swap_a:=15
+  swap_b:=5
+  
+  swap_a:=:swap_b
+  assert_equal(5, swap_a,'Swap a',_SRCLINE_)
+  assert_equal(15, swap_b,'Swap b',_SRCLINE_)
 ENDPROC
 
 /* ============ EXCEPTIONS ============ */
@@ -4117,6 +4131,9 @@ PROC main() HANDLE
   /* Advanced */
   WriteF('\n--- Swap Operator ---\n')
   test_swap_operator()
+
+  WriteF('\n--- Swap Operator GLOBAL ---\n')
+  test_swap_operator_global()
   
   WriteF('\n--- Exceptions ---\n')
   test_exception_basic()
