@@ -451,11 +451,12 @@ PROC test_andalso_short_circuit()
   DEF x = 15
   DEF result = TRUE
   
-  IF (x < 10) ANDALSO (counter := counter+1)=0
+  IF (x < 10) ANDALSO ((counter := counter+1)=0)
     result := FALSE
   ENDIF
   
-  assert_equal(0, counter, 'ANDALSO short-circuits second condition',_SRCLINE_)
+  assert_equal(0, counter, 'ANDALSO short-circuits second condition1',_SRCLINE_)
+  assert_equal(TRUE,result, 'ANDALSO short-circuits second condition2',_SRCLINE_)
 ENDPROC
 
 PROC test_orelse_short_circuit()
@@ -463,11 +464,12 @@ PROC test_orelse_short_circuit()
   DEF x = 5
   DEF result = FALSE
   
-  IF (x < 10) ORELSE (counter := counter+1)=0
+  IF (x < 10) ORELSE ((counter := counter+1)=0)
     result := TRUE
   ENDIF
   
-  assert_equal(0, counter, 'ORELSE short-circuits second condition',_SRCLINE_)
+  assert_equal(0, counter, 'ORELSE short-circuits second condition1',_SRCLINE_)
+  assert_equal(TRUE,result, 'ORELSE short-circuits second condition2',_SRCLINE_)
 ENDPROC
 
 PROC test_combined_andalso_orelse()

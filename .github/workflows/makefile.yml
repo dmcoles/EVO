@@ -20,10 +20,16 @@ jobs:
       - name: run build
         run: |
            vamos -c /usr/amiga/.vamosrc -H disable -m 20000 --cwd esource: -V system:/usr/amiga -V esource:$GITHUB_WORKSPACE make EVO
-      - name: compile unit tests
+      - name: compile unit tests (no opti)
         run: |
            vamos -c /usr/amiga/.vamosrc -H disable -m 20000 --cwd esource: -V system:/usr/amiga -V esource:$GITHUB_WORKSPACE EVO unittests
-      - name: run unit tests
+      - name: run unit tests (no opti)
+        run: |
+           vamos -c /usr/amiga/.vamosrc -H disable -m 20000 --cwd esource: -V system:/usr/amiga -V esource:$GITHUB_WORKSPACE unittests VAMOS
+      - name: compile unit tests (with opti)
+        run: |
+           vamos -c /usr/amiga/.vamosrc -H disable -m 20000 --cwd esource: -V system:/usr/amiga -V esource:$GITHUB_WORKSPACE EVO unittests OPTI
+      - name: run unit tests (with opti)
         run: |
            vamos -c /usr/amiga/.vamosrc -H disable -m 20000 --cwd esource: -V system:/usr/amiga -V esource:$GITHUB_WORKSPACE unittests VAMOS
       - name: add build artifacts to publish
