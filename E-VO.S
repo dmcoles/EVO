@@ -22671,19 +22671,6 @@ EXPSWAP:
     TST.L   LASTVAR
     BEQ     ERROR0
     MOVe.L  LASTVAR,A0
-
-    CMP.L #$2200201f,-4(A4)   ;check for MOVE.L D0,D1 MOVE.L (A7)+,D0  
-    BEQ .opt                  ;optimise this
-
-    MOVE.W  .3(PC),(A4)+
-    BSR GVA0D0_9
-    MOVe.L  (A7)+,a0
-    MOVE.W  .4(PC),(A4)+
-    BSR GVA0D0_9
-    BRA EXPLOOP
-
-.opt
-    LEA -4(A4),A4
     MOVE.W  .1(PC),(A4)+
     BSR GVA0D0_9
     MOVe.L  (A7)+,a0
@@ -22692,10 +22679,8 @@ EXPSWAP:
 
     BRA EXPLOOP
 
-.1: MOVE.L  (A7)+,2(A5)
-.2: MOVE.L  D0,2(A5)
-.3: MOVE.L  D0,2(A5)
-.4: MOVE.L  D1,2(A5)
+.1: MOVE.L  D0,2(A5)
+.2: MOVE.L  D1,2(A5)
 ;*-*
 
       CLOSEEXP:
@@ -23438,8 +23423,7 @@ EXPIMMLIST:
     bra     .F
 
 .F4:cmp.w   #-1,d0
-    beq.s   .VL
-    JMP     ERROR0
+    bne     ERROR0
 
 .VL:
     move.w  (a7)+,d0
