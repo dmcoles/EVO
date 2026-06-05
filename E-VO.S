@@ -10152,7 +10152,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.9.4-beta',160
-			DC.B	'(08.05.2026)'
+			DC.B	'(05.06.2026)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -20440,7 +20440,7 @@ XIT:	MOVEM.L	(A7)+,D3-D5/A1
 
       EXP:				; GENERATES EXP FOR D0
     BCLR    #2,ICODEPREFS+3
-    MOVE.L  #0,LASTVAR
+    MOVE.L  #0,LASTVARADDR
 	MOVEM.L	D3-D5/A1/A2,-(A7)	; WE DO HEAVY RECURSION
 	MOVE.L THE_OFFSET,-(A7)
 	CLR.W THE_OFFSET
@@ -20470,8 +20470,6 @@ XIT:	MOVEM.L	(A7)+,D3-D5/A1
     MOVEQ   #1,D5           ; variable
     ADDQ.L  #2,A3
       EXPLOOP:
-    JSR checkandalso2
-      EXPLOOP2:
 	MOVE.W	(A3)+,D0
 	BEQ	EXPOUT
 	CMP.W	#COM,D0
@@ -20629,7 +20627,8 @@ mklab:
 checkandalso2:
   TST.W andalsoflag
   BEQ.S noandalso
-  CLR.W andalsoflag
+  TST.W NOTEXP
+  BNE.S noandalso
   PEA EXPANDALSO
   CMPA.L	(A7)+,A1
   BEQ.S isandor4
@@ -20639,13 +20638,13 @@ checkandalso2:
 noandalso:
   RTS
 isandor4:
-
+	CLR.W andalsoflag
 	MOVEM.L	A0/D0,-(A7)
-  MOVE.L	LABLOG,D0
+	MOVE.L	LABLOG,D0
 	JSR	ADDLABEL
-  CLR.L LABLOG
+	CLR.L LABLOG
 	MOVEM.L	(A7)+,A0/D0 
-  RTS
+	RTS
 
 LAST_CMD_ADR DC.L 0
 lastmoveshort DC.L 0
@@ -22661,21 +22660,54 @@ FEXPR:
 
 ;; ExpSwap
 EXPSWAP:
-    MOVE.L  LASTVAR,-(A7)
-    TST.L   LASTVAR
+    MOVE.L  LASTVARADDR,-(A7)
+    TST.L   LASTVARADDR
     BEQ     ERROR0
+    
+    ;offset from lastvaraddr should be exactly 6 eg no additional tokens after
+    ;the variable eg a[0] or a.prop, just variable and :=: tokens
+    MOVE.L  A3,D0
+    SUB.L   LASTVARADDR,D0
+    CMP.L   #6,d0
+    BEQ     .varok1
+ 
+    MOVE.L  LASTVARADDR,A3
+    ADDQ.L  #4,A3
+    BRA     ERROR0
+
+.varok1
+    
 	MOVE.L LABLOG,-(A7)
     BSR SD0
     BSR EXP
     MOVEQ   #1,D4
     BSR RD0
     MOVE.L (A7)+,LABLOG
-    TST.L   LASTVAR
+    TST.L   LASTVARADDR
     BEQ     ERROR0
-    MOVe.L  LASTVAR,A0
+
+
+    ;offset from lastvaraddr should be exactly 4 eg no additional tokens after
+    ;the variable eg a[0] or a.prop, just the variable token and nothing else
+
+    MOVE.L  A3,A0
+    SUB.L   LASTVARADDR,A0
+    CMP.L   #4,A0
+    BEQ     .varok2
+
+    MOVE.L  LASTVARADDR,A3
+    ADDQ.L  #4,A3
+    BRA     ERROR0
+
+.varok2
+    MOVE.L  LASTVARADDR,A0
+    MOVE.L  (A0),A0
     MOVE.W  .1(PC),(A4)+
     BSR GVA0D0_9
+
+    ;get old var
     MOVe.L  (A7)+,a0
+    MOVE.L  (A0),A0
     MOVE.W  .2(PC),(A4)+
     BSR GVA0D0_9
 
@@ -23425,8 +23457,9 @@ EXPIMMLIST:
     bra     .F
 
 .F4:cmp.w   #-1,d0
-    bne     ERROR0
-
+    BEQ     .VL
+    JMP     ERROR0
+    
 .VL:
     move.w  (a7)+,d0
     cmp.w   #-1,d0
@@ -23942,8 +23975,8 @@ EXPFPVAL:
   BNE.S .ok
 	JMP	ERROR0
 .ok
+  	MOVE.L  A3,LASTVARADDR
 	MOVE.L	(A3)+,A0
-    MOVE.L  A0,LASTVAR
 	BTST	#3,5(A0)
 	BEQ.S	.1
 	MOVE.W	HANDLEFLAG,D0
@@ -24029,6 +24062,7 @@ EXPEXTBACK:
 	BEQ.S	.8
 	MOVE.W	D0,(A4)+
 .8:	MOVEQ	#1,D5
+	JSR checkandalso2
 	TST.W	ECPU
 	BEQ.S	.TE
 	PEA	EXPMUL2(PC)
@@ -24319,7 +24353,7 @@ EXPEXT:
     OR.W    D0,(A4)+
     BRA EXPLOOP
 
-LASTVAR:
+LASTVARADDR:
     DC.L    0
 
       EXPVARCMP:
@@ -24924,7 +24958,7 @@ EXPFPCMP:
 	ADD.L	(A7)+,D0
 	MOVE.L	D0,A1
 	JSR checkandalso1
-	BRA	EXPLOOP2
+	BRA	EXPLOOP
 .lERROR0: JMP ERROR0
       EXPEQ:
 	SEQ	D0			; =	11
