@@ -10152,7 +10152,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.9.4-beta',160
-			DC.B	'(05.06.2026)'
+			DC.B	'(03.07.2026)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -35425,6 +35425,8 @@ CHUNK		= 128*1024		; must be multiple of 256, >1024
 	MOVEA.L	D1,A2
 	MOVE.W	-4(A2),D0
 	MOVEQ	#16,D1			; 8 (LIST) + 4 (LINK) + 4 (LENGTHS)
+	ADD.L D0,D0
+	ADD.L D0,D0
 	ADD.L	D1,D0
 	MOVEQ	#0,D1
 	MOVE.L	D0,D2			; SLEN
@@ -37350,6 +37352,8 @@ E_STRCLONENIL:
 	MOVEA.L	D1,A2
 	MOVE.W	-4(A2),D0
 	MOVEQ	#16,D1			; 8 (LIST) + 4 (LINK) + 4 (LENGTHS)
+	ADD.L D0,D0
+	ADD.L D0,D0
 	ADD.L	D1,D0
 	MOVEQ	#0,D1
 	MOVE.L	D0,D2			; SLEN
