@@ -1,10 +1,10 @@
 @database "e.guide"
 @node MAIN
-@title "Amiga E-VO v3.9.3"
+@title "Amiga E-VO v3.9.4"
 
                 +-----------------------------------------------+
                 |                                               |
-                |               Amiga E-VO v3.9.3               |
+                |               Amiga E-VO v3.9.4               |
                 |          Compiler for The E Language          |
                 |     Originally By Wouter van Oortmerssen      |
                 |           Updates By GRIO 1999-2003           |
@@ -354,6 +354,14 @@ NOTE: in most cases you won't need to use any of these options
 @title "0D. changes / history / new features"
 0D. changes / history / new features
 ------------------------------------
+ New in E-VO  (3.9.4)
+   - swap operator (:=:) did not work correctly with global variables
+   - fix issue with ANDALSO or ELSE processing producing corrupt code
+   - CharInstri was not preserving D4-D6 causing issues with OPTI enabled
+   - checks for arrays and object properties being used with :=:
+     (raise syntax error as these are currently not supported)
+   - ListClone did not allocate the correct amount of memory for the new List
+   
  New in E-VO  (3.9.3)
    - fix address error on 68000 due to mis-aligned data causing crash on loading
    - fix code generation error when compiling eg arr[i].bb+=10
@@ -1964,12 +1972,15 @@ do sth. like:
 
   a.b.c:=:d.e.f
 
-then ONLY POINTERS are set with expression values! In this case it is equal
-to sth. like:
+this will give a syntax error. Arrays are also not supported so you can't
+do this;
 
-  t:=a
-  a:=d.e.f
-  d:=t.b.c
+  a[0]:=:a[1]
+
+or
+
+  a[]:=:b[]
+
 
 @endnode
 @node CH_4O

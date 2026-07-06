@@ -1,4 +1,4 @@
-E-VO v3.9.2 :
+E-VO v3.9.4 :
 
 Formerly : GRIO Amiga E Compiler !
 
@@ -661,6 +661,14 @@ Development restarted as E-VO by Darren Coles
        [0,NOT(0),1]
    - O2M: improved hunk handling
 
+   (3.9.4)
+   - swap operator (:=:) did not work correctly with global variables
+   - fix issue with ANDALSO or ELSE processing producing corrupt code
+   - CharInstri was not preserving D4-D6 causing issues with OPTI enabled
+   - checks for arrays and object properties being used with :=:
+     (raise syntax error as these are currently not supported)
+   - ListClone did not allocate the correct amount of memory for the new List
+   
 DATE HISTORY:
     3.3b    20.11.1999 -> 12.12.1999
     3.3c    15.12.1999 -> 12.01.2000
@@ -681,3 +689,4 @@ DATE HISTORY:
     3.9.1   16.09.2025 -> 04.10.2025
     3.9.2   22.12.2025 -> 02.02.2026
     3.9.3   03.02.2026 -> 06.03.2026
+    3.9.4   08.05.2026 -> 06.07.2026
