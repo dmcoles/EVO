@@ -3898,6 +3898,55 @@ PROC test_immlistnot()
   assert(a[1]=-1,'immediate list NOT element 1',_SRCLINE_)
   assert(a[2]=1,'immediate list NOT element 2',_SRCLINE_)
 ENDPROC
+
+PROC s() IS 0
+
+PROC test_extranot()
+  DEF a=0
+  DEF r
+  DEF b[10]:ARRAY OF CHAR
+
+  r:= NOT 0
+  assert(r = -1,'NOT 0',_SRCLINE_)
+  
+  r:= NOT a
+  assert(r = -1,'NOT a',_SRCLINE_)
+
+  r:= NOT StrCmp('a','a')
+  assert(r = 0,'NOT StrCmp',_SRCLINE_)
+  
+  r:= NOT s()
+  assert(r = -1,'NOT s()',_SRCLINE_)
+
+  r:= NOT IF a THEN 0 ELSE -1
+  assert(r = 0,'NOT IF...',_SRCLINE_)
+
+  r:= NOT OFFSETOF point.y
+  assert(r = -5,'NOT OFFSETOF...',_SRCLINE_)
+
+  r:= NOT SIZEOF point
+  assert(r = -9,'NOT SIZEOF...',_SRCLINE_)
+
+  r:= NOT ARRAYSIZE b
+  assert(r = -11,'NOT ARRAYSIZE...',_SRCLINE_)
+
+  r:= NOT {a} 
+  assert(Eor(r,-1)={a},'NOT {a}',_SRCLINE_)
+
+  r:= NOT Delay(10)
+  assert(r=-1,'NOT Delay..',_SRCLINE_)
+
+  Forbid()
+  MOVE.L #$55555555,D0
+  r:= NOT Permit()
+  assert(r=$AAAAAAAA,'NOT Permit..',_SRCLINE_)
+
+  a:={s}
+  WARN FALSE
+  r:= NOT a()
+  WARN TRUE
+  assert(r=-1,'NOT a()',_SRCLINE_)
+ENDPROC
   
 /* Main test runner */
 PROC main() HANDLE
@@ -4279,6 +4328,7 @@ PROC main() HANDLE
   test_miscstuff12()
   test_newobj()
   test_immlistnot()
+  test_extranot()
   EXCEPT DO
   /* Print summary */
   WriteF('\n=================================================\n')
