@@ -3389,6 +3389,7 @@ filehandle:=Fopen(name,mode)
 
 Opens a file and returns the file handle. All open file handles are stored
 in a global list that will automatically be closed when you program ends.
+Valid options for the mode parameter are as per the dos.library Open() call.
 
         Fclose(filehandle) 
  
