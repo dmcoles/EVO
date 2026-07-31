@@ -116,7 +116,7 @@ from offset IOFF
  108    CONTN            109    BYTE             110    WORD
  111    LEGACYINT        112    PSIZEOF          113    ARRAYSIZE
  114    STACKCHECK       115    GETA4            116    MODSETUP
- 117    MODCLEANUP
+ 117    MODCLEANUP       118    CANPOOL          119    ESTRCONST
  
 |       = significant for idents
 
@@ -166,6 +166,7 @@ those with "" are actual addressable variables
 -136    rnd seed
 -140    exception handler
 -144    stackcheck handler
+-148    line number tracker for nilcheck
 
 +---------------------------------------------------------------+
 |       structures                                              |
@@ -624,10 +625,10 @@ bit     flags           opt             clear   set
 1
 2                                               inline IF or ? operator in use
 3
-4
+4       ESTRCONST                               string constants will be created as ESTRINGS
 5       LEGACY                                  produce old module version format 10 and no new system constants
 6       LEGACYINT                               Int() function not sign extended
-7       LONGPTRINDEX
+7       
 
 
 
