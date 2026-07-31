@@ -9546,24 +9546,26 @@ BYTEOFF:	DC.L	0
 
   even
       WARNINGTAB:
-	DC.L	.1,.2,.3,.4,.5,.6,.7,.8,.9,.10,.11,.12
+	DC.L	.1,.2,.3,.4,.5,.6,.7,.8,.9,.10,.11,.12,.13,.14,.15,.16
 
 
 .1:	DC.B	"A4/A5 used in inline assembly. (line %d)",0
 .2:	DC.B	"keep an eye on your stacksize",0
 .3:	DC.B	"stack is definitely too small",0
 .4:	DC.B	'suspicious use of "=" in void expression(s). (line %d)',0
-.5:	DC.B	"module changed OPT settings",0
+.5:	DC.B	"module changed OPT OSVERSION settings",0
 .6:	DC.B	"variable used as function (line %d)",0
 .7:	DC.B	"code outside PROCs (line %d)",0
 .8:	DC.B	"REG var used after EXCEPT (line %d)",0
 .9:	DC.B	"member used as method (line %d)",0
 .10: DC.B "OPT PURE recommended for libraries",0
 .11: DC.B	"assign of ARRAY/STRING/LIST variable. (line %d)",0
-.12:	DC.B	" ",0
+.12:	DC.B	"module changed OPT CPU settings",0
+.13:	DC.B	"module changed OPT FPU settings",0
+.14:	DC.B	"module changed OPT ESTRCONST settings",0
+.15:	DC.B	"module changed OPT LEGACYINT settings",0
+.16:	DC.B	" ",0
 	EVEN
-
-
 warnsenabled: DC.L -1
 
 PORTCOOKIE	= $DEADBEEF
@@ -26752,7 +26754,8 @@ ADDGLOBMAP:
 	CMP.W	OSVERSION,D0		; HIGHEST OSVERSION
 	BLE.S	.1
 	MOVE.W	D0,OSVERSION
-	MOVEQ #-1,D7
+	MAKEWARN 5      ;changed osversion
+  
 .1:	MOVE.L	(A0)+,D0
 	AND.L	#%110000000000000000000,D0	; ONLY INTERESTING BITS
 	OR.L	D0,CODEPREFS
@@ -26765,14 +26768,14 @@ ADDGLOBMAP:
 	CMP.W	EFPU,D0
 	BLE.S	.3
 	MOVE.W	D0,EFPU
-	MOVEQ #-1,D7
+	MAKEWARN 13      ;changed fpu settings
 .3:	MOVE.W	(A0)+,D0		; OR BITSET
 	MOVE.W	ASMCPU,D3
 	OR.W	D3,D0
 	CMP.W	D3,D0
 	BEQ.S	.4
 	MOVE.W	D0,ASMCPU
-	MOVEQ #-1,D7
+  MOVEQ #-1,D7
 .4:	MOVE.W	(A0)+,D0		; VERSION
 	BNE.S	.5
 	ADDQ.W	#1,D0			; 0 is version 1
@@ -26788,21 +26791,21 @@ ADDGLOBMAP:
 	BEQ.S .noestrconsts
 	BSET    #4,ICODEPREFS+3     ;estring constants
 	BNE.S .noestrconsts     ;was already set
-	MOVEQ #-1,D7
+	MAKEWARN 14      ;changed estring constant settings
 
 .noestrconsts
 	BTST #6,D0              ;legacyint
 	BEQ.S .nolegacyint
 	BSET    #6,ICODEPREFS+3     ;legacyint
 	BNE.S .nolegacyint     ;was already set
-	MOVEQ #-1,D7
+	MAKEWARN 15      ;changed legacyint settings
 
 .nolegacyint
 .noicodeprefs
-	TST.L D7
-	BEQ DOMODULEJOB
+  TST.W D7
+  BEQ DOMODULEJOB
 
-	MAKEWARN 5
+	MAKEWARN 12      ;changed cpu settings 
 	BRA	DOMODULEJOB
 
 .iERROR51: JMP ERROR51
