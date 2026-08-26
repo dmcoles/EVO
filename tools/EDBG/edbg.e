@@ -67,7 +67,7 @@ PROC main() HANDLE
   DEF options:PTR TO LONG,rdargs=NIL,exename[100]:STRING,e:PTR TO dbgwin,
       pubconname[200]:STRING, i
   DEF gb:PTR TO gfxbase
-  title:='EDBG v3.9.0, The E Debugger! © 1994-1997 Wouter (and Jason), 2021-2025 Darren Coles'
+  title:='EDBG v3.10.0, The E Debugger! © 1994-1997 Wouter (and Jason), 2021-2026 Darren Coles'
   reqtitle:='EDBG'
   vars:=newlist()
   options:=[0,0,0,0]
@@ -1032,6 +1032,9 @@ PROC step(fr:PTR TO stackframe)
       IF first_step_done=FALSE
         unreachablea7:=fr+100000			-> imp! beyond main stack level
         first_step_done:=TRUE
+  WriteF('about to execute rexx startup\n')
+  Delay(300)
+        
         exe_arexx_cmd('.edbg-startup.rexx')
         IF doabout THEN Delay(6) BUT about()
       ENDIF
@@ -1521,6 +1524,7 @@ PROC exe_arexx_cmd(cmdstr) HANDLE	-> either a file name or a quoted string
   rmsg.action:=RXCOMM
   PutMsg(rexx,rmsg)
   Permit(); forb:=FALSE
+  Delay(300)
   WriteF('executing script \s\n',cmdstr)
   WHILE noreply
     Wait(-1)
@@ -1542,4 +1546,4 @@ EXCEPT DO
   IF rexxsysbase THEN CloseLibrary(rexxsysbase)
 ENDPROC
 
-CHAR 0, '$VER: EDBG 3.9.0', 0, 0
+CHAR 0, '$VER: EDBG 3.10.0', 0, 0

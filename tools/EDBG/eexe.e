@@ -234,10 +234,9 @@ ENDPROC
 PROC grabvarinfo(src:PTR TO e_source,o:PTR TO INT,end)
   DEF pr=NIL:PTR TO e_proc,job,v,cnt,i,line
   WHILE (job:=o[]++) BUT o<end
-    //WriteF('job=\d\n',job)
+//    WriteF('job=\d\n',job)
     SELECT 9 OF job
       CASE 0
-      
       CASE 1,2
         o,v:=collectvars(o,pr.vars,src,pr,job)
         pr.vars:=v
@@ -312,7 +311,8 @@ ENDPROC
 PROC collectvars(o:PTR TO INT,varlist,src:PTR TO e_source,pr:PTR TO e_proc,job)
   DEF line,v:PTR TO e_var,num,a,b,s:PTR TO CHAR,st,t
   v:=varlist
-  line:=o[]++
+  line:=Word(o)
+  o++
   s:=src.sourcelines[line]
   num:=o[]++
   IF pr THEN IF pr.firstvarline<0 THEN pr.firstvarline:=line
@@ -469,7 +469,7 @@ PROC load(name,trap1,trap2) OF e_exe
               o++
               src.numlines:=dbl:=dbl-(a:=o[]++)-3
             ENDIF
-          
+         
             src.sourcename:=String(StrLen(o))
             StrCopy(src.sourcename,o)
             o:=a*4+o
@@ -518,7 +518,7 @@ PROC load(name,trap1,trap2) OF e_exe
   ENDWHILE
 
   IF d=FALSE THEN Raise("eexd")
-  
+ 
   CacheClearU()					-> important!
 ENDPROC
 

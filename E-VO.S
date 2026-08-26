@@ -2,26 +2,26 @@
 ; ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' ;
 ;	Amiga E Compiler/Assembler/Linker by $#%! in 1991/92/93/94/95	;
 ;									;
-;	GRIO Amiga E Compiler/Assembler/Linker by grio	 		;
+;	GRIO Amiga E Compiler/Assembler/Linker by grio			;
 ;			in 1999-2003					;
-;	E-VO Amiga E Compiler/Assembler/Linker by Darren Coles	 		;
-;     in 2021-2026
+;	E-VO Amiga E Compiler/Assembler/Linker by Darren Coles			;
+;		in 2021-2026
 ; ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, ;
 
 ;debug=1
 
-  ifd __VASM
+	ifd __VASM
 	output EVO
-    ifd debug
-      opt o-,w+
-    else
-      opt d-,s-,o-,w+
-    endif
+	ifd debug
+		opt o-,w+
+	else
+		opt d-,s-,o-,w+
+	endif
 	machine mc68000
-  else
-  SETCPU 000
-  endif
-  
+	else
+	SETCPU 000
+	endif
+	
 CPU040:	MACRO
 	ifd __VASM
 	machine mc68040
@@ -41,7 +41,7 @@ CPU000:	MACRO
 	ifd __VASM
 	machine mc68000
 	else
-  SETCPU 000
+	SETCPU 000
 	endif
 	ENDM
 
@@ -126,38 +126,38 @@ IDENT	= 5
 STR	= 6
 
 
-ONEXT	= -4				; M O  OBJECT STRUCTURE OFFSETS
+ONEXT	= -4				; M O	OBJECT STRUCTURE OFFSETS
 OOFF	= 0				; M
-ODEL	= 0				;   O
+ODEL	= 0				;	O
 OFLAGS	= 2				; M O
 OSIZE	= 4				; M O
 OID	= 6				; M O
 OASCII	= 8				; M O
-PTRREPCOUNT=12              ; M
-DIMDATA=14              ; M
+PTRREPCOUNT=12				; M
+DIMDATA=14				; M
 OPTRTYPE= 18				; M
-OMEMB	= 12				;   O
-OMETHOD	= 16				;   O
-OSUPER	= 20				;   O
-ODCODE	= 24				;   O
-OACC	= 28				;   O
-ODELOFF	= 32				;   O
-ODESTR	= 34				;   O
+OMEMB	= 12				;	O
+OMETHOD	= 16				;	O
+OSUPER	= 20				;	O
+ODCODE	= 24				;	O
+OACC	= 28				;	O
+ODELOFF	= 32				;	O
+ODESTR	= 34				;	O
 
 ;*-*
 ;; Hunklist structure
-H_NEXT  =   -4      ; ptr to hunk
-H_ADDR  =   0       ; where it begins..
-H_TYPE  =   4       ; its type
-H_END   =   8       ; where it ends..
-H_PREV  =   12      ; previous
-H_RELO  =   16      ; relocs (longs!)
-H_SYM   =   20      ; symbols for hunk
-H_SEND  =   24      ;end of symbols
+H_NEXT	=	-4		; ptr to hunk
+H_ADDR	=	0		; where it begins..
+H_TYPE	=	4		; its type
+H_END	=	8		; where it ends..
+H_PREV	=	12		; previous
+H_RELO	=	16		; relocs (longs!)
+H_SYM	=	20		; symbols for hunk
+H_SEND	=	24		;end of symbols
 
-R_NEXT  =   -4      ; reloc next
-R_HUNK  =   0       ; destination hunk number
-R_OFF   =   2       ; source hunk offset
+R_NEXT	=	-4		; reloc next
+R_HUNK	=	0		; destination hunk number
+R_OFF	=	2		; source hunk offset
 ;*-*
 
 
@@ -193,24 +193,24 @@ CFLAGS	= 12
 
 LEGACYVERSION = 10
 CURVERSION	= 16			; IMPORTANT, MODULE VERSION!!
-MAXVERSION = 16             ; max supported module version
+MAXVERSION = 16				; max supported module version
 
 SKIPMARK	= $8000
 
 MAXREGVARS	= 5			; NOTE: DEPENDS ALSO ON EFUNCS!
-MAXMULTRET	= 3			; NOTE: DEPENDS ON  REGVARS!
+MAXMULTRET	= 3			; NOTE: DEPENDS ON	REGVARS!
 MIDHEAVY	= $100
 VARFLAGS=5
-VARLINENO = 12      ; OFFSET AT WHICH LINENUM IN ID
+VARLINENO = 12		; OFFSET AT WHICH LINENUM IN ID
 VARHEAVY	= 14			; OFFSET AT WHICH HEAVYINFOS IN ID
 VAR_NAME = 18
 VAR_DEFVALUE=22
 VAR_IMPORTDATA=26
-VAR_PTRREPCOUNT = 30  ; OFFSET USED TO COUNT PTR TO PTR
+VAR_PTRREPCOUNT = 30	; OFFSET USED TO COUNT PTR TO PTR
 VAR_DIMDATA = 32			; OFFSET RESERVED FOR ARRAY MULTI-DIMENSION DATA
-  IFD	IDENT_COOKIE
+	IFD	IDENT_COOKIE
 VAR_IDCOOKIE=36
-  ENDIF
+	ENDIF
 
 MINSTACKSIZE	= 10000			; van gen. code
 MINSTACKSIZELIB	= 1500
@@ -319,7 +319,7 @@ OPCHAR:	MACRO
 	
 
 ; OFF_1:IMM, IDENT_2:Ax, OFFSET_3:EA.W, THRASH_4:Dx
-             ; NOT A3-A5!!
+			 ; NOT A3-A5!!
 
 ;GENVAR:	MACRO		
 ;	MOVE.B	4(\2),\4
@@ -371,7 +371,7 @@ GENVARL: MACRO
 	 AND.W	#%1111000000111111,-2(A4)
 	 LSL.W	#8,\4
 	 LSL.W	#1,\4
-  ENDIF
+	ENDIF
 	OR.W	\4,-2(A4)
 .GV3:					; END
 	ENDM
@@ -400,7 +400,7 @@ LSAVER:	MACRO				; \1=SAVEMASK.EA.W, \2=RETURN_SMASK.DX
 	BITM	5,\2
 	BITM	4,\2
 	BITM	3,\2
-	EOR.B \2,\2   ;CLR.B	\2
+	EOR.B \2,\2		;CLR.B	\2
 	MOVE.W	\2,(A4)+
 	MOVE.W	SMASK,\2
 .NOSR:					; \2 IS HERE ATLEAST BOOL
@@ -417,7 +417,7 @@ SAVER:	MACRO				; \1=SAVEMASK.EA.W, \2=RETURN_SMASK.DX
 	BITM	5,\2
 	BITM	4,\2
 	BITM	3,\2
-	EOR.B   \2,\2   ;CLR.B	\2
+	EOR.B	\2,\2	;CLR.B	\2
 	MOVE.W	\2,(A4)+
 	MOVE.W	SMASK,\2
 .NOSR:					; \2 IS HERE ATLEAST BOOL
@@ -505,24 +505,24 @@ INTERN:	MACRO				; \1=ERRNUM
 	ENDM
 
 DODEBUG: MACRO
-    MOVEM.L D0-A6,-(a7)
-    MOVE.L \1,dval
-    MOVE.L \2,dval+4
-    LEA dtext,A0
-    LEA dval,A1
-	JSR	WRITEFORMAT   
-    MOVEM.L (A7)+,D0-A6
-    ENDM
+	MOVEM.L D0-A6,-(a7)
+	MOVE.L \1,dval
+	MOVE.L \2,dval+4
+	LEA dtext,A0
+	LEA dval,A1
+	JSR	WRITEFORMAT		
+	MOVEM.L (A7)+,D0-A6
+	ENDM
 
 DODEBUG2: MACRO
-    MOVEM.L D0-A6,-(a7)
-    MOVE.L \1,dval
-    MOVE.L \2,dval+4
-    LEA dtext2,A0
-    LEA dval,A1
-	JSR	WRITEFORMAT   
-    MOVEM.L (A7)+,D0-A6
-    ENDM
+	MOVEM.L D0-A6,-(a7)
+	MOVE.L \1,dval
+	MOVE.L \2,dval+4
+	LEA dtext2,A0
+	LEA dval,A1
+	JSR	WRITEFORMAT		
+	MOVEM.L (A7)+,D0-A6
+	ENDM
 
 PUTOUT:	MACRO
 	MOVEM.L	D0-D7/A0-A6,-(A7)
@@ -551,7 +551,7 @@ MAC_NARGS	= 12
 MAC_FLAGS	= 14	; .B
 
 
-      PREPCHARS:
+		PREPCHARS:
 	DC.B	0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0	; 0
 	DC.B	0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0	; 16
 	DC.B	0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0	; 32
@@ -591,24 +591,24 @@ PREPIDR:MACRO				; \1=TAB.AX, \2=CHAR.L.DX
 	CMP.B	#4,0(\1,\2.L)
 	ENDM
 
-      PREP:				; JUST READ A "#"
+		PREP:				; JUST READ A "#"
 	ADDQ.L	#1,A0
-	CMP.B   #"d",D6
-	BNE.S   .1
-	CMP.B   #"e",(A0)
-	BEQ.S   PREPDEF
-	CMP.B   #"a",(A0)
-	BEQ     PREPDATE
-	BRA     iERROR63
+	CMP.B	#"d",D6
+	BNE.S	.1
+	CMP.B	#"e",(A0)
+	BEQ.S	PREPDEF
+	CMP.B	#"a",(A0)
+	BEQ		PREPDATE
+	BRA		iERROR63
 .1:	CMP.B	#"i",D6
 	BEQ.W	PREPIF
 	CMP.B #"u",D6
 	BEQ.W PREPUNDEF
 	CMP.B	#"e",D6
 	BNE iERROR63
-	CMP.B   #"l",(A0)
-	BEQ.W   PREPELSE
-	CMP.B   #"n",(A0)
+	CMP.B	#"l",(A0)
+	BEQ.W	PREPELSE
+	CMP.B	#"n",(A0)
 	BEQ.W	PREPENDIF
 
 PREPDATE: JSR DOPREPDATE
@@ -622,11 +622,11 @@ PREPDATE: JSR DOPREPDATE
 ; ";" not allowed
 
 
-      PREPDEF:				; #define
+		PREPDEF:				; #define
 	LEA	.1(PC),A6
 	BSR	PREPKCMP
 	BSR	PREPWHITE
- 	BSR.W DEFMAIN
+	BSR.W DEFMAIN
 	BRA.W PREPDONE
 
 .1:	DC.B	"efine",0
@@ -665,12 +665,12 @@ DEFMAIN:
 	ADDQ.L	#4,A5
 	MOVE.L	A4,(A5)+		; MAC_NAME
 	CLR.L	(A5)+			; MAC_BODY
-	CLR.L	(A5)            ; MAC_NARGS + MAC_FLAGS
-	TST.B   EVODEFFLAG
-	BEQ.S     .noevodef
+	CLR.L	(A5)			; MAC_NARGS + MAC_FLAGS
+	TST.B	EVODEFFLAG
+	BEQ.S		.noevodef
 	BSET	#0,MAC_FLAGS(A6)	; set imported flag for EVO_x_x_x defs
 .noevodef:
-    ADDQ.L  #4,A5   
+	ADDQ.L	#4,A5	
 	CLR.L	(A5)+			; MAC_NARGS + MAC_FLAGS
 	DONEH	A5			; -->FOR MACBODY NEEDS HEAVY
 	;BSR	PREPWHITE
@@ -693,7 +693,7 @@ DEFMAIN:
 	BPL.S	.ALC
 	SUBQ.L	#1,A0
 	CLR.B	(A2)+
-	; 				; -->CHECK FOR DOUBLARGS?
+	;				; -->CHECK FOR DOUBLARGS?
 	BSR	PREPWHITE
 	CMP.B	#",",(A0)+
 	BEQ.S	.AL
@@ -708,7 +708,7 @@ DEFMAIN:
 	PREPTA	A6			; A6=TAB
 	MOVEQ	#0,D0
 .MBL:	MOVE.B	(A0)+,D0
- 	BEQ.W .MBX
+	BEQ.W .MBX
 	CMP.B	#10,D0
 	BEQ.W	.MBX
 	CMP.B	#"\",D0
@@ -765,7 +765,7 @@ DEFMAIN:
 	BEQ.S	.3
 	CLR.B	(A3)+
 .3:	DONEH	A3
-  RTS
+	RTS
 
 .BSL:	CMP.B	#10,(A0)
 	BNE.S	.CH
@@ -785,7 +785,7 @@ DEFMAIN:
 	MOVEQ	#" ",D0
 	BRA.S	.CH
 
-      PREPIF:				; #ifdef, #ifndef
+		PREPIF:				; #ifdef, #ifndef
 	MOVE.W #1,PREPCODE
 	CMP.B	#"f",(A0)+
 	BNE	iERROR63
@@ -860,11 +860,11 @@ DEFMAIN:
 	BNE.S .notelse
 	ADDQ.L	#1,A0
 	MOVE.B	(A0),D0
-	CMP.W #"i",D0   ;#elifdef or #elifndef
+	CMP.W #"i",D0	;#elifdef or #elifndef
 	BNE.S .testelse
 	ADDQ.L	#1,A0
 	MOVE.B	(A0),D0
-	CMP.W #"f",D0   ;#elifdef or #elifndef
+	CMP.W #"f",D0	;#elifdef or #elifndef
 	BNE iERROR63
 	CMP.W #3,PREPCODE
 	BEQ.W iERROR65
@@ -891,7 +891,7 @@ DEFMAIN:
 	BNE.S .ER
 	BRA.S PREPDONE
 
-.notelse  
+.notelse	
 	TST.L	D6
 	BEQ.S	.EX
 	MOVE.L A4,A0
@@ -908,10 +908,10 @@ DEFMAIN:
 
 PREPMAXSTACK	= 10
 
-      PREPIFSTACK:	DS.B	PREPMAXSTACK
-      PREPSTACKSIZE:	DC.W	0
+		PREPIFSTACK:	DS.B	PREPMAXSTACK
+		PREPSTACKSIZE:	DC.W	0
 
-      PREPENDIF:			; #endif
+		PREPENDIF:			; #endif
 	MOVE.W #2,PREPCODE
 	LEA	.1(PC),A6
 	BSR	PREPKCMP
@@ -925,7 +925,7 @@ PREPMAXSTACK	= 10
 	BRA.S	PREPDONE
 .1:	DC.B	"ndif",0,0
 
-      PREPDONE:
+		PREPDONE:
 	MOVE.L	STARTINTERIM,A6
 	SUBQ.L	#2,A6
 	CMPA.L	A6,A1
@@ -934,17 +934,17 @@ PREPMAXSTACK	= 10
 	BRA	PARSELOOP
 .1:	INTERN	105
 
-      PREPUNDEF:				; #undef
+		PREPUNDEF:				; #undef
 	LEA	.1(PC),A6
 	BSR	PREPKCMP
 	BSR	PREPWHITE
- 	BSR.S UNDEFMAIN
+	BSR.S UNDEFMAIN
 	BRA.S PREPDONE
 
 .1:	DC.B	"ndef",0
 
 	EVEN
-	  UNDEFMAIN:
+		UNDEFMAIN:
 	MOVE.L	WORK,A2
 	MOVE.L	A2,D6			; A2,D6=IDENT
 	PREPTA	A6			; A6=TAB
@@ -970,12 +970,12 @@ PREPMAXSTACK	= 10
 	MOVE.L	D1,A6
 	MOVE.L	D6,A4
 	BSR.W	PREPFINDMACRO
- 	TST.L	D0
+	TST.L	D0
 	BEQ.S	.1
 	BSR.W UNDEFMACRO
 .1:	RTS
 
-	  PREPELSE:				; #else/#elifdef/#elifndef 
+		PREPELSE:				; #else/#elifdef/#elifndef 
 	ADDQ.L	#1,A0
 	MOVE.B (A0),D0
 	CMP.B #"i",D0
@@ -983,7 +983,7 @@ PREPMAXSTACK	= 10
 
 	CMP.W #3,PREPCODE
 	BEQ.W iERROR65
-  
+	
 	MOVE.W #3,PREPCODE
 
 	LEA	.1(PC),A6
@@ -1013,7 +1013,7 @@ PREPMAXSTACK	= 10
 	BNE.S .endif
 	ADDQ.L	#1,A0
 	MOVE.B	(A0),D0
-	CMP.W #"i",D0     ; #elifdef/#elifndef
+	CMP.W #"i",D0		; #elifdef/#elifndef
 	BEQ.S .elif
 
 	CMP.W	#"s",D0
@@ -1044,12 +1044,12 @@ PREPMAXSTACK	= 10
 .1: DC.B 'se',0
 .2: DC.B 'def',0
 
-  EVEN
-  
-	  PREPELIF:				; #elifdef/#elifndef  
+	EVEN
+	
+		PREPELIF:				; #elifdef/#elifndef	
 	CMP.W #3,PREPCODE
 	BEQ iERROR65
-  
+	
 	MOVE.W #1,PREPCODE
 
 	ADDQ.L	#1,A0
@@ -1103,7 +1103,7 @@ PREPMAXSTACK	= 10
 
 	ADDQ.L	#1,A0
 	MOVE.B	(A0),D0
-	CMP.W #"i",D0     ; #elifdef/#elifndef
+	CMP.W #"i",D0		; #elifdef/#elifndef
 	BEQ.S .ER
 
 	CMP.W	#"s",D0
@@ -1122,7 +1122,7 @@ PREPMAXSTACK	= 10
 	SUBQ.L #1,A0
 	SUBQ.L	#1,D6
 	MOVE.W #2,PREPCODE
-  
+	
 .ER:	MOVEQ	#10,D0
 .ERL:	CMP.B	(A0)+,D0
 	BNE.S	.ERL
@@ -1130,23 +1130,23 @@ PREPMAXSTACK	= 10
 .EX:	BRA.W	PREPENDIF
 .4:	BRA.W	PREPDONE
 .1: DC.B 'def',0
- 	EVEN
-      UNDEFMACRO:
+	EVEN
+		UNDEFMACRO:
 	MOVE.L D1,A5
 .3:
 	MOVE.L	(A5),D0
 	BEQ.S	.1
-  
+	
 	CMP.L A6,D0
 	BEQ.S .2
 
 	MOVE.L D0,A5
 	BRA.S .3
 
-.2:  MOVE.L (A6),(A5)
-.1:	RTS      
-      
-      PREPKCMP:
+.2:	 MOVE.L (A6),(A5)
+.1:	RTS		 
+		
+		PREPKCMP:
 	CMPM.B	(A6)+,(A0)+
 	BEQ.S	PREPKCMP
 	TST.B	-(A6)
@@ -1160,7 +1160,7 @@ PREPMAXSTACK	= 10
 	BNE	iERROR63
 .1:	RTS
 
-      PREPWHITE:				; TR ONLY D0.B
+		PREPWHITE:				; TR ONLY D0.B
 	MOVE.B	(A0),D0
 	CMP.B	#" ",D0
 	BEQ.S	.1
@@ -1170,7 +1170,7 @@ PREPMAXSTACK	= 10
 	BRA.S	PREPWHITE
 .2:	RTS
 
-      PREPFINDMACRO:				; A6=LISTADR,A4=STR, OUT=D0/A6
+		PREPFINDMACRO:				; A6=LISTADR,A4=STR, OUT=D0/A6
 	MOVEM.L	A0/A1,-(A7)
 .L:	MOVE.L	(A6),D0
 	BEQ.S	.1
@@ -1184,7 +1184,7 @@ PREPMAXSTACK	= 10
 .1:	MOVEM.L	(A7)+,A0/A1
 	RTS
 
-      PREPEXPAND:
+		PREPEXPAND:
 	MOVE.L	WORK,A4
 	MOVE.L	HASHVAL(PC),D0
 	LSL.L	#2,D0
@@ -1238,15 +1238,15 @@ PREPETOTAL	= PREPESTACKSIZE+PREPEBUFSIZE
 ; EACH STACKFRAME: LASTA0,LASTEBUF
 
 
-      PREPCODE: DC.W 0
-      PREPESTACK:	DC.L	0
-      PREPESTACKUSE:	DC.W	0
+		PREPCODE: DC.W 0
+		PREPESTACK:	DC.L	0
+		PREPESTACKUSE:	DC.W	0
 
-      PREPETEMP:	DC.L	0
-      PREPEBUFEND:	DC.L	0
-      PREPEBUFUSE:	DC.L	0
+		PREPETEMP:	DC.L	0
+		PREPEBUFEND:	DC.L	0
+		PREPEBUFUSE:	DC.L	0
 
-      PREPMACRODONE:
+		PREPMACRODONE:
 	MOVE.W	PREPESTACKUSE(PC),D0
 	BEQ	E
 	BMI	E
@@ -1257,7 +1257,7 @@ PREPETOTAL	= PREPESTACKSIZE+PREPEBUFSIZE
 	MOVE.W	D0,PREPESTACKUSE
 	BRA	PARSELOOP
 
-      PREPWRITEMACROLINE:
+		PREPWRITEMACROLINE:
 	MOVE.L	PREPMACROBODYERR(PC),D7
 	BEQ.S	.1
 	PEA	PREPMACROMSG(PC)
@@ -1294,11 +1294,11 @@ PREPETOTAL	= PREPESTACKSIZE+PREPEBUFSIZE
 	;ADDQ.L	#1,A0			; why?
 	BRA.S	.L2
 
-      PREPMACROMSG:	DC.B	'MACRO: ',0		; 7
+		PREPMACROMSG:	DC.B	'MACRO: ',0		; 7
 
-      PREPMACROBODYERR:	DC.L	0
+		PREPMACROBODYERR:	DC.L	0
 
-      PREPMACROERROR:
+		PREPMACROERROR:
 	TST.W	PREPESTACKUSE
 	BEQ.S	.1
 	MOVE.L	A0,PREPMACROBODYERR
@@ -1315,7 +1315,7 @@ PREPETOTAL	= PREPESTACKSIZE+PREPEBUFSIZE
 ; PROBLEMS: <CONS>
 
 
-      PREPMULTIEXPAND:
+		PREPMULTIEXPAND:
 	MOVE.L	PREPEBUFUSE(PC),A5	; A5=CURBUF
 	MOVE.W	D7,D0
 	LSL.W	#3,D0
@@ -1431,7 +1431,7 @@ PREPETOTAL	= PREPESTACKSIZE+PREPEBUFSIZE
 
 
 
-      PREPSAVEMACROS:
+		PREPSAVEMACROS:
 	BTST	#6,CODEPREFS+2
 	BEQ.S	.XX
 	MOVE.L	CSTACK_BUF,D5
@@ -1491,7 +1491,7 @@ PREPETOTAL	= PREPESTACKSIZE+PREPEBUFSIZE
 
 ; A0=MOD,D1=MMODE(SKIP IF 2)
 
-      PREPREADMACROS:
+		PREPREADMACROS:
 .L:	MOVE.W	(A0)+,D0
 	BEQ.S	.X
 	MOVE.L	A0,D7			; MAC_NAME
@@ -1543,13 +1543,13 @@ BTAB:	DC.L	CURINTERIM,.1,REALLOCATABLE
 .6:	DC.B	"label",0
 	EVEN
 
-      DEBUGDATA:
+		DEBUGDATA:
 	DC.L	OLIST
 	DC.L	PROCLIST
 	DC.L	IDENTHASH
-      DBUGV:
+		DBUGV:
 	DC.L	0
-      DBUGA:
+		DBUGA:
 	DC.L	0
 	DC.L	MODINFOLIST
 	DC.L	CODELIST
@@ -1557,7 +1557,7 @@ BTAB:	DC.L	CURINTERIM,.1,REALLOCATABLE
 	DC.L	HEAP
 	DC.L	MACROHASH
 
-      INITBUFFERS:
+		INITBUFFERS:
 	MOVE.W	#1,CURSPOT
 	MOVE.L	EBUFSIZE,D0
 	LSR.L	#1,D0			; *1.5+50k
@@ -1577,48 +1577,48 @@ BTAB:	DC.L	CURINTERIM,.1,REALLOCATABLE
 	MOVE.L	4.W,A6
 	JSR	-198(A6)		; ALLOCMEM
 	MOVE.L	D0,CSTACK_BUF
-	MOVE.L  D0,ERBUF
-	MOVE.L  D0,ESTACK
+	MOVE.L	D0,ERBUF
+	MOVE.L	D0,ESTACK
 	BEQ iERROR74
 	RTS
 
 
-      REALLOC1:
+		REALLOC1:
 	MOVEM.L	D6/A5,-(A7)
 	LEA	CURINTERIM,A5
 	BSR	REALLOC
 	MOVEM.L	(A7)+,D6/A5
 	RTS
 
-      ALLOC3:
+		ALLOC3:
 	MOVEM.L	D6/A5,-(A7)
 	LEA	CURACODE,A5
 	BSR	REALLOC
 	MOVEM.L	(A7)+,D6/A5
 	RTS
 
-      CHECK3:
+		CHECK3:
 	MOVEM.L	D6/A5,-(A7)
 	LEA	CURACODE,A5
 	BSR	CHECK
 	MOVEM.L	(A7)+,D6/A5
 	RTS
 
-      ALLOC5:
+		ALLOC5:
 	MOVEM.L	D6/A5,-(A7)
 	LEA	HEAP,A5
 	BSR	REALLOC
 	MOVEM.L	(A7)+,D6/A5
 	RTS
 
-      EXPAND5:
+		EXPAND5:
 	MOVEM.L	D6/A5,-(A7)
 	LEA	HEAP,A5
 	BSR	EXPANDBUF
 	MOVEM.L	(A7)+,D6/A5
 	RTS
 
-      REALLOC6:
+		REALLOC6:
 	MOVEM.L	D6/A5,-(A7)
 	LEA	LABM,A5
 	BSR	REALLOC
@@ -1627,7 +1627,7 @@ BTAB:	DC.L	CURINTERIM,.1,REALLOCATABLE
 
 COOKIE	= $BE
 
-      NEW:
+		NEW:
 	MOVEM.L	D1/D2/A0/A1/A6,-(A7)	; SIZE-->D0-->ADDR
 	ADDQ.L	#8,D0
 	ADDQ.L	#1,D0
@@ -1647,9 +1647,9 @@ COOKIE	= $BE
 .EXX:	MOVEM.L	(A7)+,D1/D2/A0/A1/A6
 	RTS
 
-      MEMLIST:	DC.L	0
+		MEMLIST:	DC.L	0
 
-      DISPOSE:				; ADR-->D0
+		DISPOSE:				; ADR-->D0
 	MOVEM.L	D0/D1/A0/A1/A2/A6,-(A7)
 	TST.L	D0
 	BEQ.S	.1
@@ -1669,7 +1669,7 @@ COOKIE	= $BE
 	RTS
 
 
-      REALLOC:				; CALLED FROM EVERYWHERE
+		REALLOC:				; CALLED FROM EVERYWHERE
 	MOVE.L	8(A5),D6
 	ADD.L	12(A5),D6
 	SUB.L	16(A5),D6
@@ -1708,7 +1708,7 @@ COOKIE	= $BE
 .ER:	MOVEM.L	(A7)+,D0/D1/D7/A0/A1/A6
 	BRA	iERROR38
 	
-      CHECK:
+		CHECK:
 	MOVE.L	8(A5),D6
 	ADD.L	12(A5),D6
 	SUB.L	16(A5),D6
@@ -1716,7 +1716,7 @@ COOKIE	= $BE
 	BMI	iERROR37
 	RTS
 
-      EXPANDBUF:
+		EXPANDBUF:
 	MOVE.L	8(A5),D6
 	ADD.L	12(A5),D6
 	SUB.L	16(A5),D6
@@ -1735,11 +1735,11 @@ COOKIE	= $BE
 	MOVE.L	(A7)+,D0
 	RTS
 
-      FREECSTACK:
+		FREECSTACK:
 	MOVE.L	CSTACK_BUF,A1
 	MOVE.L A1,D0
 	BEQ.S .X
-  
+	
 	MOVE.L	CSTACK_SIZE,D0
 	ADDQ.L #2,D0
 	MOVE.L	4.W,A6
@@ -1747,7 +1747,7 @@ COOKIE	= $BE
 	CLR.L CSTACK_BUF
 .X: RTS
 
-      FREEBUFFERS:
+		FREEBUFFERS:
 	MOVE.L	4.W,A6
 	MOVE.L	MEMLIST(PC),A2
 .L:	MOVE.L	A2,D0
@@ -1760,7 +1760,7 @@ COOKIE	= $BE
 .X:	CLR.L	MEMLIST
 	RTS
 
-      CHECKCOOKIES:
+		CHECKCOOKIES:
 	MOVE.L	4.W,A6
 	MOVE.L	MEMLIST(PC),A2
 .L:	MOVE.L	A2,D0
@@ -1780,13 +1780,13 @@ COOKIE	= $BE
 .R:
 	RTS
 
-      SWAPVALUES:
+		SWAPVALUES:
 	JSR	FIXOBJTYPES
 	MOVE.L	ACODE,CURACODE
 	BSR	GETLINEBUF
 	RTS
 
-      GETLINEBUF:
+		GETLINEBUF:
 	BTST	#5,CODEPREFS+1
 	BEQ.S	.1
 	MOVEQ	#0,D0
@@ -1822,7 +1822,7 @@ COOKIE	= $BE
 	MOVE.L	A0,LINEBUFCURSTART	; IF THE SAME LATER, DONT SAVE
 .1:	RTS
 
-      ADDLINEDBG:
+		ADDLINEDBG:
 	TST.W	PROCF
 	BEQ.W	.1
 	MOVEM.L	D0/A0,-(A7)
@@ -1860,21 +1860,21 @@ GENLINENO:
 	LEA .5(PC),A0
 	MOVE.L	(A0)+,(A4)+		; generate code to set line number 
 	MOVE.L	(A0)+,(A4)+
-	MOVE.L	D0,-6(A4)	  	; set line number value
+	MOVE.L	D0,-6(A4)		; set line number value
 	MOVE.W D0,LASTDEBUGLINE
 .4:
 	MOVEM.L (A7)+,D0/A0
 	RTS
-.5  MOVE.L #0,-148(A4)
+.5	MOVE.L #0,-148(A4)
 
-      LASTDEBUGLINE: DC.W 0
-      DEBUGLIST:	DC.L	0
-      MAXLINENUM:	DC.W	0
-      LINEBUF:		DC.L	0
-      LINEBUFCUR:	DC.L	0
-      LINEBUFCURSTART:	DC.L	0
+		LASTDEBUGLINE: DC.W 0
+		DEBUGLIST:	DC.L	0
+		MAXLINENUM:	DC.W	0
+		LINEBUF:		DC.L	0
+		LINEBUFCUR:	DC.L	0
+		LINEBUFCURSTART:	DC.L	0
 
-      SETVARS:
+		SETVARS:
 	MOVE.L	#BRACKETSBUF,CURBRACK
 	MOVE.L	#HASHBUFS,A0		; CLEAR HASHTABLES
 	MOVE.L	#ENDHASHBUFS,D0
@@ -1896,7 +1896,7 @@ GENLINENO:
 	MOVE.L	D0,SELFHASHADR
 	RTS
 
-      STDDIR:
+		STDDIR:
 	DC.B	'emodules:',0
 
 
@@ -1909,7 +1909,7 @@ GENLINENO:
 	LEXMESSY:	DC.B	'lexical analysing ...',10
 	ENDLEXMESSY:	EVEN
 
-      TOKENIZE:
+		TOKENIZE:
 	MOVE.W	#-1,EXPORTFLAG
 	BTST	#6,CODEPREFS+2		; SEE IF EXPORT ALL
 	BNE.S	.EA
@@ -1939,7 +1939,7 @@ GENLINENO:
 	CLR.W	LINENUM2
 	RTS
 
-      PARSELINE:
+		PARSELINE:
 	BSR	REALLOC1
 	BSR	WRITELINENUM
 	MOVE.W	#-1,CURINS
@@ -1955,13 +1955,13 @@ GENLINENO:
 	MOVE.W	D0,XF
 	MOVEQ	#0,D4
 	MOVE.W	#-1,CURINS
-      PARSELOOP:
+		PARSELOOP:
 	MOVE.W CHECKPARSEWARN,D7
 	MOVE.W #-1,CHECKPARSEWARN
 	CMP.W #1,D7
 	BEQ.S PARSELOOPW
 	CLR.W CHECKPARSEWARN
-      PARSELOOPW:
+		PARSELOOPW:
 	MOVEQ	#0,D7
 	MOVE.B	(A0)+,D7		; CURRENT CHAR
 	MOVE.B	(A0),D6			; NEXT CHAR; WE CAN LOOK AHEAD ! YEAH !
@@ -1970,7 +1970,7 @@ GENLINENO:
 	MOVE.L	JUMPTAB(PC,D5.W),A4
 	JMP	(A4)
 
-      JUMPTAB:
+		JUMPTAB:
 	DC.L	PREPMACRODONE,E,E,E,E,E,E,E			; 0
 	DC.L	E,PARSELOOP,PARSEENDLINE,E,PARSELOOP,PARSECR,E,E	; 8
 	DC.L	E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E			; 16
@@ -1998,15 +1998,15 @@ GENLINENO:
 	DC.L	E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E			; 224
 	DC.L	E,E,E,E,E,E,E,E,E,E,E,E,E,E,E,E			; 240
 
-      E:
+		E:
 	BRA iERROR3
-      	
-      PARSECOMMA:			; ,
+		
+		PARSECOMMA:			; ,
 	MOVEQ	#COM,D4
 	MOVE.W	D4,(A1)+
 	BRA	PARSELOOP
 
-      PARSEPLUS:			; + ++
+		PARSEPLUS:			; + ++
 	CMP.B	#'+',D6
 	BEQ.S	.1
 	MOVEQ	#7,D4
@@ -2017,7 +2017,7 @@ GENLINENO:
 	MOVE.W	D4,(A1)+
 	BRA	PARSELOOP
 
-      PARSEMINUS:			; - --
+		PARSEMINUS:			; - --
 	CMP.B	#'-',D6
 	BEQ.S	.1
 	CMP.B	#'>',D6
@@ -2035,14 +2035,14 @@ GENLINENO:
 	SUBQ.L	#1,A0
 	BRA	PARSELOOP
 
-      PARSEPROD:			; /
+		PARSEPROD:			; /
 	CMP.B	#'/',D6
 	BEQ	iERROR27
 	MOVEQ	#9,D4
 	MOVE.W	D4,(A1)+
 	BRA	PARSELOOP
 
-      PARSEDIV:				; *
+		PARSEDIV:				; *
 	CMP.B	#'*',D6
 	BEQ.S	COMMENT
 	CMP.B	#'/',D6			; // comment
@@ -2056,7 +2056,7 @@ GENLINENO:
 	MOVE.W	D4,(A1)+
 	BRA	PARSELOOP
 
-      COMMENT:				; /* */
+		COMMENT:				; /* */
 	MOVE.L	A0,A3			; BACKUP
 	MOVE.L	LINENUM,A4		; BACKUPTOO
 	MOVEQ	#1,D0			; COUNTING COMMENTS
@@ -2103,64 +2103,64 @@ GENLINENO:
 	BEQ.S	.ER
 	BRA.S	.B
 
-      PARSEQUOTE:			; `
+		PARSEQUOTE:			; `
 	MOVEQ	#36,D4
 	MOVE.W	D4,(A1)+
 	BRA	PARSELOOP
 
-      PARSEEQ:				; =		
-      	CMPI.B	#">",D6			; => 
-      	BEQ.S	.1
+		PARSEEQ:				; =		
+		CMPI.B	#">",D6			; => 
+		BEQ.S	.1
 	CMPI.B	#"<",D6			; =<
 	BNE.S	.3
 	MOVEQ	#15,D4
 	BRA.S	.4
 .1:	MOVEQ	#14,D4
 .4:	ADDQ.L	#1,A0
-   	BRA.S	.2   	
-.3:   	MOVEQ	#11,D4			; =
+	BRA.S	.2		
+.3:		MOVEQ	#11,D4			; =
 .2:	MOVE.W	D4,(A1)+
 	BRA	PARSELOOP
 
-      PARSEPTR:				; ^
+		PARSEPTR:				; ^
 	MOVEQ	#32,D4
 	MOVE.W	D4,(A1)+
 	BRA	PARSELOOP
 
-      PARSEFLT:				; !
-    BTST    #5,CODEPREFS
-    BNE     .1
-    BSET    #3,CODEPREFS+1
+		PARSEFLT:				; !
+	BTST	#5,CODEPREFS
+	BNE		.1
+	BSET	#3,CODEPREFS+1
 .1: MOVEQ	#37,D4
 	MOVE.W	D4,(A1)+
 	BRA	PARSELOOP
 
-      PARSECONS:			; |
-      	CMP.W	#"|",D6			; || = OR
-      	BNE.S	.1
-      	MOVE.W	#IOFF+30,D4
-      	ADDQ.L	#1,A0
-      	BRA.S	.2
+		PARSECONS:			; |
+		CMP.W	#"|",D6			; || = OR
+		BNE.S	.1
+		MOVE.W	#IOFF+30,D4
+		ADDQ.L	#1,A0
+		BRA.S	.2
 .1:	MOVEQ	#46,D4
 .2:	MOVE.W	D4,(A1)+
 	BRA	PARSELOOP
 
-      PARSEAND:				; & = AND
-      	MOVE.W	#IOFF+29,D4
-      	MOVE.W	D4,(A1)+
-      	BRA	PARSELOOP
+		PARSEAND:				; & = AND
+		MOVE.W	#IOFF+29,D4
+		MOVE.W	D4,(A1)+
+		BRA	PARSELOOP
 
-      PARSENOT:				; ~
+		PARSENOT:				; ~
 	MOVE.W	#IOFF+71,D4
 	MOVE.W	D4,(A1)+
 	BRA	PARSELOOP
 
-      PARSECURL1:			; {
+		PARSECURL1:			; {
 	MOVEQ	#23,D4
 	MOVE.W	D4,(A1)+
 	BRA	PARSELOOP
 
-      PARSECURL2:			; }
+		PARSECURL2:			; }
 	MOVEQ	#0,D4
 	MOVE.W	#24,(A1)+
 	BRA	PARSELOOP
@@ -2168,7 +2168,7 @@ GENLINENO:
 MAXBRACK	= 50
 CURBRACK:	DC.L	0
 
-      PARSESQ1:				; [
+		PARSESQ1:				; [
 	MOVEQ	#29,D4
 	MOVE.W	D4,(A1)+
 	MOVE.L	CURBRACK(PC),A3		; 29:INT, otherbrackoff:LONG
@@ -2181,7 +2181,7 @@ CURBRACK:	DC.L	0
 	CLR.L	(A1)+
 	BRA	PARSELOOP
 
-      PARSESQ2:				; ]
+		PARSESQ2:				; ]
 	MOVEQ	#30,D4
 	MOVE.W	D4,(A1)+
 	MOVE.L	CURBRACK(PC),A3
@@ -2194,7 +2194,7 @@ CURBRACK:	DC.L	0
 	MOVE.L	D0,(A4)			; OFFSET = {otherbrackoff} .. ob+2
 	BRA	PARSELOOP
 
-      PARSEPERIOD:			; . .l .b .w
+		PARSEPERIOD:			; . .l .b .w
 	MOVEQ	#26,D4
 	CMP.B	#'W',D6
 	BNE.S	.1
@@ -2218,7 +2218,7 @@ CURBRACK:	DC.L	0
 	BMI.S	.6
 	BRA	PARSEVALUE
 
-      PARSEBIGGER:			; >  >=  >>
+		PARSEBIGGER:			; >	 >=	 >>
 	CMP.B	#'=',D6
 	BEQ.S	.1
 	CMP.B	#'>',D6
@@ -2233,7 +2233,7 @@ CURBRACK:	DC.L	0
 .2:	MOVEQ	#48,D4			; >>
 	BRA.S	.3
 
-      PARSESMALLER:
+		PARSESMALLER:
 	CMP.B	#'=',D6
 	BEQ.S	.1
 	CMP.B	#'>',D6
@@ -2260,11 +2260,11 @@ CURBRACK:	DC.L	0
 .4:	MOVEQ	#47,D4			; <<
 	BRA.S	.5
 
-      PARSEBECOMES:
+		PARSEBECOMES:
 	CMP.B	#'=',D6
 	BNE.S	.1
-    CMP.B   #':',1(A0)      ; :=:
-    BEQ     .3
+	CMP.B	#':',1(A0)		; :=:
+	BEQ		.3
 
 	MOVEQ	#ASSGN,D4		; :=
 	MOVE.W	D4,(A1)+
@@ -2279,11 +2279,11 @@ CURBRACK:	DC.L	0
 .2:	MOVEQ	#19,D4			; :
 	MOVE.W	D4,(A1)+
 	BRA	PARSELOOP
-.3: MOVEQ   #50,D4          ; :=:
-    MOVE.W  D4,(A1)+
-    ADDq.L  #2,A0
-    BRA     PARSELOOP
-      PARSEOPEN:			; (
+.3: MOVEQ	#50,D4			; :=:
+	MOVE.W	D4,(A1)+
+	ADDq.L	#2,A0
+	BRA		PARSELOOP
+		PARSEOPEN:			; (
 	MOVEQ	#17,D4
 	MOVE.W	D4,(A1)+
 	TST.W	PARSEBRACKET
@@ -2293,7 +2293,7 @@ CURBRACK:	DC.L	0
 .1:	ADDQ.W	#1,PARSEBRACKET
 	BRA	PARSELOOP
 
-      PARSECLOSE:			; )
+		PARSECLOSE:			; )
 	MOVEQ	#18,D4
 	MOVE.W	D4,(A1)+
 	TST.W	PARSEBRACKET
@@ -2302,19 +2302,19 @@ CURBRACK:	DC.L	0
 	BRA	PARSELOOP
 
 ;; "?"
-      QMARK:
-    MOVEQ   #49,D4
-    MOVE.W  D4,(A1)+
-    BRA     PARSELOOP
+		QMARK:
+	MOVEQ	#49,D4
+	MOVE.W	D4,(A1)+
+	BRA		PARSELOOP
 
-      PARSEBRACKET:	DC.W	0
-      BRAKPOS:		DC.L	0
-      BRAKLINE:		DC.L	0
-      SQBRAKPOS:	DC.L	0
-      SQBRAKLINE:	DC.L	0
+		PARSEBRACKET:	DC.W	0
+		BRAKPOS:		DC.L	0
+		BRAKLINE:		DC.L	0
+		SQBRAKPOS:	DC.L	0
+		SQBRAKLINE:	DC.L	0
 
-      ID:
-      PARSEIDENT:
+		ID:
+		PARSEIDENT:
 	MOVEQ	#0,D5			; D5=HASHVALUE!!!
 .3:	HASHC	D5,D7
 	MOVE.B	D7,(A2)+		; IDENT
@@ -2349,20 +2349,20 @@ CURBRACK:	DC.L	0
 	BEQ.S	.2
 	BRA.S	.4
 
-      HASHVAL:	DC.L	0		; IDENT HASHVALUE!!!
-      INPROC:	DC.W	0
-      REGSTOP:	DC.W	0
+		HASHVAL:	DC.L	0		; IDENT HASHVALUE!!!
+		INPROC:	DC.W	0
+		REGSTOP:	DC.W	0
 
-      PARSELOWER:
+		PARSELOWER:
 	BSR	PARSEGETIDENTNR
 	MOVE.L	WORK,A2
 	BRA	PARSELOOP
 
-      PARSEUPPER:
+		PARSEUPPER:
 	MOVE.B	1(A2),D0		; INS or Ins or Rx
 	CMP.B	#58,D0
 	BMI	ASM_PARSEREG
-      REGBACK:
+		REGBACK:
 	CMP.B	#'a',D0
 	BPL	PARSEUPLOW
 	CMP.B	#'.',(A0)
@@ -2377,17 +2377,17 @@ CURBRACK:	DC.L	0
 	JMP	(A3)
 
 .TAB:
-	DC.L	.P,   .EP,  .DONE,.DONE,.DONE,.DONE	; 0 PROC .. WHILE
+	DC.L	.P,		.EP,	.DONE,.DONE,.DONE,.DONE	; 0 PROC .. WHILE
 	DC.L	.DONE,.DONE,.DONE,.DONE,.DONE,.DONE	; 6 ENDW .. DEFAULT
-	DC.L	.DONE,.DONE,.DONE,.DONE,.D,   .DONE	; 12 ENDS .. LOCAL
+	DC.L	.DONE,.DONE,.DONE,.DONE,.D,		.DONE	; 12 ENDS .. LOCAL
 	DC.L	.DONE,.DONE,.DONE,.DONE,.DONE,.DONE	; 18 ELSE .. INC
-	DC.L	.DONE,.DONE,.DONE,.DONE,.DONE,.DONE	; 24 DEC  .. AND
-	DC.L	.DONE,.RESO,.RESO,.RESO,.DONE,.DONE	; 30 OR   .. EXIT
+	DC.L	.DONE,.DONE,.DONE,.DONE,.DONE,.DONE	; 24 DEC	.. AND
+	DC.L	.DONE,.RESO,.RESO,.RESO,.DONE,.DONE	; 30 OR		.. EXIT
 	DC.L	.DONE,.DONE,.DONE,.DONE,.DONE,.DONE	; 36 LARG .. ARRAY
 	DC.L	.DONE,.DONE,.DONE,.DONE,.DONE,.DONE	; 42 STRI .. LIST
 	DC.L	.OBJ, .EOBJ,.DONE,.EP2, .DONE,.RESO	; 48 OBJE .. ENUM
-	DC.L	.RESO,.DONE,.HAND,.DONE,.RSE, .EXP	; 54 SET  .. EXPORT
-	DC.L	.REG, .DONE,.EP,  .DONE,.DONE,.DONE	; 60 REG  .. PRIVATE
+	DC.L	.RESO,.DONE,.HAND,.DONE,.RSE, .EXP	; 54 SET	.. EXPORT
+	DC.L	.REG, .DONE,.EP,	.DONE,.DONE,.DONE	; 60 REG	.. PRIVATE
 	DC.L	.DONE,.DONE,.RESO,.DONE,.DONE,.DONE	; 66 SUPE .. NOT
 	DC.L	.DONE,.DONE,.SAFE,.DONE,.DONE,.DONE	; 72 UNIO .. EXTRA
 	DC.L	.DONE,.DONE,.DONE,.DONE,.DONE,.DONE ; 78 CONT .. FATAL
@@ -2398,7 +2398,7 @@ CURBRACK:	DC.L	0
 	DC.L	.DONE,.DONE,.DONE,.DONE,.DONE,.DONE ; 108 CONTN .. ARRAYSIZE
 	DC.L	.STACKCHECK,.GETA4,.DONE,.DONE,.DONE,.DONE ; 114 STACKCHECK .. ESTRCONST
 
-.WARN:  
+.WARN:	
 	MOVE.W	#1,CHECKPARSEWARN
 	BRA	.DONE
 
@@ -2447,7 +2447,7 @@ CURBRACK:	DC.L	0
 
 .P:	MOVE.W	#-1,.DEFF
 	MOVE.W	#-1,INPROC
-    MOVE.W  #-1,SCOPE
+	MOVE.W	#-1,SCOPE
 	CLR.W	REGSTOP
 	BSR.S	.BRAK
 	BRA.S	.RESO
@@ -2456,8 +2456,8 @@ CURBRACK:	DC.L	0
 	CMP.W	#31,D4
 	BNE.S	.DONE
 .EP:	CLR.W	INPROC
-    CLR.W   SCOPE
-    JSR ENDPROCDEF
+	CLR.W	SCOPE
+	JSR ENDPROCDEF
 	BSR.S	.BRAK
 
 	BRA	.DONE
@@ -2506,9 +2506,9 @@ CURBRACK:	DC.L	0
 	MOVE.L	6(A3),A6		; A6=PROC
 ;	TST.W	REGSTOP
 ;	BNE	iERROR56			; NO :REG IN HANDLE
-	ADDQ.B	#1,3(A6)  ;numregvars
+	ADDQ.B	#1,3(A6)	;numregvars
 	MOVE.B	3(A6),D7
-	AND.B #15,D7    ;mask out flags
+	AND.B #15,D7	;mask out flags
 	EXT.W	D7
 	CMP.W	#MAXREGVARS+1,D7
 	BPL	iERROR56			; TOOMUCH regvars per proc
@@ -2587,14 +2587,14 @@ POSTDFACTOR:	DC.W	0
 POSTACTION:	DC.W	0		; WHAT TO DO AT EOLN
 					; 0=NOP, 1=FAC, 2=SEL
 HEAVYTABLE:	
-		DC.B "ssie mdmdS  EmU"	; 0 PROC-UNTIL
-		DC.B "          DmdD "	; 15 JUMP-AND
-		DC.B "               "	; 30 OR-PTR
-		DC.B "            s  "	; 45 OF-EXPORT
-		DC.B "               "	; 60 REG...SAFE
-		DC.B "               "  ; 75 RUNBG..UTILLIB
-		DC.B "            Um "  ; 90 INLINE..ELSEWHILEN
-		DC.B "i              "  ; 105 IFN..ESTRCONST
+		DC.B "ssie mdmdS	EmU"	; 0 PROC-UNTIL
+		DC.B "			DmdD "	; 15 JUMP-AND
+		DC.B "				 "	; 30 OR-PTR
+		DC.B "				s	 "	; 45 OF-EXPORT
+		DC.B "				 "	; 60 REG...SAFE
+		DC.B "				 "	; 75 RUNBG..UTILLIB
+		DC.B "				Um "	; 90 INLINE..ELSEWHILEN
+		DC.B "i				 "	; 105 IFN..ESTRCONST
 		EVEN
 
 ; s	h:=8		start of PROC etc.
@@ -2607,7 +2607,7 @@ HEAVYTABLE:
 ; D	lf		do/then
 ; U	lf;h:=h/8	until
 
-      POSTOPTI:
+		POSTOPTI:
 
 ;	MOVE.W	LINENUM,D0		; WRITE TABLE AT $1E0000
 ;	MOVE.L	#$1E0000,A2
@@ -2641,11 +2641,11 @@ HEAVYTABLE:
 .EC:	CLR.L	POSTMFACTOR
 .E:	RTS
 
-      CONSTD:		DC.L	0
-      OBJECTD:		DC.L	0
-      BUSYRAISE:	DC.W	0
+		CONSTD:		DC.L	0
+		OBJECTD:		DC.L	0
+		BUSYRAISE:	DC.W	0
 
-      PARSECONSTASM:
+		PARSECONSTASM:
 	MOVE.L	WORK,A2
 	BSR	ASM_PARSE
 	MOVE.L	WORK,A2
@@ -2665,8 +2665,8 @@ HEAVYTABLE:
 	BNE.S	.1
 	TST.B	-1(A4)
 	BNE.S	.2
- 	btst    #1,CFLAGS(a3)
- 	bne     .STRING  
+	btst	#1,CFLAGS(a3)
+	bne		.STRING	 
 	MOVEQ	#VALUE,D4
 	MOVE.W	D4,(A1)+
 	MOVE.L	CVAL(A3),(A1)+
@@ -2678,29 +2678,29 @@ HEAVYTABLE:
 	BRA	PARSELOOP
 
 .STRING:
-    moveq   #STR,D4
-    move.w  d4,(a1)+
-    move.l  CVAL(a3),a2
-    move.w  (a2),d0
-    move.w  d0,(a1)+
-    addq.l  #1,d0
-    btst    #0,d0
-    beq     .T0
-    addq.l  #1,d0
-.T0:lsr.w   #1,d0
-    move.w  d0,(a1)+
-    move.w  (a2)+,d0
-    bra.s .T2
+	moveq	#STR,D4
+	move.w	d4,(a1)+
+	move.l	CVAL(a3),a2
+	move.w	(a2),d0
+	move.w	d0,(a1)+
+	addq.l	#1,d0
+	btst	#0,d0
+	beq		.T0
+	addq.l	#1,d0
+.T0:lsr.w	#1,d0
+	move.w	d0,(a1)+
+	move.w	(a2)+,d0
+	bra.s .T2
 .TST:
-    move.b  (a2)+,(a1)+
-.T2:dbf     d0,.TST
-    clr.b   (a1)+
-    move.l  a1,d0
-    btst    #0,d0
-    beq     .T1
-    clr.b   (a1)+
-.T1:MOVE.L  WORK,A2
-    BRA PARSELOOP
+	move.b	(a2)+,(a1)+
+.T2:dbf		d0,.TST
+	clr.b	(a1)+
+	move.l	a1,d0
+	btst	#0,d0
+	beq		.T1
+	clr.b	(a1)+
+.T1:MOVE.L	WORK,A2
+	BRA PARSELOOP
 
 .3:	TST.L	CONSTD			; MAKE NEW CONSTANT
 	BEQ.S	.ER
@@ -2725,9 +2725,9 @@ HEAVYTABLE:
 
 
 
-      XF:	DC.W	0		; 0=NO F-FUNC, -1=F
+		XF:	DC.W	0		; 0=NO F-FUNC, -1=F
 
-      PARSEUPLOW:			; Ins
+		PARSEUPLOW:			; Ins
 	LEA	EFUNCTAB,A3		; IT MIGHT BE AN E FUNCTION!
 	MOVEQ	#0,D3
 	MOVEQ	#0,D1
@@ -2754,20 +2754,20 @@ HEAVYTABLE:
 	MOVE.L 4(A3),D4
 
 	MOVEM.L D0-D1/A0,-(A7)
-  
- 	MOVEQ #0,D7
- 	TST.W ECPU
+	
+	MOVEQ #0,D7
+	TST.W ECPU
 	BEQ.S .b1
-  
- 	OR.L #1,D7
+	
+	OR.L #1,D7
 
 .b1 CMP.W	#37,OSVERSION
 	BMI.S	.b2
 
 	OR.L #2,D7
 
-.b2 BTST #6,ICODEPREFS+3        ;LEGACYINT MODE
-    BEQ  .b3
+.b2 BTST #6,ICODEPREFS+3		;LEGACYINT MODE
+	BEQ	 .b3
 
 	OR.L #4,D7
 
@@ -2776,31 +2776,31 @@ HEAVYTABLE:
 	LEA PATCHFUNCLIST,A0
 .patch:
 	MOVE.L (A0)+,D0
-  BEQ.S .8      ;list end
-  
-  MOVE.L (A0)+,D1
-  AND.L D7,D0
-  CMP.L D0,D1
-  BNE.S .6
-  
+	BEQ.S .8		;list end
+	
+	MOVE.L (A0)+,D1
+	AND.L D7,D0
+	CMP.L D0,D1
+	BNE.S .6
+	
 	MOVE.L (A0)+,D0
 	MOVE.L (A0)+,D1
 	CMP.L D0,D4
 	BNE.S .patch
-  
-	MOVE.L  D1,D4    ;patched code start
+	
+	MOVE.L	D1,D4	 ;patched code start
 	LEA	EFUNCTAB,A3
 	MOVEQ	#1,D3
 	BRA.S .8
-  
+	
 .6: LEA 8(A0),A0
 	BRA.S .patch
-.8: 	CMP.L 4(A3),D4
+.8:		CMP.L 4(A3),D4
 	BEQ.S .nokludge
 	TST.L 4(A3)
 	BEQ.S .cantfind
  
-	ADDQ.L	#8,A3   ;search for new routine
+	ADDQ.L	#8,A3	;search for new routine
 	ADDQ.L	#8,A3
 	ADDQ.L	#1,D3
 	BRA.S .8
@@ -2808,42 +2808,42 @@ HEAVYTABLE:
 .cantfind
 	INTERN	106
 
-.nokludge:  MOVEM.L (A7)+,A0/D0-D1
+.nokludge:	MOVEM.L (A7)+,A0/D0-D1
 
 	MOVEQ	#22,D4
 	MOVE.W	D4,(A1)+
 	MOVE.L	A3,(A1)+
 
-    MOVEM.L D0/A1,-(A7)
-    
+	MOVEM.L D0/A1,-(A7)
+	
 	LEA	EFUNCFLAGSTAB,A1
 	MOVE.B	-1(A1,D3.W),D0
-	BTST    #0,D0
-    BEQ     .B0
-    BSET    #3,CODEPREFS+1             ; USE MATHIEEESINGBAS
-.B0:BTST    #1,D0
-    BEQ     .B2
-    BSET    #4,CODEPREFS+1				; use mathieeesingtrans
-.B2:BTST    #4,D0
-    BEQ     .B3
-    BSET    #3,CODEPREFS				; openfiles
-.B3:BTST    #2,D0
-    BEQ     .B4
-    BSET    #2,CODEPREFS				; pools
-.B4: BTST #6,CODEPREFS       ;inline
-    BEQ .noinline
+	BTST	#0,D0
+	BEQ		.B0
+	BSET	#3,CODEPREFS+1				 ; USE MATHIEEESINGBAS
+.B0:BTST	#1,D0
+	BEQ		.B2
+	BSET	#4,CODEPREFS+1				; use mathieeesingtrans
+.B2:BTST	#4,D0
+	BEQ		.B3
+	BSET	#3,CODEPREFS				; openfiles
+.B3:BTST	#2,D0
+	BEQ		.B4
+	BSET	#2,CODEPREFS				; pools
+.B4: BTST #6,CODEPREFS		 ;inline
+	BEQ .noinline
 
-    BTST #6,D0
+	BTST #6,D0
 	BNE .INLINE
 
 .noinline:
 	MOVE.L	#EFUNCBYTE,A3
 	MOVE.B	#-1,-1(A3,D3)
 .INLINE:
-    MOVEM.L (A7)+,D0/A1
+	MOVEM.L (A7)+,D0/A1
 	BRA.S	PLIBOUT
 
-      MIGHTBELIB:
+		MIGHTBELIB:
 	MOVE.L	WORK,A2
 	MOVE.L	ACODE,A3		; IT MIGHT BE A LIBRARY CALL!
 	MOVEQ	#0,D1			; (WE USE ASMCODE BUF !!!)
@@ -2879,15 +2879,15 @@ HEAVYTABLE:
 	MOVE.W	#38,(A1)+
 	MOVE.L	A3,(A1)+
 	BRA.S	PLIBOUT
-      PNOLIB:				; WHAT ELSE?
+		PNOLIB:				; WHAT ELSE?
 	MOVE.L	WORK,ERROROBJ
 	BRA	ERROR24
-      PLIBOUT:
+		PLIBOUT:
 	MOVE.L	WORK,A2
 	BRA	PARSELOOP
 
-      _VAL:
-      PARSEVALUE:
+		_VAL:
+		PARSEVALUE:
 .2:	MOVE.B	D7,(A2)+
 	MOVE.B	(A0)+,D7
 	CMP.B	#58,D7
@@ -2909,13 +2909,13 @@ HEAVYTABLE:
 .3:
 	MOVE.W	D4,(A1)+
 	MOVE.L	D0,(A1)+
-  
+	
 	TST.L CHECKPARSEWARN
 	BEQ PARSELOOP
 	MOVE.L D0,warnsenabled
 	BRA	PARSELOOP
 
-      PARSEHEXNUM:
+		PARSEHEXNUM:
 	MOVE.L	WORK,A2
 	MOVE.L	A2,D3
 	MOVEQ	#0,D1			; RESULT
@@ -2957,7 +2957,7 @@ HEAVYTABLE:
 	SUB.B	#7+32,D0
 	BRA.S	.3
 
-      PARSEBINNUM:
+		PARSEBINNUM:
 	MOVE.L	WORK,A2
 	MOVE.L	A2,D3
 	MOVEQ	#0,D1			; RESULT
@@ -2986,8 +2986,8 @@ HEAVYTABLE:
 	SUBQ.L	#1,A0
 	MOVE.L	WORK,A2
 	BRA	PARSELOOP
-      
-      PARSELONGSTR:
+		
+		PARSELONGSTR:
 	MOVEQ	#0,D0			; RESULT
 	MOVEQ	#24,D1			; SHIFTCOUNT
 .1:	MOVEQ	#0,D2
@@ -3016,9 +3016,9 @@ HEAVYTABLE:
 	MOVE.L	WORK,A2
 	BRA	PARSELOOP
 .SP:
-    MOVE.B  (A0)+,D2
-    CMP.B   #"x",D2
-    bEQ     .EXTHEX
+	MOVE.B	(A0)+,D2
+	CMP.B	#"x",D2
+	bEQ		.EXTHEX
 	LEA	.SPT(PC),A3
 .SPL:	ADDQ.L	#1,A3
 	CMP.B	(A3),D2
@@ -3029,57 +3029,57 @@ HEAVYTABLE:
 .SPD:	MOVE.B	-(A3),D2
 	BRA.S	.SPB
 .EXTHEX:
-    MOVEM.L D0-D1/D3-D7/A1-A6,-(A7)
-    MOVEQ   #1,D0
-    MOVEQ   #0,D1
+	MOVEM.L D0-D1/D3-D7/A1-A6,-(A7)
+	MOVEQ	#1,D0
+	MOVEQ	#0,D1
 .LP:
-    MOVE.B  (A0)+,D2
-    CMP.B   #"0",D2
-    BLT     ERROR88
-    CMP.B   #"9",D2
-    BLE     .DEC
-    CMP.B   #"A",D2
-    BLT     ERROR78
-    CMP.B   #"F",D2
-    BLE     .HEX
-    CMP.B   #"a",D2
-    BLT     ERROR78
-    CMP.B   #"f",D2
-    BGT     ERROR78
-    BCLR    #5,D2
+	MOVE.B	(A0)+,D2
+	CMP.B	#"0",D2
+	BLT		ERROR88
+	CMP.B	#"9",D2
+	BLE		.DEC
+	CMP.B	#"A",D2
+	BLT		ERROR78
+	CMP.B	#"F",D2
+	BLE		.HEX
+	CMP.B	#"a",D2
+	BLT		ERROR78
+	CMP.B	#"f",D2
+	BGT		ERROR78
+	BCLR	#5,D2
 .HEX:
-    SUB.B   #"A"+10,D2
-    AND.B   #$F,D2
-    OR.B    D2,D1
-    BRA     .X
+	SUB.B	#"A"+10,D2
+	AND.B	#$F,D2
+	OR.B	D2,D1
+	BRA		.X
 .DEC:
-    SUB.B   #"0",D2
-    AND.B   #$F,D2
-    OR.B    D2,D1
-.X: LSL.W   #4,D1
-    DBF     D0,.LP
-    MOVE.L  D1,D2
-    LSR.W   #4,D2
-    MOVEM.L (A7)+,D0-D1/D3-D7/A1-A6
-    BRA     .SPB
+	SUB.B	#"0",D2
+	AND.B	#$F,D2
+	OR.B	D2,D1
+.X: LSL.W	#4,D1
+	DBF		D0,.LP
+	MOVE.L	D1,D2
+	LSR.W	#4,D2
+	MOVEM.L (A7)+,D0-D1/D3-D7/A1-A6
+	BRA		.SPB
 
-.SPT:   DC.B    10,"n",39,"a",34,"q",27,"e",9,"t","\","\",0,"0",13,"b",11,"v"
+.SPT:	DC.B	10,"n",39,"a",34,"q",27,"e",9,"t","\","\",0,"0",13,"b",11,"v"
 ;"
 ;*-*
 ;*-*
 
-      PARSECR:
+		PARSECR:
 	CMP.B #13,-1(A0)
 	BEQ.W PARSELOOP
 
-      PARSEENDLINE:
+		PARSEENDLINE:
 	CMP.L	ENDECODE,A0
 	BPL.W	.SKIP
-  
+	
 	CMP.W	#IOFF+109,D4
 	BEQ .NSKIP
 	CMP.W	#IOFF+110,D4
- 	BEQ .NSKIP
+	BEQ .NSKIP
 
 	CMP.W	#IOFF+65,D4
 	BPL.W	.SKIP
@@ -3127,7 +3127,7 @@ HEAVYTABLE:
 .1B:	BRA	ERROR20
 .1:	MOVE.L	CONSTD(PC),D0
 	BNE	RESOLVECONST
-      RESBACK:
+		RESBACK:
 	BTST	#6,CODEPREFS+2		; SEE IF EXPORT ALL
 	BNE.S	.EA
 	CLR.W	EXPORTFLAG
@@ -3153,21 +3153,21 @@ HEAVYTABLE:
 CONTINUEKEY:
 		DC.B	1,0,1,0,1,1,0,1,0,1,1,0	; 0 PROC .. DEFA
 		DC.B	0,0,1,1,1,1,0,1,0,0,0,1	; 12 ENDS .. INC
-		DC.B	1,1,0,0,0,1,1,1,1,0,0,0	; 24 DEC  .. FULL
+		DC.B	1,1,0,0,0,1,1,1,1,0,0,0	; 24 DEC	.. FULL
 		DC.B	0,0,0,1,1,0,0,1,1,1,1,0	; 36 LARG .. LIST
 		DC.B	1,0,1,0,1,1,1,1,0,0,1,0	; 48 OBJE .. EXPO
-		DC.B	0,1,1,1,0,0,0,0,1,0,0,0	; 60 REG  .. NOT
+		DC.B	0,1,1,1,0,0,0,0,1,0,0,0	; 60 REG	.. NOT
 		DC.B	0,0,0,0,0,0,0,0,0,0,0,0 ; 72 UNIO .. FATAL
 		DC.B	0,0,0,0,0,0,0,0,0,0,0,0 ; 84 WARN .. DATA
 		DC.B	0,0,0,0,0,0,0,0,0,0,0,0 ; 96 CHIP .. EXITN
 		DC.B	0,0,0,0,0,0,0,0,0,0,0,0 ; 108 CONTN..ARRAYSIZE
-		DC.B	0,0,0,0,0,0             ; 114 STACKCHECK..
+		DC.B	0,0,0,0,0,0				; 114 STACKCHECK..
 		EVEN
 
 
 ; ALSO CALLED FROM PREP!!!
 
-      MOVEBUF:
+		MOVEBUF:
 	MOVE.L	A1,CURINTERIM		; FOR CHECK.
 	MOVE.L	A1,D7			;
 	BSR	REALLOC1		; CHECK DOUBLECHECK
@@ -3181,21 +3181,21 @@ CONTINUEKEY:
 	ADD.L	D7,CONSTD		;
 .1:	RTS
 
-      PCONTINUE:
+		PCONTINUE:
 	BSR.S	MOVEBUF
 	CMP.B	#10,-1(A0)
 	BNE	PARSELOOP
 	ADDQ.W	#1,LINENUM		; COUNT LINES
 	BRA	PARSELOOP
 
-      REBACK:
+		REBACK:
 	MOVE.W	#1,ERRWHERE
 	MOVE.L	LINENUMZ,LINENUM
 	BRA	RESBACK
 
-      STATS:	DC.W	0
+		STATS:	DC.W	0
 
-      RESOLVECONST:
+		RESOLVECONST:
 	ADDQ.W	#1,STATS
 	MOVE.W	#2,ERRWHERE		; A1 NOW
 	MOVE.L	LINENUM,D6
@@ -3228,20 +3228,20 @@ CONTINUEKEY:
 .1:	TST.W	INPROC
 	BNE	ERROR35
 	GETML	A4			; CONST
-	TST.L   ConstsList
-	BNE.S   .a
-	MOVE.L  A4,ConstsList
-.a: TST.L   ConstTemp
-	BEQ.S   .z
-	MOVE.L  ConstTemp,A6
-	MOVE.L  A4,(A6)
-.z: MOVE.L  A4,ConstTemp
-	CLR.L   (A4)
-	ADDQ.L  #8,A4
-	DONEM   A4
-	MOVE.L  A4,A6
-	GETML    A4
-	MOVE.L  A4,-(A6)
+	TST.L	ConstsList
+	BNE.S	.a
+	MOVE.L	A4,ConstsList
+.a: TST.L	ConstTemp
+	BEQ.S	.z
+	MOVE.L	ConstTemp,A6
+	MOVE.L	A4,(A6)
+.z: MOVE.L	A4,ConstTemp
+	CLR.L	(A4)
+	ADDQ.L	#8,A4
+	DONEM	A4
+	MOVE.L	A4,A6
+	GETML	 A4
+	MOVE.L	A4,-(A6)
 	CMP.W	#25,(A3)+
 	BNE	ERROR0
 	MOVE.L	(A3)+,4(A4)
@@ -3255,7 +3255,7 @@ CONTINUEKEY:
 	BSR	ASM_GRABVALUE
 	MOVE.L	(A7)+,A0
 	CMP.W	#-1,D0
- 	beq     .FLT  
+	beq		.FLT	
 .flb
 	MOVE.L	D1,(A4)+
 	CLR.W	(A4)+
@@ -3269,59 +3269,59 @@ CONTINUEKEY:
 	TST.W	-2(A3)
 	BNE	ERROR0
 	BRA	REBACK
-.FLT  cmp.w   #43,(a3)
-    BNE.S .STRING
-    MOVE.W (A3)+,D1
-    MOVE.L (A3)+,D1
-    MOVE.L #43,(a4)
-    BRA.S .flb
-.STRING:    ; string constants here 8D 
-    cmp.w   #STR,(a3)
-    bne     ERROR30
+.FLT	cmp.w		#43,(a3)
+	BNE.S .STRING
+	MOVE.W (A3)+,D1
+	MOVE.L (A3)+,D1
+	MOVE.L #43,(a4)
+	BRA.S .flb
+.STRING:	; string constants here 8D 
+	cmp.w	#STR,(a3)
+	bne		ERROR30
 
-    BTST #5,ICODEPREFS+3        ;LEGACY MODE
-    BEQ  .noleg
-  	TSTMOD
-    BNE	ERROR90
+	BTST #5,ICODEPREFS+3		;LEGACY MODE
+	BEQ	 .noleg
+	TSTMOD
+	BNE	ERROR90
 
-.noleg   
-    move.l  a4,d0
-    addq.l  #6,d0
-    move.l  d0,(a4)+
-    tst.w   EXPORTFLAG
-    sne     D0
-    and.b   #$1,d0
-    or.b    #2,d0
-    move.b  d0,(a4)+
-    clr.b   (a4)+
-    moveq   #0,d7
-    move.l  a4,a6
-    clr.w   (a4)+
+.noleg	 
+	move.l	a4,d0
+	addq.l	#6,d0
+	move.l	d0,(a4)+
+	tst.w	EXPORTFLAG
+	sne		D0
+	and.b	#$1,d0
+	or.b	#2,d0
+	move.b	d0,(a4)+
+	clr.b	(a4)+
+	moveq	#0,d7
+	move.l	a4,a6
+	clr.w	(a4)+
 .LP:
-    cmp.w   #STR,(a3)+
-    bne     ERROR30
-    moveq   #0,d0
-    moveq   #0,d1
-    move.w  (a3)+,d0
-    add.w   d0,d7
-    move.w  (a3)+,d1
-    lsl.w   #1,d1
-    sub.l   d0,d1
-    bra.s .CS
-.C: move.b  (a3)+,(a4)+
-.CS:dbf     d0,.C
-    add.l   d1,a3
-    cmp.w   #7,(a3)+
-    beq     .LP
-    subq.l  #2,a3
-    clr.b   (a4)+
-    move.l  a4,d0
-    btst    #0,d0
-    beq     .CE
-    clr.b   (a4)+
-.CE:DONEH   A4
-    move.w  d7,(a6)
-    bra     .MAINLOOP
+	cmp.w	#STR,(a3)+
+	bne		ERROR30
+	moveq	#0,d0
+	moveq	#0,d1
+	move.w	(a3)+,d0
+	add.w	d0,d7
+	move.w	(a3)+,d1
+	lsl.w	#1,d1
+	sub.l	d0,d1
+	bra.s .CS
+.C: move.b	(a3)+,(a4)+
+.CS:dbf		d0,.C
+	add.l	d1,a3
+	cmp.w	#7,(a3)+
+	beq		.LP
+	subq.l	#2,a3
+	clr.b	(a4)+
+	move.l	a4,d0
+	btst	#0,d0
+	beq		.CE
+	clr.b	(a4)+
+.CE:DONEH	A4
+	move.w	d7,(a6)
+	bra		.MAINLOOP
 
 .OPT:	CMP.W	#1,STATS		; OPT
 	BNE	ERROR35
@@ -3347,9 +3347,9 @@ CONTINUEKEY:
 	BNE.S	.4C
 	BSET	#6,CODEPREFS+2
 	BRA	.5
-.4C:	CMP.W   #256+117,D7        ; --> RTD
-  BNE.S   .4D
-	CMP.W   #0,(A3)+	
+.4C:	CMP.W	#256+117,D7			 ; --> RTD
+	BNE.S		.4D
+	CMP.W	#0,(A3)+	
 	BNE iERROR0
 	BSET	#0,CODEPREFS+1		; probs with hooks/callbacks etc.
 	BRA	.5
@@ -3367,8 +3367,8 @@ CONTINUEKEY:
 .6:	CMP.W	#IOFF+37,D7		; --> ASM
 	BNE.S	.7
 	BSET	#3,CODEPREFS+3
-	MOVE.W	#-1,SCOPE		;     NO NEED OF SCOPES ANYMORE
-	MOVE.W	#-1,MAINF		;     ... AND NO MAIN EITHER
+	MOVE.W	#-1,SCOPE		;		NO NEED OF SCOPES ANYMORE
+	MOVE.W	#-1,MAINF		;		... AND NO MAIN EITHER
 	BRA	.5
 .7:	CMP.W	#IOFF+38,D7		; --> NOWARN
 	BNE.S	.8
@@ -3416,81 +3416,81 @@ CONTINUEKEY:
 	BSET	#1,CODEPREFS
 	BRA.W	.5
 .13:	CMP.W	#IOFF+69,D7		; --> STRMERGE (OPT)
-  BNE.S .14
+	BNE.S .14
 	MOVE.B	#-1,SMERGE
 	BRA.W	.5
-.14:	CMP.W	#IOFF+82,D7   ; --> PURE (OPT)
+.14:	CMP.W	#IOFF+82,D7		; --> PURE (OPT)
 	BNE.S .15
 	MOVE.B	#-1,PURECHECK
 	BRA.W	.5
-.15:  CMP.W	#IOFF+118,D7   ; --> CANPOOL (OPT)
+.15:	CMP.W	#IOFF+118,D7	 ; --> CANPOOL (OPT)
 	BEQ .canpool
-	CMP.W	#IOFF+81,D7   ; --> POOL (OPT)
+	CMP.W	#IOFF+81,D7		; --> POOL (OPT)
 	BNE	.16
- 	CMP.W	#39,OSVERSION
+	CMP.W	#39,OSVERSION
 	BMI	ERROR77
 
 .canpool
-	BTST #5,ICODEPREFS+3        ;LEGACY MODE
-	BNE  ERROR90
+	BTST #5,ICODEPREFS+3		;LEGACY MODE
+	BNE	 ERROR90
 
 	BSET	#2,CODEPREFS
 
-	CMP.W   #17,(A3)
-	BNE     .5
-	ADDQ.L  #2,A3
-	CMP.W   #VALUE,(A3)+
-	BNE     ERROR73
-	MOVE.L  (A3)+,OPENPOOL+2
-	CMP.W   #COM,(A3)
-	BNE     .PX
-	ADDQ.L  #2,A3
-	CMP.W   #VALUE,(A3)+
-	BNE     ERROR73
-	MOVE.L  (A3)+,OPENPOOL+8
-	CMP.W   #COM,(A3)
-	BNE     .PX
-	ADDQ.L  #2,A3
-	CMP.W   #VALUE,(A3)+
-	BNE     ERROR73
-	MOVE.L  (A3)+,OPENPOOL+14
-.PX:CMP.W   #18,(a3)+
-	BNE     ERROR79
+	CMP.W	#17,(A3)
+	BNE		.5
+	ADDQ.L	#2,A3
+	CMP.W	#VALUE,(A3)+
+	BNE		ERROR73
+	MOVE.L	(A3)+,OPENPOOL+2
+	CMP.W	#COM,(A3)
+	BNE		.PX
+	ADDQ.L	#2,A3
+	CMP.W	#VALUE,(A3)+
+	BNE		ERROR73
+	MOVE.L	(A3)+,OPENPOOL+8
+	CMP.W	#COM,(A3)
+	BNE		.PX
+	ADDQ.L	#2,A3
+	CMP.W	#VALUE,(A3)+
+	BNE		ERROR73
+	MOVE.L	(A3)+,OPENPOOL+14
+.PX:CMP.W	#18,(a3)+
+	BNE		ERROR79
 	BRA.W	.5
 
-.16:    CMP.W   #IOFF+87,D7	;FPEXP
-    BNE.S   .17
-    TST.W   EFPU
-    BEQ     ERROR53
-    bset    #5,CODEPREFS
+.16:	CMP.W	#IOFF+87,D7	;FPEXP
+	BNE.S	.17
+	TST.W	EFPU
+	BEQ		ERROR53
+	bset	#5,CODEPREFS
 	BRA.S	.5
-.17:   CMP.W   #IOFF+88,D7	;NOSTARTUP
-    BNE.S   .18
-    bset    #4,CODEPREFS
+.17:	 CMP.W	 #IOFF+88,D7	;NOSTARTUP
+	BNE.S	.18
+	bset	#4,CODEPREFS
 	BRA.S	.5
-.18:    CMP.W   #IOFF+89,D7	;UTILLIB
-    BNE.S   .19
-    CMP.W   #37,OSVERSION
-    BLT     ERROR77
+.18:	CMP.W	#IOFF+89,D7	;UTILLIB
+	BNE.S	.19
+	CMP.W	#37,OSVERSION
+	BLT		ERROR77
 
-    BTST #5,ICODEPREFS+3        ;LEGACY MODE
-    BNE  ERROR90
+	BTST #5,ICODEPREFS+3		;LEGACY MODE
+	BNE	 ERROR90
 
-    BSET    #7,CODEPREFS
-    JSR     SETUPUTIL
+	BSET	#7,CODEPREFS
+	JSR		SETUPUTIL
 	BRA.S	.5
-.19:    CMP.W   #IOFF+90,D7	;INLINE
-    BNE.S   .20
-    BSET    #6,CODEPREFS
-    BRA.S	.5
+.19:	CMP.W	#IOFF+90,D7	;INLINE
+	BNE.S	.20
+	BSET	#6,CODEPREFS
+	BRA.S	.5
 .20:
-    CMP.W   #IOFF+111,D7	;LEGACYINT    
-    BNE.S   .21
-    BSET    #6,ICODEPREFS+3
+	CMP.W	#IOFF+111,D7	;LEGACYINT		
+	BNE.S	.21
+	BSET	#6,ICODEPREFS+3
 	BRA.S	.5
-.21:  CMP.W	#IOFF+119,D7   ; --> ESTRCONST (OPT)
+.21:	CMP.W	#IOFF+119,D7	 ; --> ESTRCONST (OPT)
 	BNE.S .22
-	BSET    #4,ICODEPREFS+3
+	BSET	#4,ICODEPREFS+3
 	BRA.W	.5
 .22: BRA	ERROR1
 
@@ -3501,36 +3501,36 @@ CONTINUEKEY:
 	BRA	REBACK
 
 .CPU:
-    MOVE.L  (A3)+,D7        ; --> OPT 040
-    LEA	CPUTAB(PC),A6
+	MOVE.L	(A3)+,D7		; --> OPT 040
+	LEA	CPUTAB(PC),A6
 .CPUL:
-    CMP.W   #-1,(A6)
-    BEQ ERROR31
-    ADD.L   #10,A6
-    CMP.W   (A6),D7
-    BNE.S   .CPUL
-    MOVE.W  (A6)+,D0
-    cmp.w   #060,d0
-    bgt .CPU2
-    ;move.w  D0,TCPU
+	CMP.W	#-1,(A6)
+	BEQ ERROR31
+	ADD.L	#10,A6
+	CMP.W	(A6),D7
+	BNE.S	.CPUL
+	MOVE.W	(A6)+,D0
+	cmp.w	#060,d0
+	bgt .CPU2
+	;move.w	 D0,TCPU
 .CPU2:
-    MOVE.W  (A6)+,D0
-    BEQ.S   .C1
-    TST.W   ECPU
-    BNE ERROR50
-    MOVE.W  D0,ECPU
-.C1:MOVE.W  (A6)+,D0
-    BEQ.S   .C2
-    TST.W   EFPU
-    BNE ERROR50
-    MOVE.W  D0,EFPU
-.C2:MOVE.W  (A6)+,D0
-    MOVE.W  ASMCPU(PC),D1
-    BSET    D0,D1
-    MOVE.W  D1,ASMCPU
-    MOVE.W  (A6)+,D0
-    MOVE.W  D0,EMMU
-    BRA     .5
+	MOVE.W	(A6)+,D0
+	BEQ.S	.C1
+	TST.W	ECPU
+	BNE ERROR50
+	MOVE.W	D0,ECPU
+.C1:MOVE.W	(A6)+,D0
+	BEQ.S	.C2
+	TST.W	EFPU
+	BNE ERROR50
+	MOVE.W	D0,EFPU
+.C2:MOVE.W	(A6)+,D0
+	MOVE.W	ASMCPU(PC),D1
+	BSET	D0,D1
+	MOVE.W	D1,ASMCPU
+	MOVE.W	(A6)+,D0
+	MOVE.W	D0,EMMU
+	BRA		.5
 
 	
 OLDMOD:	DC.W	0
@@ -3540,12 +3540,12 @@ LONGDEBUG: DC.B 0
 DEBUGLINENOS: DC.B 0
 PURECHECK: DC.B 0
 
-  even
-      MODULELOAD:
+	even
+		MODULELOAD:
 	TST.W	SCOPE
 	BNE	ERROR35
 	MOVEM.L	A0/A1,-(A7)		; MODULE	; D4 GETRASHED!
-      MODULELOOP:
+		MODULELOOP:
 	CLR.L	THISMOD
 	MOVE.L	DOSBASE(PC),A6
 	CMP.W	#STR,(A3)+
@@ -3668,11 +3668,11 @@ PURECHECK: DC.B 0
 	MOVEM.L	(A7)+,A0/A1
 	BRA	REBACK
 
-      MODINFOLIST:	DC.L	0
+		MODINFOLIST:	DC.L	0
 
 ; GETS NAME FROM CACHENAMESTART, RETURNS MODINFO OR NIL IN D0
 
-      SEARCHINMODLIST:
+		SEARCHINMODLIST:
 	MOVEM.L	D1-D2/A0-A2,-(A7)
 	LEA	MODINFOLIST(PC),A0	; A0=MODLIST
 	MOVE.L	CACHENAMESTART(PC),D1	; D1=NAME
@@ -3693,9 +3693,9 @@ PURECHECK: DC.B 0
 .X:	MOVEM.L	(A7)+,D1-D2/A0-A2
 	RTS
 
-      AGAIN:	DC.W	0
+		AGAIN:	DC.W	0
 
-      SECONDARYLOAD:
+		SECONDARYLOAD:
 .ML:	CLR.W	AGAIN
 	MOVE.L	DOSBASE(PC),A6		; A6=BASE
 	LEA	MODINFOLIST(PC),A5	; A5=LIST
@@ -3762,8 +3762,8 @@ PURECHECK: DC.B 0
 	CLR.L	ERROROBJ
 	RTS
 
-      PROCPARSE:			; PARSE 'PROC bla(a,b,c=1) OF o IS x\0'
-    CLR.W   .REGCNT
+		PROCPARSE:			; PARSE 'PROC bla(a,b,c=1) OF o IS x\0'
+	CLR.W	.REGCNT
 	CLR.W	.CNT
 	CMP.W	#IDENT,(A3)+
 	BNE	ERROR4
@@ -3793,16 +3793,16 @@ PURECHECK: DC.B 0
 	CMP.W	#11,(A3)		; CHECK FOR a=1 DEFARGS
 	BNE.S	.NIS
 	ADDQ.L	#2,A3
-    cmp.b   #4,(a3)
-    blt     .IS0
-    cmp.b   #5,(a3)
-    bgt     .IS0
-    move.w  (a3)+,(a6)+
-    bset    #5,2(A2)
-    addq.w  #1,.REGCNT
-    addq.w  #1,.CNT
-    bra     .NIS
-.REGCNT:    dc.w    0
+	cmp.b	#4,(a3)
+	blt		.IS0
+	cmp.b	#5,(a3)
+	bgt		.IS0
+	move.w	(a3)+,(a6)+
+	bset	#5,2(A2)
+	addq.w	#1,.REGCNT
+	addq.w	#1,.CNT
+	bra		.NIS
+.REGCNT:	dc.w	0
 .IS0:
 	CMP.W	#8,(A3)
 	BNE.S	.IS1
@@ -3819,10 +3819,10 @@ PURECHECK: DC.B 0
 	BEQ.S	.1
 .2:	CMP.W	#18,D0
 	BNE	ERROR6
-    tst.w   .REGCNT
-    beq     .2_2
-    cmp.w   .REGCNT,D1
-    bne     ERROR50
+	tst.w	.REGCNT
+	beq		.2_2
+	cmp.w	.REGCNT,D1
+	bne		ERROR50
 .2_2:	CLR.W	(A6)+
 	MOVE.L	A6,.A6MID
 	MOVE.L	D6,A1
@@ -3848,12 +3848,12 @@ PURECHECK: DC.B 0
 	CMP.W	#11,(A3)
 	BNE.S	.NIS2
 	ADDQ.L	#2,A3
-    CMP.B   #4,(A3)
-    BLT     .IS00
-    CMP.B   #5,(A3)
-    BGT     .IS00
-    ADDQ.L  #2,A3
-    BRA     .NIS2
+	CMP.B	#4,(A3)
+	BLT		.IS00
+	CMP.B	#5,(A3)
+	BGT		.IS00
+	ADDQ.L	#2,A3
+	BRA		.NIS2
 .IS00:
 	CMP.W	#8,(A3)
 	BNE.S	.IS11
@@ -3880,14 +3880,14 @@ PURECHECK: DC.B 0
 	SUBQ.L	#4,D0
 	MOVE.L	D0,6(A2)		; DEFARGSLIST IN PROCSTRUCT
 	DONEH	A6
-.EX:cmp.w   #IOFF+86,(a3)	;NOREGS
-    bne     .EX2
-    addq.l  #2,a3
-    bset    #5,2(a2)    
+.EX:cmp.w	#IOFF+86,(a3)	;NOREGS
+	bne		.EX2
+	addq.l	#2,a3
+	bset	#5,2(a2)	
 .EX2:	CMP.W	#IOFF+45,(A3)+		; NOW CHECK FOR of_object
 	BNE	.NOM
-    TST.W   .REGCNT
-    BNE     ERROR50
+	TST.W	.REGCNT
+	BNE		ERROR50
 	CMP.W	#31,(A3)+
 	BNE	.REX
 	MOVE.L	(A3)+,A3		; A3=OBJECTHEAD, A2=PROC
@@ -3903,7 +3903,7 @@ PURECHECK: DC.B 0
 	MOVE.L	A0,-(A7)
 	JSR	FINDMETHOD		; WANTS OBJ=A6,NAME=D0, TRASHES A0,
 	MOVE.L	(A7)+,A0
-	TST.L	D1			;   RETURNS D1=METHOD | NIL
+	TST.L	D1			;	RETURNS D1=METHOD | NIL
 	BNE	ERROR61
 
 	GETM	A6
@@ -3940,15 +3940,15 @@ PURECHECK: DC.B 0
 	MOVE.W	#$0101,(A6)+		; IDENT.TYPE/FLAGS
 	MOVE.L	A2,(A6)+		; IDENT.PROC
 	CLR.W	(A6)+			; IDENT.INFO
-	CLR.W	(A6)+  ;ident lineno
+	CLR.W	(A6)+	;ident lineno
 	TST.W	REGSTOP
 	BNE.S	.CLH
 	MOVE.L	#MIDHEAVY*3,(A6)+	; VARHEAVY: USED 3x (FAKE)
 .CLHB:
-	CLR.L (A6)+     ;VAR_NAME
-	CLR.L (A6)+     ;DEF_VALUE
-	CLR.L (A6)+     ;IMPORT_DATA
-	MOVE.W #-1,(A6)+  ;VAR_PTRREPCOUNT
+	CLR.L (A6)+		;VAR_NAME
+	CLR.L (A6)+		;DEF_VALUE
+	CLR.L (A6)+		;IMPORT_DATA
+	MOVE.W #-1,(A6)+	;VAR_PTRREPCOUNT
 	CLR.L (A6)+ ;VAR_DIMDATA
 	IFD IDENT_COOKIE
 	MOVE.W #$C0DE,(A6)+ ;VAR_IDCOOKIE
@@ -3998,31 +3998,31 @@ PURECHECK: DC.B 0
 .S2:	CMP.W	#IOFF+23,(A3)+
 	BPL	ERROR33
 	RTS
-.SX:  ADDQ.L #2,A3
+.SX:	ADDQ.L #2,A3
 	RTS
 .CNT:	DC.W	0
 .A6ST:	DC.L	0
 .A6MID:	DC.L	0
 
-      DOENUM:
+		DOENUM:
 	TST.W	INPROC
 	BNE	ERROR35
 	MOVEQ	#0,D7
 .1:	GETM	A4			; ENUM
-	TST.L   ConstsList
-	BNE.S   .a
-	MOVE.L  A4,ConstsList
-.a: MOVE.L  ConstTemp,A6
-	CMPA.L  #0,A6
-	BEQ.S   .z
-	MOVE.L  A4,(A6)
-.z: MOVE.L  A4,ConstTemp
-	CLR.L   (A4)
-	ADDQ.L  #8,A4
-	DONEM   A4
-	MOVE.L  A4,A6
-	GETM    A4
-	MOVE.L  A4,-(A6)
+	TST.L	ConstsList
+	BNE.S	.a
+	MOVE.L	A4,ConstsList
+.a: MOVE.L	ConstTemp,A6
+	CMPA.L	#0,A6
+	BEQ.S	.z
+	MOVE.L	A4,(A6)
+.z: MOVE.L	A4,ConstTemp
+	CLR.L	(A4)
+	ADDQ.L	#8,A4
+	DONEM	A4
+	MOVE.L	A4,A6
+	GETM	A4
+	MOVE.L	A4,-(A6)
 	CMP.W	#25,(A3)+
 	BNE	ERROR0
 	MOVE.L	(A3)+,4(A4)
@@ -4055,25 +4055,25 @@ PURECHECK: DC.B 0
 	BNE	ERROR0
 	BRA	REBACK
 
-      DOSET:
+		DOSET:
 	TST.W	INPROC
 	BNE	ERROR35
 	MOVEQ	#1,D7
 .1:	GETM	A4
-	TST.L   ConstsList
-	BNE.S   .a
-	MOVE.L  A4,ConstsList
-.a: MOVE.L  ConstTemp,A6
-	CMPA.L  #0,A6
-	BEQ.S   .z
-	MOVE.L  A4,(A6)
-.z: MOVE.L  A4,ConstTemp
-	CLR.L   (A4)
-	ADDQ.L  #8,A4
-	DONEM   A4
-	MOVE.L  A4,A6
-	GETM    A4
-	MOVE.L  A4,-(A6)
+	TST.L	ConstsList
+	BNE.S	.a
+	MOVE.L	A4,ConstsList
+.a: MOVE.L	ConstTemp,A6
+	CMPA.L	#0,A6
+	BEQ.S	.z
+	MOVE.L	A4,(A6)
+.z: MOVE.L	A4,ConstTemp
+	CLR.L	(A4)
+	ADDQ.L	#8,A4
+	DONEM	A4
+	MOVE.L	A4,A6
+	GETM	A4
+	MOVE.L	A4,-(A6)
 	TST.L	D7			; SEE IF SET>32
 	BEQ	ERROR7
 	CMP.W	#25,(A3)+
@@ -4096,7 +4096,7 @@ PURECHECK: DC.B 0
 	BNE	ERROR0
 	BRA	REBACK
 
-      DOLIBRARY:
+		DOLIBRARY:
 	TST.W	SCOPE
 	BNE	ERROR35
 	TSTMOD
@@ -4161,19 +4161,19 @@ PURECHECK: DC.B 0
 	MOVE.L	(A6),A5
 	MOVE.L	A4,(A6)
 .1:	MOVE.B	(A5)+,(A4)+
- 	BNE.S	.1
+	BNE.S	.1
 	MOVE.L	12(A6),A5
 	MOVE.L	A4,12(A6)
 .2:	MOVE.B	(A5)+,(A4)+
- 	BNE.S	.2
- 	MOVE.L	A4,D0
- 	BTST	#0,D0
- 	BEQ.S	.3
- 	CLR.B	(A4)+
+	BNE.S	.2
+	MOVE.L	A4,D0
+	BTST	#0,D0
+	BEQ.S	.3
+	CLR.B	(A4)+
 .3:	DONEH	A4
 	BRA	REBACK
 
-      PARSE_REGLIST:			; A3=INTERIM, A4=BUF
+		PARSE_REGLIST:			; A3=INTERIM, A4=BUF
 	CMP.W	#17,(A3)
 	BNE.S	.X
 	MOVEM.L	D0/D1/D2,-(A7)
@@ -4227,7 +4227,7 @@ PURECHECK: DC.B 0
 	MOVEM.L	(A7)+,D0/D1
 	RTS
 
-      DORAISE:
+		DORAISE:
 	TST.W	SCOPE
 	BNE	ERROR35
 .1:	CMP.W	#VALUE,(A3)+
@@ -4261,7 +4261,7 @@ PURECHECK: DC.B 0
 	ADDQ.W	#1,RAISENUM
 
 .NEXT:	MOVE.L	D7,2(A4)		; SET EXCEPT ID
-	CMP.L	#$110012,(A3)+		; ()        A4 --> RECORD
+	CMP.L	#$110012,(A3)+		; ()		A4 --> RECORD
 	BNE	ERROR23
 	MOVE.W	(A3)+,D1
 	CMP.W	#11,D1
@@ -4291,31 +4291,31 @@ OSVERSION:	DC.W	33
 STACKWARN1: DC.B 0
 STACKWARN2: DC.B 0
 CODEPREFS:	DC.L	$00800000	; SET OPT PREPROCESS at beginnig
-ICODEPREFS: DC.L    0
+ICODEPREFS: DC.L	0
 CODESTACK:	DC.L	0
 MAXREGALLOC:	DC.W	0
-ConstTemp:  DC.L    0
+ConstTemp:	DC.L	0
 
 ECPU:		DC.W	0		; 0,1,2 = 000+, 020+, 040+
 EFPU:		DC.W	0		; 0,1,2 = FFP, 881/882, 040
-EMMU:       DC.W    0       ; 0,1,2 = [-], 851, 020+
+EMMU:		DC.W	0		; 0,1,2 = [-], 851, 020+
 ASMCPU:		DC.W	0		; BITSET
 
 CPUTAB:	
-    DC.W    000,0,0,0,0       ;
-    DC.W    010,0,0,0,0       ; CPU,ECPUTYPE,EFPUTYPE,ASMCPUBIT#,EMMUTYPE
-    DC.W    020,1,0,1,2
-    DC.W    030,1,0,2,2
-    DC.W    040,2,2,3,2
-    DC.W    060,2,3,7,2
-    DC.W    881,0,1,8,0
-    DC.W    882,0,1,9,0
-    DC.W    851,0,0,10,1
+	DC.W	000,0,0,0,0			;
+	DC.W	010,0,0,0,0			; CPU,ECPUTYPE,EFPUTYPE,ASMCPUBIT#,EMMUTYPE
+	DC.W	020,1,0,1,2
+	DC.W	030,1,0,2,2
+	DC.W	040,2,2,3,2
+	DC.W	060,2,3,7,2
+	DC.W	881,0,1,8,0
+	DC.W	882,0,1,9,0
+	DC.W	851,0,0,10,1
 	DC.W	-1
 	
 
 
-      PARSEGETINSNR:			; GETS INSNR OUTOF WORKBUF
+		PARSEGETINSNR:			; GETS INSNR OUTOF WORKBUF
 	MOVEQ	#0,D0			; INSNR (MUST BE <>0 AT END)
 	MOVE.W	CURINS(PC),-(A7)
 	MOVEQ	#-1,D1
@@ -4350,25 +4350,25 @@ CPUTAB:
 .3:	ADDQ.L	#2,A7
 	RTS
 .4:
-;	CMP.W	#IOFF+71,D0		; STAY for  NOTEXP
+;	CMP.W	#IOFF+71,D0		; STAY for	NOTEXP
 ;	BEQ.S	.6
 
-	CMP.W	#IOFF+115,D0   ;GETA4
+	CMP.W	#IOFF+115,D0	 ;GETA4
 	BEQ.S .9
 
-	CMP.W	#IOFF+114,D0   ;STACKCHECK
+	CMP.W	#IOFF+114,D0	 ;STACKCHECK
 	BEQ.S .9
 
-	CMP.W	#IOFF+74,D0   ;SAFE
+	CMP.W	#IOFF+74,D0		;SAFE
 	BNE.S	.8
 .9
 	CMP.W	#IOFF,D4
 	BNE	ERROR0
 	BRA.S	.6
 .8:	
-	CMP.W #IOFF+109,D0    ;BYTE
+	CMP.W #IOFF+109,D0		;BYTE
 	BEQ.S .6
-	CMP.W #IOFF+110,D0    ;WORD
+	CMP.W #IOFF+110,D0		;WORD
 	BEQ.S .6
 	CMP.W	#IOFF+50,D0
 	BPL.S	.5
@@ -4381,7 +4381,7 @@ CPUTAB:
 	BPL.S	.3
 	BRA.S	.6
 
-      MAKEKEYHASH:
+		MAKEKEYHASH:
 	MOVE.L	#KEYHASH,A0		; A0=TABEL
 	LEA	INSTABLE,A1
 	MOVE.L	A0,A2
@@ -4406,7 +4406,7 @@ CPUTAB:
 
 ;;IDENT
 
-      PARSEGETIDENTNR:			; GETS IDENTNR OUTOF WORKBUF
+		PARSEGETIDENTNR:			; GETS IDENTNR OUTOF WORKBUF
 	TST.L	OBJECTD
 	BNE	OBJECTIDENT
 
@@ -4415,7 +4415,7 @@ CPUTAB:
 	MOVEQ	#UNDEF,D7
 	MOVE.W	CURINS(PC),D6		; INS-ioff
 
-  ;D4 is previous token
+	;D4 is previous token
 	CMP.W	#35,D4			; .
 	BEQ.S	.1
 	CMP.W	#IOFF+60,D4		; REG
@@ -4444,10 +4444,10 @@ CPUTAB:
 	BEQ.S	.1
 	MOVE.L A1,A3
 	SUBQ #4,A3
-	CMP.W #IOFF+86,(A3)     ;ignore NOREGS
+	CMP.W #IOFF+86,(A3)		;ignore NOREGS
 	BNE.S .skip
 	SUBQ #2,A3
-.skip  
+.skip	
 	CMP.W	#18,(A3)		; ) OF
 	BNE.S	XNEXT
 	CMP.W	#1,-8(A1)		; SELECT 1 OF (ERG DIRTY!)
@@ -4461,19 +4461,19 @@ CPUTAB:
 
 .4:	;CMP.W	#-1,D6
 	;BNE.S	.1
-  CMP.W #16,D6    ;DEF (global)
-  BEQ.S .1
-  CMP.W #17,D6    ;DEF (local)
-  BEQ.S .1
-  
+	CMP.W #16,D6		;DEF (global)
+	BEQ.S .1
+	CMP.W #17,D6		;DEF (local)
+	BEQ.S .1
+	
 	CMP.W	#30,-4(A1)
 	BEQ.S	.1
-      XNEXT:
+		XNEXT:
 
 	TST.W	D6			; "PROC"=0
 	BNE.S	.1
-        CMP.W	#IOFF,D4		;-2(A1)	; PROCNAME OR ARGVAR ?
-        BEQ.S	.2
+		CMP.W	#IOFF,D4		;-2(A1)	; PROCNAME OR ARGVAR ?
+		BEQ.S	.2
 	MOVEQ	#LOCV,D7
 	BRA.S	.5
 .2:	MOVEQ	#LAB,D7
@@ -4501,7 +4501,7 @@ CPUTAB:
 	MOVE.L	A3,IDHASHADR
 	ADDQ.L	#4,A3
 	MOVE.L	WORK(PC),D2		; D2,D1=BACKUP
-      IDCHECKLOOP:
+		IDCHECKLOOP:
 	MOVE.L	-(A3),A3
 	MOVE.L	A3,D1
 	BEQ	UNIDENT
@@ -4530,9 +4530,9 @@ CPUTAB:
 
 ; HIERNA D4 TIJDLK. GETRASHED
 	
-      IDALREADYPRESENT:
+		IDALREADYPRESENT:
 	TST.W	D7			; USE IN EXP
-	BEQ.W	.X2                     ; !!!!!!!!!!!!! WAS .X
+	BEQ.W	.X2						; !!!!!!!!!!!!! WAS .X
 	MOVE.B	4(A5),D4		; USE IN 'LOCAL'
 	CMP.B	#LOCV,D7
 	BNE.S	.10
@@ -4598,16 +4598,16 @@ CPUTAB:
 .NR2:	CLR.L	VARHEAVY(A5)
 	BRA.S	.NR
 
-      UNIDENT3:
+		UNIDENT3:
 	TST.L	10(A5)			; see if objhead in procstruct
 	BEQ.W	ERROR21			; no method!
 	MOVE.L	CPROC(PC),A6
 	BSET	#1,2(A6)		; SET METHOD
 	BRA.S	UNIDENT2
-      UNIDENT:
+		UNIDENT:
 	TST.L	D5
 	BNE	DOUBLENAME
-      UNIDENT2:
+		UNIDENT2:
 	GETM	A3			; A3=FRESH MEM
 	MOVE.L	WORK(PC),A4
 	MOVE.L	A3,A5			; A5=ASCIIPTR IN HEAP
@@ -4618,14 +4618,14 @@ CPUTAB:
 	BEQ.S	.OK
 	CLR.B	(A3)+
 .OK:	MOVE.L	IDHASHADR,A4
-	MOVE.L	(A4),(A3)+   ;next
+	MOVE.L	(A4),(A3)+	 ;next
 	MOVE.L	A3,(A4)
 	MOVEQ	#IDENT,D4
 	MOVE.W	D4,(A1)+
 	MOVE.L	A3,(A1)+
 	MOVE.L	A3,LASTID
 	MOVE.L	A3,A6			; A6=BASE ID
-	MOVE.L	A5,(A3)+    ;ascii
+	MOVE.L	A5,(A3)+	;ascii
 	MOVEQ	#0,D0
 	MOVE.B	D7,(A3)+		; type
 	BEQ	.S
@@ -4640,15 +4640,15 @@ CPUTAB:
 	BRA.S	.S2
 .S:	MOVE.B	#1,(A3)+		; SET FLAGS=1 IF USED (D7=0)
 	; ALS IDENT<>LABEL DAN ERROR22
-.S2:	MOVE.L	D3,(A3)+      ;PR
+.S2:	MOVE.L	D3,(A3)+		;PR
 	CMP.B	#LAB,D7
 	BEQ.S	.2
-	MOVE.W	D0,(A3)+		; VARS:   OFFSET=0
+	MOVE.W	D0,(A3)+		; VARS:		OFFSET=0
 	MOVE.W	LINENUM(PC),(A3)+			; line number
 	CMP.B	#LOCV,D7
 	BNE.S	.2A			; WAS .3 -> SEE IF LOCAL --> HEAVYNESS
 	TST.W	MAXREGALLOC
-	BEQ.S	.2A     ; WAS .3
+	BEQ.S	.2A		; WAS .3
 	TST.W	REGSTOP
 	BNE.S	.2A
 	MOVE.L	HEAVYNESS(PC),(A3)+	; must be offs VARHEAVY
@@ -4657,7 +4657,7 @@ CPUTAB:
 	BRA.S	.3
 .2:	MOVE.W	#-1,(A3)+		; LABELS: OFFSET=-1
 	MOVE.W	LINENUM(PC),(A3)+			; line number
-	CLR.L	(A3)+     ;varheavy
+	CLR.L	(A3)+		;varheavy
 .3:	CMP.L	#"main",(A5)
 	BNE.S	.NM
 	TST.B	4(A5)
@@ -4669,28 +4669,28 @@ CPUTAB:
 	BNE.S	.NS
 	MOVE.L	A6,CURSELF
 .NS: 
-	CLR.L (A3)+     ;VAR_NAME
-	CLR.L (A3)+     ;DEF_VALUE
-	CLR.L (A3)+     ;IMPORT_DATA
-	MOVE.W #-1,(A3)+  ;VAR_PTRREPCOUNT
+	CLR.L (A3)+		;VAR_NAME
+	CLR.L (A3)+		;DEF_VALUE
+	CLR.L (A3)+		;IMPORT_DATA
+	MOVE.W #-1,(A3)+	;VAR_PTRREPCOUNT
 	CLR.L (A3)+ ;VAR_DIMDATA
 	IFD IDENT_COOKIE
 	MOVE.W #$C0DE,(A3)+ ;VAR_IDCOOKIE
 	ENDIF
-  
+	
 	DONEM	A3
 	RTS
-      DOUBLENAME:
+		DOUBLENAME:
 	MOVE.L	D5,A5
 	BRA	IDALREADYPRESENT
 
-      LASTID:		DC.L	0
-      IDHASHADR:	DC.L	0
-      CURSELF:		DC.L	0
-      SELFHASHADR:	DC.L	0
-      SELFNAME:		DC.B	"self",0,0
+		LASTID:		DC.L	0
+		IDHASHADR:	DC.L	0
+		CURSELF:		DC.L	0
+		SELFHASHADR:	DC.L	0
+		SELFNAME:		DC.B	"self",0,0
 
-      NEWPROC:
+		NEWPROC:
 	GETM	A3
 	MOVE.L	PROCLIST(PC),(A3)+
 	MOVE.L	A3,PROCLIST
@@ -4700,7 +4700,7 @@ CPUTAB:
 
 	TST.B GETA4FLAG
 	BEQ.S	.4
-	BSET	#7,-1(A3)     ;numregs has flags in the top 4 bits (geta4flag)
+	BSET	#7,-1(A3)		;numregs has flags in the top 4 bits (geta4flag)
 	CLR.B	GETA4FLAG
 
 .4: TST.B STACKCHECKPROCFLAG
@@ -4731,7 +4731,7 @@ CPUTAB:
 	CPROC:		DC.L	0
 	OBJNAME:	DC.L	0
 
-      FINDOBJ:				; D1=ASCII, RET D0=OBJH | NIL
+		FINDOBJ:				; D1=ASCII, RET D0=OBJH | NIL
 	MOVEM.L	A3/A4/A5,-(A7)
 	LEA	OLIST+4(PC),A3
 .L:	MOVE.L	ONEXT(A3),A3
@@ -4747,32 +4747,32 @@ CPUTAB:
 .X:	MOVEM.L	(A7)+,A3/A4/A5
 	RTS
 
-      FINDOID:				; D1=OID, RET D0=OBJH | NIL
+		FINDOID:				; D1=OID, RET D0=OBJH | NIL
 	MOVEM.L	A3/A4/A5,-(A7)
 	LEA	OLIST+4(PC),A3
 .L:	MOVE.L	ONEXT(A3),A3
 	MOVE.L	A3,D0
 	BEQ.S	.X
-  CMP.W OID(A3),D1
+	CMP.W OID(A3),D1
 	BNE.S	.L
 	MOVE.L	A3,D0
 .X:	MOVEM.L	(A7)+,A3/A4/A5
 	RTS
 
-      OBJUSE:
+		OBJUSE:
 	CMP.W	#35,D4			; SEARCHING OBJECTNAME OR FIELD
 	BEQ.S	.FIELD
 	MOVE.L	WORK(PC),D1		; D1=ASCIIPTR
 	BSR	FINDOBJ
 
-    CMP.W   #IOFF+50,D4	;SIZEOF
-    BEQ .000
-    CMP.W   #IOFF+112,D4	;PSIZEOF
-    BEQ .000
-    CMP.W   #IOFF+113,D4	;ARRAYSIZE
-    BEQ .000
-    CMP.W   #IOFF+98,D4	;OFFSETOF
-    BEQ .000
+	CMP.W	#IOFF+50,D4	;SIZEOF
+	BEQ .000
+	CMP.W	#IOFF+112,D4	;PSIZEOF
+	BEQ .000
+	CMP.W	#IOFF+113,D4	;ARRAYSIZE
+	BEQ .000
+	CMP.W	#IOFF+98,D4	;OFFSETOF
+	BEQ .000
 .001:
 	MOVEQ	#31,D4			; FOUND
 	MOVE.W	D4,(A1)+
@@ -4780,9 +4780,9 @@ CPUTAB:
 	BEQ	ERROR42
 	RTS
 .000:
-    TST.W   D0
-    BNE .001
-    BRA XNEXT
+	TST.W	D0
+	BNE .001
+	BRA XNEXT
 	
 .FIELD:	
 	MOVE.L	WORK(PC),D1		; IS THIS PART NECESSARY ?
@@ -4843,10 +4843,10 @@ CPUTAB:
 	RTS
 
 
-      OLIST:		DC.L	0
-      MEMBERLIST:	DC.L	0	; TIJDENS LEX
+		OLIST:		DC.L	0
+		MEMBERLIST:	DC.L	0	; TIJDENS LEX
 
-      OBJECTIDENT:			; definition
+		OBJECTIDENT:			; definition
 	CMP.W	#19,D4			; 2. bla:INT IPV x:bla
 	BEQ.S	.S
 	CMP.W	#IOFF+39,D4		; TO
@@ -4927,10 +4927,10 @@ CPUTAB:
 	MOVE.L	MEMBERLIST(PC),ONEXT(A4); (NEXT) MEMBER STRUCT
 	MOVE.L	A4,MEMBERLIST
 	CLR.L	(A4)+			;0 OOFF/OFLAGS/DUMMY
-	CLR.L	(A4)+           ;4 OSIZE/OID
-	MOVE.L	D1,(A4)+        ;8 OASCII
-    MOVE.W #-1,(A4)+		;12 PTRREPCOUNT
-    CLR.L	(A4)+			;14 DIMDATA
+	CLR.L	(A4)+			;4 OSIZE/OID
+	MOVE.L	D1,(A4)+		;8 OASCII
+	MOVE.W #-1,(A4)+		;12 PTRREPCOUNT
+	CLR.L	(A4)+			;14 DIMDATA
 	CLR.L	(A4)+			;18 OPTRTYPE
 .C:	DONEM	A4
 	RTS
@@ -4942,7 +4942,7 @@ CPUTAB:
 	MOVEQ	#1,D0
 	BRA	.3
 
-      PARSEGETVALUE:			; A2 STRING, =>D0 LONGINT
+		PARSEGETVALUE:			; A2 STRING, =>D0 LONGINT
 	TST.B	(A2)+
 	BNE.S	PARSEGETVALUE
 	SUBQ.L	#1,A2
@@ -4993,13 +4993,13 @@ CPUTAB:
 	SUBQ.L	#4,A3
 	BRA.S	.3
 
-      IEEEPROBLEM:	DC.W	0
+		IEEEPROBLEM:	DC.W	0
 
-      VALUETAB:
+		VALUETAB:
 	DC.L	1,10,100,1000,10000,100000,1000000
 	DC.L	10000000,100000000,1000000000
 
-      PARSESTRING:
+		PARSESTRING:
 	MOVEQ	#STR,D4
 	MOVE.W	D4,(A1)+
 	ADDQ.L	#4,A1
@@ -5122,55 +5122,55 @@ CPUTAB:
 	BRA	.LOOP
 .15:	MOVE.B	#34,(A1)+
 	BRA	.LOOP
-.16:    MOVE.B  #7,(A1)+
-    BRA .LOOP
-.17:    MOVe.B  #11,(A1)+
-    BRA .LOOP
+.16:	MOVE.B	#7,(A1)+
+	BRA .LOOP
+.17:	MOVe.B	#11,(A1)+
+	BRA .LOOP
 .18:
-    MOVEM.L D0/D2,-(A7)
-    MOVEQ   #1,D1
-    MOVEQ   #0,D2
+	MOVEM.L D0/D2,-(A7)
+	MOVEQ	#1,D1
+	MOVEQ	#0,D2
 .18_1:
-    LSL.B   #4,D2
-    MOVE.B  (A0)+,D0
-    CMP.B   #"0",D0
-    BLT     ERROR72
-    CMP.B   #"9",D0
-    BLE     .DEC
-    CMP.W   #"A",D0
-    BLT     ERROR72
-    CMP.W   #"F",D0
-    BLE     .HEX
-    CMP.W   #"a",D0
-    BLT     ERROR76
-    CMP.W   #"f",D0
-    BGT     ERROR76
+	LSL.B	#4,D2
+	MOVE.B	(A0)+,D0
+	CMP.B	#"0",D0
+	BLT		ERROR72
+	CMP.B	#"9",D0
+	BLE		.DEC
+	CMP.W	#"A",D0
+	BLT		ERROR72
+	CMP.W	#"F",D0
+	BLE		.HEX
+	CMP.W	#"a",D0
+	BLT		ERROR76
+	CMP.W	#"f",D0
+	BGT		ERROR76
 .HEX:
-    BCLR    #5,D0
-    AND.L   #$FF,D0
-    SUB.B   #"A",D0
-    ADD.B   #10,D0
-    BRA     .CNT
+	BCLR	#5,D0
+	AND.L	#$FF,D0
+	SUB.B	#"A",D0
+	ADD.B	#10,D0
+	BRA		.CNT
 .DEC:
-    AND.L   #$FF,D0
-    SUB.B   #"0",D0
+	AND.L	#$FF,D0
+	SUB.B	#"0",D0
 .CNT:
-    ADD.W   D0,D2
-    DBF     D1,.18_1
-    MOVE.B  D2,(A1)+
-    MOVEM.L (A7)+,D0/D2
-    BRA .LOOP
+	ADD.W	D0,D2
+	DBF		D1,.18_1
+	MOVE.B	D2,(A1)+
+	MOVEM.L (A7)+,D0/D2
+	BRA .LOOP
 .19:
-    MOVE.B  #"%",(A1)+
-    BSR     DOFIELD
-    MOVE.W  #"lu",(A1)+
-    BRA .LOOP
+	MOVE.B	#"%",(A1)+
+	BSR		DOFIELD
+	MOVE.W	#"lu",(A1)+
+	BRA .LOOP
 
 FZERO:	DC.W	0			; 0=PADSPACE, -1=PADZERO
 FRL:	DC.W	0			; 0=RIGHT, -1=LEFT
 SSTR:	DC.L	0
 
-      DOFIELD:
+		DOFIELD:
 	TST.W	FRL
 	BEQ.S	.1
 	MOVE.B	#'-',(A1)+
@@ -5234,3221 +5234,3221 @@ SSTR:	DC.L	0
 ; ************************************************************* ;
 ;; Parse
 ASM_PARSE:
-    MOVE.L  A2,D0
-    MOVE.L  (A2),D1
-    AND.L   #$FFFFFF00,D1
-    CMP.L   #'PC'*$10000,D1
-    BEQ ASM_PC
+	MOVE.L	A2,D0
+	MOVE.L	(A2),D1
+	AND.L	#$FFFFFF00,D1
+	CMP.L	#'PC'*$10000,D1
+	BEQ ASM_PC
 
-    MOVE.L  #ASM_INSTAB,D2
-    MOVE.L  HASHVAL(PC),D7
-    LSL.L   #2,D7
-    ADD.L   #ASMHASH,D7
-    MOVE.L  D7,A6
+	MOVE.L	#ASM_INSTAB,D2
+	MOVE.L	HASHVAL(PC),D7
+	LSL.L	#2,D7
+	ADD.L	#ASMHASH,D7
+	MOVE.L	D7,A6
 .LOOP:
-    MOVE.L  (A6),A6         ; A6 _NOW_ POINTS TO ENTRY IN INSTABLE
-    MOVE.L  A6,D6
-    BEQ     .FAIL
-    MOVE.L  (A6)+,A4
-    MOVE.L  D0,A2
-.3: CMPM.B  (A4)+,(A2)+
-    BNE.S   .LOOP
-    TST.B   -1(A2)
-    BNE.S   .3
-    SUB.L   D2,D6
-    LSR.L   #3,D6
-    MOVE.L  D6,D0           ; D0=1..112
-    ADD.L   #$100,D0
+	MOVE.L	(A6),A6			; A6 _NOW_ POINTS TO ENTRY IN INSTABLE
+	MOVE.L	A6,D6
+	BEQ		.FAIL
+	MOVE.L	(A6)+,A4
+	MOVE.L	D0,A2
+.3: CMPM.B	(A4)+,(A2)+
+	BNE.S	.LOOP
+	TST.B	-1(A2)
+	BNE.S	.3
+	SUB.L	D2,D6
+	LSR.L	#3,D6
+	MOVE.L	D6,D0			; D0=1..112
+	ADD.L	#$100,D0
 ;*-*
 ;; Check for sizes
-    MOVEQ   #0,D1
-    CMP.B   #'.',(A0)       ; SEE IF THERE'S A:     .B .W .L .S
-    BNE.S   .4
-    ADDQ.L  #1,A0
-    MOVE.B  (A0)+,D2
-    LEA     .SIZES(PC),A6
-    MOVEQ   #7,D4
+	MOVEQ	#0,D1
+	CMP.B	#'.',(A0)		; SEE IF THERE'S A:		.B .W .L .S
+	BNE.S	.4
+	ADDQ.L	#1,A0
+	MOVE.B	(A0)+,D2
+	LEA		.SIZES(PC),A6
+	MOVEQ	#7,D4
 .CHKSIZE:
-    ADDQ.L  #1,D1
-    CMP.B   (A6)+,D2
-    BEQ     .4
-    DBF     D4,.CHKSIZE
-    BRA     iERROR31
-.4: MOVE.W  D0,D4
-    MOVE.W  D0,(A1)+
-    MOVE.W  D1,(A1)+
-    RTS
+	ADDQ.L	#1,D1
+	CMP.B	(A6)+,D2
+	BEQ		.4
+	DBF		D4,.CHKSIZE
+	BRA		iERROR31
+.4: MOVE.W	D0,D4
+	MOVE.W	D0,(A1)+
+	MOVE.W	D1,(A1)+
+	RTS
 .SIZES:
-    DC.B    "BWLSXPDQ",0,0
+	DC.B	"BWLSXPDQ",0,0
 
 ;; Fail
 .FAIL:
-    MOVE.L  WORK(PC),A2
-    MOVEQ   #0,D0           ; 0=FAIL, ELSE=ISASM
-    RTS
+	MOVE.L	WORK(PC),A2
+	MOVEQ	#0,D0			; 0=FAIL, ELSE=ISASM
+	RTS
 ;*-*
 ;; PC
 ASM_PC:
-    CMP.W   #17,D4
-    BNE .2
-    CMP.B   #')',(A0)
-    BEQ.S   .1
+	CMP.W	#17,D4
+	BNE .2
+	CMP.B	#')',(A0)
+	BEQ.S	.1
 .2:
-    MOVE.W  #$E00,D4
-    MOVE.W  D4,(A1)+
-    MOVEQ   #-1,D0
-    RTS
-.1: CMP.W   #17,D4          ;-(A1)
-    BNE iERROR19
-    SUBQ.L  #2,A1
-    ADDQ.L  #1,A0
-    SUBQ.W  #1,PARSEBRACKET
-    MOVE.W  #$D00,D4
-    MOVE.W  D4,(A1)+
-    MOVEQ   #-1,D0
-    RTS
+	MOVE.W	#$E00,D4
+	MOVE.W	D4,(A1)+
+	MOVEQ	#-1,D0
+	RTS
+.1: CMP.W	#17,D4			;-(A1)
+	BNE iERROR19
+	SUBQ.L	#2,A1
+	ADDQ.L	#1,A0
+	SUBQ.W	#1,PARSEBRACKET
+	MOVE.W	#$D00,D4
+	MOVE.W	D4,(A1)+
+	MOVEQ	#-1,D0
+	RTS
 ;*-*
 ;; IMM
 ASM_PARSEIMM:
-    BTST    #7,CODEPREFS+1
-    BEQ.S   .1
-    MOVE.L  STARTINTERIM(PC),A6
-    SUBQ.L  #2,A6
-    CMPA.L  A6,A1
-    BEQ PREP
-.1: MOVE.W  #$F00,D4
-    MOVE.W  D4,(A1)+        ; 11+4
-    BRA PARSELOOP
+	BTST	#7,CODEPREFS+1
+	BEQ.S	.1
+	MOVE.L	STARTINTERIM(PC),A6
+	SUBQ.L	#2,A6
+	CMPA.L	A6,A1
+	BEQ PREP
+.1: MOVE.W	#$F00,D4
+	MOVE.W	D4,(A1)+		; 11+4
+	BRA PARSELOOP
 ;*-*
 ;; ParseReg
 ASM_PARSEREG:
-    CMP.B   #0,2(A2)
-    BNE REGBACK
-    MOVE.B  (A2),D1         ; D1="A" OR "D"
-    CMP.B   #'D',D1
-    BEQ.S   .1
-    CMP.B   #'A',D1
-    BNE REGBACK
-.1: MOVEQ   #0,D0
-    MOVE.B  1(A2),D0        ; D0="0" .. "9"
-    SUB.W   #48,D0
-    MOVE.L  D0,D7           ; =>COPY
-    CMP.W   #8,D0
-    BPL iERROR19
-    CMP.B   #'A',D1
-    BEQ .2
-    MOVEQ   #0,D3           ; D3=ADR.MOD NR.
-    BRA.S   .EXIT           ; --> Dx
-.2: CMP.W   #17,D4          ;-2(A1)
-    BEQ.S   .3
-.6: BSET    #3,D0           ; --> Ax
-    MOVEQ   #1,D3
-    BRA.S   .EXIT
-.3: CMP.B   #')',(A0)
-    BNE.S   .6
-    SUBQ.L  #2,A1
-    ADDQ.L  #1,A0
-    SUBQ.W  #1,PARSEBRACKET
-    CMP.W   #8,-2(A1)
-    BEQ.S   .4
-.7: CMP.B   #'+',(A0)
-    BEQ.S   .5
-    BSET    #4,D0           ; --> (Ax)
-    MOVEQ   #2,D3
-    BRA.S   .EXIT
-.4: CMP.L   #$10000,-6(A1)
-    BEQ.S   .7
-    SUBQ.L  #2,A1           ; --> -(Ax)
-    MOVEQ   #4,D3
-    BSET    #5,D0
-    BRA.S   .EXIT
-.5: ADDQ.L  #1,A0           ; --> (Ax)+
-    MOVEQ   #3,D3
-    ADD.W   #%11000,D0
-    BRA .EXIT
+	CMP.B	#0,2(A2)
+	BNE REGBACK
+	MOVE.B	(A2),D1			; D1="A" OR "D"
+	CMP.B	#'D',D1
+	BEQ.S	.1
+	CMP.B	#'A',D1
+	BNE REGBACK
+.1: MOVEQ	#0,D0
+	MOVE.B	1(A2),D0		; D0="0" .. "9"
+	SUB.W	#48,D0
+	MOVE.L	D0,D7			; =>COPY
+	CMP.W	#8,D0
+	BPL iERROR19
+	CMP.B	#'A',D1
+	BEQ .2
+	MOVEQ	#0,D3			; D3=ADR.MOD NR.
+	BRA.S	.EXIT			; --> Dx
+.2: CMP.W	#17,D4			;-2(A1)
+	BEQ.S	.3
+.6: BSET	#3,D0			; --> Ax
+	MOVEQ	#1,D3
+	BRA.S	.EXIT
+.3: CMP.B	#')',(A0)
+	BNE.S	.6
+	SUBQ.L	#2,A1
+	ADDQ.L	#1,A0
+	SUBQ.W	#1,PARSEBRACKET
+	CMP.W	#8,-2(A1)
+	BEQ.S	.4
+.7: CMP.B	#'+',(A0)
+	BEQ.S	.5
+	BSET	#4,D0			; --> (Ax)
+	MOVEQ	#2,D3
+	BRA.S	.EXIT
+.4: CMP.L	#$10000,-6(A1)
+	BEQ.S	.7
+	SUBQ.L	#2,A1			; --> -(Ax)
+	MOVEQ	#4,D3
+	BSET	#5,D0
+	BRA.S	.EXIT
+.5: ADDQ.L	#1,A0			; --> (Ax)+
+	MOVEQ	#3,D3
+	ADD.W	#%11000,D0
+	BRA .EXIT
 
-.EXIT:  ASL.W   #8,D3
-    ADD.W   #$400,D3
-    CMP.W   #4,D7
-    BEQ.S   .8
-    CMP.W   #5,D7
-    BEQ.S   .8
-.9: ADD.W   D3,D0
-    MOVE.W  D0,D4
-    MOVE.W  D0,(A1)+
-    MOVE.L  WORK(PC),A2
-    BRA PARSELOOP
-.8: CMP.W   #$400,D3
-    BEQ.S   .9
-    BTST	#3,CODEPREFS+3		;asm only
-    BNE.S	.9
-    MAKEWARN 1  ; ISSUE A4/A5 USED WARNING
-    BRA.S   .9
+.EXIT:	ASL.W	#8,D3
+	ADD.W	#$400,D3
+	CMP.W	#4,D7
+	BEQ.S	.8
+	CMP.W	#5,D7
+	BEQ.S	.8
+.9: ADD.W	D3,D0
+	MOVE.W	D0,D4
+	MOVE.W	D0,(A1)+
+	MOVE.L	WORK(PC),A2
+	BRA PARSELOOP
+.8: CMP.W	#$400,D3
+	BEQ.S	.9
+	BTST	#3,CODEPREFS+3		;asm only
+	BNE.S	.9
+	MAKEWARN 1	; ISSUE A4/A5 USED WARNING
+	BRA.S	.9
 ;*-*
 
 ;; Hash
 MAKEASMHASH:
-    MOVE.L  #ASMHASH,A0     ; A0=TABEL
-    LEA ASM_INSTAB,A1
-    MOVE.L  A0,A2
-    MOVE.L  #255,D0
+	MOVE.L	#ASMHASH,A0		; A0=TABEL
+	LEA ASM_INSTAB,A1
+	MOVE.L	A0,A2
+	MOVE.L	#255,D0
 .CL:
-    CLR.L   (A2)+           ; CLEAR TABLE
-    DBRA    D0,.CL
+	CLR.L	(A2)+			; CLEAR TABLE
+	DBRA	D0,.CL
 .LOOP:
-    MOVE.L  (A1),D0
-    BEQ.S   .EXX
-    MOVE.L  D0,A2
-    HASH    A2,D0,D1
-    LSL.L   #2,D0
-    LEA 0(A0,D0.L),A2
-    MOVE.L  (A2),D0         ; READ PREVIOUS LIST (OR NIL)
-    MOVE.L  A1,(A2)         ; PUT ENTRY IN LIST
-    MOVE.L  D0,4(A1)        ; AND LINK TAIL TO IT
-    ADDQ.L  #8,A1
-    BRA.S   .LOOP
+	MOVE.L	(A1),D0
+	BEQ.S	.EXX
+	MOVE.L	D0,A2
+	HASH	A2,D0,D1
+	LSL.L	#2,D0
+	LEA 0(A0,D0.L),A2
+	MOVE.L	(A2),D0			; READ PREVIOUS LIST (OR NIL)
+	MOVE.L	A1,(A2)			; PUT ENTRY IN LIST
+	MOVE.L	D0,4(A1)		; AND LINK TAIL TO IT
+	ADDQ.L	#8,A1
+	BRA.S	.LOOP
 .EXX:
-    RTS
+	RTS
 ;*-*
 
 makewarn:
-  BTST	#4,CODEPREFS+3	;no warnings
-  BNE	.nwarn
+	BTST	#4,CODEPREFS+3	;no warnings
+	BNE	.nwarn
 
-  TST.L warnsenabled
-  BEQ.S .nwarn
-  MOVEM.L	D0-D7/A0-A3,-(A7)
-  MOVE.L D0,D6
+	TST.L warnsenabled
+	BEQ.S .nwarn
+	MOVEM.L	D0-D7/A0-A3,-(A7)
+	MOVE.L D0,D6
 
-  MOVEQ	#9,D3
-  MOVE.L #WARNINGMESSY,D2
-  BSR	WRITECON
-  MOVE.L D6,D5
-  LSL.L	#2,D5
-  LEA WARNINGTAB(PC),A0
-  MOVE.L (A0,D5.L),D2
-  MOVE.L D2,A0
+	MOVEQ	#9,D3
+	MOVE.L #WARNINGMESSY,D2
+	BSR	WRITECON
+	MOVE.L D6,D5
+	LSL.L	#2,D5
+	LEA WARNINGTAB(PC),A0
+	MOVE.L (A0,D5.L),D2
+	MOVE.L D2,A0
 
-  LEA LINENUM,A1
-  BSR WRITEFORMAT
-  BSR WRITELN
-  MOVEM.L (A7)+,D0-D7/A0-A3
+	LEA LINENUM,A1
+	BSR WRITEFORMAT
+	BSR WRITELN
+	MOVEM.L (A7)+,D0-D7/A0-A3
 .nwarn:
-  RTS
+	RTS
 ;*-*
 ;;ASM
 
-ASM_COMPILE:          ; GETS INSCODE IN D7
-    MOVEM.L A2/A5,-(A7)     ; JUST A3-A4 STAY PRESERVED
-    MOVEQ   #0,D0
-    MOVE.W  D7,D0           ; D0=INSNR/ADDRESSMODENR
-    cmp.w   #$0f00,d0
-    beq     iERROR12
-    MOVEQ   #0,D1
-    SUB.W   #$100,D0
-    MOVE.W  (A3)+,D1
-    LEA ASM_INSJOB,A0
-    LSL.L   #2,D0
-    ADD.L   D0,A0
-    MOVE.L  (A0),A0         ; A0=JOBTAB ENTRY
-    MOVE.L  A4,A1           ; A1=ptr START INS IN A4
-    MOVE.W  (A0)+,(A4)+
+ASM_COMPILE:			; GETS INSCODE IN D7
+	MOVEM.L A2/A5,-(A7)		; JUST A3-A4 STAY PRESERVED
+	MOVEQ	#0,D0
+	MOVE.W	D7,D0			; D0=INSNR/ADDRESSMODENR
+	cmp.w	#$0f00,d0
+	beq		iERROR12
+	MOVEQ	#0,D1
+	SUB.W	#$100,D0
+	MOVE.W	(A3)+,D1
+	LEA ASM_INSJOB,A0
+	LSL.L	#2,D0
+	ADD.L	D0,A0
+	MOVE.L	(A0),A0			; A0=JOBTAB ENTRY
+	MOVE.L	A4,A1			; A1=ptr START INS IN A4
+	MOVE.W	(A0)+,(A4)+
 ASM_LOOP:
-    MOVEQ   #0,D7
-    MOVE.W  (A0)+,D7
-    BEQ.S   .1
-    SUBQ.L  #1,D7
-    LSL.L   #2,D7
-    MOVE.L  ASM_JOBROUTINES(PC,D7.L),A2
-    JSR (A2)
-    BRA.S   ASM_LOOP
+	MOVEQ	#0,D7
+	MOVE.W	(A0)+,D7
+	BEQ.S	.1
+	SUBQ.L	#1,D7
+	LSL.L	#2,D7
+	MOVE.L	ASM_JOBROUTINES(PC,D7.L),A2
+	JSR (A2)
+	BRA.S	ASM_LOOP
 .1: MOVEM.L (A7)+,A2/A5
-    RTS
+	RTS
 
-ASM_STOP:             ; EN JOBCODE PROCESSING
-    LEA .1(PC),A0
-    RTS
-.1: DC.W    0
+ASM_STOP:				; EN JOBCODE PROCESSING
+	LEA .1(PC),A0
+	RTS
+.1: DC.W	0
 
 SKIP244:	MACRO
-    CMP.W   #44,(A3)
-    BNE.S   *+4
-    ADDQ.L  #4,A3
+	CMP.W	#44,(A3)
+	BNE.S	*+4
+	ADDQ.L	#4,A3
 	ENDM
 
 XR:
-    SKIP244
+	SKIP244
 
 ;; a:REG
 ASM_REGID:
-    CMP.W   #IDENT,(A3)
-    BNE.S   .1
-    MOVE.L  A0,-(A7)
-    MOVE.L  2(A3),A0
-    BTST    #3,5(A0)
-    BEQ.S   .2
-    MOVE.L  D0,-(A7)
-    MOVE.W  #$400,D0
-    OR.W    10(A0),D0
-    MOVE.W  D0,(A3)
-    MOVE.L  #$2C002C,2(A3)
-    MOVE.L  (A7)+,D0
-.2: MOVE.L  (A7)+,A0
+	CMP.W	#IDENT,(A3)
+	BNE.S	.1
+	MOVE.L	A0,-(A7)
+	MOVE.L	2(A3),A0
+	BTST	#3,5(A0)
+	BEQ.S	.2
+	MOVE.L	D0,-(A7)
+	MOVE.W	#$400,D0
+	OR.W	10(A0),D0
+	MOVE.W	D0,(A3)
+	MOVE.L	#$2C002C,2(A3)
+	MOVE.L	(A7)+,D0
+.2: MOVE.L	(A7)+,A0
 .1: RTS
 ;*-*
 
 ASM_JOBROUTINES:
-    DC.L    ASM_NOTIMPL,ASM_PUTSIZE,ASM_PUTSIZEMOVE,ASM_DOEA
-    DC.L    ASM_DOEAMOVEDEST,ASM_COMMA,ASM_ADDSUB,ASM_MOVEQ,ASM_ASQ
-    DC.L    ASM_BCC,ASM_DBCC,ASM_GETADRREG,ASM_SHIFT,ASM_DATAREG
-    DC.L    ASM_BIT,ASM_SIZEA,ASM_SIZEE,ASM_XREG,ASM_DOEXG
-    DC.L    ASM_CMPM,ASM_MOVEM,ASM_TRAP,ASM_MOVEP,ASM_CMPI
-    DC.L    ASM_CPUSUP,ASM_SIZEFIXED,ASM_SIZE0,ASM_SIZEO
-    DC.L    ASM_MONADIC,ASM_FPUSUP,ASM_46EMUL,ASM_DYADIC
-    DC.L    ASM_MMUSUP,ASM_COPY,ASM_FMOVE,ASM_FMOVECR
-    DC.L    ASM_FMOVEM,ASM_FSINCOS,ASM_TRAPCC,ASM_FTST
-    DC.L    ASM_PMMSTD,ASM_PMMLDX,ASM_PMMTST,ASM_PMMMOVE,ASM_PMMEA
-    DC.L    ASM_IMM3B,ASM_MOVEC,ASM_MOVES,ASM_BITFIELD1,ASM_BITFIELD2
-    DC.L    ASM_BITFIELD3,ASM_MULDIV,ASM_LINK,ASM_CPCACHE040,ASM_MOVE16
-    DC.L    ASM_PULSE,ASM_MOVE,ASM_ANDI,ASM_EORI,ASM_ORI
+	DC.L	ASM_NOTIMPL,ASM_PUTSIZE,ASM_PUTSIZEMOVE,ASM_DOEA
+	DC.L	ASM_DOEAMOVEDEST,ASM_COMMA,ASM_ADDSUB,ASM_MOVEQ,ASM_ASQ
+	DC.L	ASM_BCC,ASM_DBCC,ASM_GETADRREG,ASM_SHIFT,ASM_DATAREG
+	DC.L	ASM_BIT,ASM_SIZEA,ASM_SIZEE,ASM_XREG,ASM_DOEXG
+	DC.L	ASM_CMPM,ASM_MOVEM,ASM_TRAP,ASM_MOVEP,ASM_CMPI
+	DC.L	ASM_CPUSUP,ASM_SIZEFIXED,ASM_SIZE0,ASM_SIZEO
+	DC.L	ASM_MONADIC,ASM_FPUSUP,ASM_46EMUL,ASM_DYADIC
+	DC.L	ASM_MMUSUP,ASM_COPY,ASM_FMOVE,ASM_FMOVECR
+	DC.L	ASM_FMOVEM,ASM_FSINCOS,ASM_TRAPCC,ASM_FTST
+	DC.L	ASM_PMMSTD,ASM_PMMLDX,ASM_PMMTST,ASM_PMMMOVE,ASM_PMMEA
+	DC.L	ASM_IMM3B,ASM_MOVEC,ASM_MOVES,ASM_BITFIELD1,ASM_BITFIELD2
+	DC.L	ASM_BITFIELD3,ASM_MULDIV,ASM_LINK,ASM_CPCACHE040,ASM_MOVE16
+	DC.L	ASM_PULSE,ASM_MOVE,ASM_ANDI,ASM_EORI,ASM_ORI
 
-;; Not implemented      1
-ASM_NOTIMPL:          ; 1
-    BRA iERROR102      ; TEMP
+;; Not implemented		1
+ASM_NOTIMPL:			; 1
+	BRA iERROR102		 ; TEMP
 ;*-*
-;; Put size             2
-ASM_PUTSIZE:          ; 2
-    TST.L   D1
-    BNE     .EXISTS
-    MOVE.W  (A0),D1
+;; Put size				2
+ASM_PUTSIZE:			; 2
+	TST.L	D1
+	BNE		.EXISTS
+	MOVE.W	(A0),D1
 .EXISTS:
-    ADDQ.L  #2,A0
-    MOVE.W  (A0)+,D2
-    MOVE.L  D1,D0
-    SUBQ.L  #1,D0
-    BTST    D0,D2
-    BEQ     iERROR96         ; 1=B,2=W,3=L...
+	ADDQ.L	#2,A0
+	MOVE.W	(A0)+,D2
+	MOVE.L	D1,D0
+	SUBQ.L	#1,D0
+	BTST	D0,D2
+	BEQ		iERROR96		 ; 1=B,2=W,3=L...
 
-    MOVE.W  (A0)+,D2        ; FIND OFFSET
-    LSL.L   D2,D0
-    OR.W    D0,(A1)         ; PUT IN INS.WORD
-    RTS
+	MOVE.W	(A0)+,D2		; FIND OFFSET
+	LSL.L	D2,D0
+	OR.W	D0,(A1)			; PUT IN INS.WORD
+	RTS
 ;*-*
-;; Put size (move)      3
-ASM_PUTSIZEMOVE:          ; 3
-    TST.L   D1
-    BNE     .EXISTS
-    MOVE.W  (A0),D1
+;; Put size (move)		3
+ASM_PUTSIZEMOVE:			; 3
+	TST.L	D1
+	BNE		.EXISTS
+	MOVE.W	(A0),D1
 .EXISTS:
-    MOVE.L  D1,D0
-    sUBQ.L  #1,D0
-    ADDQ.L  #2,A0
-    MOVE.W  (A0)+,D2
-    btst    d0,d2
-    beq     iERROR96
+	MOVE.L	D1,D0
+	sUBQ.L	#1,D0
+	ADDQ.L	#2,A0
+	MOVE.W	(A0)+,D2
+	btst	d0,d2
+	beq		iERROR96
 
-    MOVE.L  D1,D0
-    CMP.W   #1,D0
-    BEQ.S   .1
-    BCHG    #0,D0
-.1: MOVE.W  (A0)+,D2        ; FIND OFFSET
-    LSL.L   D2,D0
-    OR.W    D0,(A1)         ; PUT IN INS.WORD
-    RTS
+	MOVE.L	D1,D0
+	CMP.W	#1,D0
+	BEQ.S	.1
+	BCHG	#0,D0
+.1: MOVE.W	(A0)+,D2		; FIND OFFSET
+	LSL.L	D2,D0
+	OR.W	D0,(A1)			; PUT IN INS.WORD
+	RTS
 ;*-*
-;; EA                   4
-ASM_DOEA:             ; 4
-    BSR.W   ASM_GETEA
-    MOVE.W  (A0)+,D2
-    BTST    D0,D2
-    BEQ iERROR19
-    MOVE.W  (A0)+,D2
-    TST.W   D2
-    BMI.S   .1          ; OFFS=-1 --> NO OR.W EA
-    LSL.W   D2,D3
-    OR.W    D3,(A1)
+;; EA					4
+ASM_DOEA:				; 4
+	BSR.W	ASM_GETEA
+	MOVE.W	(A0)+,D2
+	BTST	D0,D2
+	BEQ iERROR19
+	MOVE.W	(A0)+,D2
+	TST.W	D2
+	BMI.S	.1			; OFFS=-1 --> NO OR.W EA
+	LSL.W	D2,D3
+	OR.W	D3,(A1)
 .1: RTS
 ;*-*
-;; EA (move dest)       5
-ASM_DOEAMOVEDEST:         ; 5  MASK IN D3, # IN D0
-    BSR.W   ASM_GETEA
-    MOVE.W  (A0)+,D2
-    BTST    D0,D2
-    BEQ iERROR19
-    MOVE.L  D3,D0
-    LSR.W   #3,D3           ; UPPER BITS
-    AND.W   #%111,D0        ; LOWER
-    LSL.W   #3,D0
-    ADD.W   D3,D0           ; SWAPPED REGISTER AND MODE FIELDS
-    MOVE.W  (A0)+,D2
-    LSL.W   D2,D0
-    OR.W    D0,(A1)
-    RTS
+;; EA (move dest)		5
+ASM_DOEAMOVEDEST:			; 5	MASK IN D3, # IN D0
+	BSR.W	ASM_GETEA
+	MOVE.W	(A0)+,D2
+	BTST	D0,D2
+	BEQ iERROR19
+	MOVE.L	D3,D0
+	LSR.W	#3,D3			; UPPER BITS
+	AND.W	#%111,D0		; LOWER
+	LSL.W	#3,D0
+	ADD.W	D3,D0			; SWAPPED REGISTER AND MODE FIELDS
+	MOVE.W	(A0)+,D2
+	LSL.W	D2,D0
+	OR.W	D0,(A1)
+	RTS
 ;*-*
-;; Comma                6
-ASM_COMMA:            ; 6
-    CMP.W   #COM,(A3)+
-    BNE iERROR5
-    RTS
+;; Comma				6
+ASM_COMMA:				; 6
+	CMP.W	#COM,(A3)+
+	BNE iERROR5
+	RTS
 ;*-*
-;; Add/Sub              7
-ASM_ADDSUB:           ; 7
-    BSR ASM_REGID
-    MOVE.B  (A3),D2
-    CMP.B   #4,D2
-    BEQ.S   .1
-    CMP.B   #15,D2
-    BEQ.S   .3
-.2: BSR.W   ASM_GETEA       ; EA --> Dx
+;; Add/Sub				7
+ASM_ADDSUB:				; 7
+	BSR ASM_REGID
+	MOVE.B	(A3),D2
+	CMP.B	#4,D2
+	BEQ.S	.1
+	CMP.B	#15,D2
+	BEQ.S	.3
+.2: BSR.W	ASM_GETEA		; EA --> Dx
 	SKIP244
-    OR.W    D3,(A1)
-    BSR.S   ASM_COMMA
-    CMP.B   #5,(A3)
-    BEQ.S   .4
-    MOVEQ   #9,D0
-    BSR.W   ASM_GETDATAREG
-    ADDQ.L  #2,A0
-    RTS
-.1: CMP.W   #44,2(A3)
-    BEQ.W   .S
-    ADDQ.L  #4,A3
-    BSR ASM_REGID
-    MOVE.B  (A3),D0
-    SUBQ.L  #4,A3
-    CMP.B   #4,D0
-    BEQ.S   .2
-    CMP.B   #5,D0
-    BEQ.S   .2
-.SB:    MOVEQ   #9,D0
-    BSR.W   ASM_GETDATAREG      ; Dx --> EA
-    BSR.S   ASM_COMMA
-    MOVEQ   #0,D7
-    BSR.W   ASM_ANYEA
-    CMP.W   #8,D3           ; FROM DX TO DX, ALWAYS DEST.
-    BMI.S   .DXDX
-    BSET    #0,(A1)
-.DXDX:  ADDQ.L  #2,A0
-    RTS
-.3: BSR ASM_GETEA       ; #x --> EA
-    BSR ASM_COMMA
-    CMP.B   #5,(A3)
-    BEQ.S   .8
-    BSR ASM_GETEA
-    OR.W    D3,(A1)
-    MOVE.B  (A0)+,(A1)
-    ADDQ.L  #1,A0
-    MOVE.W  #DEST,D2
-    BTST    D0,D2
-    BEQ iERROR19
-    RTS
-.4: MOVE.B  (A1),D6         ; EA --> Ax
-    CMP.B   #13*16,D6
-    BEQ.S   .5
-    CMP.B   #9*16,D6
-    BNE iERROR19
-.5: MOVE.W  (A3)+,D6
-    AND.W   #7,D6
-    LSL.W   #1,D6
-    OR.B    D6,(A1)
-    MOVE.W  (A1),D6
-    AND.W   #%11000000,D6
-    TST.W   D6
-    BEQ iERROR31
-    BTST    #7,D6
-    BEQ.S   .7
-    BSET    #0,(A1)
-.7: OR.B    #%11000000,1(A1)
-    ADDQ.L  #2,A0
-    RTS
-.8: OR.W    #%111100,(A1)
-    BRA.S   .4
-.S: ADDQ.L  #8,A3
-    BSR ASM_REGID
-    MOVE.B  (A3),D0
-    SUBQ.L  #8,A3
-    CMP.B   #4,D0
-    BEQ.W   .2
-    CMP.B   #5,D0
-    BEQ.W   .2
-    BRA.W   .SB
+	OR.W	D3,(A1)
+	BSR.S	ASM_COMMA
+	CMP.B	#5,(A3)
+	BEQ.S	.4
+	MOVEQ	#9,D0
+	BSR.W	ASM_GETDATAREG
+	ADDQ.L	#2,A0
+	RTS
+.1: CMP.W	#44,2(A3)
+	BEQ.W	.S
+	ADDQ.L	#4,A3
+	BSR ASM_REGID
+	MOVE.B	(A3),D0
+	SUBQ.L	#4,A3
+	CMP.B	#4,D0
+	BEQ.S	.2
+	CMP.B	#5,D0
+	BEQ.S	.2
+.SB:	MOVEQ	#9,D0
+	BSR.W	ASM_GETDATAREG		; Dx --> EA
+	BSR.S	ASM_COMMA
+	MOVEQ	#0,D7
+	BSR.W	ASM_ANYEA
+	CMP.W	#8,D3			; FROM DX TO DX, ALWAYS DEST.
+	BMI.S	.DXDX
+	BSET	#0,(A1)
+.DXDX:	ADDQ.L	#2,A0
+	RTS
+.3: BSR ASM_GETEA		; #x --> EA
+	BSR ASM_COMMA
+	CMP.B	#5,(A3)
+	BEQ.S	.8
+	BSR ASM_GETEA
+	OR.W	D3,(A1)
+	MOVE.B	(A0)+,(A1)
+	ADDQ.L	#1,A0
+	MOVE.W	#DEST,D2
+	BTST	D0,D2
+	BEQ iERROR19
+	RTS
+.4: MOVE.B	(A1),D6			; EA --> Ax
+	CMP.B	#13*16,D6
+	BEQ.S	.5
+	CMP.B	#9*16,D6
+	BNE iERROR19
+.5: MOVE.W	(A3)+,D6
+	AND.W	#7,D6
+	LSL.W	#1,D6
+	OR.B	D6,(A1)
+	MOVE.W	(A1),D6
+	AND.W	#%11000000,D6
+	TST.W	D6
+	BEQ iERROR31
+	BTST	#7,D6
+	BEQ.S	.7
+	BSET	#0,(A1)
+.7: OR.B	#%11000000,1(A1)
+	ADDQ.L	#2,A0
+	RTS
+.8: OR.W	#%111100,(A1)
+	BRA.S	.4
+.S: ADDQ.L	#8,A3
+	BSR ASM_REGID
+	MOVE.B	(A3),D0
+	SUBQ.L	#8,A3
+	CMP.B	#4,D0
+	BEQ.W	.2
+	CMP.B	#5,D0
+	BEQ.W	.2
+	BRA.W	.SB
 ;*-*
-;; Moveq                8
-ASM_MOVEQ:            ; 8
-    CMP.W   #$0F00,(A3)+
-    BNE iERROR30
+;; Moveq				8
+ASM_MOVEQ:				; 8
+	CMP.W	#$0F00,(A3)+
+	BNE iERROR30
 
-    MOVEM.L A0/D1,-(A7)
-    CMP.W   #LIBC,(A3)
-    BNE .1_1
-    ADDQ.L  #4,A3
-    MOVE.W  (A3)+,D1
-    EXT.L   D1
-    ADDQ.L  #8,A3
-    MOVEQ   #0,D0
-    BRA .1_2
+	MOVEM.L A0/D1,-(A7)
+	CMP.W	#LIBC,(A3)
+	BNE .1_1
+	ADDQ.L	#4,A3
+	MOVE.W	(A3)+,D1
+	EXT.L	D1
+	ADDQ.L	#8,A3
+	MOVEQ	#0,D0
+	BRA .1_2
 .1_1:
-    BSR ASM_GRABVALUE
+	BSR ASM_GRABVALUE
 .1_2:
-    TST.L   D0
-    BMI iERROR30
-    MOVE.L  D1,D0
-    MOVEM.L (A7)+,A0/D1
+	TST.L	D0
+	BMI iERROR30
+	MOVE.L	D1,D0
+	MOVEM.L (A7)+,A0/D1
 
-    CMP.L   #128,D0
-    BPL iERROR31
-    CMP.L   #-127,D0
-    BMI iERROR31
-    MOVE.B  D0,1(A1)
-    BSR.W   ASM_COMMA
-    MOVEQ   #9,D0
-    BSR     ASM_GETDATAREG
-    RTS
+	CMP.L	#128,D0
+	BPL iERROR31
+	CMP.L	#-127,D0
+	BMI iERROR31
+	MOVE.B	D0,1(A1)
+	BSR.W	ASM_COMMA
+	MOVEQ	#9,D0
+	BSR		ASM_GETDATAREG
+	RTS
 ;*-*
-;; Addq/Subq            9
-ASM_ASQ:              ; 9
-    CMP.W   #$0F00,(A3)+
-    BNE iERROR30
+;; Addq/Subq			9
+ASM_ASQ:				; 9
+	CMP.W	#$0F00,(A3)+
+	BNE iERROR30
 
-    MOVEM.L A0/D1,-(A7)
-    BSR ASM_GRABVALUE
-    TST.L   D0
-    BEQ iERROR30
-    MOVE.L  D1,D2
-    MOVEM.L (A7)+,A0/D1
+	MOVEM.L A0/D1,-(A7)
+	BSR ASM_GRABVALUE
+	TST.L	D0
+	BEQ iERROR30
+	MOVE.L	D1,D2
+	MOVEM.L (A7)+,A0/D1
 
-    TST.L   D2
-    BEQ iERROR31
-    CMP.L   #8,D2
-    BNE.S   .1
-    MOVEQ   #0,D2
-.1: MOVE.L  D2,D3
-    AND.L   #$FFFFFFF8,D3
-    TST.L   D3
-    BNE iERROR31
-    AND.W   #%111,D2
-    MOVEQ   #9,D3
-    LSL.W   D3,D2
-    ADD.W   D2,(A1)
-    RTS
+	TST.L	D2
+	BEQ iERROR31
+	CMP.L	#8,D2
+	BNE.S	.1
+	MOVEQ	#0,D2
+.1: MOVE.L	D2,D3
+	AND.L	#$FFFFFFF8,D3
+	TST.L	D3
+	BNE iERROR31
+	AND.W	#%111,D2
+	MOVEQ	#9,D3
+	LSL.W	D3,D2
+	ADD.W	D2,(A1)
+	RTS
 ;*-*
-;; Bcc                  10
-ASM_BCC:              ; 10
-    CMP.W   #IDENT,(A3)+
-    ADDQ.L  #2,A0
-    BNE iERROR4
-    MOVE.L  (A3)+,A2
-    CMP.B   #LAB,4(A2)
-    BNE iERROR4
-    BTST    #4,5(A2)        ; CHECK IF METHOD
-    BNE iERROR4
+;; Bcc					10
+ASM_BCC:				; 10
+	CMP.W	#IDENT,(A3)+
+	ADDQ.L	#2,A0
+	BNE iERROR4
+	MOVE.L	(A3)+,A2
+	CMP.B	#LAB,4(A2)
+	BNE iERROR4
+	BTST	#4,5(A2)		; CHECK IF METHOD
+	BNE iERROR4
 
-    CMP.W   #3,D1
-    BNE     .X0
-    MOVE.W  -2(A0),(A1)     ; Bcc.L....
-    MOVEM.L D1/A0,-(A7)
-    MOVE.W  10(A2),D0
-    BSR     ADDBRANCHPCREL32
-    MOVEM.L (A7)+,D1/A0
-    RTS
+	CMP.W	#3,D1
+	BNE		.X0
+	MOVE.W	-2(A0),(A1)		; Bcc.L....
+	MOVEM.L D1/A0,-(A7)
+	MOVE.W	10(A2),D0
+	BSR		ADDBRANCHPCREL32
+	MOVEM.L (A7)+,D1/A0
+	RTS
 
-.X0:CMP.W   #4,D1
-    BEQ.S   .X1
-    CMP.W   #1,D1           ; A Bcc.S/Bcc.B ?
-    BNE.S   .1
-.X1:MOVE.B  #5,1(A1)
-    BRA.S   .2
-.1: MOVE.W  #0,(A4)+
-.2: MOVE.W  10(A2),D0
-    MOVEM.L D1/A0,-(A7)
-    CLR.W   NEWOP
-    BSR ADDBRANCH
-    MOVEM.L (A7)+,D1/A0
-    RTS
+.X0:CMP.W	#4,D1
+	BEQ.S	.X1
+	CMP.W	#1,D1			; A Bcc.S/Bcc.B ?
+	BNE.S	.1
+.X1:MOVE.B	#5,1(A1)
+	BRA.S	.2
+.1: MOVE.W	#0,(A4)+
+.2: MOVE.W	10(A2),D0
+	MOVEM.L D1/A0,-(A7)
+	CLR.W	NEWOP
+	BSR ADDBRANCH
+	MOVEM.L (A7)+,D1/A0
+	RTS
 
 ;*-*
-;; DBcc                 11
-ASM_DBCC:             ; 11
-    BSR ASM_REGID
-    CMP.B   #4,(A3)+
-    BNE iERROR19
-    MOVE.B  (A3)+,D0
-    OR.B    D0,1(A1)
+;; DBcc					11
+ASM_DBCC:				; 11
+	BSR ASM_REGID
+	CMP.B	#4,(A3)+
+	BNE iERROR19
+	MOVE.B	(A3)+,D0
+	OR.B	D0,1(A1)
 	SKIP244
-    BSR.W   ASM_COMMA
-    CMP.W   #IDENT,(A3)+
-    BNE iERROR4
-    MOVE.L  (A3)+,A2
-    CMP.B   #LAB,4(A2)
-    BNE iERROR4
-    BTST    #4,5(A2)        ; CHECK IF METHOD
-    BNE iERROR4
-    MOVE.W  #0,(A4)+
-    MOVE.W  10(A2),D0
-    MOVEM.L D1/A0,-(A7)
-    CLR.W   NEWOP
-    BSR ADDBRANCH
-    MOVEM.L (A7)+,D1/A0
-    RTS
+	BSR.W	ASM_COMMA
+	CMP.W	#IDENT,(A3)+
+	BNE iERROR4
+	MOVE.L	(A3)+,A2
+	CMP.B	#LAB,4(A2)
+	BNE iERROR4
+	BTST	#4,5(A2)		; CHECK IF METHOD
+	BNE iERROR4
+	MOVE.W	#0,(A4)+
+	MOVE.W	10(A2),D0
+	MOVEM.L D1/A0,-(A7)
+	CLR.W	NEWOP
+	BSR ADDBRANCH
+	MOVEM.L (A7)+,D1/A0
+	RTS
 ;*-*
-;; Address reg          12
-ASM_GETADRREG:            ; 12
-    MOVE.W  (A0)+,D0
-    CMP.B   #5,(A3)+
-    BNE iERROR19
-    MOVE.B  (A3)+,D2
-    AND.W   #%111,D2
-    LSL.W   D0,D2
-    ADD.W   D2,(A1)
-    RTS
+;; Address reg			12
+ASM_GETADRREG:				; 12
+	MOVE.W	(A0)+,D0
+	CMP.B	#5,(A3)+
+	BNE iERROR19
+	MOVE.B	(A3)+,D2
+	AND.W	#%111,D2
+	LSL.W	D0,D2
+	ADD.W	D2,(A1)
+	RTS
 ;*-*
-;; Shift                13
-ASM_SHIFT:            ; 13
-    BSR ASM_REGID
-    MOVE.B  (A3),D2
-    CMP.B   #4,D2
-    BEQ.S   .2
-    CMP.B   #15,D2
-    BNE.W   .1
-    ADDQ.L  #2,A3           ; IMM,REG
-    CMP.W   #VALUE,(A3)+
-    BNE iERROR30
-    MOVE.L  (A3)+,D4
-    BEQ iERROR31
-    CMP.L   #8,D4
-    BNE.S   .4
-    MOVEQ   #0,D4
-.4: CMP.L   #8,D4
-    BPL iERROR31
-    TST.L   D4
-    BMI iERROR31
-    BSR ASM_COMMA
-    BSR ASM_REGID
-    CMP.B   #4,(A3)
-    BNE.S   .5
-    ADDQ.L  #1,A3
-    MOVE.B  (A3)+,D5
+;; Shift				13
+ASM_SHIFT:				; 13
+	BSR ASM_REGID
+	MOVE.B	(A3),D2
+	CMP.B	#4,D2
+	BEQ.S	.2
+	CMP.B	#15,D2
+	BNE.W	.1
+	ADDQ.L	#2,A3			; IMM,REG
+	CMP.W	#VALUE,(A3)+
+	BNE iERROR30
+	MOVE.L	(A3)+,D4
+	BEQ iERROR31
+	CMP.L	#8,D4
+	BNE.S	.4
+	MOVEQ	#0,D4
+.4: CMP.L	#8,D4
+	BPL iERROR31
+	TST.L	D4
+	BMI iERROR31
+	BSR ASM_COMMA
+	BSR ASM_REGID
+	CMP.B	#4,(A3)
+	BNE.S	.5
+	ADDQ.L	#1,A3
+	MOVE.B	(A3)+,D5
 	SKIP244
-    LSL.W   #1,D4
-    OR.B    D4,(A1)
-    OR.B    D5,1(A1)
-    SUBQ.W  #1,D1
-    LSL.W   #6,D1
-    OR.W    D1,(A1)
-    ADDQ.L  #2,A0
-    RTS
-.2: BSET    #5,1(A1)        ; REG,REG
-    ADDQ.L  #1,A3
-    MOVE.B  (A3)+,D3
-    LSL.B   #1,D3
-    OR.B    D3,(A1)
+	LSL.W	#1,D4
+	OR.B	D4,(A1)
+	OR.B	D5,1(A1)
+	SUBQ.W	#1,D1
+	LSL.W	#6,D1
+	OR.W	D1,(A1)
+	ADDQ.L	#2,A0
+	RTS
+.2: BSET	#5,1(A1)		; REG,REG
+	ADDQ.L	#1,A3
+	MOVE.B	(A3)+,D3
+	LSL.B	#1,D3
+	OR.B	D3,(A1)
 	SKIP244
-    BSR ASM_COMMA
-    BSR ASM_REGID
-    CMP.B   #4,(A3)+
-    BNE iERROR19
-    MOVE.B  (A3)+,D3
+	BSR ASM_COMMA
+	BSR ASM_REGID
+	CMP.B	#4,(A3)+
+	BNE iERROR19
+	MOVE.B	(A3)+,D3
 	SKIP244
-    OR.B    D3,1(A1)
-    SUBQ.W  #1,D1
-    LSL.W   #6,D1
-    OR.W    D1,(A1)
-    ADDQ.L  #2,A0
-    RTS
-.5: CMP.W   #1,D4
-    BNE iERROR31
-.1: CMP.W   #2,D1           ; SHIFT IN MEM NEEDS .W
-    BNE iERROR31
-    BSR.W   ASM_GETEA
-    MOVE.W  #MDEST,D2       ; SHIFT IN MEMORY
-    BTST    D0,D2
-    BEQ iERROR19
-    MOVE.W  (A0)+,(A1)      ; NEW OPCODE
-    OR.W    D3,(A1)         ; PUT IN EA
-    RTS
+	OR.B	D3,1(A1)
+	SUBQ.W	#1,D1
+	LSL.W	#6,D1
+	OR.W	D1,(A1)
+	ADDQ.L	#2,A0
+	RTS
+.5: CMP.W	#1,D4
+	BNE iERROR31
+.1: CMP.W	#2,D1			; SHIFT IN MEM NEEDS .W
+	BNE iERROR31
+	BSR.W	ASM_GETEA
+	MOVE.W	#MDEST,D2		; SHIFT IN MEMORY
+	BTST	D0,D2
+	BEQ iERROR19
+	MOVE.W	(A0)+,(A1)		; NEW OPCODE
+	OR.W	D3,(A1)			; PUT IN EA
+	RTS
 ;*-*
-;; Data reg             14
-ASM_DATAREG:          ; 14
-    MOVE.W  (A0)+,D0
-    BSR ASM_REGID
-    CMP.B   #4,(A3)+
-    BNE iERROR19
-    MOVEQ   #0,D2
-    MOVE.B  (A3)+,D2
-    LSL.W   D0,D2
-    ADD.W   D2,(A1)
+;; Data reg				14
+ASM_DATAREG:			; 14
+	MOVE.W	(A0)+,D0
+	BSR ASM_REGID
+	CMP.B	#4,(A3)+
+	BNE iERROR19
+	MOVEQ	#0,D2
+	MOVE.B	(A3)+,D2
+	LSL.W	D0,D2
+	ADD.W	D2,(A1)
 	SKIP244
-    RTS
+	RTS
 ;*-*
-;; Bit                  15
-ASM_BIT:              ; 15
-    CMP.B   #$F,(A3)
-    BNE.S   .1
-    ADDQ.L  #2,A3           ; #IMM,EA
-    CMP.W   #VALUE,(A3)+
-    BNE iERROR30
-    MOVE.L  (A3)+,D2
-    CHKB    D2,D3,iERROR31
-    MOVE.W  D2,(A4)+
-    MOVE.W  (A0)+,(A1)      ; NEW OPCODE
-    BSR ASM_COMMA
-    BSR.W   ASM_GETEA
-    MOVE.W  #BTDEST,D2
-    BTST    D0,D2
-    BEQ iERROR19
-    OR.W    D3,(A1)
-    RTS
+;; Bit					15
+ASM_BIT:				; 15
+	CMP.B	#$F,(A3)
+	BNE.S	.1
+	ADDQ.L	#2,A3			; #IMM,EA
+	CMP.W	#VALUE,(A3)+
+	BNE iERROR30
+	MOVE.L	(A3)+,D2
+	CHKB	D2,D3,iERROR31
+	MOVE.W	D2,(A4)+
+	MOVE.W	(A0)+,(A1)		; NEW OPCODE
+	BSR ASM_COMMA
+	BSR.W	ASM_GETEA
+	MOVE.W	#BTDEST,D2
+	BTST	D0,D2
+	BEQ iERROR19
+	OR.W	D3,(A1)
+	RTS
 .1: BSR ASM_REGID
-    CMP.B   #4,(A3)+        ; Dx,EA
-    BNE iERROR19
-    MOVE.B  (A3)+,D2
-    LSL.B   #1,D2
-    OR.B    D2,(A1)
+	CMP.B	#4,(A3)+		; Dx,EA
+	BNE iERROR19
+	MOVE.B	(A3)+,D2
+	LSL.B	#1,D2
+	OR.B	D2,(A1)
 	SKIP244
-    BSR ASM_COMMA
-    BSR.W   ASM_GETEA
-    MOVE.W  #BTDEST,D2
-    BTST    D0,D2
-    BEQ iERROR19
-    OR.W    D3,(A1)
-    ADDQ.L  #2,A0
-    RTS
+	BSR ASM_COMMA
+	BSR.W	ASM_GETEA
+	MOVE.W	#BTDEST,D2
+	BTST	D0,D2
+	BEQ iERROR19
+	OR.W	D3,(A1)
+	ADDQ.L	#2,A0
+	RTS
 ;*-*
-;; SizeA                16
-ASM_SIZEA:            ; 16
-    TST.W   D1
-    bNE     .EXISTS
-    MOVE.W  (A0),D1
+;; SizeA				16
+ASM_SIZEA:				; 16
+	TST.W	D1
+	bNE		.EXISTS
+	MOVE.W	(A0),D1
 .EXISTS:
-    ADDQ.L  #2,A0
-    MOVE.L  D1,D0
-    SUBQ.L  #1,D0
-    MOVE.W  (A0)+,D2
-    BTST    D0,D2
-    BEQ     iERROR96
+	ADDQ.L	#2,A0
+	MOVE.L	D1,D0
+	SUBQ.L	#1,D0
+	MOVE.W	(A0)+,D2
+	BTST	D0,D2
+	BEQ		iERROR96
 
-    CMP.W   #1,D1
-    BEQ iERROR96
-    CMP.W   #3,D1
-    BEQ.S   .1
-    RTS
-.1: BSET    #0,(A1)
-    RTS
+	CMP.W	#1,D1
+	BEQ iERROR96
+	CMP.W	#3,D1
+	BEQ.S	.1
+	RTS
+.1: BSET	#0,(A1)
+	RTS
 ;*-*
-;; SizeE                17
-ASM_SIZEE:            ; 17
-    TST.W   D1
-    bNE     .EXISTS
-    MOVE.W  (A0),D1
+;; SizeE				17
+ASM_SIZEE:				; 17
+	TST.W	D1
+	bNE		.EXISTS
+	MOVE.W	(A0),D1
 .EXISTS:
-    ADDQ.L  #2,A0
-    MOVE.L  D1,D0
-    SUBQ.L  #1,D0
-    MOVE.W  (A0)+,D2
-    BTST    D0,D2
-    BEQ     iERROR96
+	ADDQ.L	#2,A0
+	MOVE.L	D1,D0
+	SUBQ.L	#1,D0
+	MOVE.W	(A0)+,D2
+	BTST	D0,D2
+	BEQ		iERROR96
 
-    CMP.W   #1,D1
-    BEQ iERROR96
-    CMP.W   #3,D1
-    BEQ.S   .1
-    RTS
-.1: BSET    #6,1(A1)
-    RTS
+	CMP.W	#1,D1
+	BEQ iERROR96
+	CMP.W	#3,D1
+	BEQ.S	.1
+	RTS
+.1: BSET	#6,1(A1)
+	RTS
 ;*-*
-;; Xreg                 18
-ASM_XREG:             ; 18
-    BSR ASM_REGID
-    MOVE.B  (A3)+,D2
-    MOVE.B  (A3)+,D3
+;; Xreg					18
+ASM_XREG:				; 18
+	BSR ASM_REGID
+	MOVE.B	(A3)+,D2
+	MOVE.B	(A3)+,D3
 	SKIP244
-    BSR ASM_COMMA
-    BSR ASM_REGID
-    MOVE.B  (A3)+,D4
-    MOVE.B  (A3)+,D5
+	BSR ASM_COMMA
+	BSR ASM_REGID
+	MOVE.B	(A3)+,D4
+	MOVE.B	(A3)+,D5
 	SKIP244
-    CMP.B   D2,D4
-    BNE iERROR19
-    CMP.B   #4,D2
-    BEQ.S   .1
-    CMP.B   #8,D2
-    BNE iERROR19
-    BSET    #3,1(A1)
-.1: AND.B   #%111,D3
-    AND.B   #%111,D5
-    OR.B    D3,1(A1)
-    LSL.B   #1,D5
-    OR.B    D5,(A1)
-    RTS
+	CMP.B	D2,D4
+	BNE iERROR19
+	CMP.B	#4,D2
+	BEQ.S	.1
+	CMP.B	#8,D2
+	BNE iERROR19
+	BSET	#3,1(A1)
+.1: AND.B	#%111,D3
+	AND.B	#%111,D5
+	OR.B	D3,1(A1)
+	LSL.B	#1,D5
+	OR.B	D5,(A1)
+	RTS
 ;*-*
-;; Exg                  19
-ASM_DOEXG:            ; 19
-    BSR ASM_REGID
-    MOVE.B  (A3)+,D2
-    MOVE.B  (A3)+,D3
-    CMP.B   #4,D2
-    BNE.S   .1
+;; Exg					19
+ASM_DOEXG:				; 19
+	BSR ASM_REGID
+	MOVE.B	(A3)+,D2
+	MOVE.B	(A3)+,D3
+	CMP.B	#4,D2
+	BNE.S	.1
 	SKIP244
 
-    LSL.B   #1,D3
-    OR.B    D3,(A1)
+	LSL.B	#1,D3
+	OR.B	D3,(A1)
 
-    BSR ASM_COMMA
-    BSR ASM_REGID
-    MOVE.B  (A3)+,D2
-    MOVE.B  (A3)+,D3
-    AND.B   #%111,D3
+	BSR ASM_COMMA
+	BSR ASM_REGID
+	MOVE.B	(A3)+,D2
+	MOVE.B	(A3)+,D3
+	AND.B	#%111,D3
 
-    OR.B    D3,1(A1)
+	OR.B	D3,1(A1)
 
-    CMP.B   #4,D2
-    BNE.S   .2
+	CMP.B	#4,D2
+	BNE.S	.2
 	SKIP244
-    BSET    #6,1(A1)        ; d,d
-    RTS
-.2: BSET    #7,1(A1)        ; d,a
-    BSET    #3,1(A1)
-    RTS
-.1: CMP.B   #5,D2
-    BNE iERROR19
-    AND.B   #%111,D3
+	BSET	#6,1(A1)		; d,d
+	RTS
+.2: BSET	#7,1(A1)		; d,a
+	BSET	#3,1(A1)
+	RTS
+.1: CMP.B	#5,D2
+	BNE iERROR19
+	AND.B	#%111,D3
 
-    OR.B    D3,1(A1)
+	OR.B	D3,1(A1)
 
-    BSR ASM_COMMA
-    BSR ASM_REGID
-    MOVE.B  (A3)+,D2
-    MOVE.B  (A3)+,D3
-    AND.B   #%111,D3
+	BSR ASM_COMMA
+	BSR ASM_REGID
+	MOVE.B	(A3)+,D2
+	MOVE.B	(A3)+,D3
+	AND.B	#%111,D3
 
-    LSL.B   #1,D3
-    OR.B    D3,(A1)
+	LSL.B	#1,D3
+	OR.B	D3,(A1)
 
-    CMP.B   #4,D2
-    BNE.S   .3
+	CMP.B	#4,D2
+	BNE.S	.3
 	SKIP244
-    BSET    #7,1(A1)        ; d,a
-    BSET    #3,1(A1)
-    RTS
-.3: BSET    #6,1(A1)        ; a,a
-    BSET    #3,1(A1)
-    RTS
+	BSET	#7,1(A1)		; d,a
+	BSET	#3,1(A1)
+	RTS
+.3: BSET	#6,1(A1)		; a,a
+	BSET	#3,1(A1)
+	RTS
 ;*-*
-;; Cmpm                 20
-ASM_CMPM:             ; 20
-    CMP.B   #7,(A3)+
-    BNE iERROR19
-    MOVE.B  (A3)+,D2
-    BSR ASM_COMMA
-    CMP.B   #7,(A3)+
-    BNE iERROR19
-    AND.W   #$7,D2
-    OR.W    D2,(A1)
-    MOVE.B  (A3)+,D2
-    AND.W   #$7,D2
-    LSL.B   #1,D2
-    OR.B    D2,(A1)
-    RTS
+;; Cmpm					20
+ASM_CMPM:				; 20
+	CMP.B	#7,(A3)+
+	BNE iERROR19
+	MOVE.B	(A3)+,D2
+	BSR ASM_COMMA
+	CMP.B	#7,(A3)+
+	BNE iERROR19
+	AND.W	#$7,D2
+	OR.W	D2,(A1)
+	MOVE.B	(A3)+,D2
+	AND.W	#$7,D2
+	LSL.B	#1,D2
+	OR.B	D2,(A1)
+	RTS
 ;*-*
-;; Movem                21
-ASM_MOVEM:            ; 21
-    BSR ASM_REGID
-    MOVE.B  (A3),D0
-    BEQ.S   .1B
-    CMPI.B  #6,D0
-    BMI.S   .1
-.1B:    ADDQ.L  #2,A4
-    BSR.W   ASM_GETEA       ; (Ax)+,REGLIST
-    MOVE.W  #MMSRC,D2
-    BTST    D0,D2
-    BEQ iERROR19
-    OR.W    D3,(A1)
-    BSET    #2,(A1)
-    BSR ASM_COMMA
-    BSR ASM_REGID
-    BSR.S   .2
-    MOVE.W  D2,2(A1)
-    RTS
-.1: BSR.S   .2
-    MOVE.W  D2,(A4)+
-    MOVE.W  D7,-(A7)
-    BSR ASM_COMMA
-    BSR.W   ASM_GETEA       ; REGLIST,-(Ax)
-    MOVE.W  (A7)+,D7
-    CMP.W   #4,D0
-    BNE.S   .10
-    MOVE.W  D7,2(A1)
-.10:    MOVE.W  #MMDEST,D2
-    BTST    D0,D2
-    BEQ iERROR19
-    OR.W    D3,(A1)
-    RTS
-.2: MOVEQ   #0,D2           ; MASK
-    MOVEQ   #0,D7
-    MOVE.B  (A3)+,D0        ; GET REGLIST
-    BEQ iERROR0
-.6: MOVEQ   #4,D6
-    CMP.B   #4,D0
-    BEQ.S   .4
-    CMP.B   #5,D0
-    BEQ.S   .5
-    BRA iERROR19
-.X: SUBQ.L  #2,A3
-    RTS
-.4: MOVEQ   #0,D4
-    MOVE.B  (A3)+,D4        ; Dx
+;; Movem				21
+ASM_MOVEM:				; 21
+	BSR ASM_REGID
+	MOVE.B	(A3),D0
+	BEQ.S	.1B
+	CMPI.B	#6,D0
+	BMI.S	.1
+.1B:	ADDQ.L	#2,A4
+	BSR.W	ASM_GETEA		; (Ax)+,REGLIST
+	MOVE.W	#MMSRC,D2
+	BTST	D0,D2
+	BEQ iERROR19
+	OR.W	D3,(A1)
+	BSET	#2,(A1)
+	BSR ASM_COMMA
+	BSR ASM_REGID
+	BSR.S	.2
+	MOVE.W	D2,2(A1)
+	RTS
+.1: BSR.S	.2
+	MOVE.W	D2,(A4)+
+	MOVE.W	D7,-(A7)
+	BSR ASM_COMMA
+	BSR.W	ASM_GETEA		; REGLIST,-(Ax)
+	MOVE.W	(A7)+,D7
+	CMP.W	#4,D0
+	BNE.S	.10
+	MOVE.W	D7,2(A1)
+.10:	MOVE.W	#MMDEST,D2
+	BTST	D0,D2
+	BEQ iERROR19
+	OR.W	D3,(A1)
+	RTS
+.2: MOVEQ	#0,D2			; MASK
+	MOVEQ	#0,D7
+	MOVE.B	(A3)+,D0		; GET REGLIST
+	BEQ iERROR0
+.6: MOVEQ	#4,D6
+	CMP.B	#4,D0
+	BEQ.S	.4
+	CMP.B	#5,D0
+	BEQ.S	.5
+	BRA iERROR19
+.X: SUBQ.L	#2,A3
+	RTS
+.4: MOVEQ	#0,D4
+	MOVE.B	(A3)+,D4		; Dx
 	SKIP244
-    BSET    D4,D2
-    MOVEQ   #15,D3
-    SUB.L   D4,D3
-    BSET    D3,D7
-.9: MOVE.W  (A3)+,D5
-    CMP.W   #10,D5
-    BEQ.S   .7
-    CMP.W   #8,D5
-    BNE.S   .X
-    BSR ASM_REGID
-    CMP.B   (A3)+,D6
-    BNE iERROR19
-    MOVEQ   #0,D5
-    MOVE.B  (A3)+,D5
+	BSET	D4,D2
+	MOVEQ	#15,D3
+	SUB.L	D4,D3
+	BSET	D3,D7
+.9: MOVE.W	(A3)+,D5
+	CMP.W	#10,D5
+	BEQ.S	.7
+	CMP.W	#8,D5
+	BNE.S	.X
+	BSR ASM_REGID
+	CMP.B	(A3)+,D6
+	BNE iERROR19
+	MOVEQ	#0,D5
+	MOVE.B	(A3)+,D5
 	SKIP244
-.8: ADDQ.L  #1,D4
-    BSET    D4,D2
-    MOVEQ   #15,D3
-    SUB.L   D4,D3
-    BSET    D3,D7
-    CMP.L   D5,D4
-    BMI.S   .8
-    BEQ.S   .9
-    BRA iERROR19
-.5: MOVEQ   #5,D6           ; Ax
-    BRA.S   .4
+.8: ADDQ.L	#1,D4
+	BSET	D4,D2
+	MOVEQ	#15,D3
+	SUB.L	D4,D3
+	BSET	D3,D7
+	CMP.L	D5,D4
+	BMI.S	.8
+	BEQ.S	.9
+	BRA iERROR19
+.5: MOVEQ	#5,D6			; Ax
+	BRA.S	.4
 .7: BSR ASM_REGID
-    MOVE.B  (A3)+,D0
-    BRA.S   .6
+	MOVE.B	(A3)+,D0
+	BRA.S	.6
 ;*-*
-;; Trap                 22
-ASM_TRAP:             ; 22
-    CMP.L   #$0F000001,(A3)+
-    BNE iERROR19
-    MOVE.L  (A3)+,D2
-    MOVE.L  D2,D3
-    AND.L   #$FFFFFFF0,D3
-    TST.L   D3
-    BNE iERROR31
-    OR.W    D2,(A1)
-    RTS
+;; Trap					22
+ASM_TRAP:				; 22
+	CMP.L	#$0F000001,(A3)+
+	BNE iERROR19
+	MOVE.L	(A3)+,D2
+	MOVE.L	D2,D3
+	AND.L	#$FFFFFFF0,D3
+	TST.L	D3
+	BNE iERROR31
+	OR.W	D2,(A1)
+	RTS
 ;*-*
-;; Movep                23
-ASM_MOVEP:            ; 23
-    CMP.B   #4,(A3)
-    BNE.S   .1
-    ADDQ.L  #1,A3
-    BSET    #7,1(A1)        ; Dx,x(Ax)
-    MOVE.B  (A3)+,D2
-    LSL.B   #1,D2
-    OR.B    D2,(A1)
-    BSR ASM_COMMA
-    BSR     ASM_GETEA
-    CMP.W   #5,D0
-    BNE iERROR19
-    AND.W   #7,D3
-    OR.W    D3,(A1)
-    RTS
-.1: BSR     ASM_GETEA       ; x(Ax),Dx
-    CMP.W   #5,D0
-    BNE iERROR19
-    AND.W   #7,D3
-    OR.W    D3,(A1)
-    BSR ASM_COMMA
-    CMP.B   #4,(A3)+
-    BNE iERROR19
-    MOVE.B  (A3)+,D2
-    LSL.B   #1,D2
-    OR.B    D2,(A1)
-    RTS
+;; Movep				23
+ASM_MOVEP:				; 23
+	CMP.B	#4,(A3)
+	BNE.S	.1
+	ADDQ.L	#1,A3
+	BSET	#7,1(A1)		; Dx,x(Ax)
+	MOVE.B	(A3)+,D2
+	LSL.B	#1,D2
+	OR.B	D2,(A1)
+	BSR ASM_COMMA
+	BSR		ASM_GETEA
+	CMP.W	#5,D0
+	BNE iERROR19
+	AND.W	#7,D3
+	OR.W	D3,(A1)
+	RTS
+.1: BSR		ASM_GETEA		; x(Ax),Dx
+	CMP.W	#5,D0
+	BNE iERROR19
+	AND.W	#7,D3
+	OR.W	D3,(A1)
+	BSR ASM_COMMA
+	CMP.B	#4,(A3)+
+	BNE iERROR19
+	MOVE.B	(A3)+,D2
+	LSL.B	#1,D2
+	OR.B	D2,(A1)
+	RTS
 ;*-*
-;; Cmpi                 24
-ASM_CMPI:             ; 24
-    CMP.W   #$0F00,(A3)
-    BEQ .1
-    RTS
-.1: MOVE.B  #$C,(A1)        ; SET TO CMPI
-    BSR     ASM_GETEA
-    CMP.W   #11,D0
-    BNE iERROR19
-    BSR ASM_COMMA
-    BSR ASM_GETEA
-    MOVE.W  #DEST,D2
-    BTST    D0,D2
-    BEQ iERROR19
-    OR.W    D3,(A1)
-    BSR ASM_STOP
-    RTS
+;; Cmpi					24
+ASM_CMPI:				; 24
+	CMP.W	#$0F00,(A3)
+	BEQ .1
+	RTS
+.1: MOVE.B	#$C,(A1)		; SET TO CMPI
+	BSR		ASM_GETEA
+	CMP.W	#11,D0
+	BNE iERROR19
+	BSR ASM_COMMA
+	BSR ASM_GETEA
+	MOVE.W	#DEST,D2
+	BTST	D0,D2
+	BEQ iERROR19
+	OR.W	D3,(A1)
+	BSR ASM_STOP
+	RTS
 ;*-*
-;; CpuSup               25
-ASM_CPUSUP:           ; 25
-    MOVE.W  ASMCPU(PC),D0
-    AND.W   (A0)+,D0
-    BEQ iERROR53
-    RTS
+;; CpuSup				25
+ASM_CPUSUP:				; 25
+	MOVE.W	ASMCPU(PC),D0
+	AND.W	(A0)+,D0
+	BEQ iERROR53
+	RTS
 ;*-*
-;; SizeFixed            26
+;; SizeFixed			26
 ASM_SIZEFIXED:
-    CMP.W   (A0)+,D1
-    BNE iERROR31
-    RTS
+	CMP.W	(A0)+,D1
+	BNE iERROR31
+	RTS
 ;*-*
-;; Size0                27
+;; Size0				27
 ASM_SIZE0:
-    TST.W   D1
-    BNE     iERROR96
-    RTS
+	TST.W	D1
+	BNE		iERROR96
+	RTS
 ;*-*
-;; SizeO                28
+;; SizeO				28
 ASM_SIZEO:
-    TST.W   D1
-    BNE     .EXISTS
-    MOVE.W  (A0),D1
+	TST.W	D1
+	BNE		.EXISTS
+	MOVE.W	(A0),D1
 .EXISTS:
-    ADDQ.L  #2,A0
-    MOVe.W  (A0)+,D2
-    MOVE.L  D1,D0
-    SUBQ.L  #1,D0
-    BTST    D0,D2
-    BEQ     iERROR96
-    RTS
+	ADDQ.L	#2,A0
+	MOVe.W	(A0)+,D2
+	MOVE.L	D1,D0
+	SUBQ.L	#1,D0
+	BTST	D0,D2
+	BEQ		iERROR96
+	RTS
 ;*-*
-;; Monadic              29
+;; Monadic				29
 ASM_MONADIC:
-    MOVE.W  (A0)+,(A4)+
-    CMP.W   #52,(A3)
-    BNE     .EA
-    CMP.W   #5,D1
-    BNE     iERROR96
-    BSR     ASM_GETFPREG
-    MOVE.W  D2,D3
-    CMP.W   #COM,(A3)
-    BNE     .FP
-    BSR     ASM_COMMA
-    BSR     ASM_GETFPREG
-.FP:LSL.W   #8,D3
-    LSL.W   #2,D3
-    LSL.W   #7,D2
-    OR.W    D2,2(A1)
-    OR.W    D3,2(A1)
-    RTS
+	MOVE.W	(A0)+,(A4)+
+	CMP.W	#52,(A3)
+	BNE		.EA
+	CMP.W	#5,D1
+	BNE		iERROR96
+	BSR		ASM_GETFPREG
+	MOVE.W	D2,D3
+	CMP.W	#COM,(A3)
+	BNE		.FP
+	BSR		ASM_COMMA
+	BSR		ASM_GETFPREG
+.FP:LSL.W	#8,D3
+	LSL.W	#2,D3
+	LSL.W	#7,D2
+	OR.W	D2,2(A1)
+	OR.W	D3,2(A1)
+	RTS
 .EA:
-    BSR     ASM_GETEA
-    MOVE.L  #NASRC,D2
-    BTST    D0,D2
-    BEQ     iERROR19
-    TST.W   D0
-    BNE     .EA2
-    CMp.W   #5,D1
-    BPL     iERROR96
+	BSR		ASM_GETEA
+	MOVE.L	#NASRC,D2
+	BTST	D0,D2
+	BEQ		iERROR19
+	TST.W	D0
+	BNE		.EA2
+	CMp.W	#5,D1
+	BPL		iERROR96
 .EA2:
-    TST.W   (A0)+
-    BNE     .EA3
-    CMP.W   #6,D1
-    BEQ     iERROR96
+	TST.W	(A0)+
+	BNE		.EA3
+	CMP.W	#6,D1
+	BEQ		iERROR96
 .EA3:
-    OR.W    D3,(A1)
-    MOVE.L  D1,D2
-    CMp.W   #8,D1
-    BEQ     iERROR96
-    LSL.W   #1,D2
-    MOVE.W  .SIZES(PC,D2),D2
-    OR.W    D2,2(A1)
-    BSR     ASM_COMMA
-    BSR     ASM_GETFPREG
-    LSL.W   #7,D2
-    OR.W    D2,2(A1)
-    RTS
+	OR.W	D3,(A1)
+	MOVE.L	D1,D2
+	CMp.W	#8,D1
+	BEQ		iERROR96
+	LSL.W	#1,D2
+	MOVE.W	.SIZES(PC,D2),D2
+	OR.W	D2,2(A1)
+	BSR		ASM_COMMA
+	BSR		ASM_GETFPREG
+	LSL.W	#7,D2
+	OR.W	D2,2(A1)
+	RTS
 .SIZES:
-    DC.W    0,$5800,$5000,$4000,$4400,$4800,$4c00,$5400,$0000
+	DC.W	0,$5800,$5000,$4000,$4400,$4800,$4c00,$5400,$0000
 ;*-*
-;; FpuSup               30
+;; FpuSup				30
 ASM_FPUSUP:
-    MOVE.W  (A0)+,D2
-    MOVE.W  EFPU,D0
-    AND.W   D0,D2
-    BEQ     iERROR53
-    RTS
+	MOVE.W	(A0)+,D2
+	MOVE.W	EFPU,D0
+	AND.W	D0,D2
+	BEQ		iERROR53
+	RTS
 ;*-*
-;; 040/060 emulated     31
+;; 040/060 emulated		31
 ASM_46EMUL:
-    CMP.W   #2,EFPU
-    BNE     .X
-    MAKEWARN 8
+	CMP.W	#2,EFPU
+	BNE		.X
+	MAKEWARN 8
 .X: RTS
 ;*-*
-;; Dyadic               32
+;; Dyadic				32
 ASM_DYADIC:
-    MOVE.W  (A0)+,(A4)+
-    CMP.W   #52,(A3)
-    BNE     .EA
-    CMP.W   #5,D1
-    BNE     iERROR96
-    BSR     ASM_GETFPREG
-    MOVE.W  D2,D3
-    BSR     ASM_COMMA
-    BSR     ASM_GETFPREG
-.FP:LSL.W   #8,D3
-    LSL.W   #2,D3
-    LSL.W   #7,D2
-    OR.W    D2,2(A1)
-    OR.W    D3,2(A1)
-    RTS
+	MOVE.W	(A0)+,(A4)+
+	CMP.W	#52,(A3)
+	BNE		.EA
+	CMP.W	#5,D1
+	BNE		iERROR96
+	BSR		ASM_GETFPREG
+	MOVE.W	D2,D3
+	BSR		ASM_COMMA
+	BSR		ASM_GETFPREG
+.FP:LSL.W	#8,D3
+	LSL.W	#2,D3
+	LSL.W	#7,D2
+	OR.W	D2,2(A1)
+	OR.W	D3,2(A1)
+	RTS
 .EA:
-    BSR     ASM_GETEA
-    MOVE.L  #NASRC,D2
-    BTST    D0,D2
-    BEQ     iERROR19
-    TST.W   D0
-    BNE     .EA2
-    CMp.W   #5,D1
-    BPL     iERROR96
+	BSR		ASM_GETEA
+	MOVE.L	#NASRC,D2
+	BTST	D0,D2
+	BEQ		iERROR19
+	TST.W	D0
+	BNE		.EA2
+	CMp.W	#5,D1
+	BPL		iERROR96
 .EA2:
-    TST.W   (A0)+
-    BNE     .EA3
-    CMP.W   #6,D1
-    BEQ     iERROR96
+	TST.W	(A0)+
+	BNE		.EA3
+	CMP.W	#6,D1
+	BEQ		iERROR96
 .EA3:
-    OR.W    D3,(A1)
-    MOVE.L  D1,D2
-    CMp.W   #8,D1
-    BEQ     iERROR96
-    LSL.W   #1,D2
-    MOVE.W  .SIZES(PC,D2),D2
-    OR.W    D2,2(A1)
-    BSR     ASM_COMMA
-    BSR     ASM_GETFPREG
-    LSL.W   #7,D2
-    OR.W    D2,2(A1)
-    RTS
+	OR.W	D3,(A1)
+	MOVE.L	D1,D2
+	CMp.W	#8,D1
+	BEQ		iERROR96
+	LSL.W	#1,D2
+	MOVE.W	.SIZES(PC,D2),D2
+	OR.W	D2,2(A1)
+	BSR		ASM_COMMA
+	BSR		ASM_GETFPREG
+	LSL.W	#7,D2
+	OR.W	D2,2(A1)
+	RTS
 .SIZES:
-    DC.W    0,$5800,$5000,$4000,$4400,$4800,$4c00,$5400,$0000
+	DC.W	0,$5800,$5000,$4000,$4400,$4800,$4c00,$5400,$0000
 ;*-*
-;; MmuSup               33
+;; MmuSup				33
 ASM_MMUSUP:
-    MOVE.W  (A0)+,D2
-    MOVE.W  EMMU,D0
-    AND.W   D0,D2
-    BEQ     iERROR53
-    RTS
+	MOVE.W	(A0)+,D2
+	MOVE.W	EMMU,D0
+	AND.W	D0,D2
+	BEQ		iERROR53
+	RTS
 ;*-*
-;; Copy                 34
+;; Copy					34
 ASM_COPY:
-    MOVE.W  (A0)+,(A4)+
-    RTS
+	MOVE.W	(A0)+,(A4)+
+	RTS
 ;*-*
-;; Fmove                35
+;; Fmove				35
 ASM_FMOVE:
-    CMP.W   #52,(A3)
-    BNE     .EA
-    CMP.W   #$24,2(A3)
-    BPL     .FPCR1
-    BSR     ASM_GETFPREG
-    MOVE.W  D2,D7
-    BSR     ASM_COMMA
-    CMP.W   #52,(A3)
-    BNE     .EAX
-    CMP.W   #5,D1
+	CMP.W	#52,(A3)
+	BNE		.EA
+	CMP.W	#$24,2(A3)
+	BPL		.FPCR1
+	BSR		ASM_GETFPREG
+	MOVE.W	D2,D7
+	BSR		ASM_COMMA
+	CMP.W	#52,(A3)
+	BNE		.EAX
+	CMP.W	#5,D1
 
-    BNE     iERROR96         ; FP to FP
-    BSR     ASM_GETFPREG
-    LSL.W   #8,D7
-    LSL.W   #2,D7
-    LSL.W   #7,D2
-    OR.W    D2,2(A1)
-    OR.W    D7,2(A1)
-    RTS
+	BNE		iERROR96		 ; FP to FP
+	BSR		ASM_GETFPREG
+	LSL.W	#8,D7
+	LSL.W	#2,D7
+	LSL.W	#7,D2
+	OR.W	D2,2(A1)
+	OR.W	D7,2(A1)
+	RTS
 .EAX:
-    BSR     ASM_GETEA
-    MOVE.L  #DEST,D2
-    BTST    D0,D2
-    BEQ     iERROR19
-    TST.W   D0
-    BNE     .EAX1
-    CMP.W   #5,D1
-    BPL     iERROR96
+	BSR		ASM_GETEA
+	MOVE.L	#DEST,D2
+	BTST	D0,D2
+	BEQ		iERROR19
+	TST.W	D0
+	BNE		.EAX1
+	CMP.W	#5,D1
+	BPL		iERROR96
 .EAX1:
-    OR.W    D3,(A1)
-    LSL.W   #7,D7
-    OR.W    D7,2(A1)
-    BSR     .ADJUSTSIZE
-    OR.W    #$2000,2(A1)
-    CMP.W   #6,D1
-    BNE     .X
-    CMP.W   #23,(a3)
-    BEQ     .EXT
+	OR.W	D3,(A1)
+	LSL.W	#7,D7
+	OR.W	D7,2(A1)
+	BSR		.ADJUSTSIZE
+	OR.W	#$2000,2(A1)
+	CMP.W	#6,D1
+	BNE		.X
+	CMP.W	#23,(a3)
+	BEQ		.EXT
 .X: RTS
 .EXT:
-    ADDQ.L  #2,A3
-    CMP.B   #4,(A3)
-    BEQ     .EXTD
-    CMp.L   #$0f000001,(a3)+
-    bne     iERROR19
-    move.l  (a3)+,d2
-    bmi     iERROR31
-    cmp.l   #64,d2
-    bpl     iERROR31
-    OR.W    D2,2(A1)
-    CMP.W   #24,(A3)+
-    BNE     iERROR29
-    RTS
+	ADDQ.L	#2,A3
+	CMP.B	#4,(A3)
+	BEQ		.EXTD
+	CMp.L	#$0f000001,(a3)+
+	bne		iERROR19
+	move.l	(a3)+,d2
+	bmi		iERROR31
+	cmp.l	#64,d2
+	bpl		iERROR31
+	OR.W	D2,2(A1)
+	CMP.W	#24,(A3)+
+	BNE		iERROR29
+	RTS
 .EXTD:
-    OR.W    #$1000,2(A1)
-    MOve.W  (a3)+,d2
-    and.l   #7,d2
-    lsl.w   #4,d2
-    or.w    d2,2(A1)
-    cmp.w   #24,(a3)+
-    bne     iERROR29
-    RTS
+	OR.W	#$1000,2(A1)
+	MOve.W	(a3)+,d2
+	and.l	#7,d2
+	lsl.w	#4,d2
+	or.w	d2,2(A1)
+	cmp.w	#24,(a3)+
+	bne		iERROR29
+	RTS
 .FPCR1:
-    CMP.W   #3,D1
-    BNE     iERROR96
-    ADDq.L  #2,A3
-    MOVE.W  (A3)+,D2
-    cmp.w   #$27,d2
-    bpl     iERROR98
-    sub.w   #$24,d2
-    beq     .F11
-    cmp.w   #1,d2
-    beq     .F12
-    move.w  #$A400,D2
-    BRA     .F13
+	CMP.W	#3,D1
+	BNE		iERROR96
+	ADDq.L	#2,A3
+	MOVE.W	(A3)+,D2
+	cmp.w	#$27,d2
+	bpl		iERROR98
+	sub.w	#$24,d2
+	beq		.F11
+	cmp.w	#1,d2
+	beq		.F12
+	move.w	#$A400,D2
+	BRA		.F13
 .F11:
-    move.w  #$a800,d2
-    bra     .F13
+	move.w	#$a800,d2
+	bra		.F13
 .F12:
-    MOVe.W  #$B000,d2
+	MOVe.W	#$B000,d2
 .F13:
-    move.w  d2,2(a1)
-    bsr     ASM_COMMA
-    BSR     ASM_GETEA
-    MOVe.W  #DEST,D2
-    BTST    D0,D2
-    BEQ     iERROR19
-    OR.W    D3,(A1)
-    RTS
+	move.w	d2,2(a1)
+	bsr		ASM_COMMA
+	BSR		ASM_GETEA
+	MOVe.W	#DEST,D2
+	BTST	D0,D2
+	BEQ		iERROR19
+	OR.W	D3,(A1)
+	RTS
 
 .EA:
-    BSR     ASM_GETEA
-    MOVE.L  #NASRC,D2
-    BTST    D0,D2
-    BEQ     iERROR19
-    TST.W   D0
-    BNE     .EA2
-    CMp.W   #5,D1
-    BPL     iERROR96
+	BSR		ASM_GETEA
+	MOVE.L	#NASRC,D2
+	BTST	D0,D2
+	BEQ		iERROR19
+	TST.W	D0
+	BNE		.EA2
+	CMp.W	#5,D1
+	BPL		iERROR96
 .EA2:
-    OR.W    D3,(A1)
-    BSR     ASM_COMMA
-    CMP.W   #$24,2(A3)
-    BPL     .FPCR2
-    BSR     ASM_GETFPREG
-    LSL.W   #7,D2
-    OR.W    D2,2(A1)
-    BSR     .ADJUSTSIZE
-    RTS
+	OR.W	D3,(A1)
+	BSR		ASM_COMMA
+	CMP.W	#$24,2(A3)
+	BPL		.FPCR2
+	BSR		ASM_GETFPREG
+	LSL.W	#7,D2
+	OR.W	D2,2(A1)
+	BSR		.ADJUSTSIZE
+	RTS
 
 .FPCR2:
-    CMP.W   #3,D1
-    BNE     iERROR96
-    CMP.W   #52,(a3)+
-    BNE     iERROR98
-    MOVE.W  (A3)+,D2
-    cmp.w   #$27,d2
-    bpl     iERROR98
-    sub.w   #$24,d2
-    beq     .F21
-    cmp.w   #1,d2
-    beq     .F22
-    move.w  #$8400,D2
-    BRA     .F23
+	CMP.W	#3,D1
+	BNE		iERROR96
+	CMP.W	#52,(a3)+
+	BNE		iERROR98
+	MOVE.W	(A3)+,D2
+	cmp.w	#$27,d2
+	bpl		iERROR98
+	sub.w	#$24,d2
+	beq		.F21
+	cmp.w	#1,d2
+	beq		.F22
+	move.w	#$8400,D2
+	BRA		.F23
 .F21:
-    move.w  #$8800,d2
-    bra     .F23
+	move.w	#$8800,d2
+	bra		.F23
 .F22:
-    MOVe.W  #$9000,d2
+	MOVe.W	#$9000,d2
 .F23:
-    move.w  d2,2(a1)
-    OR.W    D3,(A1)
-    RTS
+	move.w	d2,2(a1)
+	OR.W	D3,(A1)
+	RTS
 .ADJUSTSIZE:
-    MOVE.L  D1,D2
-    LSL.W   #1,D2
-    MOVE.W  .SIZES(PC,D2),D2
-    OR.W    D2,2(A1)
-    RTS
+	MOVE.L	D1,D2
+	LSL.W	#1,D2
+	MOVE.W	.SIZES(PC,D2),D2
+	OR.W	D2,2(A1)
+	RTS
 .SIZES:
-    DC.W    0,$5800,$5000,$4000,$4400,$4800,$4c00,$5400,$0000
+	DC.W	0,$5800,$5000,$4000,$4400,$4800,$4c00,$5400,$0000
 ;*-*
-;; Fmovecr              36
+;; Fmovecr				36
 ASM_FMOVECR:
-    CMP.L   #$0f000001,(a3)+
-    BNE     iERROR30
-    MOVE.L  (a3)+,D2
-    BMI     iERROR31
-    CMP.L   #$7F,D2
-    BGT     iERROR31
-    OR.W    D2,2(A1)
-    BSR     ASM_COMMA
-    BSR     ASM_GETFPREG
-    LSL.W   #7,D2
-    OR.W    D2,2(A1)
-    RTS
+	CMP.L	#$0f000001,(a3)+
+	BNE		iERROR30
+	MOVE.L	(a3)+,D2
+	BMI		iERROR31
+	CMP.L	#$7F,D2
+	BGT		iERROR31
+	OR.W	D2,2(A1)
+	BSR		ASM_COMMA
+	BSR		ASM_GETFPREG
+	LSL.W	#7,D2
+	OR.W	D2,2(A1)
+	RTS
 ;*-*
-;; Fmovem               37
+;; Fmovem				37
 ASM_FMOVEM:
-    CMP.W   #3,D1       ; ".L"?
-    BEQ     .FPCR_LIST
+	CMP.W	#3,D1		; ".L"?
+	BEQ		.FPCR_LIST
 
-    CMP.W   #52,(A3)
-    BEQ     .01         ; FP reg list
+	CMP.W	#52,(A3)
+	BEQ		.01			; FP reg list
 
-    BSR     ASM_GETEA
-    MOVE.L  #MMSRC+1,D2
-    BTST    D0,D2
-    BEQ     iERROR19
-    TST.W   D0
-    BEQ     .02         ; mask in Dx
+	BSR		ASM_GETEA
+	MOVE.L	#MMSRC+1,D2
+	BTST	D0,D2
+	BEQ		iERROR19
+	TST.W	D0
+	BEQ		.02			; mask in Dx
 
-    OR.W    D3,(A1)
-    BSR     ASM_COMMA
-    CMP.W   #52,(A3)
-    BEQ     .03         ; restore list
+	OR.W	D3,(A1)
+	BSR		ASM_COMMA
+	CMP.W	#52,(A3)
+	BEQ		.03			; restore list
 ;; FMOVEM <ea>,Dx
-    Bsr     ASM_GETEA
-    TST.W   D0
-    BNE     iERROR19
-    LSL.W   #3,D3
-    or.w    d3,2(a1)
-    OR.W    #$C800,2(A1)    ; FMOVEM.X  <ea>,Dx
-    RTS
+	Bsr		ASM_GETEA
+	TST.W	D0
+	BNE		iERROR19
+	LSL.W	#3,D3
+	or.w	d3,2(a1)
+	OR.W	#$C800,2(A1)	; FMOVEM.X	<ea>,Dx
+	RTS
 ;*-*
 ;; FMOVEM <ea>,<list>
 .03:
-    BSR     .COMBINE_LIST
-    MOVE.L  D0,D7
-    BSR     .FLIP
-    OR.W    D2,2(A1)
-    OR.W    #$D000,2(A1)    ; FMOVEM.X  <ea>,<list>
-    RTS
+	BSR		.COMBINE_LIST
+	MOVE.L	D0,D7
+	BSR		.FLIP
+	OR.W	D2,2(A1)
+	OR.W	#$D000,2(A1)	; FMOVEM.X	<ea>,<list>
+	RTS
 ;*-*
 ;; FMOVEM Dx,<ea>
 .02:
-    LSL.W   #3,D3
-    OR.W    D3,2(A1)
-    BSR     ASM_COMMA
-    BSR     ASM_GETEA
-    MOVE.L  #MMDEST,D2
-    BTST    D0,D2
-    BEQ     iERROR19
-    OR.W    D3,(A1)
-    CMP.W   #4,d0
-    bne     .X2
-    OR.W    #$E800,2(A1)    ; FMOVEM.X  Dx,<ea>
-    RTS
-.X2:OR.W    #$F800,2(A1)
-    RTS
+	LSL.W	#3,D3
+	OR.W	D3,2(A1)
+	BSR		ASM_COMMA
+	BSR		ASM_GETEA
+	MOVE.L	#MMDEST,D2
+	BTST	D0,D2
+	BEQ		iERROR19
+	OR.W	D3,(A1)
+	CMP.W	#4,d0
+	bne		.X2
+	OR.W	#$E800,2(A1)	; FMOVEM.X	Dx,<ea>
+	RTS
+.X2:OR.W	#$F800,2(A1)
+	RTS
 ;*-*
 ;; FMOVEM <list>,<ea>
 .01:
-    BSR     .COMBINE_LIST
-    MOVE.L  D2,D7
-    BSR     ASM_COMMA
-    BSR     ASM_GETEA
-    MOVE.L  #MMDEST,D2
-    BTST    D0,D2
-    BEQ     iERROR19
-    OR.W    D3,(A1)
-    CMP.W   #4,D0
-    BNE     .X1
-    OR.W    #$E000,2(A1)    ; FMOVEM.X <list>,<ea>
-    OR.W    D7,2(a1)
-    RTS
-.X1:OR.W    #$F000,2(A1)
-    BSR     .FLIP
-    OR.W    D2,2(A1)
-    RTS
+	BSR		.COMBINE_LIST
+	MOVE.L	D2,D7
+	BSR		ASM_COMMA
+	BSR		ASM_GETEA
+	MOVE.L	#MMDEST,D2
+	BTST	D0,D2
+	BEQ		iERROR19
+	OR.W	D3,(A1)
+	CMP.W	#4,D0
+	BNE		.X1
+	OR.W	#$E000,2(A1)	; FMOVEM.X <list>,<ea>
+	OR.W	D7,2(a1)
+	RTS
+.X1:OR.W	#$F000,2(A1)
+	BSR		.FLIP
+	OR.W	D2,2(A1)
+	RTS
 ;*-*
 ;; Flip bits
 .FLIP:
-    MOVEQ   #7,D0
-    MOVEQ   #0,D2
+	MOVEQ	#7,D0
+	MOVEQ	#0,D2
 .FLIPX:
-    LSR.W   #1,D7
-    BCC     .FLIPY
-    BSET    D0,D2
+	LSR.W	#1,D7
+	BCC		.FLIPY
+	BSET	D0,D2
 .FLIPY:
-    DBF     D0,.FLIPX
-    RTS
+	DBF		D0,.FLIPX
+	RTS
 ;*-*
 ;; Combine mask list
 .COMBINE_LIST:
-    MOVEQ   #0,D0
-    BSR     ASM_GETFPREG
-    BSET    D2,D0           ; D0 - mask
-    MOVE.L  D2,D7
+	MOVEQ	#0,D0
+	BSR		ASM_GETFPREG
+	BSET	D2,D0			; D0 - mask
+	MOVE.L	D2,D7
 .LOOP:
-    CMP.W   #10,(A3)
-    BEQ     .ONE
-    CMP.W   #8,(A3)
-    BNE     .XXX
+	CMP.W	#10,(A3)
+	BEQ		.ONE
+	CMP.W	#8,(A3)
+	BNE		.XXX
 
-    ADDQ.L  #2,A3
-    ADDQ.L  #1,D7
-    BSR     ASM_GETFPREG
-    CMP.W   D2,D7
-    BGT     iERROR19
+	ADDQ.L	#2,A3
+	ADDQ.L	#1,D7
+	BSR		ASM_GETFPREG
+	CMP.W	D2,D7
+	BGT		iERROR19
 .L1:
-    BTST    D7,D0
-    BNE     iERROR50
-    BSET    D7,D0
-    ADDQ.B  #1,D7
-    CMP.W   D2,D7
-    BLE     .L1
-    CMP.W   #8,(A3)
-    BEQ     iERROR19
-    CMP.W   #10,(A3)
-    BNE     .XXX
+	BTST	D7,D0
+	BNE		iERROR50
+	BSET	D7,D0
+	ADDQ.B	#1,D7
+	CMP.W	D2,D7
+	BLE		.L1
+	CMP.W	#8,(A3)
+	BEQ		iERROR19
+	CMP.W	#10,(A3)
+	BNE		.XXX
 
 .ONE:
-    ADDQ.L  #2,A3
-    BSR     ASM_GETFPREG
-    BTST    D2,D0
-    BNE     iERROR50
-    BSET    D2,D0
-    MOVE.L  D2,D7
-    BRA     .LOOP
+	ADDQ.L	#2,A3
+	BSR		ASM_GETFPREG
+	BTST	D2,D0
+	BNE		iERROR50
+	BSET	D2,D0
+	MOVE.L	D2,D7
+	BRA		.LOOP
 .XXX:
-    MOVE.L  D0,D2
-    RTS
+	MOVE.L	D0,D2
+	RTS
 ;*-*
 ;; FPcr
 .FPCR_LIST:
-    BSR     .COMBINE_FPCR
-    OR.W    D2,2(A1)
-    OR.W    #$A000,2(A1)
-    BSR     ASM_COMMA
-    BSR     ASM_GETEA
-    MOVE.W  #MMDEST,D2
-    bTST    D0,D2
-    bEQ     iERROR19
-    OR.W    D3,(A1)
-    RTS
+	BSR		.COMBINE_FPCR
+	OR.W	D2,2(A1)
+	OR.W	#$A000,2(A1)
+	BSR		ASM_COMMA
+	BSR		ASM_GETEA
+	MOVE.W	#MMDEST,D2
+	bTST	D0,D2
+	bEQ		iERROR19
+	OR.W	D3,(A1)
+	RTS
 .CREA:
-    BSR     ASM_GETEA
-    MOVE.W  #MMSRC,D2
-    BTST    D0,D2
-    BEQ     iERROR19
-    OR.W    D3,(A1)
-    BSR     ASM_COMMA
-    BSR     .COMBINE_FPCR
-    OR.W    d2,2(A1)
-    OR.W    #$C000,2(A1)
-    RTS
+	BSR		ASM_GETEA
+	MOVE.W	#MMSRC,D2
+	BTST	D0,D2
+	BEQ		iERROR19
+	OR.W	D3,(A1)
+	BSR		ASM_COMMA
+	BSR		.COMBINE_FPCR
+	OR.W	d2,2(A1)
+	OR.W	#$C000,2(A1)
+	RTS
 ;*-*
 ;; Combine FPcr
 .COMBINE_FPCR:
-    CMP.W   #52,(A3)+
-    BNE     iERROR98
-    MOVEQ   #0,D2
+	CMP.W	#52,(A3)+
+	BNE		iERROR98
+	MOVEQ	#0,D2
 .CFLOOP:
-    MOVE.W  (A3)+,D0
-    SUB.L   #$24,D0
-    BMI     iERROR98
-    CMp.W   #1,D0
-    BMI     .x1
-    BEQ     .x2
-    BTST    #10,d2
-    bne     iERROR50
-    bset    #10,d2
-    bra     .x3
+	MOVE.W	(A3)+,D0
+	SUB.L	#$24,D0
+	BMI		iERROR98
+	CMp.W	#1,D0
+	BMI		.x1
+	BEQ		.x2
+	BTST	#10,d2
+	bne		iERROR50
+	bset	#10,d2
+	bra		.x3
 .x2:
-    btst    #12,d2
-    bne     iERROR50
-    bset    #12,d2
-    bra     .x3
+	btst	#12,d2
+	bne		iERROR50
+	bset	#12,d2
+	bra		.x3
 .x1:
-    btst    #11,d2
-    bne     iERROR50
-    bset    #11,d2
+	btst	#11,d2
+	bne		iERROR50
+	bset	#11,d2
 .x3:
-    cmp.l   #$000a002f,(a3)+
-    beq     .CFLOOP
-    subq.l  #4,a3
-    rts
+	cmp.l	#$000a002f,(a3)+
+	beq		.CFLOOP
+	subq.l	#4,a3
+	rts
 ;*-*
 ;*-*
-;; Fsincos              38
+;; Fsincos				38
 ASM_FSINCOS:
-    CMP.W   #52,(A3)
-    BNE     .EA
-    CMP.W   #5,D1
-    BNE     iERROR96
-    BSR     ASM_GETFPREG
-    LSL.W   #8,D2
-    LSL.W   #2,D2
-    OR.W    D2,2(A1)
-    BRA     .REST
+	CMP.W	#52,(A3)
+	BNE		.EA
+	CMP.W	#5,D1
+	BNE		iERROR96
+	BSR		ASM_GETFPREG
+	LSL.W	#8,D2
+	LSL.W	#2,D2
+	OR.W	D2,2(A1)
+	BRA		.REST
 .EA:
-    BSR     .ADJUSTSIZE
-    BSR     ASM_GETEA
-    MOVE.L  #NASRC,D2
-    BTST    D0,D2
-    BEQ     iERROR19
-    TST.W   D0
-    BNE     .SKP
-    CMP.W   #5,D1
-    BPL     iERROR96
+	BSR		.ADJUSTSIZE
+	BSR		ASM_GETEA
+	MOVE.L	#NASRC,D2
+	BTST	D0,D2
+	BEQ		iERROR19
+	TST.W	D0
+	BNE		.SKP
+	CMP.W	#5,D1
+	BPL		iERROR96
 .SKP:
-    OR.W    D3,(A1)
+	OR.W	D3,(A1)
 .REST:
-    BSR     ASM_COMMA
-    BSR     ASM_GETFPREG
-    MOVE.L  D2,D7
-    CMP.W   #19,(A3)+
-    BNE     iERROR97
-    BSR     ASM_GETFPREG
-    LSL.W   #7,D2
-    OR.W    D2,2(A1)
-    OR.W    D7,2(A1)
-    RTS
+	BSR		ASM_COMMA
+	BSR		ASM_GETFPREG
+	MOVE.L	D2,D7
+	CMP.W	#19,(A3)+
+	BNE		iERROR97
+	BSR		ASM_GETFPREG
+	LSL.W	#7,D2
+	OR.W	D2,2(A1)
+	OR.W	D7,2(A1)
+	RTS
 
 .ADJUSTSIZE:
-    MOVE.L  D1,D2
-    LSL.W   #1,D2
-    MOVE.W  .SIZES(PC,D2),D2
-    OR.W    D2,2(A1)
-    RTS
+	MOVE.L	D1,D2
+	LSL.W	#1,D2
+	MOVE.W	.SIZES(PC,D2),D2
+	OR.W	D2,2(A1)
+	RTS
 .SIZES:
-    DC.W    0,$5800,$5000,$4000,$4400,$4800,$4c00,$5400,$0000
+	DC.W	0,$5800,$5000,$4000,$4400,$4800,$4c00,$5400,$0000
 ;*-*
-;; Trapcc               39
+;; Trapcc				39
 ASM_TRAPCC:
-    CMP.L   #$0F000001,(A3)
-    BEQ     .PARAM
-    ADD.W   #2,(A1)
-    RTS
+	CMP.L	#$0F000001,(A3)
+	BEQ		.PARAM
+	ADD.W	#2,(A1)
+	RTS
 .PARAM:
-    ADDQ.L  #4,A3
-    MOVE.L  (A3)+,D2
-    CMP.W   #2,D1
-    BEQ     .WRD
-    ADD.W   #1,(A1)
-    MOVE.L  D2,(A4)+
-    RTS
+	ADDQ.L	#4,A3
+	MOVE.L	(A3)+,D2
+	CMP.W	#2,D1
+	BEQ		.WRD
+	ADD.W	#1,(A1)
+	MOVE.L	D2,(A4)+
+	RTS
 .WRD:
-    CHKW    D2,D7,iERROR31
-    MOVE.W  D2,(A4)+
-    RTS
+	CHKW	D2,D7,iERROR31
+	MOVE.W	D2,(A4)+
+	RTS
 ;*-*
-;; Ftst                 40
+;; Ftst					40
 ASM_FTST:
-    CMP.W   #52,(A3)
-    BNE     .EA
-    CMP.W   #5,D1
-    BNE     iERROR96
-    BSR     ASM_GETFPREG
-    lsl.w   #8,d2
-    lsl.w   #2,d2
-    or.w    d2,2(a1)
-    rts
+	CMP.W	#52,(A3)
+	BNE		.EA
+	CMP.W	#5,D1
+	BNE		iERROR96
+	BSR		ASM_GETFPREG
+	lsl.w	#8,d2
+	lsl.w	#2,d2
+	or.w	d2,2(a1)
+	rts
 .EA:
-    BSR     ASM_GETEA
-    MOVE.L  #NASRC,D2
-    BTST    D0,D2
-    BEQ     iERROR19
-    OR.W    d3,(a1)
-    TST.W   D0
-    BNE     .SKP
-    CMP.W   #5,D1
-    BPl     iERROR96
+	BSR		ASM_GETEA
+	MOVE.L	#NASRC,D2
+	BTST	D0,D2
+	BEQ		iERROR19
+	OR.W	d3,(a1)
+	TST.W	D0
+	BNE		.SKP
+	CMP.W	#5,D1
+	BPl		iERROR96
 .SKP:
-    BSR     .ADJUSTSIZE
-    RTS
+	BSR		.ADJUSTSIZE
+	RTS
 
 .ADJUSTSIZE:
-    MOVE.L  D1,D2
-    LSL.W   #1,D2
-    MOVE.W  .SIZES(PC,D2),D2
-    OR.W    D2,2(A1)
-    RTS
+	MOVE.L	D1,D2
+	LSL.W	#1,D2
+	MOVE.W	.SIZES(PC,D2),D2
+	OR.W	D2,2(A1)
+	RTS
 .SIZES:
-    DC.W    0,$5800,$5000,$4000,$4400,$4800,$4c00,$5400,$0000
+	DC.W	0,$5800,$5000,$4000,$4400,$4800,$4c00,$5400,$0000
 ;*-*
-;; Standard MMU         41
+;; Standard MMU			41
 ASM_PMMSTD:
-    CMP.W   #52,(A3)
-    BNE     .EA
-    ADDQ.L  #2,A3
-    MOVE.W  (a3)+,D2
-    CMP.W   #2,D2
-    BPL     iERROR99
-    OR.W    D2,2(A1)
-    BRA     .C
+	CMP.W	#52,(A3)
+	BNE		.EA
+	ADDQ.L	#2,A3
+	MOVE.W	(a3)+,D2
+	CMP.W	#2,D2
+	BPL		iERROR99
+	OR.W	D2,2(A1)
+	BRA		.C
 .EA:
-    BSR     ASM_GETEA
-    TST.W   D0
-    BNE     .040
-    OR.W    #8,D3
-    OR.W    D3,2(A1)
+	BSR		ASM_GETEA
+	TST.W	D0
+	BNE		.040
+	OR.W	#8,D3
+	OR.W	D3,2(A1)
 .C:
-    BSR     ASM_COMMA
-    CMP.L   #$0f000001,(a3)+
-    BNE     iERROR30
-    MOVE.L  (A3)+,D2
-    BMI     iERROR31
-    CMP.L   #8,D2
-    BPL     iERROR31
-    LSL.W   #5,D2
-    OR.W    D2,2(A1)
-    MOVE.W  #0,(A0)
-    CMP.W   #COM,(A3)
-    BEQ     .C2
-    RTS
+	BSR		ASM_COMMA
+	CMP.L	#$0f000001,(a3)+
+	BNE		iERROR30
+	MOVE.L	(A3)+,D2
+	BMI		iERROR31
+	CMP.L	#8,D2
+	BPL		iERROR31
+	LSL.W	#5,D2
+	OR.W	D2,2(A1)
+	MOVE.W	#0,(A0)
+	CMP.W	#COM,(A3)
+	BEQ		.C2
+	RTS
 .C2:
-    BSR     ASM_COMMA
-    BSR     ASM_GETEA
-    MOVE.L  #%000111100100,D2
-    BTST    D0,D2
-    BEQ     iERROR19
-    OR.W    d3,(a1)
-    or.w    #$800,2(a1)
-    rts
+	BSR		ASM_COMMA
+	BSR		ASM_GETEA
+	MOVE.L	#%000111100100,D2
+	BTST	D0,D2
+	BEQ		iERROR19
+	OR.W	d3,(a1)
+	or.w	#$800,2(a1)
+	rts
 .040:
-    TST.W   (A0)
-    BEQ     iERROR19
-    CMP.W   #2,ECPU
-    BLT     iERROR53
-    ADDQ.L  #2,A0
-    CMP.W   #2,D0
-    BNE     iERROR19
-    MOVE.W  #$F508,(A1)
-    AND.W   #7,D3
-    OR.W    #8,D3
-    OR.W    D3,(A1)
-    LEA     2(A1),A4
-    RTS
+	TST.W	(A0)
+	BEQ		iERROR19
+	CMP.W	#2,ECPU
+	BLT		iERROR53
+	ADDQ.L	#2,A0
+	CMP.W	#2,D0
+	BNE		iERROR19
+	MOVE.W	#$F508,(A1)
+	AND.W	#7,D3
+	OR.W	#8,D3
+	OR.W	D3,(A1)
+	LEA		2(A1),A4
+	RTS
 
 ;*-*
-;; MMU Load             42
+;; MMU Load				42
 ASM_PMMLDX:
-    CMP.W   #52,(A3)
-    BNE     .EA
-    ADDQ.L  #2,A3
-    MOVE.W  (a3)+,D2
-    CMP.W   #2,D2
-    BPL     iERROR99
-    OR.W    D2,2(A1)
-    BRA     .C
+	CMP.W	#52,(A3)
+	BNE		.EA
+	ADDQ.L	#2,A3
+	MOVE.W	(a3)+,D2
+	CMP.W	#2,D2
+	BPL		iERROR99
+	OR.W	D2,2(A1)
+	BRA		.C
 .EA:
-    BSR     ASM_GETEA
-    TST.W   D0
-    BNE     iERROR19
-    OR.W    #8,D3
-    OR.W    D3,2(A1)
+	BSR		ASM_GETEA
+	TST.W	D0
+	BNE		iERROR19
+	OR.W	#8,D3
+	OR.W	D3,2(A1)
 .C:
-    BSR     ASM_COMMA
-    BSR     ASM_GETEA
-    MOVE.L  #%000111100100,D2
-    BTST    D0,D2
-    BEQ     iERROR19
-    OR.W    d3,(a1)
-    rts
+	BSR		ASM_COMMA
+	BSR		ASM_GETEA
+	MOVE.L	#%000111100100,D2
+	BTST	D0,D2
+	BEQ		iERROR19
+	OR.W	d3,(a1)
+	rts
 ;*-*
-;; MMU Test             43
+;; MMU Test				43
 ASM_PMMTST:
-    CMP.W   #52,(A3)
-    BNE     .EA
-    ADDQ.L  #2,A3
-    MOVE.W  (a3)+,D2
-    CMP.W   #2,D2
-    BPL     iERROR99
-    OR.W    D2,2(A1)
-    BRA     .C
+	CMP.W	#52,(A3)
+	BNE		.EA
+	ADDQ.L	#2,A3
+	MOVE.W	(a3)+,D2
+	CMP.W	#2,D2
+	BPL		iERROR99
+	OR.W	D2,2(A1)
+	BRA		.C
 .EA:
-    BSR     ASM_GETEA
-    TST.W   D0
-    BNE     .040
-    OR.W    #8,D3
-    OR.W    D3,2(A1)
+	BSR		ASM_GETEA
+	TST.W	D0
+	BNE		.040
+	OR.W	#8,D3
+	OR.W	D3,2(A1)
 .C:
-    BSR     ASM_COMMA
-    BSR     ASM_GETEA
-    MOVE.L  #%000111100100,D2
-    BTST    D0,D2
-    BEQ     iERROR19
-    OR.W    d3,(a1)
-    BSR     ASM_COMMA
-    CMP.L   #$0f000001,(a3)+
-    BNE     iERROR30
-    MOVE.L  (A3)+,D2
-    BMI     iERROR31
-    CMP.L   #8,D2
-    BPL     iERROR31
-    LSL.W   #8,D2
-    LSL.W   #2,D2
-    OR.W    D2,2(A1)
-    MOVE.W  #0,(A0)
-    CMP.W   #COM,(A3)
-    BEQ     .C2
-    RTS
+	BSR		ASM_COMMA
+	BSR		ASM_GETEA
+	MOVE.L	#%000111100100,D2
+	BTST	D0,D2
+	BEQ		iERROR19
+	OR.W	d3,(a1)
+	BSR		ASM_COMMA
+	CMP.L	#$0f000001,(a3)+
+	BNE		iERROR30
+	MOVE.L	(A3)+,D2
+	BMI		iERROR31
+	CMP.L	#8,D2
+	BPL		iERROR31
+	LSL.W	#8,D2
+	LSL.W	#2,D2
+	OR.W	D2,2(A1)
+	MOVE.W	#0,(A0)
+	CMP.W	#COM,(A3)
+	BEQ		.C2
+	RTS
 .C2:
-    BSR     ASM_COMMA
-    BSR     ASM_GETEA
-    CMP.W   #1,D0
-    BNE     iERROR19
-    OR.W    #$100,2(a1)
-    AND.L   #$7,D3
-    LSL.W   #5,D3
-    OR.W    D3,2(a1)
-    RTS
+	BSR		ASM_COMMA
+	BSR		ASM_GETEA
+	CMP.W	#1,D0
+	BNE		iERROR19
+	OR.W	#$100,2(a1)
+	AND.L	#$7,D3
+	LSL.W	#5,D3
+	OR.W	D3,2(a1)
+	RTS
 .040:
-    CMP.W   #2,D0
-    BNE     iERROR19
-    CMP.W   #2,ECPU
-    BMI     iERROR53
-    ADDQ.L  #2,A0
-    MOVE.W  (A0)+,(A1)
-    AND.L   #7,D3
-    OR.W    D3,(A1)
-    LEA     2(A1),A4
-    RTS
+	CMP.W	#2,D0
+	BNE		iERROR19
+	CMP.W	#2,ECPU
+	BMI		iERROR53
+	ADDQ.L	#2,A0
+	MOVE.W	(A0)+,(A1)
+	AND.L	#7,D3
+	OR.W	D3,(A1)
+	LEA		2(A1),A4
+	RTS
 ;*-*
-;; MMU Move             44
+;; MMU Move				44
 ASM_PMMMOVE:
-    CMP.W   #52,(A3)
-    BEQ     .II
-    BSR     .EA
-    BSR     ASM_COMMA
-    BSR     .SEL
-    RTS
-.II:BSR     .SEL
-    BSR     ASM_COMMA
-    BSR     .EA
-    RTS
+	CMP.W	#52,(A3)
+	BEQ		.II
+	BSR		.EA
+	BSR		ASM_COMMA
+	BSR		.SEL
+	RTS
+.II:BSR		.SEL
+	BSR		ASM_COMMA
+	BSR		.EA
+	RTS
 
 .EA:
-    BSR     ASM_GETEA
-    MOVE.L  #%000111111100,D2
-    BTST    D0,D2
-    BEQ     iERROR19
-    OR.W    D3,(A1)
-    RTS
+	BSR		ASM_GETEA
+	MOVE.L	#%000111111100,D2
+	BTST	D0,D2
+	BEQ		iERROR19
+	OR.W	D3,(A1)
+	RTS
 
 .SEL:
-    CMP.W   #52,(a3)+
-    BNE     iERROR99
-    MOVE.W  (A3)+,D2
-    CMP.W   #3,D1
-    BEQ     .LO
-    CMP.W   #8,D1
-    BEQ     .QO
-    CMP.W   #2,D1
-    BEQ     .WO
-    BRA     iERROR96
+	CMP.W	#52,(a3)+
+	BNE		iERROR99
+	MOVE.W	(A3)+,D2
+	CMP.W	#3,D1
+	BEQ		.LO
+	CMP.W	#8,D1
+	BEQ		.QO
+	CMP.W	#2,D1
+	BEQ		.WO
+	BRA		iERROR96
 ;; Long ones
-.LO:CMP.W   #3,D2
-    BNE     .L0
-    MOVE.W  #$4200,D2
-    BRA     .LZ
-.L0:CMP.W   #$13,D2
-    BNE     .L1
-    MOVE.W  #$A00,D2
-    BRA     .LZ
-.L1:CMP.W   #$14,D2
-    BNE     .L2
-    MOVe.W  #$E00,D2
-    BRA     .LZ
-.L2:BRA     iERROR99
+.LO:CMP.W	#3,D2
+	BNE		.L0
+	MOVE.W	#$4200,D2
+	BRA		.LZ
+.L0:CMP.W	#$13,D2
+	BNE		.L1
+	MOVE.W	#$A00,D2
+	BRA		.LZ
+.L1:CMP.W	#$14,D2
+	BNE		.L2
+	MOVe.W	#$E00,D2
+	BRA		.LZ
+.L2:BRA		iERROR99
 
-.LZ:OR.W    D2,2(A1)
-    RTS
+.LZ:OR.W	D2,2(A1)
+	RTS
 ;*-*
 ;; Quad ones
-.QO:CMP.W   #$10,D2
-    BNE     .Q0
-    MOVE.W  #$4A00,D2
-    BRA     .QZ
-.Q0:CMP.W   #$1b,D2
-    BNE     .Q1
-    MOVE.W  #$4600,D2
-    BRA     .QZ
-.Q1:CMP.W   #$12,D2
-    BNE     .Q2
-    MOVE.W  #$4e00,D2
-    BRA     .QZ
-.Q2:BRA     iERROR99
+.QO:CMP.W	#$10,D2
+	BNE		.Q0
+	MOVE.W	#$4A00,D2
+	BRA		.QZ
+.Q0:CMP.W	#$1b,D2
+	BNE		.Q1
+	MOVE.W	#$4600,D2
+	BRA		.QZ
+.Q1:CMP.W	#$12,D2
+	BNE		.Q2
+	MOVE.W	#$4e00,D2
+	BRA		.QZ
+.Q2:BRA		iERROR99
 
-.QZ:OR.W    D2,2(A1)
-    RTS
+.QZ:OR.W	D2,2(A1)
+	RTS
 ;*-*
 ;; Word ones
-.WO:CMP.W   #$E,D2      ;MMUSR
-    BNE     .W0
-    MOVE.W  #$6200,D2
-    BRA     .WZ
-.W0:CMP.W   #$16,D2     ;BAC0
-    BNE     .W1
-    MOVE.W  #$7600,D2
-    BRA     .WZ
-.W1:CMP.W   #$30,D2     ;BAC1
-    BNE     .W2
-    MOVE.W  #$7604,D2
-    BRA     .WZ
-.W2:CMP.W   #$31,D2     ;BAC2
-    BNE     .W3
-    MOVE.W  #$7608,D2
-    BRA     .WZ
-.W3:CMP.W   #$32,D2     ;BAC3
-    BNE     .W4
-    MOVE.W  #$760c,D2
-    BRA     .WZ
-.W4:CMP.W   #$33,D2     ;BAC4
-    BNE     .W5
-    MOVE.W  #$7610,D2
-    BRA     .WZ
-.W5:CMP.W   #$34,D2     ;BAC5
-    BNE     .W6
-    MOVE.W  #$7614,D2
-    BRA     .WZ
-.W6:CMP.W   #$35,D2     ;BAC6
-    BNE     .W7
-    MOVE.W  #$7618,D2
-    BRA     .WZ
-.W7:CMP.W   #$36,D2     ;BAC7
-    BNE     .W8
-    MOVE.W  #$761C,D2
-    BRA     .WZ
-.W8:CMP.W   #$15,D2     ;BAD0
-    BNE     .W9
-    MOVE.W  #$7200,D2
-    BRA     .WZ
-.W9:CMP.W   #$29,D2     ;BAD1
-    BNE     .WA
-    MOVE.W  #$7204,D2
-    BRA     .WZ
-.WA:CMP.W   #$2a,D2     ;BAD2
-    BNE     .WB
-    MOVE.W  #$7208,D2
-    BRA     .WZ
-.WB:CMP.W   #$2b,D2     ;BAD3
-    BNE     .WC
-    MOVE.W  #$720c,D2
-    BRA     .WZ
-.WC:CMP.W   #$2c,D2     ;BAD4
-    BNE     .WD
-    MOVE.W  #$7210,D2
-    BRA     .WZ
-.WD:CMP.W   #$2d,D2     ;BAD5
-    BNE     .WE
-    MOVE.W  #$7214,D2
-    BRA     .WZ
-.WE:CMP.W   #$2e,D2     ;BAD6
-    BNE     .WF
-    MOVE.W  #$7218,D2
-    BRA     .WZ
-.WF:CMP.W   #$2f,D2     ;BAD7
-    BNE     .WG
-    MOVE.W  #$721C,D2
-    BRA     .WZ
-.WG:BRA     iERROR99
-.WZ:OR.W    D2,2(A1)
-    RTS
+.WO:CMP.W	#$E,D2		;MMUSR
+	BNE		.W0
+	MOVE.W	#$6200,D2
+	BRA		.WZ
+.W0:CMP.W	#$16,D2		;BAC0
+	BNE		.W1
+	MOVE.W	#$7600,D2
+	BRA		.WZ
+.W1:CMP.W	#$30,D2		;BAC1
+	BNE		.W2
+	MOVE.W	#$7604,D2
+	BRA		.WZ
+.W2:CMP.W	#$31,D2		;BAC2
+	BNE		.W3
+	MOVE.W	#$7608,D2
+	BRA		.WZ
+.W3:CMP.W	#$32,D2		;BAC3
+	BNE		.W4
+	MOVE.W	#$760c,D2
+	BRA		.WZ
+.W4:CMP.W	#$33,D2		;BAC4
+	BNE		.W5
+	MOVE.W	#$7610,D2
+	BRA		.WZ
+.W5:CMP.W	#$34,D2		;BAC5
+	BNE		.W6
+	MOVE.W	#$7614,D2
+	BRA		.WZ
+.W6:CMP.W	#$35,D2		;BAC6
+	BNE		.W7
+	MOVE.W	#$7618,D2
+	BRA		.WZ
+.W7:CMP.W	#$36,D2		;BAC7
+	BNE		.W8
+	MOVE.W	#$761C,D2
+	BRA		.WZ
+.W8:CMP.W	#$15,D2		;BAD0
+	BNE		.W9
+	MOVE.W	#$7200,D2
+	BRA		.WZ
+.W9:CMP.W	#$29,D2		;BAD1
+	BNE		.WA
+	MOVE.W	#$7204,D2
+	BRA		.WZ
+.WA:CMP.W	#$2a,D2		;BAD2
+	BNE		.WB
+	MOVE.W	#$7208,D2
+	BRA		.WZ
+.WB:CMP.W	#$2b,D2		;BAD3
+	BNE		.WC
+	MOVE.W	#$720c,D2
+	BRA		.WZ
+.WC:CMP.W	#$2c,D2		;BAD4
+	BNE		.WD
+	MOVE.W	#$7210,D2
+	BRA		.WZ
+.WD:CMP.W	#$2d,D2		;BAD5
+	BNE		.WE
+	MOVE.W	#$7214,D2
+	BRA		.WZ
+.WE:CMP.W	#$2e,D2		;BAD6
+	BNE		.WF
+	MOVE.W	#$7218,D2
+	BRA		.WZ
+.WF:CMP.W	#$2f,D2		;BAD7
+	BNE		.WG
+	MOVE.W	#$721C,D2
+	BRA		.WZ
+.WG:BRA		iERROR99
+.WZ:OR.W	D2,2(A1)
+	RTS
 ;*-*
 ;*-*
-;; MMU EA               45
+;; MMU EA				45
 ASM_PMMEA:
-    BSR     ASM_GETEA
-    MOVE.W  (A0)+,D2
-    BTST    D0,D2
-    BEQ     iERROR19
-    AND.L   #7,D3
-    OR.W    D3,(A1)
-    RTS
+	BSR		ASM_GETEA
+	MOVE.W	(A0)+,D2
+	BTST	D0,D2
+	BEQ		iERROR19
+	AND.L	#7,D3
+	OR.W	D3,(A1)
+	RTS
 ;*-*
-;; Immediate 3 bit      46
+;; Immediate 3 bit		46
 ASM_IMM3B:
-    CMp.L   #$0f000001,(a3)+
-    BNE     iERROR30
-    MOVE.L  (a3)+,D2
-    BMI     iERROR31
-    CMP.L   #8,D2
-    BPL     iERROR31
-    OR.W    D2,(A1)
-    RTS
+	CMp.L	#$0f000001,(a3)+
+	BNE		iERROR30
+	MOVE.L	(a3)+,D2
+	BMI		iERROR31
+	CMP.L	#8,D2
+	BPL		iERROR31
+	OR.W	D2,(A1)
+	RTS
 ;*-*
-;; Movec                47
+;; Movec				47
 ASM_MOVEC:
-    CMP.W   #52,(A3)
-    BNE     .EA_TO_CR
-    BSR     .COMBINE_REG
-    BSR     ASM_COMMA
-    BSR     .COMBINE_EA
-    RTS
+	CMP.W	#52,(A3)
+	BNE		.EA_TO_CR
+	BSR		.COMBINE_REG
+	BSR		ASM_COMMA
+	BSR		.COMBINE_EA
+	RTS
 .EA_TO_CR:
-    BSR     .COMBINE_EA
-    BSR     ASM_COMMA
-    BSR     .COMBINE_REG
-    ADD.W   #1,(A1)
-    RTS
+	BSR		.COMBINE_EA
+	BSR		ASM_COMMA
+	BSR		.COMBINE_REG
+	ADD.W	#1,(A1)
+	RTS
 .COMBINE_REG:
-    CMP.W   #52,(A3)+
-    BNE     iERROR100
-    MOVE.W  (A3)+,D2
-    CMP.W   #$12,D2
-    BPL     iERROR100
-    LSL.W   #1,D2
-    MOVE.W  .REGS(PC,D2),D2
-    OR.W    D2,2(A1)
-    RTS
+	CMP.W	#52,(A3)+
+	BNE		iERROR100
+	MOVE.W	(A3)+,D2
+	CMP.W	#$12,D2
+	BPL		iERROR100
+	LSL.W	#1,D2
+	MOVE.W	.REGS(PC,D2),D2
+	OR.W	D2,2(A1)
+	RTS
 .REGS:
-    DC.W    $0000,$0001,$0002,$0003,$0004,$0005,$0006,$0007,$0008
-    DC.W    $0800,$0801,$0802,$0803,$0804,$0805,$0806,$0807,$0808
+	DC.W	$0000,$0001,$0002,$0003,$0004,$0005,$0006,$0007,$0008
+	DC.W	$0800,$0801,$0802,$0803,$0804,$0805,$0806,$0807,$0808
 .COMBINE_EA:
-    BSR     ASM_GETEA
-    MOVE.L  #3,D2
-    BTST    D0,D2
-    BEQ     iERROR19
-    LSL.W   #8,D3
-    LSL.W   #4,D3
-    OR.W    D3,2(A1)
-    RTS
+	BSR		ASM_GETEA
+	MOVE.L	#3,D2
+	BTST	D0,D2
+	BEQ		iERROR19
+	LSL.W	#8,D3
+	LSL.W	#4,D3
+	OR.W	D3,2(A1)
+	RTS
 ;*-*
-;; Moves                48
+;; Moves				48
 ASM_MOVES:
-    MOVEQ   #0,D2
-    CMP.W   #1,D1
-    BEQ     .SX
-    ADD.W   #$40,D2
-    CMP.W   #2,D1
-    BEQ     .SX
-    ADD.W   #$40,D2
+	MOVEQ	#0,D2
+	CMP.W	#1,D1
+	BEQ		.SX
+	ADD.W	#$40,D2
+	CMP.W	#2,D1
+	BEQ		.SX
+	ADD.W	#$40,D2
 .SX:
-    ADD.W   D2,(A1)
-    BSR     ASM_GETEA
-    MOVE.L  #%000011111111,D2
-    BTST    D0,D2
-    BEQ     iERROR19
-    CMP.W   #2,D0
-    BMI     .SPACE
-    OR.W    D3,(A1)
-    BSR     ASM_COMMA
-    BSR     ASM_GETEA
-    CMP.W   #2,D0
-    BPL     iERROR19
-    LSL.W   #8,D3
-    LSL.W   #4,D3
-    OR.W    D3,2(A1)
-    RTS
+	ADD.W	D2,(A1)
+	BSR		ASM_GETEA
+	MOVE.L	#%000011111111,D2
+	BTST	D0,D2
+	BEQ		iERROR19
+	CMP.W	#2,D0
+	BMI		.SPACE
+	OR.W	D3,(A1)
+	BSR		ASM_COMMA
+	BSR		ASM_GETEA
+	CMP.W	#2,D0
+	BPL		iERROR19
+	LSL.W	#8,D3
+	LSL.W	#4,D3
+	OR.W	D3,2(A1)
+	RTS
 .SPACE:
-    LSL.W   #8,D3
-    LSL.W   #4,D3
-    OR.W    #$800,D3
-    OR.W    D3,2(A1)
-    BSR     ASM_COMMA
-    BSR     ASM_GETEA
-    MOVE.L  #%000011111100,D2
-    BTST    D0,D2
-    BEQ     iERROR19
-    OR.W    D3,(A1)
-    RTS
+	LSL.W	#8,D3
+	LSL.W	#4,D3
+	OR.W	#$800,D3
+	OR.W	D3,2(A1)
+	BSR		ASM_COMMA
+	BSR		ASM_GETEA
+	MOVE.L	#%000011111100,D2
+	BTST	D0,D2
+	BEQ		iERROR19
+	OR.W	D3,(A1)
+	RTS
 ;*-*
-;; BitField1            49
+;; BitField1			49
 ASM_BITFIELD1:
-    BSR     ASM_GETEA
-    MOVE.L  #DEST,D2
-    BTST    D0,D2
-    BEQ     iERROR19
-    OR.W    D3,(A1)
-    BSR     ASM_COMMA
-    CMP.W   #23,(A3)+
-    BNE     iERROR19
-    BSR     .GET
-    MOVE.L  D2,D7
-    CMP.W   #19,(A3)+
-    BNE     iERROR97
-    BSR     .GET
-    LSL.W   #6,D7
-    OR.W    D7,2(A1)
-    OR.W    D2,2(A1)
-    CMP.W   #24,(A3)+
-    BNE     iERROR29
-    RTS
+	BSR		ASM_GETEA
+	MOVE.L	#DEST,D2
+	BTST	D0,D2
+	BEQ		iERROR19
+	OR.W	D3,(A1)
+	BSR		ASM_COMMA
+	CMP.W	#23,(A3)+
+	BNE		iERROR19
+	BSR		.GET
+	MOVE.L	D2,D7
+	CMP.W	#19,(A3)+
+	BNE		iERROR97
+	BSR		.GET
+	LSL.W	#6,D7
+	OR.W	D7,2(A1)
+	OR.W	D2,2(A1)
+	CMP.W	#24,(A3)+
+	BNE		iERROR29
+	RTS
 .GET:
-    CMP.W   #$0001,(A3)
-    BNE     .EA
-    ADDQ.L  #2,A3
-    MOVE.L  (A3)+,D2
-    BMI     iERROR31
-    CMP.L   #32,D2
-    BPL     iERROR31
-    RTS
+	CMP.W	#$0001,(A3)
+	BNE		.EA
+	ADDQ.L	#2,A3
+	MOVE.L	(A3)+,D2
+	BMI		iERROR31
+	CMP.L	#32,D2
+	BPL		iERROR31
+	RTS
 .EA:
-    BSR     ASM_GETEA
-    TST.W   D0
-    BNE     iERROR19
-    MOVE.L  D3,D2
-    OR.W    #$20,D2
-    RTS
+	BSR		ASM_GETEA
+	TST.W	D0
+	BNE		iERROR19
+	MOVE.L	D3,D2
+	OR.W	#$20,D2
+	RTS
 ;*-*
-;; BitField2            50
+;; BitField2			50
 ASM_BITFIELD2:
-    BSR     ASM_GETEA
-    MOVE.L  #DEST,D2
-    BTST    D0,D2
-    BEQ     iERROR19
-    OR.W    D3,(A1)
-    BSR     ASM_COMMA
-    CMP.W   #23,(A3)+
-    BNE     iERROR19
-    BSR     .GET
-    MOVE.L  D2,D7
-    CMP.W   #19,(A3)+
-    BNE     iERROR97
-    BSR     .GET
-    LSL.W   #6,D7
-    OR.W    D7,2(A1)
-    OR.W    D2,2(A1)
-    CMP.W   #24,(A3)+
-    BNE     iERROR29
-    BSR     ASM_COMMA
-    BSR     ASM_GETEA
-    TST.W   D0
-    BNE     iERROR19
-    LSL.W   #8,D3
-    LSL.W   #4,D3
-    OR.W    D3,2(A1)
-    RTS
+	BSR		ASM_GETEA
+	MOVE.L	#DEST,D2
+	BTST	D0,D2
+	BEQ		iERROR19
+	OR.W	D3,(A1)
+	BSR		ASM_COMMA
+	CMP.W	#23,(A3)+
+	BNE		iERROR19
+	BSR		.GET
+	MOVE.L	D2,D7
+	CMP.W	#19,(A3)+
+	BNE		iERROR97
+	BSR		.GET
+	LSL.W	#6,D7
+	OR.W	D7,2(A1)
+	OR.W	D2,2(A1)
+	CMP.W	#24,(A3)+
+	BNE		iERROR29
+	BSR		ASM_COMMA
+	BSR		ASM_GETEA
+	TST.W	D0
+	BNE		iERROR19
+	LSL.W	#8,D3
+	LSL.W	#4,D3
+	OR.W	D3,2(A1)
+	RTS
 .GET:
-    CMP.W   #$0001,(A3)
-    BNE     .EA
-    ADDQ.L  #2,A3
-    MOVE.L  (A3)+,D2
-    BMI     iERROR31
-    CMP.L   #32,D2
-    BPL     iERROR31
-    RTS
+	CMP.W	#$0001,(A3)
+	BNE		.EA
+	ADDQ.L	#2,A3
+	MOVE.L	(A3)+,D2
+	BMI		iERROR31
+	CMP.L	#32,D2
+	BPL		iERROR31
+	RTS
 .EA:
-    BSR     ASM_GETEA
-    TST.W   D0
-    BNE     iERROR19
-    MOVE.L  D3,D2
-    OR.W    #$20,D2
-    RTS
+	BSR		ASM_GETEA
+	TST.W	D0
+	BNE		iERROR19
+	MOVE.L	D3,D2
+	OR.W	#$20,D2
+	RTS
 ;*-*
-;; BitField3            51
+;; BitField3			51
 ASM_BITFIELD3:
-    BSR     ASM_GETEA
-    TST.W   D0
-    BNE     iERROR19
-    LSL.W   #8,D3
-    LSL.W   #4,D3
-    OR.W    D3,2(A1)
+	BSR		ASM_GETEA
+	TST.W	D0
+	BNE		iERROR19
+	LSL.W	#8,D3
+	LSL.W	#4,D3
+	OR.W	D3,2(A1)
 
-    BSR     ASM_COMMA
+	BSR		ASM_COMMA
 
-    BSR     ASM_GETEA
-    MOVE.L  #DEST,D2
-    BTST    D0,D2
-    BEQ     iERROR19
-    OR.W    D3,(A1)
-    BSR     ASM_COMMA
-    CMP.W   #23,(A3)+
-    BNE     iERROR19
-    BSR     .GET
-    MOVE.L  D2,D7
-    CMP.W   #19,(A3)+
-    BNE     iERROR97
-    BSR     .GET
-    LSL.W   #6,D7
-    OR.W    D7,2(A1)
-    OR.W    D2,2(A1)
-    CMP.W   #24,(A3)+
-    BNE     iERROR29
-    RTS
+	BSR		ASM_GETEA
+	MOVE.L	#DEST,D2
+	BTST	D0,D2
+	BEQ		iERROR19
+	OR.W	D3,(A1)
+	BSR		ASM_COMMA
+	CMP.W	#23,(A3)+
+	BNE		iERROR19
+	BSR		.GET
+	MOVE.L	D2,D7
+	CMP.W	#19,(A3)+
+	BNE		iERROR97
+	BSR		.GET
+	LSL.W	#6,D7
+	OR.W	D7,2(A1)
+	OR.W	D2,2(A1)
+	CMP.W	#24,(A3)+
+	BNE		iERROR29
+	RTS
 .GET:
-    CMP.W   #$0001,(A3)
-    BNE     .EA
-    ADDQ.L  #2,A3
-    MOVE.L  (A3)+,D2
-    BMI     iERROR31
-    CMP.L   #32,D2
-    BPL     iERROR31
-    RTS
+	CMP.W	#$0001,(A3)
+	BNE		.EA
+	ADDQ.L	#2,A3
+	MOVE.L	(A3)+,D2
+	BMI		iERROR31
+	CMP.L	#32,D2
+	BPL		iERROR31
+	RTS
 .EA:
-    BSR     ASM_GETEA
-    TST.W   D0
-    BNE     iERROR19
-    MOVE.L  D3,D2
-    OR.W    #$20,D2
-    RTS
+	BSR		ASM_GETEA
+	TST.W	D0
+	BNE		iERROR19
+	MOVE.L	D3,D2
+	OR.W	#$20,D2
+	RTS
 ;*-*
-;; Mul/Div              52
+;; Mul/Div				52
 ASM_MULDIV:
-    CMP.W   #2,D1
-    BEQ     .WRD
-    MOVE.W  (A0)+,(A1)
-    MOVE.W  (A0)+,(A4)+
-    MOVE.W  ASMCPU(PC),D2
-    AND.L   #$FE,D2
-    BEQ     iERROR53
-    BSR     ASM_GETEA
-    MOVE.L  #NASRC,D2
-    BTST    D0,D2
-    BEQ     iERROR19
-    OR.W    D3,(A1)
-    BSR     ASM_COMMA
-    BSR     ASM_GETEA
-    TST.W   D0
-    BNE     iERROR19
-    MOVE.W  D3,D7
-    CMP.W   #19,(A3)
-    BNE     .X1
-    ADDQ.L  #2,A3
-    BSR     ASM_GETEA
-    TST.W   D0
-    BNE     iERROR19
-.X2:LSL.W   #8,D3
-    LSL.W   #4,D3
-    OR.W    D3,2(A1)
-    OR.W    D7,2(A1)
-    RTS
+	CMP.W	#2,D1
+	BEQ		.WRD
+	MOVE.W	(A0)+,(A1)
+	MOVE.W	(A0)+,(A4)+
+	MOVE.W	ASMCPU(PC),D2
+	AND.L	#$FE,D2
+	BEQ		iERROR53
+	BSR		ASM_GETEA
+	MOVE.L	#NASRC,D2
+	BTST	D0,D2
+	BEQ		iERROR19
+	OR.W	D3,(A1)
+	BSR		ASM_COMMA
+	BSR		ASM_GETEA
+	TST.W	D0
+	BNE		iERROR19
+	MOVE.W	D3,D7
+	CMP.W	#19,(A3)
+	BNE		.X1
+	ADDQ.L	#2,A3
+	BSR		ASM_GETEA
+	TST.W	D0
+	BNE		iERROR19
+.X2:LSL.W	#8,D3
+	LSL.W	#4,D3
+	OR.W	D3,2(A1)
+	OR.W	D7,2(A1)
+	RTS
 .X1
-    AND.W    #$FFFF-$400,2(A1)   ;convert to 32 bit
-    BRA.S   .X2
+	AND.W	 #$FFFF-$400,2(A1)	 ;convert to 32 bit
+	BRA.S	.X2
 
 .WRD:
-    ADDQ.L  #4,A0
-    BSR     ASM_GETEA
-    MOVE.L  #NASRC,D2
-    BTST    D0,D2
-    BEQ     iERROR19
-    OR.W    D3,(A1)
-    BSR     ASM_COMMA
-    BSR     ASM_GETEA
-    TST.W   D0
-    BNE     iERROR19
-    LSL.W   #8,D3
-    LSL.W   #1,D3
-    OR.W    D3,(A1)
-    RTS
+	ADDQ.L	#4,A0
+	BSR		ASM_GETEA
+	MOVE.L	#NASRC,D2
+	BTST	D0,D2
+	BEQ		iERROR19
+	OR.W	D3,(A1)
+	BSR		ASM_COMMA
+	BSR		ASM_GETEA
+	TST.W	D0
+	BNE		iERROR19
+	LSL.W	#8,D3
+	LSL.W	#1,D3
+	OR.W	D3,(A1)
+	RTS
 ;*-*
-;; Link                 53
+;; Link					53
 ASM_LINK:
-    CMP.W   #3,D1
-    BEQ     .LONG
-    BSR     ASM_GETEA
-    CMP.W   #1,D0
-    BNE     iERROR19
-    AND.L   #7,D3
-    OR.W    D3,(A1)
-    BSR     ASM_COMMA
-    CMP.L   #$0F000001,(A3)+
-    BNE     iERROR30
-    MOVE.L  (A3)+,D0
-    CHKW    D0,D2,iERROR31
-    MOVE.W  D0,(A4)+
-    RTS
+	CMP.W	#3,D1
+	BEQ		.LONG
+	BSR		ASM_GETEA
+	CMP.W	#1,D0
+	BNE		iERROR19
+	AND.L	#7,D3
+	OR.W	D3,(A1)
+	BSR		ASM_COMMA
+	CMP.L	#$0F000001,(A3)+
+	BNE		iERROR30
+	MOVE.L	(A3)+,D0
+	CHKW	D0,D2,iERROR31
+	MOVE.W	D0,(A4)+
+	RTS
 .LONG:
-    MOVE.W  ASMCPU,D2
-    AND.L   #%111110,D2
-    BEQ     iERROR53
-    MOVE.W  #$4800,(A1)
-    BSR     ASM_GETEA
-    CMP.W   #1,D0
-    BNE     iERROR19
-    OR.W    D3,(A1)
-    BSR     ASM_COMMA
-    CMP.L   #$0F000001,(A3)+
-    BNE     iERROR30
-    MOVE.L  (A3)+,(A4)+
-    RTS
+	MOVE.W	ASMCPU,D2
+	AND.L	#%111110,D2
+	BEQ		iERROR53
+	MOVE.W	#$4800,(A1)
+	BSR		ASM_GETEA
+	CMP.W	#1,D0
+	BNE		iERROR19
+	OR.W	D3,(A1)
+	BSR		ASM_COMMA
+	CMP.L	#$0F000001,(A3)+
+	BNE		iERROR30
+	MOVE.L	(A3)+,(A4)+
+	RTS
 ;*-*
-;; CpCache 040+         54
+;; CpCache 040+			54
 ASM_CPCACHE040:
-    CMP.W   #52,(A3)+
-    BNE     iERROR101
-    MOVEQ   #0,D2
-    MOVE.W  (A3)+,D2
-    SUB.L   #$37,D2
-    BMI     iERROR101
-    CMP.W   #4,D2
-    BPL     iERROR101
-    LSL.W   #6,D2
-    ADD.W    D2,(A1)
-    TST.W   (A0)+
-    BEQ     .XX
-    BSR     ASM_COMMA
-    BSR     ASM_GETEA
-    CMP.W   #2,D0
-    BNE     iERROR19
-    AND.L   #7,D3
-    OR.W    D3,(A1)
+	CMP.W	#52,(A3)+
+	BNE		iERROR101
+	MOVEQ	#0,D2
+	MOVE.W	(A3)+,D2
+	SUB.L	#$37,D2
+	BMI		iERROR101
+	CMP.W	#4,D2
+	BPL		iERROR101
+	LSL.W	#6,D2
+	ADD.W	 D2,(A1)
+	TST.W	(A0)+
+	BEQ		.XX
+	BSR		ASM_COMMA
+	BSR		ASM_GETEA
+	CMP.W	#2,D0
+	BNE		iERROR19
+	AND.L	#7,D3
+	OR.W	D3,(A1)
 .XX:RTS
 ;*-*
-;; Move16               55
+;; Move16				55
 ASM_MOVE16:
-    BSR     ASM_GETEA
-    CMP.W   #8,D0
-    BEQ     .ABS
-    CMP.W   #3,D0
-    BEQ     .INC
-    CMP.W   #2,D0
-    BNE     iERROR19
-    AND.L   #7,d3
-    OR.W    D3,(A1)
-    BSR     ASM_COMMA
-    BSR     ASM_GETEA
-    CMP.W   #8,D0
-    BNE     iERROR19
-    RTS
+	BSR		ASM_GETEA
+	CMP.W	#8,D0
+	BEQ		.ABS
+	CMP.W	#3,D0
+	BEQ		.INC
+	CMP.W	#2,D0
+	BNE		iERROR19
+	AND.L	#7,d3
+	OR.W	D3,(A1)
+	BSR		ASM_COMMA
+	BSR		ASM_GETEA
+	CMP.W	#8,D0
+	BNE		iERROR19
+	RTS
 .ABS:
-    SUB.W   #8,(A1)
-    BSR     ASM_COMMA
-    BSR     ASM_GETEA
-    CMP.W   #3,D0
-    BEQ     .SKIP
-    ADD.W   #16,(A1)
+	SUB.W	#8,(A1)
+	BSR		ASM_COMMA
+	BSR		ASM_GETEA
+	CMP.W	#3,D0
+	BEQ		.SKIP
+	ADD.W	#16,(A1)
 .SKIP:
-    AND.L   #7,D3
-    OR.W    D3,(A1)
-    RTS
+	AND.L	#7,D3
+	OR.W	D3,(A1)
+	RTS
 .INC:
-    SUB.W   #$10,(A1)
-    AND.L   #7,D3
-    OR.W    D3,(A1)
-    BSR     ASM_COMMA
-    BSR     ASM_GETEA
-    CMP.W   #8,D0
-    BNE     .REL2
-    RTS
+	SUB.W	#$10,(A1)
+	AND.L	#7,D3
+	OR.W	D3,(A1)
+	BSR		ASM_COMMA
+	BSR		ASM_GETEA
+	CMP.W	#8,D0
+	BNE		.REL2
+	RTS
 .REL2:
-    cmp.w   #3,d0
-    bne     iERROR19
-    add.w   #$20,(A1)
-    lsl.w   #8,d3
-    lsl.w   #4,d3
-    move.w  d3,(a4)+
-    rts
+	cmp.w	#3,d0
+	bne		iERROR19
+	add.w	#$20,(A1)
+	lsl.w	#8,d3
+	lsl.w	#4,d3
+	move.w	d3,(a4)+
+	rts
 ;*-*
-;; Pulse                56
+;; Pulse				56
 ASM_PULSE:
-    CMP.L   #$0F000001,(A3)+
-    BNE     iERROR30
-    MOVE.L  (A3)+,D2
-    CHKW    D2,D0,iERROR31
-    MOVE.W  D2,(A4)+
-    RTS
+	CMP.L	#$0F000001,(A3)+
+	BNE		iERROR30
+	MOVE.L	(A3)+,D2
+	CHKW	D2,D0,iERROR31
+	MOVE.W	D2,(A4)+
+	RTS
 ;*-*
-;; Move                 57
+;; Move					57
 ASM_MOVE:
-    CMP.W   #52,(A3)
-    BEQ     .KW1
-    BSR     ASM_GETEA
-    MOVE.L  #%111111111111,d2
-    btst    d0,d2
-    beq iERROR19     ;should never happen.
-    cmp.w   #1,d0
-    bne .1
-    cmp.w   #1,d1
-    beq iERROR31
+	CMP.W	#52,(A3)
+	BEQ		.KW1
+	BSR		ASM_GETEA
+	MOVE.L	#%111111111111,d2
+	btst	d0,d2
+	beq iERROR19	 ;should never happen.
+	cmp.w	#1,d0
+	bne .1
+	cmp.w	#1,d1
+	beq iERROR31
 .1:
-    or.w    d3,(a1)
+	or.w	d3,(a1)
 
-    bsr ASM_COMMA
+	bsr ASM_COMMA
 
-    cmp.w   #52,(a3)
-    beq     .KW2
-    bsr ASM_GETEA
-    move.l  #%000111111111,d2
-    btst    d0,d2
-    beq iERROR19
-    cmp.w   #1,d0
-    bne     .2
+	cmp.w	#52,(a3)
+	beq		.KW2
+	bsr ASM_GETEA
+	move.l	#%000111111111,d2
+	btst	d0,d2
+	beq iERROR19
+	cmp.w	#1,d0
+	bne		.2
 
-    cmp.w   #1,d1
-    beq iERROR31
-    and.l   #7,d3
-    lsl.w   #8,d3
-    lsl.w   #1,d3
-    or.w    d3,(a1)
-    or.w    #64,(a1)
-    rts
+	cmp.w	#1,d1
+	beq iERROR31
+	and.l	#7,d3
+	lsl.w	#8,d3
+	lsl.w	#1,d3
+	or.w	d3,(a1)
+	or.w	#64,(a1)
+	rts
 .2:
-    move.w  d3,d0
-    lsr.w   #3,d3
-    and.w   #%111,d0
-    lsl.w   #3,d0
-    add.w   d3,d0
-    lsl.w   #6,d0
-    or.w    d0,(a1)
-    rts
+	move.w	d3,d0
+	lsr.w	#3,d3
+	and.w	#%111,d0
+	lsl.w	#3,d0
+	add.w	d3,d0
+	lsl.w	#6,d0
+	or.w	d0,(a1)
+	rts
 
 .KW1:
-    cmp.w   #2,d1
-    bne iERROR31
-    addq.l  #2,a3
-    move.w  (a3)+,d0
+	cmp.w	#2,d1
+	bne iERROR31
+	addq.l	#2,a3
+	move.w	(a3)+,d0
 
-    cmp.w   #$27,d0
-    bne .KW1_2
-    move.w  #$42c0,(A1)
-    bra .KW1_EXIT
+	cmp.w	#$27,d0
+	bne .KW1_2
+	move.w	#$42c0,(A1)
+	bra .KW1_EXIT
 .KW1_2:
-    cmp.w   #$28,d0
-    bne iERROR19
-    move.w  #$40c0,(a1)
+	cmp.w	#$28,d0
+	bne iERROR19
+	move.w	#$40c0,(a1)
 .KW1_EXIT:
-    bsr ASM_COMMA
-    BSR ASM_GETEA
-    move.l  #%000111111101,d2
-    btst    d0,d2
-    beq iERROR19
-    or.w    d3,(A1)
-    rts
+	bsr ASM_COMMA
+	BSR ASM_GETEA
+	move.l	#%000111111101,d2
+	btst	d0,d2
+	beq iERROR19
+	or.w	d3,(A1)
+	rts
 .KW2:
 
-    cmp.w   #1,d0
-    beq     iERROR19     ; move A0,xxx
-    addq.l  #2,a3
-    move.w  (a3)+,d0
-    cmp.w   #$27,d0
-    bne     .KW2_2
-    move.w  (a1),d0
-    and.w   #%111111,d0
-    move.w  #$44c0,(a1)
-    or.w    d0,(a1)
-    rts
+	cmp.w	#1,d0
+	beq		iERROR19	 ; move A0,xxx
+	addq.l	#2,a3
+	move.w	(a3)+,d0
+	cmp.w	#$27,d0
+	bne		.KW2_2
+	move.w	(a1),d0
+	and.w	#%111111,d0
+	move.w	#$44c0,(a1)
+	or.w	d0,(a1)
+	rts
 .KW2_2:
-    cmp.w   #$28,d0
-    bne iERROR19
-    move.w  (a1),d0
-    and.w   #%111111,d0
-    move.w  #$46c0,(a1)
-    or.w    d0,(a1)
-    rts
+	cmp.w	#$28,d0
+	bne iERROR19
+	move.w	(a1),d0
+	and.w	#%111111,d0
+	move.w	#$46c0,(a1)
+	or.w	d0,(a1)
+	rts
 ;*-*
-;; Andi                 58
+;; Andi					58
 ASM_ANDI:
-    BSR ASM_GETEA
-    CMP.W   #11,d0
-    bne iERROR30
+	BSR ASM_GETEA
+	CMP.W	#11,d0
+	bne iERROR30
 
-    bsr ASM_COMMA
+	bsr ASM_COMMA
 
-    cmp.w   #52,(a3)
-    beq .KW
-    bsr ASM_GETEA
-    move.l  #%000111111101,d2
-    btst    d0,d2
-    beq iERROR19
-    or.w    d3,(a1)
-    rts
+	cmp.w	#52,(a3)
+	beq .KW
+	bsr ASM_GETEA
+	move.l	#%000111111101,d2
+	btst	d0,d2
+	beq iERROR19
+	or.w	d3,(a1)
+	rts
 .KW:
-    cmp.w   #1,d1
-    bne iERROR31
-    addq.l  #2,a3
-    cmp.w   #$27,(a3)+
-    bne iERROR19
-    move.w  #$23c,(a1)
-    rts
+	cmp.w	#1,d1
+	bne iERROR31
+	addq.l	#2,a3
+	cmp.w	#$27,(a3)+
+	bne iERROR19
+	move.w	#$23c,(a1)
+	rts
 ;*-*
-;; Eori                 59
+;; Eori					59
 ASM_EORI:
-    BSR ASM_GETEA
-    CMP.W   #11,d0
-    bne iERROR30
+	BSR ASM_GETEA
+	CMP.W	#11,d0
+	bne iERROR30
 
-    bsr ASM_COMMA
+	bsr ASM_COMMA
 
-    cmp.w   #52,(a3)
-    beq .KW
-    bsr ASM_GETEA
-    move.l  #%000111111101,d2
-    btst    d0,d2
-    beq iERROR19
-    or.w    d3,(a1)
-    rts
+	cmp.w	#52,(a3)
+	beq .KW
+	bsr ASM_GETEA
+	move.l	#%000111111101,d2
+	btst	d0,d2
+	beq iERROR19
+	or.w	d3,(a1)
+	rts
 .KW:
-    cmp.w   #1,d1
-    bne iERROR31
-    addq.l  #2,a3
-    cmp.w   #$27,(a3)+
-    bne iERROR19
-    move.w  #$A3c,(a1)
-    rts
+	cmp.w	#1,d1
+	bne iERROR31
+	addq.l	#2,a3
+	cmp.w	#$27,(a3)+
+	bne iERROR19
+	move.w	#$A3c,(a1)
+	rts
 ;*-*
-;; Ori                  60
+;; Ori					60
 ASM_ORI:
-    BSR ASM_GETEA
-    CMP.W   #11,d0
-    bne iERROR30
+	BSR ASM_GETEA
+	CMP.W	#11,d0
+	bne iERROR30
 
-    bsr ASM_COMMA
+	bsr ASM_COMMA
 
-    cmp.w   #52,(a3)
-    beq .KW
-    bsr ASM_GETEA
-    move.l  #%000111111101,d2
-    btst    d0,d2
-    beq iERROR19
-    or.w    d3,(a1)
-    rts
+	cmp.w	#52,(a3)
+	beq .KW
+	bsr ASM_GETEA
+	move.l	#%000111111101,d2
+	btst	d0,d2
+	beq iERROR19
+	or.w	d3,(a1)
+	rts
 .KW:
-    cmp.w   #1,d1
-    bne iERROR31
-    addq.l  #2,a3
-    cmp.w   #$27,(a3)+
-    bne iERROR19
-    move.w  #$3c,(a1)
-    rts
+	cmp.w	#1,d1
+	bne iERROR31
+	addq.l	#2,a3
+	cmp.w	#$27,(a3)+
+	bne iERROR19
+	move.w	#$3c,(a1)
+	rts
 ;*-*
 
 ;; FPU reg
 ASM_GETFPREG:
-    CMP.W   #52,(A3)+
-    BNE     iERROR98
-    MOVE.W  (A3)+,D2
-    SUB.W   #$1c,D2
-    BMI     iERROR98
-    CMP.W   #$8,D2
-    BPL     iERROR98
-    RTS
+	CMP.W	#52,(A3)+
+	BNE		iERROR98
+	MOVE.W	(A3)+,D2
+	SUB.W	#$1c,D2
+	BMI		iERROR98
+	CMP.W	#$8,D2
+	BPL		iERROR98
+	RTS
 ;*-*
 ;; Data reg
-ASM_GETDATAREG:           ; D0=SHIFT
-    BSR ASM_REGID
-    CMP.B   #4,(A3)+
-    BNE iERROR19
-    MOVE.B  (A3)+,D2
-    AND.W   #%111,D2
-    LSL.W   D0,D2
-    ADD.W   D2,(A1)
-    SKIP244
-    RTS
+ASM_GETDATAREG:				; D0=SHIFT
+	BSR ASM_REGID
+	CMP.B	#4,(A3)+
+	BNE iERROR19
+	MOVE.B	(A3)+,D2
+	AND.W	#%111,D2
+	LSL.W	D0,D2
+	ADD.W	D2,(A1)
+	SKIP244
+	RTS
 ;*-*
 ;; Any EA
-ASM_ANYEA:            ; D7=SHIFT, res=d3.ea after shift
-    BSR.W   ASM_GETEA
-    LSL.W   D7,D3
-    ADD.W   D3,(A1)
-    RTS
+ASM_ANYEA:				; D7=SHIFT, res=d3.ea after shift
+	BSR.W	ASM_GETEA
+	LSL.W	D7,D3
+	ADD.W	D3,(A1)
+	RTS
 ;*-*
 ;; Get EA
 ASM_GETEA:
-    MOVE.W  (A3)+,D0
-    CMP.W   #$400,D0        ; COMPLEX OR BASIC ADR.MODE
-    BMI .2
+	MOVE.W	(A3)+,D0
+	CMP.W	#$400,D0		; COMPLEX OR BASIC ADR.MODE
+	BMI .2
 ;; Dx/Ax/(Ax)/(PC)/(A0)+/-(A0)
-    SUB.W   #$400,D0        ; LOWBYTE IS ADR.MASK, HI IS #ADR.MODE
-    MOVEQ   #0,D3
-    MOVE.B  D0,D3           ; D3.L = ADR.MODE MASK
-    LSR.W   #8,D0           ; D0.W = # ADR.MODE
-    CMP.W   #11,D0
-    BEQ.S   .1
-    CMP.W   #5,D0
-    BPL iERROR19
-    CMP.W   #1,D0
-    BEQ.S   .AX
-.X: RTS                     ; DELIVERS MASK IN D3 AND # IN D0
-.AX:    CMP.W   #1,D1
-    BEQ iERROR19
-    RTS
+	SUB.W	#$400,D0		; LOWBYTE IS ADR.MASK, HI IS #ADR.MODE
+	MOVEQ	#0,D3
+	MOVE.B	D0,D3			; D3.L = ADR.MODE MASK
+	LSR.W	#8,D0			; D0.W = # ADR.MODE
+	CMP.W	#11,D0
+	BEQ.S	.1
+	CMP.W	#5,D0
+	BPL iERROR19
+	CMP.W	#1,D0
+	BEQ.S	.AX
+.X: RTS						; DELIVERS MASK IN D3 AND # IN D0
+.AX:	CMP.W	#1,D1
+	BEQ iERROR19
+	RTS
 ;*-*
 ;; Immediate
 .1: MOVEM.L D1/A0,-(A7)
-    CMP.W   #LIBC,(A3)
-    BNE .1_1
-    ADDQ.L  #4,A3
-    MOVE.W  (A3)+,D1
-    EXT.L   D1
-    ADDQ.L  #8,A3
-    MOVEQ   #0,D0
-    BRa .1_2
+	CMP.W	#LIBC,(A3)
+	BNE .1_1
+	ADDQ.L	#4,A3
+	MOVE.W	(A3)+,D1
+	EXT.L	D1
+	ADDQ.L	#8,A3
+	MOVEQ	#0,D0
+	BRa .1_2
 .1_1:
-    BSR ASM_GRABVALUE
+	BSR ASM_GRABVALUE
 .1_2:
-    MOVE.L  D1,D4
-    MOVEM.L (A7)+,D1/A0
-    CMP.W   #-1,D0          ; IMMEDIATE VALUE?
-    BEQ iERROR19
-    MOVE.W  #%111100,D3
-    MOVEQ   #11,D0
-    CMP.W   #3,D1
-    BNE.S   .4
-    MOVE.L  D4,(A4)+        ; .L #
-    RTS
-.4: CMP.W   #2,D1
-    BNE.S   .5
-    CHKW    D4,D5,iERROR93
-    MOVE.W  D4,(A4)+        ; .W #
-    RTS
-.5: CHKB    D4,D5,iERROR94
-    MOVE.B  #0,(A4)+        ; .B #
-    MOVE.B  D4,(A4)+
-    RTS
+	MOVE.L	D1,D4
+	MOVEM.L (A7)+,D1/A0
+	CMP.W	#-1,D0			; IMMEDIATE VALUE?
+	BEQ iERROR19
+	MOVE.W	#%111100,D3
+	MOVEQ	#11,D0
+	CMP.W	#3,D1
+	BNE.S	.4
+	MOVE.L	D4,(A4)+		; .L #
+	RTS
+.4: CMP.W	#2,D1
+	BNE.S	.5
+	CHKW	D4,D5,iERROR93
+	MOVE.W	D4,(A4)+		; .W #
+	RTS
+.5: CHKB	D4,D5,iERROR94
+	MOVE.B	#0,(A4)+		; .B #
+	MOVE.B	D4,(A4)+
+	RTS
 ;*-*
 .2:
-    CMP.W   #29,(A3)
-    BEQ _020
-    CMP.W   #17,D0
-    BEQ _BRACKET
+	CMP.W	#29,(A3)
+	BEQ _020
+	CMP.W	#17,D0
+	BEQ _BRACKET
 ;; Other
-    SUBQ.L  #2,A3           ; ANY OTHER MODE
-    MOVEM.L D1/A0,-(A7)
-    BSR ASM_GRABVALUE
-    MOVE.L  D1,D4           ; D4=VALUE
-    CMP.W   #-1,D0
-    BEQ ASM_GETLABEL
-    MOVEM.L (A7)+,D1/A0
+	SUBQ.L	#2,A3			; ANY OTHER MODE
+	MOVEM.L D1/A0,-(A7)
+	BSR ASM_GRABVALUE
+	MOVE.L	D1,D4			; D4=VALUE
+	CMP.W	#-1,D0
+	BEQ ASM_GETLABEL
+	MOVEM.L (A7)+,D1/A0
 GL_BACK:
-    MOVE.B  (A3),D2         ; SEE WHATS NEXT
-    CMP.B   #4,D2
-    BMI     .6              ; ABS OR INDEXED MODE
-    CMP.W   #$D,d2
-    beq     .xxPC
-    CMP.B   #6,D2           ;
-    BNE iERROR19
-    MOVE.W  (A3)+,D3
-    AND.W   #%111,D3
-    OR.W    #%101000,D3
-    MOVEQ   #5,D0
-    MOVE.W  D4,(A4)+
-    CHKW    D4,D5,iERROR93
-    RTS
+	MOVE.B	(A3),D2			; SEE WHATS NEXT
+	CMP.B	#4,D2
+	BMI		.6				; ABS OR INDEXED MODE
+	CMP.W	#$D,d2
+	beq		.xxPC
+	CMP.B	#6,D2			;
+	BNE iERROR19
+	MOVE.W	(A3)+,D3
+	AND.W	#%111,D3
+	OR.W	#%101000,D3
+	MOVEQ	#5,D0
+	MOVE.W	D4,(A4)+
+	CHKW	D4,D5,iERROR93
+	RTS
 ;; $00(PC)
 .xxPC:
-    addq.l  #2,a3
-    moveq   #0,d3
-    move.w  #%111010,d3
-    moveq   #9,d0
-    move.w  d4,(a4)+
-    CHKW    D4,D5,iERROR31
-    RTS
+	addq.l	#2,a3
+	moveq	#0,d3
+	move.w	#%111010,d3
+	moveq	#9,d0
+	move.w	d4,(a4)+
+	CHKW	D4,D5,iERROR31
+	RTS
 ;*-*
 ;; $00(PC,Rn)
 .xxPCxx:
-    addq.l  #2,a3
-    BSR ASM_COMMA
-    cmp.b   #4,(a3)
-    blt     iERROR17
-    cmp.b   #5,(a3)
-    bgt     iERROR17
-    seq d0
-    move.w  (a3)+,d3
-    and.w   #7,d3
-    and.b   #8,d0
-    or.b    d0,d3
-    lsl.w   #4,d3
-    move.b  d3,(a4)+
-    move.b  d4,(a4)+
-    MOVE.L  D4,D5           ; D5=EXTENSIONWORD
-    CHKB    D5,D4,iERROR31
+	addq.l	#2,a3
+	BSR ASM_COMMA
+	cmp.b	#4,(a3)
+	blt		iERROR17
+	cmp.b	#5,(a3)
+	bgt		iERROR17
+	seq d0
+	move.w	(a3)+,d3
+	and.w	#7,d3
+	and.b	#8,d0
+	or.b	d0,d3
+	lsl.w	#4,d3
+	move.b	d3,(a4)+
+	move.b	d4,(a4)+
+	MOVE.L	D4,D5			; D5=EXTENSIONWORD
+	CHKB	D5,D4,iERROR31
 
-    moveq   #0,d3
-    move.w  #%111011,d3
-    moveq   #10,d0
-    CHKW    D4,D5,iERROR31
-    cmp.w   #18,(a3)+
-    bne iERROR96
-    RTS
+	moveq	#0,d3
+	move.w	#%111011,d3
+	moveq	#10,d0
+	CHKW	D4,D5,iERROR31
+	cmp.w	#18,(a3)+
+	bne iERROR96
+	RTS
 ;*-*
-.6: MOVE.W  (A3),D2
-    CMP.W   #17,D2
-    BEQ.S   .9
-    CMP.W   #26,D2
-    BEQ.S   .7
-    CMP.W   #27,D2
-    BNE.S   .8
-    ADDQ.L  #2,A3
-.8: MOVE.W  #%111001,D3     ; ABS 4
-    MOVEQ   #8,D0
-    MOVE.L  D4,(A4)+
-    RTS
-.7: ADDQ.L  #2,A3           ; ABS 4.W
-    MOVE.W  #%111000,D3
-    MOVEQ   #7,D0
-    MOVE.W  D4,(A4)+
-    CHKW    D4,D5,iERROR93
-    RTS
+.6: MOVE.W	(A3),D2
+	CMP.W	#17,D2
+	BEQ.S	.9
+	CMP.W	#26,D2
+	BEQ.S	.7
+	CMP.W	#27,D2
+	BNE.S	.8
+	ADDQ.L	#2,A3
+.8: MOVE.W	#%111001,D3		; ABS 4
+	MOVEQ	#8,D0
+	MOVE.L	D4,(A4)+
+	RTS
+.7: ADDQ.L	#2,A3			; ABS 4.W
+	MOVE.W	#%111000,D3
+	MOVEQ	#7,D0
+	MOVE.W	D4,(A4)+
+	CHKW	D4,D5,iERROR93
+	RTS
 
-.9: ADDQ.L  #2,A3           ; off(Ax,Rx.s), D4=off
-    CMP.B   #$E,(A3)
-    BEQ .xxPCxx
-    CMP.B   #5,(A3)+
-    BNE iERROR19
-    MOVE.B  (A3)+,D3        ; D3.B = Ax
-    AND.L   #%111,D3        ; (Ax,...
-    OR.W    #%110000,D3
-    MOVEQ   #6,D0
-    MOVE.L  D4,D5           ; D5=EXTENSIONWORD
-    CHKB    D5,D4,iERROR94
-    AND.W   #$FF,D5
-    CMP.W   #COM,(A3)+
-    BNE iERROR5
-    BSR ASM_REGID
-    MOVE.B  (A3)+,D2
-    CMP.B   #4,D2           ; ...,Dx
-    BEQ.S   .12
-    CMP.B   #5,D2
-    BNE iERROR19
-    BSET    #15,D5          ; ...,Ax
+.9: ADDQ.L	#2,A3			; off(Ax,Rx.s), D4=off
+	CMP.B	#$E,(A3)
+	BEQ .xxPCxx
+	CMP.B	#5,(A3)+
+	BNE iERROR19
+	MOVE.B	(A3)+,D3		; D3.B = Ax
+	AND.L	#%111,D3		; (Ax,...
+	OR.W	#%110000,D3
+	MOVEQ	#6,D0
+	MOVE.L	D4,D5			; D5=EXTENSIONWORD
+	CHKB	D5,D4,iERROR94
+	AND.W	#$FF,D5
+	CMP.W	#COM,(A3)+
+	BNE iERROR5
+	BSR ASM_REGID
+	MOVE.B	(A3)+,D2
+	CMP.B	#4,D2			; ...,Dx
+	BEQ.S	.12
+	CMP.B	#5,D2
+	BNE iERROR19
+	BSET	#15,D5			; ...,Ax
 .12:	MOVE.B	(A3)+,D2
 	SKIP244
-    AND.W   #%111,D2
-    MOVEQ   #12,D4
-    LSL.W   D4,D2
-    OR.W    D2,D5
+	AND.W	#%111,D2
+	MOVEQ	#12,D4
+	LSL.W	D4,D2
+	OR.W	D2,D5
 
-    MOVE.W  (A3)+,D2
-    CMP.W   #26,D2
-    BEQ .12_2
-    CMP.W   #27,D2
-    BNE .13
-    BSET    #11,D5
+	MOVE.W	(A3)+,D2
+	CMP.W	#26,D2
+	BEQ .12_2
+	CMP.W	#27,D2
+	BNE .13
+	BSET	#11,D5
 .12_2:
-    MOVE.W  (A3)+,D2
+	MOVE.W	(A3)+,D2
 .13:
-    CMp.W   #9,D2
-    BNE .14
-    CMP.W   #VALUE,(A3)+
-    BNE iERROR78
-    MOVE.L  (A3)+,D2
-    MOVEQ   #0,D0
+	CMp.W	#9,D2
+	BNE .14
+	CMP.W	#VALUE,(A3)+
+	BNE iERROR78
+	MOVE.L	(A3)+,D2
+	MOVEQ	#0,D0
 
-    CMP.W   #1,D2
-    BEQ .16
-    ADDQ.L  #1,D0
-    CMP.W   #2,D2
-    BEQ .16
-    ADDQ.L  #1,D0
-    CMP.W   #4,D2
-    BEQ .16
-    ADDQ.L  #1,D0
-    CMP.W   #8,D2
-    BNE iERROR91
+	CMP.W	#1,D2
+	BEQ .16
+	ADDQ.L	#1,D0
+	CMP.W	#2,D2
+	BEQ .16
+	ADDQ.L	#1,D0
+	CMP.W	#4,D2
+	BEQ .16
+	ADDQ.L	#1,D0
+	CMP.W	#8,D2
+	BNE iERROR91
 .16:
-    LSL.W   #8,D0
-    LSL.W   #1,D0
-    OR.W    D0,D5
-    MOVE.W  (A3)+,D2
+	LSL.W	#8,D0
+	LSL.W	#1,D0
+	OR.W	D0,D5
+	MOVE.W	(A3)+,D2
 .14:
-    CMP.W   #18,D2
-    BNE iERROR96
-    MOVE.W  D5,(A4)+
-    RTS
+	CMP.W	#18,D2
+	BNE iERROR96
+	MOVE.W	D5,(A4)+
+	RTS
 ;*-*
 ;; 020 full
 _020:
-    CMP.W   #1,ECPU
-    BMI iERROR53
-    MOVE.L  A0,-(A7)
-    MOVE.L  A4,A0
-    ADDQ.L  #2,A0
+	CMP.W	#1,ECPU
+	BMI iERROR53
+	MOVE.L	A0,-(A7)
+	MOVE.L	A4,A0
+	ADDQ.L	#2,A0
 
-    MOVE.W  #$30,d3         ; adressing mode for suppressed reg
-    MOVE.W  #6,d0
-    MOVEQ   #0,D6
-    MOVE.l  #%0000000111010000,D2   ; here we set a MOVE.L  (),...
-    ADDQ.L  #6,A3           ; skip "[xx"
+	MOVE.W	#$30,d3			; adressing mode for suppressed reg
+	MOVE.W	#6,d0
+	MOVEQ	#0,D6
+	MOVE.l	#%0000000111010000,D2	; here we set a MOVE.L	(),...
+	ADDQ.L	#6,A3			; skip "[xx"
 
-    CMP.W   #30,(A3)
-    BNE     .020_0
-    ADDQ.L  #2,A3
-    BSR     ASM_COMMA
-    BSET    #1,D6
-    BRA     .020_2
+	CMP.W	#30,(A3)
+	BNE		.020_0
+	ADDQ.L	#2,A3
+	BSR		ASM_COMMA
+	BSET	#1,D6
+	BRA		.020_2
 
 .020_0:
-    CMP.W   #IDENT,(A3)
-    BEQ     .020_ID
-    MOVEM.L D0/D2-D4/D6-A2/A4-a6,-(A7)
-    BSR ASM_GRABVALUE
-    MOVE.L  D0,D5
-    MOVEM.L (A7)+,D0/D2-D4/D6-A2/A4-A6
-    TST.L   D5
-    BMI .020_1
-    CMP.W   #26,(A3)
-    BMI     .020_0_2
-    CMP.W   #28,(A3)
-    BPL     .020_0_2
-    CMP.W   #27,(A3)+
-    BEQ     .020_0_2
-    MOVE.W  D1,(A0)+
-    or.w    #32,d2
-    BCLR    #4,D2
-    BRA     .020_0_1
+	CMP.W	#IDENT,(A3)
+	BEQ		.020_ID
+	MOVEM.L D0/D2-D4/D6-A2/A4-a6,-(A7)
+	BSR ASM_GRABVALUE
+	MOVE.L	D0,D5
+	MOVEM.L (A7)+,D0/D2-D4/D6-A2/A4-A6
+	TST.L	D5
+	BMI .020_1
+	CMP.W	#26,(A3)
+	BMI		.020_0_2
+	CMP.W	#28,(A3)
+	BPL		.020_0_2
+	CMP.W	#27,(A3)+
+	BEQ		.020_0_2
+	MOVE.W	D1,(A0)+
+	or.w	#32,d2
+	BCLR	#4,D2
+	BRA		.020_0_1
 .020_0_2:
-    MOVE.L  D1,(A0)+
-    OR.W    #48,D2          ; MOVE.L    ([$xxxxxxxx.L
+	MOVE.L	D1,(A0)+
+	OR.W	#48,D2			; MOVE.L	([$xxxxxxxx.L
 .020_0_1:
-    CMP.W   #COM,(A3)+
-    BEQ .020_1
-    CMP.W   #30,-2(A3)
-    bne iERROR0
-    cmp.w   #18,(a3)
-    beq     .020_EXIT
-    BSR ASM_COMMA           ; MOVE.L    ([$xxxxxxxx.L],
-    BSET    #0,D6
-    BRA     .020_1
+	CMP.W	#COM,(A3)+
+	BEQ .020_1
+	CMP.W	#30,-2(A3)
+	bne iERROR0
+	cmp.w	#18,(a3)
+	beq		.020_EXIT
+	BSR ASM_COMMA			; MOVE.L	([$xxxxxxxx.L],
+	BSET	#0,D6
+	BRA		.020_1
 .020_ID:
-    ADDQ.L  #2,A3
-    MOVE.L  (A3)+,D1
-    CMP.W   #$E00,2(a3)
-    beq     .020_ID_PCREL
-    cmp.w   #$E00,4(a3)
-    beq     .020_ID_PCREL
-    MOVEM.L D0-D7/A1/A2/A4-A6,-(A7)
-    MOVE.L  D1,A1
-    CMP.B   #LAB,4(A1)
-    BNE     iERROR4
-    MOVE.L  A0,A4
-    MOVE.W  10(A1),D0
-    BSR ADDBRANCHRELOC
-    MOVE.L  A4,A0
-    MOVEM.L (A7)+,D0-D7/A1/A2/A4-a6
-    OR.W    #48,D2
-    BRA .020_0_1
+	ADDQ.L	#2,A3
+	MOVE.L	(A3)+,D1
+	CMP.W	#$E00,2(a3)
+	beq		.020_ID_PCREL
+	cmp.w	#$E00,4(a3)
+	beq		.020_ID_PCREL
+	MOVEM.L D0-D7/A1/A2/A4-A6,-(A7)
+	MOVE.L	D1,A1
+	CMP.B	#LAB,4(A1)
+	BNE		iERROR4
+	MOVE.L	A0,A4
+	MOVE.W	10(A1),D0
+	BSR ADDBRANCHRELOC
+	MOVE.L	A4,A0
+	MOVEM.L (A7)+,D0-D7/A1/A2/A4-a6
+	OR.W	#48,D2
+	BRA .020_0_1
 .020_ID_PCREL:
-    CMP.W   #26,(A3)
-    BMI .020_ID_NOADJ
-    CMP.W   #28,(A3)
-    BPL .020_ID_NOADJ
-    CMP.W   #27,(A3)+
-    BPL .020_ID_NOADJ
-    BCLR    #4,D2
-    OR.W    #32,D2
-    CLR.W   NEWOP
-    MOVEm.L  D0-D7/A1/a2/A4-a6,-(A7)
-    move.l  a0,a4
-    MOVE.L  D1,A1
-    MOve.w  10(a1),d0
-    BSR ADDBRANCHPCREL16E
-    move.l  a4,a0
-    movem.l  (a7)+,d0-d7/a1/a2/a4-a6
-    BRA .020_0_1
+	CMP.W	#26,(A3)
+	BMI .020_ID_NOADJ
+	CMP.W	#28,(A3)
+	BPL .020_ID_NOADJ
+	CMP.W	#27,(A3)+
+	BPL .020_ID_NOADJ
+	BCLR	#4,D2
+	OR.W	#32,D2
+	CLR.W	NEWOP
+	MOVEm.L	 D0-D7/A1/a2/A4-a6,-(A7)
+	move.l	a0,a4
+	MOVE.L	D1,A1
+	MOve.w	10(a1),d0
+	BSR ADDBRANCHPCREL16E
+	move.l	a4,a0
+	movem.l	 (a7)+,d0-d7/a1/a2/a4-a6
+	BRA .020_0_1
 .020_ID_NOADJ:
-    MOVEm.L  D0-D7/A1/a2/A4-a6,-(A7)
-    move.l  a0,a4
-    MOVE.L  D1,A1
-    MOve.w  10(a1),d0
-    BSR ADDBRANCHPCREL32E
-    move.l  a4,a0
-    movem.l  (a7)+,d0-d7/a1/a2/a4-a6
-    OR.W    #48,D2
-    BRA .020_0_1
+	MOVEm.L	 D0-D7/A1/a2/A4-a6,-(A7)
+	move.l	a0,a4
+	MOVE.L	D1,A1
+	MOve.w	10(a1),d0
+	BSR ADDBRANCHPCREL32E
+	move.l	a4,a0
+	movem.l	 (a7)+,d0-d7/a1/a2/a4-a6
+	OR.W	#48,D2
+	BRA .020_0_1
 
 .020_1:
-    CMP.w   #$E00,(A3)
-    beq     .020_1_1
-    CMP.B   #5,(A3)
-    BNE     .020_2
-    CMP.W   #9,2(A3)
-    BEQ     .020_2
-    CMP.W   #26,2(A3)
-    BEQ     .020_2
-    CMP.W   #27,2(a3)
-    beq     .020_2
-    BTST    #0,D6
-    bne     .020_2          ; MOVE.L    ([$xxxxxxxx.L]
-    MOVE.W  (A3)+,D1        ; MOVE.L    ([$xxxxxxxx.L,Ax
-    BCLR    #7,D2
-    and.l   #7,d1
-    add.w   d1,d3
-    bra     .020_1_2
+	CMP.w	#$E00,(A3)
+	beq		.020_1_1
+	CMP.B	#5,(A3)
+	BNE		.020_2
+	CMP.W	#9,2(A3)
+	BEQ		.020_2
+	CMP.W	#26,2(A3)
+	BEQ		.020_2
+	CMP.W	#27,2(a3)
+	beq		.020_2
+	BTST	#0,D6
+	bne		.020_2			; MOVE.L	([$xxxxxxxx.L]
+	MOVE.W	(A3)+,D1		; MOVE.L	([$xxxxxxxx.L,Ax
+	BCLR	#7,D2
+	and.l	#7,d1
+	add.w	d1,d3
+	bra		.020_1_2
 .020_1_1:
-    addq.l  #2,a3
-    addq.l  #8,d3
-    addq.l  #3,d3
-    moveq   #10,d0
-    bclr    #7,d2
+	addq.l	#2,a3
+	addq.l	#8,d3
+	addq.l	#3,d3
+	moveq	#10,d0
+	bclr	#7,d2
 .020_1_2:
-    cmp.w   #COM,(A3)+
-    beq     .020_2
-    cmp.w   #30,-2(a3)
-    bne     iERROR0
-    cmp.w   #18,(a3)
-    beq     .020_EXIT
-    bset    #1,d6
-    bsr ASM_COMMA
+	cmp.w	#COM,(A3)+
+	beq		.020_2
+	cmp.w	#30,-2(a3)
+	bne		iERROR0
+	cmp.w	#18,(a3)
+	beq		.020_EXIT
+	bset	#1,d6
+	bsr ASM_COMMA
 .020_2:
-    CMP.B   #4,(A3)
-    BMI .020_3
-    CMP.B   #6,(A3)
-    BPL .020_3
+	CMP.B	#4,(A3)
+	BMI .020_3
+	CMP.B	#6,(A3)
+	BPL .020_3
 
-    BTST    #1,D6
-    BEQ .020_2_1
-    BSET    #2,D2
+	BTST	#1,D6
+	BEQ .020_2_1
+	BSET	#2,D2
 .020_2_1:
-    bclr    #6,d2           ; MOVE.L    ([$xxxxxxxx.L, Ax, Rn
-    MOVE.W  (A3)+,D1        ; or
-    btst    #8,d1           ; MOVE.L    ([$xxxxxxxx.L, Ax], Rn
-    beq .020_2_2
-    bset    #15,d2
+	bclr	#6,d2			; MOVE.L	([$xxxxxxxx.L, Ax, Rn
+	MOVE.W	(A3)+,D1		; or
+	btst	#8,d1			; MOVE.L	([$xxxxxxxx.L, Ax], Rn
+	beq .020_2_2
+	bset	#15,d2
 .020_2_2:
-    and.l   #7,d1
-    rol.w   #8,d1
-    rol.w   #4,d1
-    or.w    d1,d2
-    cmp.w   #26,(A3)
-    bmi     .020_2_3
-    cmp.w   #28,(a3)
-    bpl     .020_2_3
-    cmp.w   #27,(a3)+
-    bne     .020_2_3
-    bset    #11,d2
+	and.l	#7,d1
+	rol.w	#8,d1
+	rol.w	#4,d1
+	or.w	d1,d2
+	cmp.w	#26,(A3)
+	bmi		.020_2_3
+	cmp.w	#28,(a3)
+	bpl		.020_2_3
+	cmp.w	#27,(a3)+
+	bne		.020_2_3
+	bset	#11,d2
 .020_2_3:
-    cmp.w   #9,(a3)
-    bne     .020_2_5
-    addq.l  #2,a3
-    cmp.w   #VALUE,(a3)+
-    bne     iERROR78
-    move.l  (A3)+,d1
-    moveq   #0,d0
-    cmp.l   #1,d1
-    beq     .020_2_4
-    addq.l  #1,d0
-    cmp.l   #2,d1
-    beq     .020_2_4
-    addq.l  #1,d0
-    cmp.l   #4,d1
-    beq     .020_2_4
-    addq.l  #1,d0
-    cmp.l   #8,d1
-    bne     iERROR91
+	cmp.w	#9,(a3)
+	bne		.020_2_5
+	addq.l	#2,a3
+	cmp.w	#VALUE,(a3)+
+	bne		iERROR78
+	move.l	(A3)+,d1
+	moveq	#0,d0
+	cmp.l	#1,d1
+	beq		.020_2_4
+	addq.l	#1,d0
+	cmp.l	#2,d1
+	beq		.020_2_4
+	addq.l	#1,d0
+	cmp.l	#4,d1
+	beq		.020_2_4
+	addq.l	#1,d0
+	cmp.l	#8,d1
+	bne		iERROR91
 .020_2_4:
-    rol.w   #8,d0           ; MOVE.L    ([$xxxxxxxx.L, Ax, Rn.s*y], $yyyyyyyy)
-    rol.w   #1,d0
-    or.w    d0,d2
+	rol.w	#8,d0			; MOVE.L	([$xxxxxxxx.L, Ax, Rn.s*y], $yyyyyyyy)
+	rol.w	#1,d0
+	or.w	d0,d2
 .020_2_5:
-    btst    #1,d6
-    bne     .020_2_7
-    cmp.w   #30,(a3)+
-    bne     iERROR34
+	btst	#1,d6
+	bne		.020_2_7
+	cmp.w	#30,(a3)+
+	bne		iERROR34
 .020_2_7:
-    cmp.w   #18,(a3)
-    beq .020_EXIT
-    BSR ASM_COMMA
+	cmp.w	#18,(a3)
+	beq .020_EXIT
+	BSR ASM_COMMA
 
 .020_3:
-    MOVEM.L D0/D2-D4/D6-A2/A4-a6,-(A7)
-    BSR ASM_GRABVALUE
-    MOVE.L  D0,D5
-    MOVEM.L (A7)+,D0/D2-D4/D6-A2/A4-A6
-    TST.L   D5
-    BMI .020_EXIT
+	MOVEM.L D0/D2-D4/D6-A2/A4-a6,-(A7)
+	BSR ASM_GRABVALUE
+	MOVE.L	D0,D5
+	MOVEM.L (A7)+,D0/D2-D4/D6-A2/A4-A6
+	TST.L	D5
+	BMI .020_EXIT
 
-    CMP.W   #26,(A3)
-    BMI     .020_3_1
-    CMP.W   #28,(A3)
-    BPL     .020_3_1
-    cmp.w   #26,(A3)+
-    BNE     .020_3_1
-    move.w  d1,(a0)+
-    or.w    #2,d2
-    bra     .020_3_2
+	CMP.W	#26,(A3)
+	BMI		.020_3_1
+	CMP.W	#28,(A3)
+	BPL		.020_3_1
+	cmp.w	#26,(A3)+
+	BNE		.020_3_1
+	move.w	d1,(a0)+
+	or.w	#2,d2
+	bra		.020_3_2
 .020_3_1:
-    move.l  d1,(a0)+
-    or.w    #3,d2
+	move.l	d1,(a0)+
+	or.w	#3,d2
 .020_3_2:
 .020_EXIT
-    CMP.W   #18,(A3)+
-    BNE iERROR0
-    MOVE.W  D2,(A4)
-    MOVE.L  A0,A4
-    MOVE.L  (A7)+,A0
-    RTS
+	CMP.W	#18,(A3)+
+	BNE iERROR0
+	MOVE.W	D2,(A4)
+	MOVE.L	A0,A4
+	MOVE.L	(A7)+,A0
+	RTS
 ;*-*
 ;; bracketed
 ;; value
 _BRACKET:
-    MOVEQ   #0,D4
-    MOVE.W  (A3),D2
-    CMP.W   #IDENT,D2
-    BEQ .BR_IDENT
-    CMP.W   #LIBC,D2
-;    BEQ .BR_LIBC
-    CMP.W   #VALUE,D2       ; ($xx,Ax/PC,Rn.S*F)
-    BNE .BR_0
-    ADDQ.L  #2,A3
-    MOVE.L  (A3)+,D4
-    swap    d4
-    tst.w   d4
-    bne iERROR93
-    swap    d4
+	MOVEQ	#0,D4
+	MOVE.W	(A3),D2
+	CMP.W	#IDENT,D2
+	BEQ .BR_IDENT
+	CMP.W	#LIBC,D2
+;	 BEQ .BR_LIBC
+	CMP.W	#VALUE,D2		; ($xx,Ax/PC,Rn.S*F)
+	BNE .BR_0
+	ADDQ.L	#2,A3
+	MOVE.L	(A3)+,D4
+	swap	d4
+	tst.w	d4
+	bne iERROR93
+	swap	d4
 
-    BSR ASM_COMMA
+	BSR ASM_COMMA
 .BR_0:
-    CMP.B   #$E,(A3)
-    BEQ .BR_1
-    CMP.B   #$5,(A3)
-    BNE iERROR92
-    MOVE.W  (A3)+,D2
-    AND.L   #7,D2
-    moveq   #$28,d3
-    or.w    d2,d3
-    moveq   #5,d0
-    BRA .BR_2
+	CMP.B	#$E,(A3)
+	BEQ .BR_1
+	CMP.B	#$5,(A3)
+	BNE iERROR92
+	MOVE.W	(A3)+,D2
+	AND.L	#7,D2
+	moveq	#$28,d3
+	or.w	d2,d3
+	moveq	#5,d0
+	BRA .BR_2
 .BR_1:
-    move.w  (a3)+,d2
-    moveq   #$3a,d3
-    moveq   #9,d0
+	move.w	(a3)+,d2
+	moveq	#$3a,d3
+	moveq	#9,d0
 .BR_2:
-    CMP.W   #COM,(A3)
-    BNE .BR_EXIT
-    BSR ASM_COMMA
-    CMP.B   #5,(a3)
-    seq D5
-    moveq   #8,d2
-    and.l   d2,d5
-    move.w  (a3)+,d2
-    and.l   #7,d2
-    or.w    d5,d2
-    ror.w   #4,d2
-    ror.l   #8,d4
-    tst.b   D4
-    bne iERROR94
-    rol.l   #8,d4
-    or.w    d2,d4
-    cmp.w   #$3B,D3
-    BEQ .BR_3
-    ADDQ.L  #7,d3
+	CMP.W	#COM,(A3)
+	BNE .BR_EXIT
+	BSR ASM_COMMA
+	CMP.B	#5,(a3)
+	seq D5
+	moveq	#8,d2
+	and.l	d2,d5
+	move.w	(a3)+,d2
+	and.l	#7,d2
+	or.w	d5,d2
+	ror.w	#4,d2
+	ror.l	#8,d4
+	tst.b	D4
+	bne iERROR94
+	rol.l	#8,d4
+	or.w	d2,d4
+	cmp.w	#$3B,D3
+	BEQ .BR_3
+	ADDQ.L	#7,d3
 .BR_3:
-    ADDQ.L  #1,D3
-    addq.l  #1,d0
-    CMP.W   #18,D2
-    BEQ .BR_EXIT
-    move.w  (a3),d2
-    cmp.w   #27,D2
-    bgt .BR_4
-    cmp.w   #26,d2
-    blt .BR_4
-    move.w  (a3)+,d2
-    cmp.w   #26,d2
-    beq .BR_4
-    bset    #11,d4
+	ADDQ.L	#1,D3
+	addq.l	#1,d0
+	CMP.W	#18,D2
+	BEQ .BR_EXIT
+	move.w	(a3),d2
+	cmp.w	#27,D2
+	bgt .BR_4
+	cmp.w	#26,d2
+	blt .BR_4
+	move.w	(a3)+,d2
+	cmp.w	#26,d2
+	beq .BR_4
+	bset	#11,d4
 .BR_4:
-    cmp.w   #18,(A3)
-    beq .BR_EXIT
-    move.w  (a3)+,d2
-    cmp.w   #9,d2
-    bne iERROR0
-    cmp.w   #VALUE,(a3)+
-    bne iERROR78
-    move.l  (a3)+,d2
-    moveq   #0,d5
+	cmp.w	#18,(A3)
+	beq .BR_EXIT
+	move.w	(a3)+,d2
+	cmp.w	#9,d2
+	bne iERROR0
+	cmp.w	#VALUE,(a3)+
+	bne iERROR78
+	move.l	(a3)+,d2
+	moveq	#0,d5
 
-    CMP.W   #1,D2
-    BEQ .BR_5
-    ADDQ.L  #1,D5
-    CMP.W   #2,D2
-    BEQ .BR_5
-    ADDQ.L  #1,D5
-    CMP.W   #4,D2
-    BEQ .BR_5
-    ADDQ.L  #1,D5
-    CMP.W   #8,D2
-    BNE iERROR91
+	CMP.W	#1,D2
+	BEQ .BR_5
+	ADDQ.L	#1,D5
+	CMP.W	#2,D2
+	BEQ .BR_5
+	ADDQ.L	#1,D5
+	CMP.W	#4,D2
+	BEQ .BR_5
+	ADDQ.L	#1,D5
+	CMP.W	#8,D2
+	BNE iERROR91
 .BR_5:
-    LSL.W   #8,D5
-    LSL.W   #1,D5
-    OR.W    D5,D4
+	LSL.W	#8,D5
+	LSL.W	#1,D5
+	OR.W	D5,D4
 
 .BR_EXIT:
-    cmp.w   #18,(a3)+
-    bne iERROR96
-    move.w  d4,(a4)+
-    rts
+	cmp.w	#18,(a3)+
+	bne iERROR96
+	move.w	d4,(a4)+
+	rts
 ;*-*
 ;; ident
 .BR_IDENT:
-    addq.l  #2,a3
-    MOVE.L  (A3)+,A5
-    tst.b   4(a5)
-    beq iERROR22
-    cmp.b   #3,4(a5)
-    beq .BRI_LABEL
-    moveq   #$28+5,d3
-    moveq   #5,d0
-    moveq   #0,d4
-    move.w  10(a5),d4
-    cmp.b   #2,4(a5)
-    bne .BRI_1
-    subq.w  #1,d3
+	addq.l	#2,a3
+	MOVE.L	(A3)+,A5
+	tst.b	4(a5)
+	beq iERROR22
+	cmp.b	#3,4(a5)
+	beq .BRI_LABEL
+	moveq	#$28+5,d3
+	moveq	#5,d0
+	moveq	#0,d4
+	move.w	10(a5),d4
+	cmp.b	#2,4(a5)
+	bne .BRI_1
+	subq.w	#1,d3
 .BRI_1:
-    cmp.w   #COM,(a3)
-    bne .BR_EXIT
-    ADDQ.L  #1,D0
-    addq.l  #8,d3
-    ror.w   #8,d4
-    tst.b   d4
-    beq .BRI_0
-    cmp.b   #$ff,d4
-    bne iERROR94
+	cmp.w	#COM,(a3)
+	bne .BR_EXIT
+	ADDQ.L	#1,D0
+	addq.l	#8,d3
+	ror.w	#8,d4
+	tst.b	d4
+	beq .BRI_0
+	cmp.b	#$ff,d4
+	bne iERROR94
 .BRI_0:
-    eor.b d4,d4   ;clr.b   d4
-    rol.w   #8,d4
-    bsr ASM_COMMA
-    cmp.b   #5,(a3)
-    seq D2
-    bgt iERROR95
-    cmp.b   #4,(a3)
-    blt iERROR95
-    and.l   #8,d2
-    ror.w   #4,d2
-    or.w    d2,d4
-    move.w  (a3)+,d2
-    and.l   #7,d2
-    ror.w   #4,d2
-    or.w    d2,d4
-    cmp.w   #18,(a3)
-    beq .BR_EXIT
-    cmp.w   #9,(a3)
-    beq .BRI_2
-    cmp.w   #26,(a3)
-    blt iERROR0
-    cmp.w   #27,(a3)
-    bgt iERROR0
-    seq D2
-    rol.l   #8,d2
-    and.l   #$800,d2
-    or.w    d2,d4
-    addq.l  #2,a3
+	eor.b d4,d4		;clr.b	 d4
+	rol.w	#8,d4
+	bsr ASM_COMMA
+	cmp.b	#5,(a3)
+	seq D2
+	bgt iERROR95
+	cmp.b	#4,(a3)
+	blt iERROR95
+	and.l	#8,d2
+	ror.w	#4,d2
+	or.w	d2,d4
+	move.w	(a3)+,d2
+	and.l	#7,d2
+	ror.w	#4,d2
+	or.w	d2,d4
+	cmp.w	#18,(a3)
+	beq .BR_EXIT
+	cmp.w	#9,(a3)
+	beq .BRI_2
+	cmp.w	#26,(a3)
+	blt iERROR0
+	cmp.w	#27,(a3)
+	bgt iERROR0
+	seq D2
+	rol.l	#8,d2
+	and.l	#$800,d2
+	or.w	d2,d4
+	addq.l	#2,a3
 .BRI_2:
-    cmp.w   #18,(a3)
-    beq .BR_EXIT
-    cmp.w   #9,(a3)+
-    bne iERROR9
-    cmp.w   #VALUE,(a3)+
-    bne iERROR78
-    move.l  (a3)+,d2
-    moveq   #0,d5
-    cmp.w   #1,d2
-    beq .BRI_3
-    addq.l  #1,d5
-    cmp.w   #2,d2
-    beq .BRI_3
-    addq.l  #1,d5
-    cmp.w   #4,d2
-    beq .BRI_3
-    addq.l  #1,d5
-    cmp.w   #8,d2
-    bne iERROR91
+	cmp.w	#18,(a3)
+	beq .BR_EXIT
+	cmp.w	#9,(a3)+
+	bne iERROR9
+	cmp.w	#VALUE,(a3)+
+	bne iERROR78
+	move.l	(a3)+,d2
+	moveq	#0,d5
+	cmp.w	#1,d2
+	beq .BRI_3
+	addq.l	#1,d5
+	cmp.w	#2,d2
+	beq .BRI_3
+	addq.l	#1,d5
+	cmp.w	#4,d2
+	beq .BRI_3
+	addq.l	#1,d5
+	cmp.w	#8,d2
+	bne iERROR91
 .BRI_3:
-    lsl.l   #8,d5
-    lsl.l   #1,d5
-    or.w    d5,d4
-    bra .BR_EXIT
+	lsl.l	#8,d5
+	lsl.l	#1,d5
+	or.w	d5,d4
+	bra .BR_EXIT
 ;*-*
 ;; label
 .BRI_LABEL:
-    BSR ASM_COMMA
-    CMP.W   #$E00,(A3)+
-    BNE iERROR92
+	BSR ASM_COMMA
+	CMP.W	#$E00,(A3)+
+	BNE iERROR92
 
-    moveq   #$3a,d3
-    moveq   #9,d0
-    moveq   #0,d4
+	moveq	#$3a,d3
+	moveq	#9,d0
+	moveq	#0,d4
 
-    cmp.w   #COM,(a3)
-    bne .BRL_EXIT
-    ADDQ.L  #1,D0
-    addq.l  #1,d3
-    bsr ASM_COMMA
-    cmp.b   #5,(a3)
-    seq D2
-    bgt iERROR95
-    cmp.b   #4,(a3)
-    blt iERROR95
-    and.l   #8,d2
-    ror.w   #4,d2
-    or.w    d2,d4
-    move.w  (a3)+,d2
-    and.l   #7,d2
-    ror.w   #4,d2
-    or.w    d2,d4
-    cmp.w   #18,(a3)
-    beq .BRL_EXIT
-    cmp.w   #9,(a3)
-    beq .BRL_2
-    cmp.w   #26,(a3)
-    blt iERROR0
-    cmp.w   #27,(a3)
-    bgt iERROR0
-    seq D2
-    rol.l   #8,d2
-    and.l   #$800,d2
-    or.w    d2,d4
-    addq.l  #2,a3
+	cmp.w	#COM,(a3)
+	bne .BRL_EXIT
+	ADDQ.L	#1,D0
+	addq.l	#1,d3
+	bsr ASM_COMMA
+	cmp.b	#5,(a3)
+	seq D2
+	bgt iERROR95
+	cmp.b	#4,(a3)
+	blt iERROR95
+	and.l	#8,d2
+	ror.w	#4,d2
+	or.w	d2,d4
+	move.w	(a3)+,d2
+	and.l	#7,d2
+	ror.w	#4,d2
+	or.w	d2,d4
+	cmp.w	#18,(a3)
+	beq .BRL_EXIT
+	cmp.w	#9,(a3)
+	beq .BRL_2
+	cmp.w	#26,(a3)
+	blt iERROR0
+	cmp.w	#27,(a3)
+	bgt iERROR0
+	seq D2
+	rol.l	#8,d2
+	and.l	#$800,d2
+	or.w	d2,d4
+	addq.l	#2,a3
 .BRL_2:
-    cmp.w   #18,(a3)
-    beq .BRL_EXIT
-    cmp.w   #9,(a3)+
-    bne iERROR9
-    cmp.w   #VALUE,(a3)+
-    bne iERROR78
-    move.l  (a3)+,d2
-    moveq   #0,d5
-    cmp.w   #1,d2
-    beq .BRL_3
-    addq.l  #1,d5
-    cmp.w   #2,d2
-    beq .BRL_3
-    addq.l  #1,d5
-    cmp.w   #4,d2
-    beq .BRL_3
-    addq.l  #1,d5
-    cmp.w   #8,d2
-    bne iERROR91
+	cmp.w	#18,(a3)
+	beq .BRL_EXIT
+	cmp.w	#9,(a3)+
+	bne iERROR9
+	cmp.w	#VALUE,(a3)+
+	bne iERROR78
+	move.l	(a3)+,d2
+	moveq	#0,d5
+	cmp.w	#1,d2
+	beq .BRL_3
+	addq.l	#1,d5
+	cmp.w	#2,d2
+	beq .BRL_3
+	addq.l	#1,d5
+	cmp.w	#4,d2
+	beq .BRL_3
+	addq.l	#1,d5
+	cmp.w	#8,d2
+	bne iERROR91
 .BRL_3:
-    lsl.l   #8,d5
-    lsl.l   #1,d5
-    or.w    d5,d4
+	lsl.l	#8,d5
+	lsl.l	#1,d5
+	or.w	d5,d4
 .BRL_EXIT:
-    cmp.w   #18,(a3)+
-    bne iERROR96
-    move.w  d4,(a4)+
-    cmp.w   #10,d0
-    beq .BRL_EXIT2
+	cmp.w	#18,(a3)+
+	bne iERROR96
+	move.w	d4,(a4)+
+	cmp.w	#10,d0
+	beq .BRL_EXIT2
 .BRL_FINE:
-    movem.l  d0/A0,-(a7)
-    move.w  10(a5),d0
-    clr.w   NEWOP
-    bsr ADDBRANCH
-    movem.l  (a7)+,d0/a0
-    rts
+	movem.l	 d0/A0,-(a7)
+	move.w	10(a5),d0
+	clr.w	NEWOP
+	bsr ADDBRANCH
+	movem.l	 (a7)+,d0/a0
+	rts
 .BRL_EXIT2:
-    move.b  #1,-1(a4)
-    bra .BRL_FINE
+	move.b	#1,-1(a4)
+	bra .BRL_FINE
 
 ;*-*
 ;*-*
 ;*-*
 ;; GetLabel
-ASM_GETLABEL:         ; E INTERFACE TO ASM_GETEA ADR.MODE
-    MOVEM.L (A7)+,D1/A0
-    MOVE.W  (A3)+,D0
-    CMP.W   #IDENT,D0
-    BNE .4
-    MOVE.L  (A3)+,A5        ; A5=VAR
-    MOVE.B  4(A5),D2
-    BEQ iERROR22
-    CMP.B   #LAB,D2
-    BEQ .3
-    BTST    #3,5(A5)        ; SEE IF REGVAR
-    BNE.W   .REG
-    CMP.B   #GLOBV,D2
-    BNE.S   .1
-    MOVEQ   #%101100,D3
-    BRA.S   .2
-.1: MOVEQ   #%101101,D3
-.2: MOVE.W  10(A5),D0
-    MOVE.W  (A3),D2
-    CMP.W   #29,D2
-    BPL.S   .5
-    CMP.W   #26,D2
-    BMI.S   .5
-    ADDQ.L  #2,A3
-    CMP.W   #27,D2
-    BEQ.S   .5
-    CMP.W   #26,D2
-    BNE.S   .6
-    ADDQ.W  #2,D0
-    OPINT
-    BRA.S   .5
-.6: ADDQ.W  #3,D0
-    OPCHAR
-.5: CMP.B   #GLOBV,4(A5)
-    BNE.S   .8
-    GENGI   A5,D2
+ASM_GETLABEL:			; E INTERFACE TO ASM_GETEA ADR.MODE
+	MOVEM.L (A7)+,D1/A0
+	MOVE.W	(A3)+,D0
+	CMP.W	#IDENT,D0
+	BNE .4
+	MOVE.L	(A3)+,A5		; A5=VAR
+	MOVE.B	4(A5),D2
+	BEQ iERROR22
+	CMP.B	#LAB,D2
+	BEQ .3
+	BTST	#3,5(A5)		; SEE IF REGVAR
+	BNE.W	.REG
+	CMP.B	#GLOBV,D2
+	BNE.S	.1
+	MOVEQ	#%101100,D3
+	BRA.S	.2
+.1: MOVEQ	#%101101,D3
+.2: MOVE.W	10(A5),D0
+	MOVE.W	(A3),D2
+	CMP.W	#29,D2
+	BPL.S	.5
+	CMP.W	#26,D2
+	BMI.S	.5
+	ADDQ.L	#2,A3
+	CMP.W	#27,D2
+	BEQ.S	.5
+	CMP.W	#26,D2
+	BNE.S	.6
+	ADDQ.W	#2,D0
+	OPINT
+	BRA.S	.5
+.6: ADDQ.W	#3,D0
+	OPCHAR
+.5: CMP.B	#GLOBV,4(A5)
+	BNE.S	.8
+	GENGI	A5,D2
 .8: OPLONG
-    MOVE.W  D0,(A4)+
-    MOVEQ   #5,D0
-    RTS
+	MOVE.W	D0,(A4)+
+	MOVEQ	#5,D0
+	RTS
 
-.REG:   MOVEQ   #0,D0
-    MOVE.W  10(A5),D3
-    RTS
+.REG:	MOVEQ	#0,D0
+	MOVE.W	10(A5),D3
+	RTS
 
-.3: BTST    #4,5(A5)        ; CHECK IF METHOD
-    BNE iERROR4
-    CMP.W   #$D00,(A3)+
-    BNE .9
-    MOVE.W  10(A5),D0       ; LAB(PC)
-    CLR.W   (A4)+
-    MOVEM.L D1/A0,-(A7)
-    CLR.W   NEWOP
-    BSR ADDBRANCH
-    MOVEM.L (A7)+,D1/A0
-    MOVEQ   #9,D0
-    MOVEQ   #%111010,D3
-    RTS
+.3: BTST	#4,5(A5)		; CHECK IF METHOD
+	BNE iERROR4
+	CMP.W	#$D00,(A3)+
+	BNE .9
+	MOVE.W	10(A5),D0		; LAB(PC)
+	CLR.W	(A4)+
+	MOVEM.L D1/A0,-(A7)
+	CLR.W	NEWOP
+	BSR ADDBRANCH
+	MOVEM.L (A7)+,D1/A0
+	MOVEQ	#9,D0
+	MOVEQ	#%111010,D3
+	RTS
 
-.9: SUBQ.L  #2,A3           ; lab(PC,Rx.s)
-    CMP.W   #17,(A3)+
-    BNE iERROR19
-    CMP.W   #$E00,(A3)+
-    BNE iERROR19
-    MOVEQ   #%111011,D3     ; (PC,...
-    MOVEQ   #10,D0
-    MOVEQ   #0,D4
-    MOVE.L  D4,D5           ; D5=EXTENSIONWORD
-    MOVEM.L D0-D1/A0,-(A7)
-    MOVE.W  10(A5),D0
-    MOVE.W  #1,(A4)+
-    CLR.W   NEWOP
-    BSR ADDBRANCH
-    MOVEM.L (A7)+,D0-D1/A0
-    MOVE.W  -(A4),D5
-    CMP.W   #COM,(A3)+
-    BNE iERROR5
-    BSR ASM_REGID
-    MOVE.B  (A3)+,D2
-    CMP.B   #4,D2           ; ...,Dx
-    BEQ.S   .12
-    CMP.B   #5,D2
-    BNE iERROR19
-    BSET    #15,D5          ; ...,Ax
-.12:    MOVE.B  (A3)+,D2
+.9: SUBQ.L	#2,A3			; lab(PC,Rx.s)
+	CMP.W	#17,(A3)+
+	BNE iERROR19
+	CMP.W	#$E00,(A3)+
+	BNE iERROR19
+	MOVEQ	#%111011,D3		; (PC,...
+	MOVEQ	#10,D0
+	MOVEQ	#0,D4
+	MOVE.L	D4,D5			; D5=EXTENSIONWORD
+	MOVEM.L D0-D1/A0,-(A7)
+	MOVE.W	10(A5),D0
+	MOVE.W	#1,(A4)+
+	CLR.W	NEWOP
+	BSR ADDBRANCH
+	MOVEM.L (A7)+,D0-D1/A0
+	MOVE.W	-(A4),D5
+	CMP.W	#COM,(A3)+
+	BNE iERROR5
+	BSR ASM_REGID
+	MOVE.B	(A3)+,D2
+	CMP.B	#4,D2			; ...,Dx
+	BEQ.S	.12
+	CMP.B	#5,D2
+	BNE iERROR19
+	BSET	#15,D5			; ...,Ax
+.12:	MOVE.B	(A3)+,D2
 	SKIP244
-    AND.W   #%111,D2
-    MOVEQ   #12,D4
-    LSL.W   D4,D2
-    ADD.W   D2,D5
-.13:    MOVE.W  (A3)+,D2
-    CMP.W   #26,D2
-    BEQ.S   .13
-    CMP.W   #18,D2
-    BEQ .14
-    CMP.W   #27,D2
-    BNE iERROR0
-    BSET    #11,D5
-    BRA.S   .13
-.14:    MOVE.W  D5,(A4)+
-    RTS
-.4: CMP.W   #LIBC,D0        ; LIBCALL(Ax)
-    BNE iERROR19
-    ADDQ.L  #2,A3
-    MOVEQ   #0,D4
-    MOVE.W  (A3)+,D4
-    ADDQ.L  #8,A3
-    EXT.L   D4
-    BRA GL_BACK
-    CMP.B   #6,(A3)+
-    BNE iERROR19
-    MOVE.B  (A3)+,D3
-    AND.W   #%111,D3
-    ADD.W   #%101000,D3
-    MOVEQ   #5,D0
-    RTS
+	AND.W	#%111,D2
+	MOVEQ	#12,D4
+	LSL.W	D4,D2
+	ADD.W	D2,D5
+.13:	MOVE.W	(A3)+,D2
+	CMP.W	#26,D2
+	BEQ.S	.13
+	CMP.W	#18,D2
+	BEQ .14
+	CMP.W	#27,D2
+	BNE iERROR0
+	BSET	#11,D5
+	BRA.S	.13
+.14:	MOVE.W	D5,(A4)+
+	RTS
+.4: CMP.W	#LIBC,D0		; LIBCALL(Ax)
+	BNE iERROR19
+	ADDQ.L	#2,A3
+	MOVEQ	#0,D4
+	MOVE.W	(A3)+,D4
+	ADDQ.L	#8,A3
+	EXT.L	D4
+	BRA GL_BACK
+	CMP.B	#6,(A3)+
+	BNE iERROR19
+	MOVE.B	(A3)+,D3
+	AND.W	#%111,D3
+	ADD.W	#%101000,D3
+	MOVEQ	#5,D0
+	RTS
 ;*-*
 ;; GrabValue
 
@@ -8458,288 +8458,288 @@ ASM_GETLABEL:         ; E INTERFACE TO ASM_GETEA ADR.MODE
 ; TRASHES: D0-D4,A0
 
 ASM_GRABVALUE:
-    MOVEQ   #0,D1
-    MOVEQ   #-1,D0          ; IF D0=-1 THEN NOVALUE ELSE CODENR
+	MOVEQ	#0,D1
+	MOVEQ	#-1,D0			; IF D0=-1 THEN NOVALUE ELSE CODENR
 .XL:
-    MOVEQ   #0,D2           ; D2<>0 --> NEGATE
+	MOVEQ	#0,D2			; D2<>0 --> NEGATE
 .XL1:
-    MOVEQ #0,D3
-    MOVE.W  (A3)+,D3
-    CMP.W   #52,D3		      ; do nothing marker
-    BEQ     .XL
-    CMP.W   #8,D3           ; '-' SIGN ?
-    BNE.S   .1
-    MOVEQ   #-1,D2
+	MOVEQ #0,D3
+	MOVE.W	(A3)+,D3
+	CMP.W	#52,D3				; do nothing marker
+	BEQ		.XL
+	CMP.W	#8,D3			; '-' SIGN ?
+	BNE.S	.1
+	MOVEQ	#-1,D2
 .xl
-    MOVE.W  (A3)+,D3
-    CMP.W   #52,D3			    ;do nothing marker
-    BEQ     .xl
-    CMP.W   #VALUE,D3
-    BNE   .X2
-    BRA.S   .2
+	MOVE.W	(A3)+,D3
+	CMP.W	#52,D3				;do nothing marker
+	BEQ		.xl
+	CMP.W	#VALUE,D3
+	BNE		.X2
+	BRA.S	.2
 .1: CMP.W	#IOFF+71,D3
-    BNE.S  .nn2
-    
-    ADDQ.W #1,NOTEXP
-    BRA.S   .XL1
+	BNE.S	.nn2
+	
+	ADDQ.W #1,NOTEXP
+	BRA.S	.XL1
 .nn2:
-    CMP.W   #VALUE,D3       ; VALUE ?
-    BNE.W   .X              ; sizeof or exit
-.2: CMP.W   #-1,D0          ; SIZEOFBACK
-    BNE.S   .3
-    MOVEQ   #6,D0           ; ATLEAST ONE VALUE
-.3: TST.L   D2
-    BEQ.S   .4
-    NEG.L   (A3)
+	CMP.W	#VALUE,D3		; VALUE ?
+	BNE.W	.X				; sizeof or exit
+.2: CMP.W	#-1,D0			; SIZEOFBACK
+	BNE.S	.3
+	MOVEQ	#6,D0			; ATLEAST ONE VALUE
+.3: TST.L	D2
+	BEQ.S	.4
+	NEG.L	(A3)
 .4: TST.W NOTEXP
-    BEQ.S .4a
-    BTST #0,NOTEXP+1
-    BEQ.S .4a
-    NOT.L (A3)
+	BEQ.S .4a
+	BTST #0,NOTEXP+1
+	BEQ.S .4a
+	NOT.L (A3)
 .4a:
-    CLR.W NOTEXP
-    SUBQ.W  #6,D0
-    LSL.W   #2,D0
-    MOVE.L  .T(PC,D0.W),A0
-    JMP (A0)
+	CLR.W NOTEXP
+	SUBQ.W	#6,D0
+	LSL.W	#2,D0
+	MOVE.L	.T(PC,D0.W),A0
+	JMP (A0)
 
-.T: DC.L    .MOVE,  .ADD,   .SUB,   .MUL,   .DIV
-    DC.L    .AND,   .OR,    .LSL,   .LSR
+.T: DC.L	.MOVE,	.ADD,	.SUB,	.MUL,	.DIV
+	DC.L	.AND,	.OR,	.LSL,	.LSR
 
 .XB:
-    MOVE.W  (A3)+,D0
-    CMP.W   #11,D0
-    BPL.W   .X3
-    CMP.W   #7,D0
-    BMI.W   .X3         ; SEE IF AND/OR, ELSE QUIT
+	MOVE.W	(A3)+,D0
+	CMP.W	#11,D0
+	BPL.W	.X3
+	CMP.W	#7,D0
+	BMI.W	.X3			; SEE IF AND/OR, ELSE QUIT
 .AOB:
-    BRA   .XL
+	BRA		.XL
 .X2:
-    SUBQ.L  #4,A3
-    CMP.W   #-1,D0
-    BEQ.W   .5
-    SUBQ.L  #2,A3
-    CLR.W NOTEXP
-    RTS
-.X: CMp.W   #LIBC,D3
-    BEQ .LIB
-    CMP.W   #IOFF+113,D3     ; ARRAYSIZE
-    BEQ   .ASIZ
-    CMP.W   #IOFF+112,D3     ; PSIZEOF
-    BEQ   .SIZ
-    CMP.W   #IOFF+50,D3     ; SIZEOF
-    BNE   .XNS
+	SUBQ.L	#4,A3
+	CMP.W	#-1,D0
+	BEQ.W	.5
+	SUBQ.L	#2,A3
+	CLR.W NOTEXP
+	RTS
+.X: CMp.W	#LIBC,D3
+	BEQ .LIB
+	CMP.W	#IOFF+113,D3	 ; ARRAYSIZE
+	BEQ		.ASIZ
+	CMP.W	#IOFF+112,D3	 ; PSIZEOF
+	BEQ		.SIZ
+	CMP.W	#IOFF+50,D3		; SIZEOF
+	BNE		.XNS
 .SIZ
-    CMP.W   #IOFF+109,(A3) ;BYTE
-    BEQ.S   .BYTEWORD
-    CMP.W   #IOFF+110,(A3) ;WORD
-    BEQ.S   .BYTEWORD
-    CMP.W   #IOFF+20,(A3) ;LONG,INT or CHAR
-    BPL.S   .LONGINTCHAR
+	CMP.W	#IOFF+109,(A3) ;BYTE
+	BEQ.S	.BYTEWORD
+	CMP.W	#IOFF+110,(A3) ;WORD
+	BEQ.S	.BYTEWORD
+	CMP.W	#IOFF+20,(A3) ;LONG,INT or CHAR
+	BPL.S	.LONGINTCHAR
 .LONGINTCHARBACK:
-    
-    CMP.W   #IDENT,(A3)       
-    BEQ.S .sizeofident
-    
-    CMP.W   #31,(A3)+       ; OBJECT
-    BNE iERROR40
-    MOVE.L  (A3)+,A0        ; WE USE A0=OBJ
-    MOVE.W  4(A0),-(A3)
-    BEQ iERROR40         ; NO SIZEOF IN CONST DECL. (SOB..)
-    CLR.W   -(A3)
-    BRA.W   .2
+	
+	CMP.W	#IDENT,(A3)			
+	BEQ.S .sizeofident
+	
+	CMP.W	#31,(A3)+		; OBJECT
+	BNE iERROR40
+	MOVE.L	(A3)+,A0		; WE USE A0=OBJ
+	MOVE.W	4(A0),-(A3)
+	BEQ iERROR40		 ; NO SIZEOF IN CONST DECL. (SOB..)
+	CLR.W	-(A3)
+	BRA.W	.2
 .sizeofident:
-    ADDQ.L #2,A3
-    MOVE.L  (A3)+,A0
+	ADDQ.L #2,A3
+	MOVE.L	(A3)+,A0
 
-    CMP.W #IOFF+112,D3    ;PSIZEOF
-    BNE.S .arr
+	CMP.W #IOFF+112,D3		;PSIZEOF
+	BNE.S .arr
 
-    TST.L VAR_DIMDATA(A0)
-    BNE.S .arr
+	TST.L VAR_DIMDATA(A0)
+	BNE.S .arr
 
-    MOVE.W  #4,-(A3)
-    CLR.W -(A3)
-    BRA.W .2
+	MOVE.W	#4,-(A3)
+	CLR.W -(A3)
+	BRA.W .2
 
 .arr:
-    CMP.L   #4,(A0)
-    BLE.S   .PTRTOLONGINTCHAR
-    MOVE.L  (A0),A0
-    MOVE.W  OSIZE(A0),-(A3)
-    CLR.W -(A3)
-    BRA.W .2
+	CMP.L	#4,(A0)
+	BLE.S	.PTRTOLONGINTCHAR
+	MOVE.L	(A0),A0
+	MOVE.W	OSIZE(A0),-(A3)
+	CLR.W -(A3)
+	BRA.W .2
 .PTRTOLONGINTCHAR:
-    MOVE.L (A0),-(A3)
-    BRA.W .2
+	MOVE.L (A0),-(A3)
+	BRA.W .2
 .BYTEWORD:
-    MOVEM.L D0/D3,-(A7)
-    MOVE.W (A3)+,D3
-    SUB.W #IOFF+109,D3
-    MOVEQ.L #1,D0
-    LSR.L D3,D0
-    BRA.S .CONT
+	MOVEM.L D0/D3,-(A7)
+	MOVE.W (A3)+,D3
+	SUB.W #IOFF+109,D3
+	MOVEQ.L #1,D0
+	LSR.L D3,D0
+	BRA.S .CONT
 .LONGINTCHAR:
-    CMP.W   #IOFF+23,(A3)
-    BPL.S .LONGINTCHARBACK
-    MOVEM.L D0/D3,-(A7)
-    MOVE.W (A3)+,D3
-    SUB.W #IOFF+20,D3
-    MOVEQ.L #4,D0
-    LSR.L D3,D0
+	CMP.W	#IOFF+23,(A3)
+	BPL.S .LONGINTCHARBACK
+	MOVEM.L D0/D3,-(A7)
+	MOVE.W (A3)+,D3
+	SUB.W #IOFF+20,D3
+	MOVEQ.L #4,D0
+	LSR.L D3,D0
 .CONT:
-    MOVE.L D0,-(A3)
-    MOVEM.L  (A7)+,D0/D3
-    BRA.W   .2
+	MOVE.L D0,-(A3)
+	MOVEM.L	 (A7)+,D0/D3
+	BRA.W	.2
 
 .LIB:
-    ADDQ.L  #2,A3
-    MOVE.L  D3,-(A7)
-    MOVE.W  (A3)+,D3
-    ADDQ.L  #4,A3
-    EXT.L   d3
-    MOVE.L  D3,(A3)
-    MOVE.L  (A7)+,D3
-    BRA     .2
+	ADDQ.L	#2,A3
+	MOVE.L	D3,-(A7)
+	MOVE.W	(A3)+,D3
+	ADDQ.L	#4,A3
+	EXT.L	d3
+	MOVE.L	D3,(A3)
+	MOVE.L	(A7)+,D3
+	BRA		.2
 
 .ASIZ:
-    MOVE.L #1,.dimno
+	MOVE.L #1,.dimno
 
-    CMP.W   #VALUE,(A3)
-    BNE.S   .nval
+	CMP.W	#VALUE,(A3)
+	BNE.S	.nval
 
-    ADDQ.L	#2,A3 
-    MOVE.L  A3,.dimerrpos
-    
-    MOVE.L  (A3)+,.dimno
+	ADDQ.L	#2,A3 
+	MOVE.L	A3,.dimerrpos
+	
+	MOVE.L	(A3)+,.dimno
 .nval:
 
-    CMP.W   #IDENT,(A3)
-    BEQ.S .asizofident
-    BRA   iERROR40
+	CMP.W	#IDENT,(A3)
+	BEQ.S .asizofident
+	BRA		iERROR40
 
 .asizofident
-    ADDQ.L #2,A3
-    MOVE.L  (A3)+,A0
+	ADDQ.L #2,A3
+	MOVE.L	(A3)+,A0
 
-    MOVE.L D0,-(a7)
-    MOVE.L VAR_DIMDATA(A0),D0
-    BEQ   iERROR40
-    
-    MOVE.L D0,A0
+	MOVE.L D0,-(a7)
+	MOVE.L VAR_DIMDATA(A0),D0
+	BEQ		iERROR40
+	
+	MOVE.L D0,A0
 
-    MOVE.L .dimno,D0
-    BLE.S .derror104
-    SWAP D0
-    TST.W D0
-    BNE.S .derror104
-    SWAP D0
-    CMP.W (A0),D0
-    BGT.S .derror104
+	MOVE.L .dimno,D0
+	BLE.S .derror104
+	SWAP D0
+	TST.W D0
+	BNE.S .derror104
+	SWAP D0
+	CMP.W (A0),D0
+	BGT.S .derror104
 
-    ADD.W D0,D0
-    LEA (A0,D0.W),A0
-  
-    MOVE.W (A0),D0
-    CMP.L #1,.dimno
-    BEQ.S .dim1
+	ADD.W D0,D0
+	LEA (A0,D0.W),A0
+	
+	MOVE.W (A0),D0
+	CMP.L #1,.dimno
+	BEQ.S .dim1
 
-    DIVU.W -2(A0),D0
+	DIVU.W -2(A0),D0
 .dim1:
-    MOVE.W  D0,-(A3)
-    CLR.W -(A3)
-    MOVE.L (a7)+,D0
-    BRA.W .2
+	MOVE.W	D0,-(A3)
+	CLR.W -(A3)
+	MOVE.L (a7)+,D0
+	BRA.W .2
 
 .XNS:
-    SUBQ.L  #2,A3           ; ASSUMES NEXT WORD ALREADY READ
-    CMP.W   #-1,D0
-    BEQ.S   .5
-    SUBQ.L  #2,A3
+	SUBQ.L	#2,A3			; ASSUMES NEXT WORD ALREADY READ
+	CMP.W	#-1,D0
+	BEQ.S	.5
+	SUBQ.L	#2,A3
 .5: CLR.W NOTEXP
-    RTS
+	RTS
 .dimno: DC.L 0
 .dimerrpos: DC.L 0
 .derror104: BRA ERROR104
 
 
 .X3:
-    CMP.W   #IOFF+29,D0     ; CHECK FOR AND/OR
-    BEQ.S   .AO
-    CMP.W   #IOFF+30,D0
-    BEQ.S   .AO
-    CMP.W	#48,D0			; >>
-    BEQ.S	.SHIF
-    CMP.W	#47,D0			; <<
-    BEQ.S	.SHIF
-    SUBQ.L  #2,A3
-    RTS
+	CMP.W	#IOFF+29,D0		; CHECK FOR AND/OR
+	BEQ.S	.AO
+	CMP.W	#IOFF+30,D0
+	BEQ.S	.AO
+	CMP.W	#48,D0			; >>
+	BEQ.S	.SHIF
+	CMP.W	#47,D0			; <<
+	BEQ.S	.SHIF
+	SUBQ.L	#2,A3
+	RTS
 .AO:
-    SUB.W   #IOFF+18,D0
-    BRA.W   .AOB
+	SUB.W	#IOFF+18,D0
+	BRA.W	.AOB
 .SHIF:	SUB.W	#34,D0
-    BRA.W   .AOB
+	BRA.W	.AOB
 
 .MOVE:
-    MOVE.L  (A3)+,D1
-    BRA .XB
+	MOVE.L	(A3)+,D1
+	BRA .XB
 .ADD:
-    ADD.L   (A3)+,D1
-    BRA .XB
+	ADD.L	(A3)+,D1
+	BRA .XB
 .SUB:
-    SUB.L   (A3)+,D1
-    BRA .XB
+	SUB.L	(A3)+,D1
+	BRA .XB
 .AND:
-    AND.L   (A3)+,D1
-    BRA .XB
+	AND.L	(A3)+,D1
+	BRA .XB
 .OR:
-    OR.L    (A3)+,D1
-    BRA .XB
+	OR.L	(A3)+,D1
+	BRA .XB
 .LSL:
-    MOVE.L  (A3)+,D4
-    LSL.L   D4,D1
-    BRA .XB
+	MOVE.L	(A3)+,D4
+	LSL.L	D4,D1
+	BRA .XB
 .LSR:
-    MOVe.L  (A3)+,D4
-    LSR.L   D4,D1
-    BRA .XB
-.MUL:   MOVE.L  (A3)+,D4
-    MOVE.L  D4,D2
-    MOVE.L  D4,D3
-    MULU    D1,D4
-    SWAP    D3
-    MULU    D1,D3
-    SWAP    D3
-    EOR.W   D3,D3   ;CLR.W   D3
-    ADD.L   D3,D4
-    SWAP    D1
-    MULU    D1,D2
-    SWAP    D2
-    EOR.W   D2,D2   ;CLR.W   D2
-    ADD.L   D2,D4
-    MOVE.L  D4,D1
-    BRA .XB
+	MOVe.L	(A3)+,D4
+	LSR.L	D4,D1
+	BRA .XB
+.MUL:	MOVE.L	(A3)+,D4
+	MOVE.L	D4,D2
+	MOVE.L	D4,D3
+	MULU	D1,D4
+	SWAP	D3
+	MULU	D1,D3
+	SWAP	D3
+	EOR.W	D3,D3	;CLR.W	 D3
+	ADD.L	D3,D4
+	SWAP	D1
+	MULU	D1,D2
+	SWAP	D2
+	EOR.W	D2,D2	;CLR.W	 D2
+	ADD.L	D2,D4
+	MOVE.L	D4,D1
+	BRA .XB
 
-;.DIV:  MOVE.L  (A3)+,D4
-;   MOVEQ   #32,D3
-;   MOVEQ   #0,D2
-;.D1:   SUB.L   D4,D2
-;   BCC.B   .D2
-;   ADD.L   D4,D2
-;.D2:   ROXL.L  #1,D1
-;   ROXL.L  #1,D2
-;   DBF     D3,.D1
-;   NOT.L   D1
-;   BRA .XB
+;.DIV:	MOVE.L	(A3)+,D4
+;	MOVEQ	#32,D3
+;	MOVEQ	#0,D2
+;.D1:	SUB.L	D4,D2
+;	BCC.B	.D2
+;	ADD.L	D4,D2
+;.D2:	ROXL.L	#1,D1
+;	ROXL.L	#1,D2
+;	DBF		D3,.D1
+;	NOT.L	D1
+;	BRA .XB
 
-.DIV:   MOVE.L  D1,-(A7)
-    MOVE.L  (A3)+,-(A7)
-    TST.L   (A7)
-    BEQ iERROR15
-    JSR I_DIV
-    ADDQ.L  #8,A7
-    MOVE.L  D0,D1
-    BRA .XB
+.DIV:	MOVE.L	D1,-(A7)
+	MOVE.L	(A3)+,-(A7)
+	TST.L	(A7)
+	BEQ iERROR15
+	JSR I_DIV
+	ADDQ.L	#8,A7
+	MOVE.L	D0,D1
+	BRA .XB
 ;*-*
 ;;ERROR I
 iERROR0: JMP ERROR0
@@ -8859,7 +8859,7 @@ iERROR108 JMP ERROR108
 ; ************************************************************* ;
 
 
-      CHECKIDENTS:
+		CHECKIDENTS:
 	MOVE.W	#4,CURSPOT
 	MOVE.L	#IDENTHASH+4,A5
 .1A:	MOVE.L	A5,A4
@@ -8870,18 +8870,18 @@ iERROR108 JMP ERROR108
 	MOVE.L	A4,D0
 	BEQ.S	.1A
 	IFD IDENT_COOKIE
-	CMP.B #3,4(A4)    ;label
+	CMP.B #3,4(A4)		;label
 	BEQ.S .chk
-    CMP.W #$C0DE,VAR_IDCOOKIE(A4)
-    BEQ.S .chk
-    INTERN 108
+	CMP.W #$C0DE,VAR_IDCOOKIE(A4)
+	BEQ.S .chk
+	INTERN 108
 .chk
-  	ENDIF
-	CMP.B #3,4(A4)    ;label
+	ENDIF
+	CMP.B #3,4(A4)		;label
 	BEQ.S .notvar
-	;TST.B 4(A4)       ;ndef
+	;TST.B 4(A4)		 ;ndef
 	;BEQ.S .notvar2
-	MOVE.L (A4),VAR_NAME(A4)  ;save name
+	MOVE.L (A4),VAR_NAME(A4)	;save name
 .notvar
 	BTST	#0,5(A4)		; SEE IF UNREFERENCED
 	BEQ	.UNREF
@@ -8910,20 +8910,20 @@ iERROR108 JMP ERROR108
 	MOVE.L	VARHEAVY(A4),D0		; if 0 then cannot be regvar
 	BEQ.W	.NR
 
-    ;test for noregs in PROC flags
-    btst    #5,2(a3)
-    bne     .NR
+	;test for noregs in PROC flags
+	btst	#5,2(a3)
+	bne		.NR
 
 	MOVE.W	MAXREGALLOC(PC),D0
-	MOVE.B 3(A3),D1  ;numregvars
-	AND.B #15,d1     ;mask out flags
+	MOVE.B 3(A3),D1	 ;numregvars
+	AND.B #15,d1	 ;mask out flags
 	CMP.B	D1,D0
 	BLE.S	.RCALC
 
 	BSET	#3,5(A4)		; MAKE IT A REGVAR!
-	ADDQ.B	#1,3(A3)    ;numregvars
+	ADDQ.B	#1,3(A3)	;numregvars
 	MOVE.B	3(A3),D7
-	AND.W #15,D7        ;mask out flags
+	AND.W #15,D7		;mask out flags
 	NEG.W	D7
 	ADDQ.W	#8,D7
 	MOVE.W	D7,10(A4)
@@ -9055,9 +9055,9 @@ iERROR108 JMP ERROR108
 	MOVEM.L	D0-D3/A0-A3,-(A7)
 	LEA	.lnumt(PC),A0
 	LEA	.lnum(PC),A1
- 	MOVEQ #0,D0
+	MOVEQ #0,D0
 	MOVE.W	VARLINENO(A4),D0
- 	ADDQ.L #1,D0
+	ADDQ.L #1,D0
 	MOVE.L	D0,(A1)
 	BSR	WRITEFORMAT
 	MOVEM.L	(A7)+,D0-D3/A0-A3
@@ -9071,10 +9071,10 @@ iERROR108 JMP ERROR108
 .lnum:	DC.L 0
 .UR:	DC.W	0			; MESSY DONE?
 
-      NRGLOB:
+		NRGLOB:
 	DC.W	GLOBOFF			; HASTABE initialized
 
-      CHECKLABBUF:
+		CHECKLABBUF:
 	SUBQ.W	#1,.1
 	BEQ.S	.2
 	RTS
@@ -9093,7 +9093,7 @@ iERROR108 JMP ERROR108
 ;	The Error, Message And DosSupport Part			;
 ; ************************************************************* ;
 
-      ERROR:				; D0=ERRORNR.
+		ERROR:				; D0=ERRORNR.
 	BSR	PREPMACROERROR
 	MOVE.W	#5,CURSPOT
 	MOVE.L	A0,SAVEDREGS
@@ -9162,7 +9162,7 @@ iERROR108 JMP ERROR108
 .2:	ADDQ.L	#1,A0
 	BRA.S	.3
 
-      RECONSTRUCT:			; GETS START LINE IN A0, RETURNS NEW
+		RECONSTRUCT:			; GETS START LINE IN A0, RETURNS NEW
 	MOVE.L	A0,LINEOFF		; ADR. IN A0, TRASHES NOTHING
 	MOVEM.L	D0-D4/A1-A4,-(A7)
 	MOVE.W	ERRWHERE(PC),D0
@@ -9234,7 +9234,7 @@ XTRALINES:	DC.W	0
 ERBUF:		DC.L	0 ;ESTACKBUF
 BYTEOFF:	DC.L	0
 
-      CONSTRUCT:
+		CONSTRUCT:
 	MOVE.L	SAVEDREGS+4(PC),D3	; D3=INTERIM ERPOINT
 	BTST	#0,D3
 	BEQ.W	.EVEN
@@ -9330,8 +9330,8 @@ BYTEOFF:	DC.L	0
 	DC.L	.ONE,".",.ONE,"`",.ONE,"!",.ID,4,.ID,4		; 35-39
 	DC.L	.THREE,"<=>",.TWO,"::",.ID,4,.NUM,4,.ONE,"@"	; 40-44
 	DC.L	.ID,4,.ONE,"|",.TWO,"<<",.TWO,">>",.ONE,"?" ;45-49
-	DC.L    .THREE,':=:',.ER,0,.ID,4 ;50-52
-    
+	DC.L	.THREE,':=:',.ER,0,.ID,4 ;50-52
+	
 .ER:	ADDQ.L	#4,A7
 	BRA	.ERR
 .EX:	ADDQ.L	#4,A7
@@ -9445,19 +9445,19 @@ BYTEOFF:	DC.L	0
 	BRA	.ERR
 
 
-      WRITECON:				; ADR D2, LEN D3
+		WRITECON:				; ADR D2, LEN D3
 	MOVE.L	STOUT(PC),D1
 	MOVE.L	DOSBASE(PC),A6
 	JSR	-48(A6)
 	RTS
 
-      WRITELN:
+		WRITELN:
 	MOVEQ	#1,D3
 	MOVE.L	#RETURNOUT,D2
 	BSR.S	WRITECON
 	RTS
 
-      WRITEFORMAT:			; A0=STRING, A1=DATA
+		WRITEFORMAT:			; A0=STRING, A1=DATA
 	MOVE.L	#PRINTBUF,A3		; USES D0-D3/A0-A3/A6
 	LEA	.1(PC),A2		; TRASH DIRNAME BUF....
 	MOVE.L	A3,D2
@@ -9474,7 +9474,7 @@ BYTEOFF:	DC.L	0
 .1:	MOVE.B	D0,(A3)+
 	RTS
 
-      WRITELINENUM:
+		WRITELINENUM:
 	MOVE.W	LINENUM(PC),D7
 	CMP.W	LINEWRITE(PC),D7
 	BPL.S	.1
@@ -9497,30 +9497,30 @@ BYTEOFF:	DC.L	0
 	EVEN
 .3:	DC.L	0
 
-      NOERROR:
+		NOERROR:
 	;ADDQ.W	#1,ASSLINE
 	BTST	#4,CODEPREFS+3
 	BNE	.X
 	TST.B PURECHECK
 	BNE.S .4
-    
+	
 	TST.L LIBINFO
 	BEQ.S .4
-    
+	
 	MAKEWARN 10
 
 .4:
-  TST.B STACKWARN2
-  BEQ.S .nostackwarn2
+	TST.B STACKWARN2
+	BEQ.S .nostackwarn2
 	
-  MOVEQ #2,D0
-  BRA.S .dostackwarn
-  
+	MOVEQ #2,D0
+	BRA.S .dostackwarn
+	
 .nostackwarn2
-  TST.B STACKWARN1
-  BEQ.S .nostackwarn1
+	TST.B STACKWARN1
+	BEQ.S .nostackwarn1
 
-  MOVEQ #1,D0
+	MOVEQ #1,D0
 
 .dostackwarn
 	JSR makewarn
@@ -9536,30 +9536,30 @@ BYTEOFF:	DC.L	0
 	BSR	WRITELN
 .11:	RTS
 
-      WARNINGMESSY:
+		WARNINGMESSY:
 	DC.B	"WARNING: ",0		; 9
 
-      LINENOTEXT:
-	DC.B " (line %d)",0
+		LINENOTEXT:
+	DC.B " (line %u)",0
 
 ;store the (first) line numbers of the warnings
 
-  even
-      WARNINGTAB:
+	even
+		WARNINGTAB:
 	DC.L	.1,.2,.3,.4,.5,.6,.7,.8,.9,.10,.11,.12,.13,.14,.15,.16
 
 
-.1:	DC.B	"A4/A5 used in inline assembly. (line %d)",0
+.1:	DC.B	"A4/A5 used in inline assembly. (line %u)",0
 .2:	DC.B	"keep an eye on your stacksize",0
 .3:	DC.B	"stack is definitely too small",0
-.4:	DC.B	'suspicious use of "=" in void expression(s). (line %d)',0
+.4:	DC.B	'suspicious use of "=" in void expression(s). (line %u)',0
 .5:	DC.B	"module changed OPT OSVERSION settings",0
-.6:	DC.B	"variable used as function (line %d)",0
-.7:	DC.B	"code outside PROCs (line %d)",0
-.8:	DC.B	"REG var used after EXCEPT (line %d)",0
-.9:	DC.B	"member used as method (line %d)",0
+.6:	DC.B	"variable used as function (line %u)",0
+.7:	DC.B	"code outside PROCs (line %u)",0
+.8:	DC.B	"REG var used after EXCEPT (line %u)",0
+.9:	DC.B	"member used as method (line %u)",0
 .10: DC.B "OPT PURE recommended for libraries",0
-.11: DC.B	"assign of ARRAY/STRING/LIST variable. (line %d)",0
+.11: DC.B	"assign of ARRAY/STRING/LIST variable. (line %u)",0
 .12:	DC.B	"module changed OPT CPU settings",0
 .13:	DC.B	"module changed OPT FPU settings",0
 .14:	DC.B	"module changed OPT ESTRCONST settings",0
@@ -9570,12 +9570,12 @@ warnsenabled: DC.L -1
 
 PORTCOOKIE	= $DEADBEEF
 
-      CACHENAME:	DC.B	"EmoduleCache",0,0
-      PORTADR:		DC.L	0	; MUST BE NIL FOR NO_CACHE
-      CACHENAMESTART:	DC.L	0
-      CACHENAMEEND:	DC.L	0
+		CACHENAME:	DC.B	"EmoduleCache",0,0
+		PORTADR:		DC.L	0	; MUST BE NIL FOR NO_CACHE
+		CACHENAMESTART:	DC.L	0
+		CACHENAMEEND:	DC.L	0
 
-      FLUSHMODULE:			; D0=MODPTR
+		FLUSHMODULE:			; D0=MODPTR
 	MOVEM.L	D1/D2/D3/A0-A3/A6,-(A7)
 	MOVE.L	D0,D1			; D1=MODNAME
 	MOVE.L	D1,A0
@@ -9624,7 +9624,7 @@ PORTCOOKIE	= $DEADBEEF
 .SP2:	MOVE.L	A2,D2
 	BRA.S	.SL2
 
-      SEARCHINCACHE:			; RETURNS D0=MODPTR OR NIL
+		SEARCHINCACHE:			; RETURNS D0=MODPTR OR NIL
 	MOVEM.L	D1/A0-A3,-(A7)
 	MOVE.L	PORTADR(PC),D0
 	BEQ.S	.X
@@ -9650,7 +9650,7 @@ PORTCOOKIE	= $DEADBEEF
 .X:	MOVEM.L	(A7)+,D1/A0-A3
 	RTS
 
-      NEWCACHE:
+		NEWCACHE:
 	TST.L	PORTADR			; DO WE CACHE?
 	BEQ	NEW
 	MOVEM.L	D1-D3/A0-A3/A6,-(A7)	; SIZE-->D0-->ADDR
@@ -9693,7 +9693,7 @@ PORTCOOKIE	= $DEADBEEF
 .EXX:	MOVEM.L	(A7)+,D1-D3/A0-A3/A6
 	RTS
 
-      GETCACHE:
+		GETCACHE:
 	BTST	#1,CODEPREFS+1		; IF OPT=-c THEN DON'T USE CACHE
 	BEQ.S	.1
 	RTS
@@ -9735,7 +9735,7 @@ PORTCOOKIE	= $DEADBEEF
 .FAIL:	JSR	-$8A(A6)		; PERMIT
 	RTS
 
-      UNLOCKCACHE:
+		UNLOCKCACHE:
 	MOVE.L	4.W,A6
 	JSR	-$84(A6)		; FORBID
 	MOVE.L	PORTADR(PC),D0
@@ -9745,7 +9745,7 @@ PORTCOOKIE	= $DEADBEEF
 .1:	JSR	-$8A(A6)		; PERMIT
 	RTS
 
-;     RESCHECK:				; PRESERVES ALL REGS IF OK
+;		RESCHECK:				; PRESERVES ALL REGS IF OK
 ;	TST.W	.1
 ;	BNE.S	.X
 ;	MOVE.W	#-1,.1
@@ -9757,7 +9757,7 @@ PORTCOOKIE	= $DEADBEEF
 
 ;;INIT
 
-      INITALL:
+		INITALL:
 ;	BSR.S	RESCHECK
 	MOVE.W	#6,CURSPOT
 	MOVE.L	D0,ARGLEN		; SAVE THESE 1ST
@@ -9849,7 +9849,7 @@ PORTCOOKIE	= $DEADBEEF
 	MOVE.L	A0,ARGADR
 	SUBQ.L	#1,D0
 	MOVEQ	#0,D2
-      COPYARGS:
+		COPYARGS:
 	MOVE.B	(A0)+,D2
 	CMP.W	#33,D2
 	BPL.S	.1
@@ -9865,9 +9865,9 @@ PORTCOOKIE	= $DEADBEEF
 	BNE.S .C2
 	SUB.L #DESTNAMEBUF+1,A2
 	MOVE.L A2,DESTNAMELEN
-  
+	
 ; HERE ARGADR IS OK, AND ARGLEN=PRECISELEN, A1=ENDOFSTR
-      BACKRA:
+		BACKRA:
 
 	CMP.B	#"e",-1(A1)
 	BEQ.S	.4
@@ -9883,8 +9883,8 @@ PORTCOOKIE	= $DEADBEEF
 
 .3:	MOVE.B	#0,(A1)+
 
-	LEA DESTNAMEBUF,A1  
-	ADD.L  DESTNAMELEN,A1
+	LEA DESTNAMEBUF,A1	
+	ADD.L	DESTNAMELEN,A1
 	CMP.B	#"e",-1(A1)
 	BEQ.S	.4_0
 	CMP.B	#"E",-1(A1)
@@ -9904,16 +9904,16 @@ PORTCOOKIE	= $DEADBEEF
 	MOVE.W	#0,CONOUT
 	BSR.W	SHOWIDENT
 	BRA.S	GOTOUT
-      NOSTDOUT:				; WEVE GOT NO STDIO
-      	MOVEQ	#0,D0
-      	MOVE.L	D0,ARGLEN		; SIMULATE NO ARGS
- ;     	SWAP	D0
-      	MOVE.B	D0,NAMEBUF
+		NOSTDOUT:				; WEVE GOT NO STDIO
+		MOVEQ	#0,D0
+		MOVE.L	D0,ARGLEN		; SIMULATE NO ARGS
+ ;		SWAP	D0
+		MOVE.B	D0,NAMEBUF
 	BSR	OPENCON			; WE NEED A CON: AS STDIO
 	BSR.S	SHOWIDENT
 	MOVE.W	#-1,CONOUT
 	BSET	#2,CODEPREFS+1
-      GOTOUT:				; WE GOT STDIO, SO START PRINTING
+		GOTOUT:				; WE GOT STDIO, SO START PRINTING
 	BSR	TOFRONT			; PUT WBTOFRONT
 	BSR	INSTALLHANDLER
 	MOVE.W	CONOUT(PC),D0
@@ -9921,10 +9921,10 @@ PORTCOOKIE	= $DEADBEEF
 	BNE.S	ERNOARGS
 	BSR	OPENFILE
 	RTS
-      ERNOARGS:
+		ERNOARGS:
 	RTS
 
-      SHOWIDENT:
+		SHOWIDENT:
 	TST.W	.2
 	BNE.S	.3
 	BTST	#7,CODEPREFS+2
@@ -9934,26 +9934,26 @@ PORTCOOKIE	= $DEADBEEF
 	BSR	WRITECON		; SHOW OUR REAL IDENTITY
 	MOVE.W	#-1,.2
 .1:	TST.W SHOWFN
-    BEQ.S .3
+	BEQ.S .3
 	MOVE.L	#FNPRE,D2
 	MOVE.L	#FNPREEND-FNPRE,D3
 	BSR	WRITECON
-  MOVE.L	#NAMEBUF,D2
-  MOVE.L D2,A0
-.4:  TST.B (A0)+
-  BNE.S .4
-  MOVE.L A0,D3
-  SUB.L D2,D3
-  SUBQ.L #1,D3
+	MOVE.L	#NAMEBUF,D2
+	MOVE.L D2,A0
+.4:	 TST.B (A0)+
+	BNE.S .4
+	MOVE.L A0,D3
+	SUB.L D2,D3
+	SUBQ.L #1,D3
 	BSR	WRITECON
 	MOVE.L	#FNPOST,D2
 	MOVE.L	#FNPOSTEND-FNPOST,D3
 	BSR	WRITECON
-    
+	
 .3: RTS
 .2:	DC.W	0
 
-      ISOPENMATH:
+		ISOPENMATH:
 	TST.L	MATHBASE
 	BNE.S	.1
 	;MOVEM.L	D0-D1/A0-A1,-(A7)
@@ -9967,18 +9967,18 @@ PORTCOOKIE	= $DEADBEEF
 	BEQ	ERROR58
 .1:	RTS
 
-      READARGS:
+		READARGS:
 	MOVE.L	DOSBASE(PC),A6
 	MOVE.L	#TEMPLATE,D1
 	MOVE.L	#.SRC,D2
 	MOVEQ	#0,D3
 	JSR	-$31E(A6)		; READARGS
 	MOVE.L	D0,D7			; D7=RASTRUCT
-	move.l  D0,DOS_RDA
+	move.l	D0,DOS_RDA
 	BEQ	ERROR18
 
 	MOVE.L	#DESTNAMEBUF,A1		; COPY ARGS
-  
+	
 	TST.L .DESTDIR
 	BEQ.S .NODDIR
 	MOVE.L .DESTDIR,A0
@@ -9991,7 +9991,7 @@ PORTCOOKIE	= $DEADBEEF
 	MOVE.L	.SRC(PC),A0
 	TST.L .EXENAME
 	BEQ.S .NOEXENAME
-  
+	
 	MOVE.L .EXENAME,A0
 
 .NOEXENAME:
@@ -10003,10 +10003,10 @@ PORTCOOKIE	= $DEADBEEF
 
 	MOVE.L	.SRC(PC),A0
 	MOVE.L	#NAMEBUF,A1		; COPY ARGS
-  MOVE.L A0,SRCFN
+	MOVE.L A0,SRCFN
 	MOVE.L	A1,ARGADR
 	MOVE.L	A1,D0
-    
+	
 .COPY:	MOVE.B	(A0)+,(A1)+
 	BNE.S	.COPY
 	SUBQ.L	#1,A1
@@ -10082,14 +10082,14 @@ PORTCOOKIE	= $DEADBEEF
 	BEQ.S	.11F
 	BSET	#7,D6
 	MOVE.W	#MAXREGVARS,MAXREGALLOC
-	MOVE.B	#-1,SMERGE		; OPTI/S  merge string
+	MOVE.B	#-1,SMERGE		; OPTI/S	merge string
 .11F:	TST.L	.LEGACYINT
 	BEQ.S	.12
 	BSET	#6,ICODEPREFS+3
 .12:	TST.L	.LEGACY
 	BEQ.S	.13
 	BSET	#5,ICODEPREFS+3
-  
+	
 	;put end marker before new function calls to disable them
 	LEA EFUNCTAB,A0
 	ADD.L #NRLEGEFUNC*EFUNCENTRYSIZE,A0
@@ -10116,7 +10116,7 @@ PORTCOOKIE	= $DEADBEEF
 	MOVE.L	(A0),D0
 	CMP.L #30000,D0
 	BLT.W ERROR75
-  
+	
 	MOVE.L D0,CSTACK_SIZE
 	ADD.L #1000,D0
 	MOVE.L D0,ACODE+8
@@ -10148,18 +10148,18 @@ PORTCOOKIE	= $DEADBEEF
 .WB:	DC.L	0
 .LINED:	DC.L	0
 .OPTI:	DC.L	0
-.LEGACY: DC.L   0
-.LEGACYINT: DC.L   0
+.LEGACY: DC.L	0
+.LEGACYINT: DC.L	 0
 .DBG:	DC.L	0
-.DBG50: DC.L  0
+.DBG50: DC.L	0
 .DBGLINENOS: DC.L 0
 .NIL:	DC.L	0
 STACKCHECK: DC.L 0
 ARRAYCHECK: DC.L 0
-SHOWFN: DC.L  0
-NOPROGRESS: DC.L  0
-MCRS:	DC.L    0
-DOS_RDA:DC.L    0
+SHOWFN: DC.L	0
+NOPROGRESS: DC.L	0
+MCRS:	DC.L	0
+DOS_RDA:DC.L	0
 SRCFN: DC.L 0
 
 	TEMPLATE:	DC.B	'SOURCE/A,REG=NUMREGALLOC/N/K,LARGE/S,'
@@ -10172,7 +10172,7 @@ SRCFN: DC.L 0
 	KICKVERS:	DC.W	0
 	ARGLEN:		DC.L	0	; =0 IF NO ARGS
 	DESTNAMELEN:
-            DC.L	0
+			DC.L	0
 	ARGADR:		DC.L	0
 	HANDLE:		DC.L	0
 	LINEWRITE:	DC.W	0
@@ -10202,13 +10202,13 @@ SRCFN: DC.L 0
 			DC.B	'developing as "E-VO"',160
 			DC.B	'''2021-26',160,'by Darren Coles',10
 	TITLEEND:	DC.B	0
-  FNPRE: DC.B '-> '
-  FNPREEND:
-  FNPOST: DC.B '.e',10
-  FNPOSTEND:
+	FNPRE: DC.B '-> '
+	FNPREEND:
+	FNPOST: DC.B '.e',10
+	FNPOSTEND:
 			EVEN
 
-      SPLITNAME:
+		SPLITNAME:
 	MOVE.L	#NAMEBUF,A0
 	MOVE.L	A0,A1		; A1=BEGBUF
 ;	LOWER	A0,D0
@@ -10261,7 +10261,7 @@ SRCFN: DC.L 0
 	JSR	-$5A(A6)	; UNLOCK
 	RTS
 
-      CLOSELOCK:
+		CLOSELOCK:
 	TST.W	GOTLOCK
 	BEQ.S	.1
 	MOVE.L	DOSBASE(PC),A6
@@ -10271,7 +10271,7 @@ SRCFN: DC.L 0
 	JSR	-$5A(A6)	; UNLOCK
 .1:	RTS
 
-      OPENFILE:
+		OPENFILE:
 	BSR	SPLITNAME
 	MOVE.W	#7,CURSPOT
 	MOVE.L	#NAMEBUF,A2		; FIX '.E'
@@ -10313,7 +10313,7 @@ SRCFN: DC.L 0
 	JSR	-408(A6)
 
 .gotname:
-	MOVE.B	#0,(A2)   ; REMOVE .E from file
+	MOVE.B	#0,(A2)		; REMOVE .E from file
 
 	MOVE.L	D6,D4			; READ DATA
 	MOVE.L	D7,D3
@@ -10327,7 +10327,7 @@ SRCFN: DC.L 0
 	MOVE.L	HANDLE(PC),D1
 	JSR	-36(A6)
 	CLR.L HANDLE
-  
+	
 	CMP.L	D4,D7
 	BNE	ERROR16
 	ADD.L	D6,D4
@@ -10344,7 +10344,7 @@ SRCFN: DC.L 0
 	MOVE.L	D7,EBUFSIZE
 	RTS
 
-      FILELENGTH:			; FILENAME-->D0-->LEN
+		FILELENGTH:			; FILENAME-->D0-->LEN
 	MOVEM.L	D1-D2/D4/D6/D7/A6,-(A7)
 	MOVE.L	D0,D1
 	MOVEQ	#-2,D2
@@ -10374,7 +10374,7 @@ SRCFN: DC.L 0
 .EX:	MOVEM.L	(A7)+,D1-D2/D4/D6/D7/A6
 	RTS
 
-      TOFRONT:
+		TOFRONT:
 	BTST	#6,CODEPREFS+3		; -w
 	BEQ.S	.2
 	LEA	INITINTUI,A1
@@ -10390,7 +10390,7 @@ SRCFN: DC.L 0
 	JSR	-414(A6)
 .2:	RTS
 
-      WRITEBUFFERS:
+		WRITEBUFFERS:
 	BTST	#1,CODEPREFS+2
 	BNE	.C
 	RTS
@@ -10435,14 +10435,14 @@ SRCFN: DC.L 0
 .3:	DC.B	'expandable',0
 	EVEN
 
-      WRITEEXE:
+		WRITEEXE:
 	MOVE.W	#8,CURSPOT
 	TST.L	ARGLEN
 	BNE.S	.1
 	RTS
 .1:	TSTMOD
 	BNE	WRITEMODULE
-    MOVE.L  A7,.STACK
+	MOVE.L	A7,.STACK
 	MOVE.L	#DESTNAMEBUF,D1
 	MOVE.L	LIBINFO(PC),D0
 	BEQ.S	.NL
@@ -10454,323 +10454,323 @@ SRCFN: DC.L 0
 	MOVE.L	D0,HANDLE
 	BEQ	ERROR17
 
-    MOVE.L  NumHunks,-(A7)
-    SUBQ.L  #1,(A7)
-    PEA $0.W
-    MOVE.L  NumHunks,-(A7)
-    PEA $0.W
-    PEA $3f3.W
-    MOVE.L  A7,D2
-    MOVE.L  #20,D3
-    BSR WRITEFILE
-    LEA 20(A7),A7
-    bra .DL
+	MOVE.L	NumHunks,-(A7)
+	SUBQ.L	#1,(A7)
+	PEA $0.W
+	MOVE.L	NumHunks,-(A7)
+	PEA $0.W
+	PEA $3f3.W
+	MOVE.L	A7,D2
+	MOVE.L	#20,D3
+	BSR WRITEFILE
+	LEA 20(A7),A7
+	bra .DL
 .OF:pea $3e7.W
-    pea $0.W
-    move.l  a7,d2
-    moveq   #8,d3
-    bsr     WRITEFILE
-    addq.l  #8,a7
+	pea $0.W
+	move.l	a7,d2
+	moveq	#8,d3
+	bsr		WRITEFILE
+	addq.l	#8,a7
 
-.DL:MOVE.L  HunkList,D0
-    MOVEQ   #0,D3
-.SL:MOVE.L  D0,A0
-    ADDQ.L  #1,D3
-    MOVE.L  H_END(A0),D0
-    SUB.L   H_ADDR(A0),D0
-    MOVE.L  D0,D2
-    and.l   #3,d2
-    tst.l   d2
-    sne     d2
-    and.l   #1,d2
-    LSR.L   #2,D0
-    add.l   d2,d0
-    move.l  H_TYPE(A0),D2
-    and.l   #$E0000000,D2
-    or.l    d2,d0
-    MOVE.L  D0,-(A7)
+.DL:MOVE.L	HunkList,D0
+	MOVEQ	#0,D3
+.SL:MOVE.L	D0,A0
+	ADDQ.L	#1,D3
+	MOVE.L	H_END(A0),D0
+	SUB.L	H_ADDR(A0),D0
+	MOVE.L	D0,D2
+	and.l	#3,d2
+	tst.l	d2
+	sne		d2
+	and.l	#1,d2
+	LSR.L	#2,D0
+	add.l	d2,d0
+	move.l	H_TYPE(A0),D2
+	and.l	#$E0000000,D2
+	or.l	d2,d0
+	MOVE.L	D0,-(A7)
 
-    MOVE.L  H_NEXT(A0),D0
-    BNE     .SL
+	MOVE.L	H_NEXT(A0),D0
+	BNE		.SL
 
-    MOVE.L  A0,A5
+	MOVE.L	A0,A5
 
-    LSL.L   #2,D3
-    MOVE.L  A7,D2
-    BSR     WRITEFILE
+	LSL.L	#2,D3
+	MOVE.L	A7,D2
+	BSR		WRITEFILE
 
-    MOVE.L  A5,D0
-.SW:MOVE.L  D0,A5
-    MOVE.L  D0,D2
-    ADD.L   #H_TYPE,D2
-    MOVEQ   #4,D3
-    BSR WRITEFILE
-    MOVE.L  H_END(A5),D0
-    SUB.L   H_ADDR(A5),D0
-    MOVE.W  D0,D2
-    AND.L   #3,D2
-    TST.L   D2
-    Sne     D2
-    AND.L   #1,D2
-    LSR.L   #2,D0
-    ADD.L   D2,D0
-    MOVE.L  D0,-(A7)
-    MOVE.L  A7,D2
-    MOVEQ   #4,D3
-    BSR     WRITEFILE
-    MOVE.L  (A7)+,D3
-    LSL.L   #2,D3
-    MOVE.L  H_ADDR(A5),D2
-    BSR WRITEFILE
-    BSR .DORELOCS
-    
-    MOVEM.L D0-A6,-(A7)
-    move.l  H_SYM(A5),D2
-    beq     .dalej2
-    move.l  H_SEND(A5),D3
-    SUB.l   d2,d3
-    bsr WRITEFILE
+	MOVE.L	A5,D0
+.SW:MOVE.L	D0,A5
+	MOVE.L	D0,D2
+	ADD.L	#H_TYPE,D2
+	MOVEQ	#4,D3
+	BSR WRITEFILE
+	MOVE.L	H_END(A5),D0
+	SUB.L	H_ADDR(A5),D0
+	MOVE.W	D0,D2
+	AND.L	#3,D2
+	TST.L	D2
+	Sne		D2
+	AND.L	#1,D2
+	LSR.L	#2,D0
+	ADD.L	D2,D0
+	MOVE.L	D0,-(A7)
+	MOVE.L	A7,D2
+	MOVEQ	#4,D3
+	BSR		WRITEFILE
+	MOVE.L	(A7)+,D3
+	LSL.L	#2,D3
+	MOVE.L	H_ADDR(A5),D2
+	BSR WRITEFILE
+	BSR .DORELOCS
+	
+	MOVEM.L D0-A6,-(A7)
+	move.l	H_SYM(A5),D2
+	beq		.dalej2
+	move.l	H_SEND(A5),D3
+	SUB.l	d2,d3
+	bsr WRITEFILE
 .dalej2:
-    MOVEM.L (A7)+,D0-A6
+	MOVEM.L (A7)+,D0-A6
 
-    PEA $3F2.W
-    MOVE.L  A7,D2
-    MOVEQ   #4,D3
-    BSR WRITEFILE
+	PEA $3F2.W
+	MOVE.L	A7,D2
+	MOVEQ	#4,D3
+	BSR WRITEFILE
 
-    ADDQ.L  #4,A7
-    MOVE.L  H_PREV(A5),D0
-    BNE     .SW
-    MOVE.L  HANDLE(PC),D1
-    MOVE.L  #-4,D2
-    MOVE.L  #0,D3
-    MOVE.L  DOSBASE(PC),A6
-    JSR     -66(A6)
+	ADDQ.L	#4,A7
+	MOVE.L	H_PREV(A5),D0
+	BNE		.SW
+	MOVE.L	HANDLE(PC),D1
+	MOVE.L	#-4,D2
+	MOVE.L	#0,D3
+	MOVE.L	DOSBASE(PC),A6
+	JSR		-66(A6)
 
-    BRA     .DALEJ
-.DORELOCS:              ; A5=hunk entry! :)
-    TST.L   H_RELO(A5)
-    BNe     .SKIP
-    RTS
+	BRA		.DALEJ
+.DORELOCS:				; A5=hunk entry! :)
+	TST.L	H_RELO(A5)
+	BNe		.SKIP
+	RTS
 .SKIP:
-    BTST    #7,CODEPREFS+3 ;opti flag
-    BNE     .OPTIRELOC
+	BTST	#7,CODEPREFS+3 ;opti flag
+	BNE		.OPTIRELOC
 .OPTIBACK
 
-    MOVE.L  H_RELO(A5),D0
-    moveq   #0,d5           ; num relocs
+	MOVE.L	H_RELO(A5),D0
+	moveq	#0,d5			; num relocs
 .LOOPC1:
-    MOVE.L  D0,A4
-    addq.l  #1,d5
-    MOVE.L  R_NEXT(A4),D0
-    BNE     .LOOPC1
+	MOVE.L	D0,A4
+	addq.l	#1,d5
+	MOVE.L	R_NEXT(A4),D0
+	BNE		.LOOPC1
 
-    ADD.L   D5,D5
-    ADD.L   D5,D5
-    ADD.L   #8,D5
+	ADD.L	D5,D5
+	ADD.L	D5,D5
+	ADD.L	#8,D5
 
-	MOVE.L  D5,D0
+	MOVE.L	D5,D0
 	MOVEQ	#1,D1
 	SWAP	D1
 	MOVE.L	4.W,A6
 	JSR	-198(A6)		; ALLOCMEM
 	TST.L D0
-    BEQ ERROR89
-    
-    MOVE.L  D0,A3
-    ADD.L   D5,A3
-    MOVE.L  D5,-(A7)
-    MOVE.L  A3,-(A7)
-    
-    PEA     $3EC.W
-    MOVE.L  A7,D2
-    MOVEQ   #4,D3
-    BSR     WRITEFILE
-    ADDQ.L  #4,A7
-    MOVE.L  H_RELO(A5),D0
-    MOVEQ   #0,D4           ; current dest reloc hunk
-    moveq   #0,d5           ; num relocs
+	BEQ ERROR89
+	
+	MOVE.L	D0,A3
+	ADD.L	D5,A3
+	MOVE.L	D5,-(A7)
+	MOVE.L	A3,-(A7)
+	
+	PEA		$3EC.W
+	MOVE.L	A7,D2
+	MOVEQ	#4,D3
+	BSR		WRITEFILE
+	ADDQ.L	#4,A7
+	MOVE.L	H_RELO(A5),D0
+	MOVEQ	#0,D4			; current dest reloc hunk
+	moveq	#0,d5			; num relocs
 .LOOP:
-    MOVE.L  D0,A4
-    cmp.w   (a4),d4
-    bne     .NEXT
-    addq.l  #1,d5
-    move.l  2(a4),-(a3)
+	MOVE.L	D0,A4
+	cmp.w	(a4),d4
+	bne		.NEXT
+	addq.l	#1,d5
+	move.l	2(a4),-(a3)
 .NEXT:
-    MOVE.L  R_NEXT(A4),D0
-    BNE     .LOOP
-    TST.L   d5
-    beq     .NXT2
-    move.l  d4,-(a3)
-    move.l  d5,-(a3)
-    move.l  A3,D2
-    MOVE.L  (A7),D3
-    sub.l   a3,d3
-    bsr     WRITEFILE
+	MOVE.L	R_NEXT(A4),D0
+	BNE		.LOOP
+	TST.L	d5
+	beq		.NXT2
+	move.l	d4,-(a3)
+	move.l	d5,-(a3)
+	move.l	A3,D2
+	MOVE.L	(A7),D3
+	sub.l	a3,d3
+	bsr		WRITEFILE
 .NXT2:
-    MOVE.L  (A7),A3
-    moveq   #0,d5
-    addq.l  #1,d4
-    MOVE.L  H_RELO(A5),D0
-    cmp.l   NumHunks,d4
-    ble     .LOOP
+	MOVE.L	(A7),A3
+	moveq	#0,d5
+	addq.l	#1,d4
+	MOVE.L	H_RELO(A5),D0
+	cmp.l	NumHunks,d4
+	ble		.LOOP
 
-    MOVE.L  (A7)+,A1
-    MOVE.L  (A7)+,D0
-    SUB.L   D0,A1
+	MOVE.L	(A7)+,A1
+	MOVE.L	(A7)+,D0
+	SUB.L	D0,A1
 	MOVE.L	4.W,A6
-    JSR	-210(A6)		; FREEMEM
+	JSR	-210(A6)		; FREEMEM
 
-    PEA     $0.W
-    MOVE.L  A7,D2
-    MOVEQ   #4,D3
-    BSR     WRITEFILE
-    ADDQ.L  #4,A7
-    RTS
+	PEA		$0.W
+	MOVE.L	A7,D2
+	MOVEQ	#4,D3
+	BSR		WRITEFILE
+	ADDQ.L	#4,A7
+	RTS
 
 .OPTIRELOC:
 
-    MOVE.L  H_RELO(A5),D0
-    moveq   #0,d5           ; num relocs
-    moveq   #1,d6
+	MOVE.L	H_RELO(A5),D0
+	moveq	#0,d5			; num relocs
+	moveq	#1,d6
 .LOOPC2:
-    MOVE.L  D0,A4
-    addq.l  #1,d5
-    MOVE.L  R_NEXT(A4),D0
-    BNE     .LOOPC2
+	MOVE.L	D0,A4
+	addq.l	#1,d5
+	MOVE.L	R_NEXT(A4),D0
+	BNE		.LOOPC2
 
-    ADD.L   D5,D5
-    ADD.L   D5,D5
-    ADD.L   #12,D5
+	ADD.L	D5,D5
+	ADD.L	D5,D5
+	ADD.L	#12,D5
 
-	MOVE.L  D5,D0
+	MOVE.L	D5,D0
 	MOVEQ	#1,D1
 	SWAP	D1
 	MOVE.L	4.W,A6
 	JSR	-198(A6)		; ALLOCMEM
 	TST.L D0
-    BEQ ERROR89
+	BEQ ERROR89
 
-    MOVE.L  D0,A3
-    ADD.L   D5,A3
-    MOVE.L  D5,-(A7)
-    MOVE.L  A3,-(A7)
-    
-    MOVE.L  H_RELO(A5),D0
-    MOVEQ   #0,D4           ; current dest reloc hunk
-    moveq   #0,d5           ; num relocs
-    moveq   #0,d7
+	MOVE.L	D0,A3
+	ADD.L	D5,A3
+	MOVE.L	D5,-(A7)
+	MOVE.L	A3,-(A7)
+	
+	MOVE.L	H_RELO(A5),D0
+	MOVEQ	#0,D4			; current dest reloc hunk
+	moveq	#0,d5			; num relocs
+	moveq	#0,d7
 .LOOP2:
-    MOVE.L  D0,A4
-    cmp.w   (a4),d4
-    bne     .NEXT2
-    MOVE.L  2(A4),D3
-    SWAP    D3
-    TST.W   D3
-    BNE     .NEXT2
-    SWAP    D3
-    addq.l  #1,d5
-    move.w  D3,-(a3)
-    moveq   #-1,d7
+	MOVE.L	D0,A4
+	cmp.w	(a4),d4
+	bne		.NEXT2
+	MOVE.L	2(A4),D3
+	SWAP	D3
+	TST.W	D3
+	BNE		.NEXT2
+	SWAP	D3
+	addq.l	#1,d5
+	move.w	D3,-(a3)
+	moveq	#-1,d7
 .NEXT2:
-    MOVE.L  R_NEXT(A4),D0
-    BNE     .LOOP2
-    TST.L   d5
-    beq     .NXT3
-    move.w  d4,-(a3)
-    move.w  d5,-(a3)
-    tst.l d6
-    beq.s .notfirst
-    MOVE.L  #$3f7,-(a3)
-    moveq #0,d6
+	MOVE.L	R_NEXT(A4),D0
+	BNE		.LOOP2
+	TST.L	d5
+	beq		.NXT3
+	move.w	d4,-(a3)
+	move.w	d5,-(a3)
+	tst.l d6
+	beq.s .notfirst
+	MOVE.L	#$3f7,-(a3)
+	moveq #0,d6
 .notfirst
-    move.l  a3,d2
-    MOVE.L  (A7),D3
-    sub.l   a3,d3
-    bsr     WRITEFILE
+	move.l	a3,d2
+	MOVE.L	(A7),D3
+	sub.l	a3,d3
+	bsr		WRITEFILE
 .NXT3:
-    MOVE.L  (A7),A3
-    moveq   #0,d5
-    addq.l  #1,d4
-    MOVE.L  H_RELO(A5),D0
-    cmp.l   NumHunks,d4
-    ble     .LOOP2
+	MOVE.L	(A7),A3
+	moveq	#0,d5
+	addq.l	#1,d4
+	MOVE.L	H_RELO(A5),D0
+	cmp.l	NumHunks,d4
+	ble		.LOOP2
 
-    tst.l   d7
-    beq     .OPTI2
-    PEA     $0.W
-    MOVE.L  A7,D2
-    MOVEQ   #2,D3
-    BSR     WRITEFILE
+	tst.l	d7
+	beq		.OPTI2
+	PEA		$0.W
+	MOVE.L	A7,D2
+	MOVEQ	#2,D3
+	BSR		WRITEFILE
 
-    MOVE.L  HANDLE,D1
-    MOVEQ #0,D2
-    MOVEQ #0,D3
-    JSR     -66(A6) ;seek
-    BTST    #1,D0
-    BEQ     .EOPTI
-    MOVE.L  A7,D2
-    MOVEQ   #2,D3
-    BSR WRITEFILE
+	MOVE.L	HANDLE,D1
+	MOVEQ #0,D2
+	MOVEQ #0,D3
+	JSR		-66(A6) ;seek
+	BTST	#1,D0
+	BEQ		.EOPTI
+	MOVE.L	A7,D2
+	MOVEQ	#2,D3
+	BSR WRITEFILE
 .EOPTI:
-    ADDQ.L  #4,A7
+	ADDQ.L	#4,A7
 .OPTI2:
 ; here the code continues, this time for large relocs
 
-    MOVE.L  H_RELO(A5),D0
-    MOVEQ   #0,D4           ; current dest reloc hunk
-    moveq   #0,d5           ; num relocs
-    moveq   #0,d7
+	MOVE.L	H_RELO(A5),D0
+	MOVEQ	#0,D4			; current dest reloc hunk
+	moveq	#0,d5			; num relocs
+	moveq	#0,d7
 .LOOP3:
-    MOVE.L  D0,A4
-    cmp.w   (a4),d4
-    bne     .NEXT3
-    MOVE.L  2(A4),D3
-    SWAP    D3
-    TST.W   D3
-    BEQ     .NEXT3
-    SWAP    D3
-    addq.l  #1,d5
-    move.l  D3,-(a3)
-    moveq   #-1,d7
+	MOVE.L	D0,A4
+	cmp.w	(a4),d4
+	bne		.NEXT3
+	MOVE.L	2(A4),D3
+	SWAP	D3
+	TST.W	D3
+	BEQ		.NEXT3
+	SWAP	D3
+	addq.l	#1,d5
+	move.l	D3,-(a3)
+	moveq	#-1,d7
 .NEXT3:
-    MOVE.L  R_NEXT(A4),D0
-    BNE     .LOOP3
-    TST.L   d5
-    beq     .NXT4
-    move.l  d4,-(a3)
-    move.l  d5,-(a3)
-    move.l  #$3ec,-(a3)
-    move.l  a3,d2
-    move.l  (a7),d3
-    sub.l   a3,d3
-    bsr     WRITEFILE
+	MOVE.L	R_NEXT(A4),D0
+	BNE		.LOOP3
+	TST.L	d5
+	beq		.NXT4
+	move.l	d4,-(a3)
+	move.l	d5,-(a3)
+	move.l	#$3ec,-(a3)
+	move.l	a3,d2
+	move.l	(a7),d3
+	sub.l	a3,d3
+	bsr		WRITEFILE
 .NXT4:
-    move.l  (A7),a3
-    moveq   #0,d5
-    addq.l  #1,d4
-    MOVE.L  H_RELO(A5),D0
-    cmp.l   NumHunks,d4
-    ble     .LOOP3
+	move.l	(A7),a3
+	moveq	#0,d5
+	addq.l	#1,d4
+	MOVE.L	H_RELO(A5),D0
+	cmp.l	NumHunks,d4
+	ble		.LOOP3
 
-    MOVE.L  (A7)+,A1
-    MOVE.L	(A7)+,D0
-    SUB.L   D0,A1
+	MOVE.L	(A7)+,A1
+	MOVE.L	(A7)+,D0
+	SUB.L	D0,A1
 	MOVE.L	4.W,A6
-    JSR	-210(A6)		; FREEMEM
+	JSR	-210(A6)		; FREEMEM
 
-    tst.l   d7
-    beq     .EXIT
-    PEA     $0.W
-    MOVE.L  A7,D2
-    MOVEQ   #4,D3
-    BSR     WRITEFILE
-    ADDQ.L  #4,A7
+	tst.l	d7
+	beq		.EXIT
+	PEA		$0.W
+	MOVE.L	A7,D2
+	MOVEQ	#4,D3
+	BSR		WRITEFILE
+	ADDQ.L	#4,A7
 .EXIT:
-    RTS
+	RTS
 
 .STACK:
-    DC.L    0
+	DC.L	0
 
 
 .DALEJ:
@@ -10796,7 +10796,7 @@ SRCFN: DC.L 0
 	MOVE.L	4(A0),D3
 	MOVE.L	8(A5),D0
 	;OR.L	#$4C000000,D0	;old LXXX debug hunk
-	;MOVE.L	D0,12(A0)   ;updated to write to LINE offset field
+	;MOVE.L	D0,12(A0)	;updated to write to LINE offset field
 	MOVE.L	D0,8(A0)
 	LSL.L	#2,D3
 	ADDQ.L	#8,D3
@@ -10817,17 +10817,17 @@ SRCFN: DC.L 0
 	MOVE.L	HANDLE(PC),D1
 	JSR	-36(A6)
 	CLR.L HANDLE
-    MOVE.L  .STACK(PC),A7    
+	MOVE.L	.STACK(PC),A7	 
 	RTS
 
 SYMADDR:
-    DC.L    0
+	DC.L	0
 SYMEND:
-    DC.L    0
+	DC.L	0
 ;*-*
 ;; WriteModule
 
-      WRITEMODULE:
+		WRITEMODULE:
 	LEA	DESTNAMEBUF,A2		; FIX '.M'
 	MOVE.L	A2,D1
 	ADD.L	DESTNAMELEN(PC),A2		; A2=MIDARG
@@ -10879,27 +10879,27 @@ SYMEND:
 .2:	DC.W	0			; END
 
 
-      WRITEFILE:			; D2=ADR,D3=LEN
+		WRITEFILE:			; D2=ADR,D3=LEN
 	MOVE.L	HANDLE(PC),D1
 	MOVE.L	DOSBASE(PC),A6
 	JSR	-48(A6)
 	RTS
 
-      CODEAMOUNT:	DC.L	0
+		CODEAMOUNT:	DC.L	0
 
-      HUNK:
+		HUNK:
 	DC.L	1011			; hunkheader
-	DC.L	0,1,0,0 		; endofnames,1hunk,firsthunkno,lasthn
-      CODESIZE:
+	DC.L	0,1,0,0			; endofnames,1hunk,firsthunkno,lasthn
+		CODESIZE:
 	DC.L	0			; CODESIZE/4 hunklentab
 	DC.L	1001			; hunkcode
-      CODESIZE2:
+		CODESIZE2:
 	DC.L	0			; CODESIZE/4
-      ENDHUNK:
+		ENDHUNK:
 	DC.L	1010			; last
 
 
-      WRITEEVARONLY:
+		WRITEEVARONLY:
 	MOVE.L	CSTACK_BUF,A4		; A4=BUF,D4=BEGIN
 	MOVE.L	A4,D4
 	MOVE.L	#$3F1,(A4)+		; HUNK_DEBUG
@@ -10915,28 +10915,28 @@ SYMEND:
 
 	MOVE.W	#8,(A4)+	;jobcode
 	MOVE.W	OID(A0),(A4)+	;oid
-	MOVE.B  OFLAGS(A0),(A4)+  ;flags
-	CLR.B   (A4)+ ;pad
-	MOVE.W  OSIZE(A0),(A4)+  ;object size
+	MOVE.B	OFLAGS(A0),(A4)+	;flags
+	CLR.B	(A4)+ ;pad
+	MOVE.W	OSIZE(A0),(A4)+	 ;object size
 	MOVEM.L A1/A2,-(A7)
-	MOVE.L  OASCII(A0),A1 ;object name
+	MOVE.L	OASCII(A0),A1 ;object name
 
 	MOVE.L A4,A2
-	CLR.W (A4)+   ;name length
+	CLR.W (A4)+		;name length
 	MOVEQ #0,D0
 .CP: 
 	TST.B (A1)
 	BEQ.S .CPE
 	ADDQ.L #1,D0
-	MOVE.B (A1)+,(A4)+  ;copy object name
+	MOVE.B (A1)+,(A4)+	;copy object name
 	BRA.S .CP
 .CPE:
 	BTST #0,D0
 	BEQ.S .evn
 	ADDQ.L #1,D0
-	CLR.B (A4)+     ;pad name
+	CLR.B (A4)+		;pad name
 .evn:
-	MOVE.W D0,(A2)  ;object name length
+	MOVE.W D0,(A2)	;object name length
 	MOVE.L OMEMB(A0),D0
 .nextmemb
 	BEQ.S .membsdone
@@ -10978,27 +10978,27 @@ SYMEND:
 	CMP.W	#4,4(A5)
 	BNE.S	.NSELF
 
-	CMP.W #7,(A0)    ; proc details
+	CMP.W #7,(A0)	 ; proc details
 	BNE.S .n7
 	MOVE.W	(A0)+,(A4)+	;jobcode
 	MOVE.W	(A0)+,(A4)+	;proc line number
 .n7:
 	CMP.W	#5,(A0)
 	BNE.S	.NSELF
-	MOVE.W  (A0)+,D3
-	MOVE.W  D3,(A4)+
+	MOVE.W	(A0)+,D3
+	MOVE.W	D3,(A4)+
 	SUBQ.W #1,D3
 .copyself
 	MOVE.W	(A0)+,(A4)+
 	DBF D3,.copyself
 .NSELF:
-	CMP.W #6,(A0)    ;	var details
+	CMP.W #6,(A0)	 ;	var details
 	BNE .n6
-	MOVE.W (A0)+,(A4)+  ;copy jobcode
-	MOVE.W (A0)+,(A4)+  ;copy lineno
+	MOVE.W (A0)+,(A4)+	;copy jobcode
+	MOVE.W (A0)+,(A4)+	;copy lineno
 
 	MOVE.W	(A0)+,D3
-	MOVE.W D3,(A4)+     ;copy count
+	MOVE.W D3,(A4)+		;copy count
 	SUBQ.L	#1,D3
 .NCL:	MOVE.L A1,-(A7)
 	MOVE.L (A0)+,A1 ;get variable
@@ -11007,7 +11007,7 @@ SYMEND:
 	DBRA	D3,.NCL
 	BRA .DBN
 
-.n6:  
+.n6:	
 	BRA	.L
 .X:	MOVE.L	A4,D3
 	SUB.L	D4,D3
@@ -11024,12 +11024,12 @@ SYMEND:
 	BSR	WRITEFILE
 .OUT:	RTS
 
-      DOMEMBDEBUGINFO:
+		DOMEMBDEBUGINFO:
 	MOVEM.L D0-D2/A1/A2,-(A7)
 	TST.L OASCII(a1)
 	BEQ .dont
 
-	EOR.W D1,D1   ;CLR.W D1
+	EOR.W D1,D1		;CLR.W D1
 	move.w OSIZE(a1),d0
 	btst #1,OFLAGS(A1)
 	BEQ.S .nextra
@@ -11040,7 +11040,7 @@ SYMEND:
 	cmp.w #1,d0
 	bne.s .n1a
 	moveq #$21,d0 ;vartype $21 (PTR TO CHAR)
-	btst #3,OFLAGS(a1)  ;force unsigned
+	btst #3,OFLAGS(a1)	;force unsigned
 	beq .is1
 	moveq #$22,d0 ;vartype $22 (PTR TO BYTE)
 	bra .is1
@@ -11048,7 +11048,7 @@ SYMEND:
 	cmp.w #2,d0
 	bne.s .n2a
 	moveq #$23,d0 ;vartype $23 (PTR TO INT)
-	btst #4,OFLAGS(a1)  ;force signed
+	btst #4,OFLAGS(a1)	;force signed
 	beq.s .is1
 	moveq #$24,d0 ;vartype $24 (PTR TO WORD)
 	bra.s .is1
@@ -11063,48 +11063,48 @@ SYMEND:
 	moveq #$26,d0 ;vartype $26 (PTR TO OBJECT)
 
 .is1:
-  sub.l  #$20,d0 ;ptr types offset (not a ptr type)
+	sub.l	 #$20,d0 ;ptr types offset (not a ptr type)
 
-  cmp.w #-1,PTRREPCOUNT(a1)
-  beq.s .nptrrep
+	cmp.w #-1,PTRREPCOUNT(a1)
+	beq.s .nptrrep
 
-  add.l  #$20,d0 ;ptr types offset (restore old value, was a ptr type)
-  
-  cmp.w #0,PTRREPCOUNT(a1)
-  beq.s .nptrrep
-  
-  moveq #$27,d0 ;vartype $27 (PTR TO PTR TO...) 
+	add.l	 #$20,d0 ;ptr types offset (restore old value, was a ptr type)
+	
+	cmp.w #0,PTRREPCOUNT(a1)
+	beq.s .nptrrep
+	
+	moveq #$27,d0 ;vartype $27 (PTR TO PTR TO...) 
 .nptrrep:
 
-  tst.l DIMDATA(a1)
-  beq.s .narr
-  
-  add.l  #$40,d0 ;array types offset
+	tst.l DIMDATA(a1)
+	beq.s .narr
+	
+	add.l	 #$40,d0 ;array types offset
 .narr:
-  
-  CMP.W #5,D0
-  BNE.S .typeok
-  
-  MOVE.L #$21,D0 ;ptr to char
-  
+	
+	CMP.W #5,D0
+	BNE.S .typeok
+	
+	MOVE.L #$21,D0 ;ptr to char
+	
 .typeok
 
 	MOVE.W D0,(A4)+ ;save type
-	MOVE.W D1,(A4)+     ;oid
-	MOVE.W OOFF(A1),(A4)+     ;offset
-	CLR.W (A4)+      ;number of array dimensiosn
+	MOVE.W D1,(A4)+		;oid
+	MOVE.W OOFF(A1),(A4)+		;offset
+	CLR.W (A4)+		 ;number of array dimensiosn
 
 	tst.l DIMDATA(a1)
 	beq.s .narr2
 	move.l DIMDATA(a1),a2
 	move.w (a2)+,d0
-	move.w d0,-2(a4)   ;overwrite number of dimensions
+	move.w d0,-2(a4)	 ;overwrite number of dimensions
 	subq.w #1,d0
 	moveq #1,d1
 .copydim:
 	moveq #0,d2
-	move.w (a2),d2  ;get dimension
-	divu d1,d2      ;div by previous
+	move.w (a2),d2	;get dimension
+	divu d1,d2		;div by previous
 	move.w (a2)+,d1 ;set new previous
 
 	move.w d2,(a4)+ ;save dim info
@@ -11112,130 +11112,130 @@ SYMEND:
 .narr2:
 
 	MOVE.L A4,A2
-	CLR.W (A4)+   ;name length
+	CLR.W (A4)+		;name length
 	MOVE.L OASCII(A1),A1
 	MOVEQ #0,D0
 .CP: 
 	TST.B (A1)
 	BEQ.S .CPE
 	ADDQ.L #1,D0
-	MOVE.B (A1)+,(A4)+  ;copy name
+	MOVE.B (A1)+,(A4)+	;copy name
 	BRA.S .CP
 .CPE:
 	BTST #0,D0
 	BEQ.S .evn
 	ADDQ.L #1,D0
-	CLR.B (A4)+     ;pad name
+	CLR.B (A4)+		;pad name
 .evn:
-	MOVE.W D0,(A2)  ;name length
+	MOVE.W D0,(A2)	;name length
 .dont
 	MOVEM.L (A7)+,D0-D2/A1/A2
 	RTS
 
-      DOVARDEBUGINFO:
+		DOVARDEBUGINFO:
 
-  MOVEM.L D0-D2/A2,-(A7)
-  move.l (a1),d0
-  cmp.l #1,d0
-  bne.s .n1
-  moveq #$21,d0 ;vartype $21 (PTR TO CHAR)
-  btst #5,VARFLAGS(a1)  ;force unsigned
-  beq.s .is1
-  moveq #$22,d0 ;vartype $22(PTR TO BYTE)
-  bra.s .is1
+	MOVEM.L D0-D2/A2,-(A7)
+	move.l (a1),d0
+	cmp.l #1,d0
+	bne.s .n1
+	moveq #$21,d0 ;vartype $21 (PTR TO CHAR)
+	btst #5,VARFLAGS(a1)	;force unsigned
+	beq.s .is1
+	moveq #$22,d0 ;vartype $22(PTR TO BYTE)
+	bra.s .is1
 
 .n1:
-  cmp.l #2,d0
-  bne.s .n2
-  moveq #$23,d0 ;vartype $23 (PTR TO INT)
-  btst #6,VARFLAGS(a1)  ;force signed
-  beq.s .is1
-  moveq #$24,d0 ;vartype $24 (PTR TO WORD)
-  bra.s .is1
+	cmp.l #2,d0
+	bne.s .n2
+	moveq #$23,d0 ;vartype $23 (PTR TO INT)
+	btst #6,VARFLAGS(a1)	;force signed
+	beq.s .is1
+	moveq #$24,d0 ;vartype $24 (PTR TO WORD)
+	bra.s .is1
 .n2:
-  cmp.l #4,d0
-  bne.s .n3
-  moveq #$25,d0 ;vartype $25 (PTR TO LONG)
-  bra.s .is1
+	cmp.l #4,d0
+	bne.s .n3
+	moveq #$25,d0 ;vartype $25 (PTR TO LONG)
+	bra.s .is1
 .n3:
-  moveq #$26,d0 ;vartype $26 (PTR TO OBJECT)
+	moveq #$26,d0 ;vartype $26 (PTR TO OBJECT)
 
-.is1:  
-  sub.l  #$20,d0 ;ptr types offset (not a ptr type)
+.is1:	
+	sub.l	 #$20,d0 ;ptr types offset (not a ptr type)
 
-  cmp.w #-1,VAR_PTRREPCOUNT(a1)
-  beq.s .nptrrep
+	cmp.w #-1,VAR_PTRREPCOUNT(a1)
+	beq.s .nptrrep
 
-  add.l  #$20,d0 ;ptr types offset (restore old value, was a ptr type)
-  
-  cmp.w #0,VAR_PTRREPCOUNT(a1)
-  beq.s .nptrrep
-  
-  moveq #$27,d0 ;vartype $27 (PTR TO PTR TO...) 
+	add.l	 #$20,d0 ;ptr types offset (restore old value, was a ptr type)
+	
+	cmp.w #0,VAR_PTRREPCOUNT(a1)
+	beq.s .nptrrep
+	
+	moveq #$27,d0 ;vartype $27 (PTR TO PTR TO...) 
 .nptrrep:
 
-  tst.l VAR_DIMDATA(a1)
-  beq.s .narr
-  add.l  #$40,d0 ;array types offset
+	tst.l VAR_DIMDATA(a1)
+	beq.s .narr
+	add.l	 #$40,d0 ;array types offset
 .narr:
-  
-  CMP.W #6,D0
-  BGE.S .typeok
-  
-  MOVE.L #$21,D0 ;ptr to char
-  
+	
+	CMP.W #6,D0
+	BGE.S .typeok
+	
+	MOVE.L #$21,D0 ;ptr to char
+	
 .typeok
-  
+	
 	MOVE.W D0,(A4)+ ;save type
 
-  MOVEQ #0,D0
-  cmp.l #5,(a1)
-  BMI.S	.N0
-  MOVE.L (A1),A2
-  MOVE.W OID(A2),D0
+	MOVEQ #0,D0
+	cmp.l #5,(a1)
+	BMI.S	.N0
+	MOVE.L (A1),A2
+	MOVE.W OID(A2),D0
 .N0:
-  MOVE.W D0,(A4)+     ;object id
+	MOVE.W D0,(A4)+		;object id
 
-  CLR.W (A4)+      ;number of array dimensiosn
-  
-  tst.l VAR_DIMDATA(a1)
-  beq.s .narr2
-  move.l VAR_DIMDATA(a1),a2
-  move.w (a2)+,d0
-  move.w d0,-2(a4)   ;overwrite number of dimensions
-  subq.w #1,d0
-  moveq #1,d1
+	CLR.W (A4)+		 ;number of array dimensiosn
+	
+	tst.l VAR_DIMDATA(a1)
+	beq.s .narr2
+	move.l VAR_DIMDATA(a1),a2
+	move.w (a2)+,d0
+	move.w d0,-2(a4)	 ;overwrite number of dimensions
+	subq.w #1,d0
+	moveq #1,d1
 .copydim:
-  moveq #0,d2
-  move.w (a2),d2  ;get dimension
-  divu d1,d2      ;div by previous
-  move.w (a2)+,d1 ;set new previous
-  
-  move.w d2,(a4)+ ;save dim info
-  dbf d0,.copydim
-.narr2:  
-  
+	moveq #0,d2
+	move.w (a2),d2	;get dimension
+	divu d1,d2		;div by previous
+	move.w (a2)+,d1 ;set new previous
+	
+	move.w d2,(a4)+ ;save dim info
+	dbf d0,.copydim
+.narr2:	 
+	
 	MOVE.L A4,A2
-	CLR.W (A4)+   ;varname length
+	CLR.W (A4)+		;varname length
 	MOVE.L VAR_NAME(A1),A1
 	MOVEQ #0,D0
 .CP: 
 	TST.B (A1)
 	BEQ.S .CPE
 	ADDQ.L #1,D0
-	MOVE.B (A1)+,(A4)+  ;copy varname
+	MOVE.B (A1)+,(A4)+	;copy varname
 	BRA.S .CP
 .CPE:
 	BTST #0,D0
 	BEQ.S .evn
 	ADDQ.L #1,D0
-	CLR.B (A4)+     ;pad varname
+	CLR.B (A4)+		;pad varname
 .evn:
-	MOVE.W D0,(A2)  ;var name length
-  MOVEM.L (A7)+,D0-D2/A2
-  RTS
+	MOVE.W D0,(A2)	;var name length
+	MOVEM.L (A7)+,D0-D2/A2
+	RTS
 
-      WRITEDEBUGINFOS:
+		WRITEDEBUGINFOS:
 	TST.L	LINEBUF
 	BEQ.S	.2
 	MOVE.L	LINEBUFCUR(PC),D3	; TEST EMPTYNESS
@@ -11262,7 +11262,7 @@ SYMEND:
 .4:	DC.W	10
 
 
-      WRITECODEINFOS:
+		WRITECODEINFOS:
 	MOVE.L	CODEAMOUNT(PC),D4
 	BEQ.S	.X
 	LSR.L	#2,D4
@@ -11277,10 +11277,10 @@ SYMEND:
 .1:	DC.W	3
 	DC.L	0
 
-      RELOCTABSTART:	DC.L	0
+		RELOCTABSTART:	DC.L	0
 
 
-      WRITERELOCINFOS:
+		WRITERELOCINFOS:
 	MOVE.L	NUMRELOC(PC),D4
 	BEQ.S	.X
 	MOVEQ	#2,D3
@@ -11296,9 +11296,9 @@ SYMEND:
 .X:	RTS
 .1:	DC.W	7
 
-      WRITEIMPORTEDOBJECTINFOS:
-	BTST #5,ICODEPREFS+3        ;LEGACY MODE
-	BNE  .legacy
+		WRITEIMPORTEDOBJECTINFOS:
+	BTST #5,ICODEPREFS+3		;LEGACY MODE
+	BNE	 .legacy
 
 	MOVE.L	CSTACK_BUF,D5
 	MOVE.L D5,A5
@@ -11307,10 +11307,10 @@ SYMEND:
 .L:	MOVE.L	ONEXT(A3),A3
 	MOVE.L	A3,D0
 	BEQ.W	.E
-.1:	BTST	#1,OFLAGS(A3)		  ;   imported?
+.1:	BTST	#1,OFLAGS(A3)			;		imported?
 	BEQ.S	.L
-  
-	BTST	#3,OFLAGS(A3)		  ;   referenced?
+	
+	BTST	#3,OFLAGS(A3)			;		referenced?
 	BEQ.S	.L
 
 	MOVE.W	#12,(A5)+
@@ -11341,7 +11341,7 @@ SYMEND:
 .legacy:
 .LEAVE:	RTS
 
-      WRITEOBJECTINFOS:
+		WRITEOBJECTINFOS:
 	MOVE.L	CSTACK_BUF,D5
 	MOVE.L	D5,A5			; D5,A5=BUF
 	LEA	OLIST+4,A3		; A3=OLIST
@@ -11351,15 +11351,15 @@ SYMEND:
 	BEQ.W	.E
 	;TST.L	OACC(A3)		; ; TEMP: HAVE TO EXPORT
 	;BNE.S	.1			; ;
-	;BTST	#0,OFLAGS(A3)       ;   export?
+	;BTST	#0,OFLAGS(A3)		;	export?
 	;BEQ.S	.L
-.1:	BTST	#1,OFLAGS(A3)		  ;   imported?
+.1:	BTST	#1,OFLAGS(A3)			;		imported?
 	BNE.S	.L			; ;
 	ADDQ.L	#1,D7
 	MOVE.W	#2,(A5)+
 	CLR.L	(A5)+			; SKIPSIZE
-	BTST #5,ICODEPREFS+3        ;LEGACY MODE
-	BNE  .legacy
+	BTST #5,ICODEPREFS+3		;LEGACY MODE
+	BNE	 .legacy
 	MOVE.W OID(A3),(A5)+
 .legacy
 	MOVE.W	OSIZE(A3),D1		; D1=OHEADSIZE
@@ -11382,35 +11382,35 @@ SYMEND:
 	BTST	#0,OFLAGS(A0)
 	BNE.S	.ML
 	BSR	.DOREC
-    BTST #5,ICODEPREFS+3        ;LEGACY MODE
-    BNE  .nodimdata
-    ;handle byte and word types
+	BTST #5,ICODEPREFS+3		;LEGACY MODE
+	BNE	 .nodimdata
+	;handle byte and word types
 
-    MOVE.B OFLAGS(A0),D0
-    AND.W #%11000,D0	;forceunsigned and forcesigned flags
-    ROR.W #3,D0   ;shift flags into lowest bits
+	MOVE.B OFLAGS(A0),D0
+	AND.W #%11000,D0	;forceunsigned and forcesigned flags
+	ROR.W #3,D0		;shift flags into lowest bits
 
-    MOVE.W D0,(A5)+
-    MOVE.W  PTRREPCOUNT(A0),(A5)+
-    CLR.W (A5)+
+	MOVE.W D0,(A5)+
+	MOVE.W	PTRREPCOUNT(A0),(A5)+
+	CLR.W (A5)+
 
-    MOVE.L  DIMDATA(A0),D0
-    BEQ.S   .nodimdata
+	MOVE.L	DIMDATA(A0),D0
+	BEQ.S	.nodimdata
 
-    MOVE.L  A3,-(A7)
-    LEA -2(A5),A5
-    MOVE.L  D0,A3
-    MOVE.W  (A3)+,D0
-    MOVE.W  D0,(A5)+
-.dimsloop:    
-    TST.W   D0 
-    BEQ.S   .dimsdone
-    MOVE.W  (A3)+,(A5)+
-    SUBQ.W #1,D0
-    BRA.S .dimsloop
-    
+	MOVE.L	A3,-(A7)
+	LEA -2(A5),A5
+	MOVE.L	D0,A3
+	MOVE.W	(A3)+,D0
+	MOVE.W	D0,(A5)+
+.dimsloop:		
+	TST.W	D0 
+	BEQ.S	.dimsdone
+	MOVE.W	(A3)+,(A5)+
+	SUBQ.W #1,D0
+	BRA.S .dimsloop
+	
 .dimsdone:
-    MOVE.L  (A7)+,A3
+	MOVE.L	(A7)+,A3
 
 .nodimdata:
 	BTST	#1,OFLAGS(A0)
@@ -11516,7 +11516,7 @@ SYMEND:
 	BNE.S	.DDONE
 	CMP.W #SKIPMARK,(A2)
 	BEQ.S .SM
-	BTST #6,2(A1)   ;CHECK IF PROC WAS READ FROM MODULE FILE OR DECLARED IN THIS MODULE
+	BTST #6,2(A1)	;CHECK IF PROC WAS READ FROM MODULE FILE OR DECLARED IN THIS MODULE
 	BNE.S .DDONE
 	MOVE.W	(A2)+,D0
 	BEQ.S	.DDONE
@@ -11543,7 +11543,7 @@ SYMEND:
 	SUB.L	A1,D0
 	MOVE.W	D0,-2(A1)
 	MOVE.L	(A7)+,A0
- 	BRA.S	.DDONE
+	BRA.S	.DDONE
 .SM:
 	MOVE.W (A2)+,(A5)+
 	MOVE.W (A2)+,D0
@@ -11552,9 +11552,9 @@ SYMEND:
 .CP:
 	MOVE.B (A2)+,(A5)+
 .CP2:
- 	DBF D0,.CP
+	DBF D0,.CP
 	BRA.S	.DDONE
-  
+	
 .DZERO:	CLR.W	(A5)+
 .DDONE:
 	BRA.W	.MEL
@@ -11574,7 +11574,7 @@ SYMEND:
 .ECL:	
 	BRA	.L
 
-      WRITESYSINFOS:
+		WRITESYSINFOS:
 	MOVE.L	CSTACK_BUF,D2
 	MOVE.L	D2,A5			; D5,A5=BUF
 	MOVE.W	#5,(A5)+
@@ -11583,10 +11583,10 @@ SYMEND:
 	MOVE.L	CODEPREFS(PC),(A5)+
 	MOVE.L	ECPU(PC),(A5)+		; CPU+FPU
 	MOVE.W	ASMCPU(PC),(A5)+
-    
-    BTST #5,ICODEPREFS+3        ;LEGACY MODE
-    BNE .legacy1
-    
+	
+	BTST #5,ICODEPREFS+3		;LEGACY MODE
+	BNE .legacy1
+	
 	MOVE.W	#CURVERSION,(A5)+
 	CLR.L	(A5)+
 	CLR.L	(A5)+
@@ -11602,78 +11602,78 @@ SYMEND:
 	BSR	WRITEFILE
 	RTS
 
-      WRITECONSTINFOS:
-	MOVE.L  CSTACK_BUF,D5
-	MOVE.L  D5,A5           ; D5,A5=BUF
-	MOVE.W  #1,(A5)+
-	CLR.L   (A5)+           ; SKIPSIZE
-	MOVE.L  #CONSTHASH,A3
-	MOVEQ   #0,D7           ; #OF CONST WRITTEN
-  
-	MOVE.L  ConstsList,D3
-.a: TST.L   D3
-	BEQ     .X
+		WRITECONSTINFOS:
+	MOVE.L	CSTACK_BUF,D5
+	MOVE.L	D5,A5			; D5,A5=BUF
+	MOVE.W	#1,(A5)+
+	CLR.L	(A5)+			; SKIPSIZE
+	MOVE.L	#CONSTHASH,A3
+	MOVEQ	#0,D7			; #OF CONST WRITTEN
+	
+	MOVE.L	ConstsList,D3
+.a: TST.L	D3
+	BEQ		.X
 
-	MOVE.L  D3,A3
-	MOVE.L  (A3),D3
-	MOVE.L  4(A3),A3
-	BTST    #0,CFLAGS(A3)
-	BEQ     .a
-	BTST    #5,ICODEPREFS+3        ;LEGACY MODE
-	BNE.S   .legacy
+	MOVE.L	D3,A3
+	MOVE.L	(A3),D3
+	MOVE.L	4(A3),A3
+	BTST	#0,CFLAGS(A3)
+	BEQ		.a
+	BTST	#5,ICODEPREFS+3			 ;LEGACY MODE
+	BNE.S	.legacy
 
-	BTST    #1,CFLAGS(A3)
-	BNE     .STR
+	BTST	#1,CFLAGS(A3)
+	BNE		.STR
 .legacy
-	ADDQ.L  #1,D7
-	MOVE.L  A5,A4
-	ADDQ.L  #2,A5
-	MOVE.L  CVAL(A3),(A5)+
-	MOVE.L  CASCII(A3),A2
-.d: MOVE.B  (A2)+,(A5)+
-	BNE.S   .d
-	MOVE.L  A5,D4
-	BTST    #0,D4
-	BEQ     .c
-	CLR.B   (A5)+
-.c: MOVE.L  A5,D0
-	SUB.L   A4,D0
-	SUBQ.L  #6,D0
-	MOVE.W  D0,(A4)
+	ADDQ.L	#1,D7
+	MOVE.L	A5,A4
+	ADDQ.L	#2,A5
+	MOVE.L	CVAL(A3),(A5)+
+	MOVE.L	CASCII(A3),A2
+.d: MOVE.B	(A2)+,(A5)+
+	BNE.S	.d
+	MOVE.L	A5,D4
+	BTST	#0,D4
+	BEQ		.c
+	CLR.B	(A5)+
+.c: MOVE.L	A5,D0
+	SUB.L	A4,D0
+	SUBQ.L	#6,D0
+	MOVE.W	D0,(A4)
 .lx:
-	CHESTB  A5,D0,5,ERROR37
-	BRA     .a
+	CHESTB	A5,D0,5,ERROR37
+	BRA		.a
 
 .STR:
-	move.b  #-1,(a5)+
-	clr.b   (a5)+
-	ADDQ.L  #1,D7
-	MOVE.L  A5,A4
-	ADDQ.L  #2,A5
-	moveq   #0,d4
-	move.l  CASCII(a3),a2
+	move.b	#-1,(a5)+
+	clr.b	(a5)+
+	ADDQ.L	#1,D7
+	MOVE.L	A5,A4
+	ADDQ.L	#2,A5
+	moveq	#0,d4
+	move.l	CASCII(a3),a2
 .CP1:
-	addq.l  #1,d4
-	move.b  (a2)+,(a5)+
-	bne     .CP1
-	btst    #0,d4
-	beq     .NF1
-	clr.b   (a5)+
-	addq.l  #1,d4
+	addq.l	#1,d4
+	move.b	(a2)+,(a5)+
+	bne		.CP1
+	btst	#0,d4
+	beq		.NF1
+	clr.b	(a5)+
+	addq.l	#1,d4
 .NF1:
-	move.w  d4,(a4)
-	move.l  CVAL(a3),a2
-	move.w  (a2)+,d4
-	move.w  d4,(a5)+
+	move.w	d4,(a4)
+	move.l	CVAL(a3),a2
+	move.w	(a2)+,d4
+	move.w	d4,(a5)+
 .CP2:
-	move.b  (a2)+,(a5)+
-	dbf     d4,.CP2
-	move.l  a5,d4
-	btst    #0,d4
-	beq     .NF2
-	clr.b   (a5)+
+	move.b	(a2)+,(a5)+
+	dbf		d4,.CP2
+	move.l	a5,d4
+	btst	#0,d4
+	beq		.NF2
+	clr.b	(a5)+
 .NF2:
-	bra     .lx
+	bra		.lx
 
 .X:	CLR.W	(A5)+
 	MOVE.L	D5,D2
@@ -11688,7 +11688,7 @@ SYMEND:
 	BSR	WRITEFILE
 .LEAVE:	RTS
 
-      WRITEPROCINFOS:
+		WRITEPROCINFOS:
 	MOVEQ	#0,D1			; D1=PROC COUNT
 	MOVE.L	CSTACK_BUF,D5
 	MOVE.L	D5,A5			; D5,A5=BUF
@@ -11742,33 +11742,33 @@ SYMEND:
 	MOVE.W	4(A3),(A5)+		; NRLOC (NEG)*4
 
 ;test for NOREGS in proc flags
-    BTST    #5,2(A3)
-    BEQ     .NOREGS
-    MOVE.W  #-1,(A5)+
-    moveq   #0,d0
-    MOVE.W  (A3),D0
-    MOVE.W  D0,(A5)+
-    MOVE.L   6(a3),a2
-    addq.l  #2,a2
-    subq.l  #1,d0
+	BTST	#5,2(A3)
+	BEQ		.NOREGS
+	MOVE.W	#-1,(A5)+
+	moveq	#0,d0
+	MOVE.W	(A3),D0
+	MOVE.W	D0,(A5)+
+	MOVE.L	 6(a3),a2
+	addq.l	#2,a2
+	subq.l	#1,d0
 .LOCAL1:
-    MOVE.W  (a2)+,(a5)+
-    dbf d0,.LOCAL1
-    move.l  #0,(a5)+
-    BRA .LOOP
+	MOVE.W	(a2)+,(a5)+
+	dbf d0,.LOCAL1
+	move.l	#0,(a5)+
+	BRA .LOOP
 .NOREGS:
 
-    BTST    #5,3(A3)      ;SETUP in flags2
-    BNE     .SETUPCLEANUP
-    BTST    #6,3(A3)      ;CLEANUP in flags2
-    BEQ     .OTHER_STUFF
+	BTST	#5,3(A3)		;SETUP in flags2
+	BNE		.SETUPCLEANUP
+	BTST	#6,3(A3)		;CLEANUP in flags2
+	BEQ		.OTHER_STUFF
 .SETUPCLEANUP:
-    MOVE.W  #-2,(A5)+
-    MOVE.B  3(A3),D0
-    and.w   #64+32,d0   ;get flags2 bits
-    MOVE.W  D0,(A5)+
-    CLR.L   (A5)+
-    BRA .LOOP
+	MOVE.W	#-2,(A5)+
+	MOVE.B	3(A3),D0
+	and.w	#64+32,d0	;get flags2 bits
+	MOVE.W	D0,(A5)+
+	CLR.L	(A5)+
+	BRA .LOOP
 .OTHER_STUFF:
 
 	MOVE.L	6(A3),D0
@@ -11813,7 +11813,7 @@ SYMEND:
 .LEAVE:	RTS
 
 
-      WRITEGLOBINFOS:
+		WRITEGLOBINFOS:
 	MOVEQ	#0,D1			; D1=GLOB COUNT
 	MOVE.L	CSTACK_BUF,D5
 	MOVE.L	D5,A5			; D5,A5=BUF
@@ -11837,11 +11837,11 @@ SYMEND:
 	MOVE.L	A5,A1			; A1=BACKUP A5
 	MOVE.L	D0,A0			; A0=GLOBINFO
 	ADDQ.L	#1,D1
-	BTST #5,ICODEPREFS+3        ;LEGACY MODE
+	BTST #5,ICODEPREFS+3		;LEGACY MODE
 	BNE.S .LEG
-	MOVE.W 10(A4),(A5)+    ;save regoffs
+	MOVE.W 10(A4),(A5)+		 ;save regoffs
 .LEG
-  BTST	#2,5(A4)
+	BTST	#2,5(A4)
 	BEQ.S	.NNAME
 	MOVE.L	(A0),A3			; ASCIIPTR
 	MOVE.L	A5,A2
@@ -11859,35 +11859,35 @@ SYMEND:
 	BRA.S	.2
 .NNAME:	CLR.W	(A5)+
 .2:
-	BTST #5,ICODEPREFS+3        ;LEGACY MODE
+	BTST #5,ICODEPREFS+3		;LEGACY MODE
 	BNE.S .LEG2
-  MOVE.L VAR_DEFVALUE(A4),(A5)+        ;save defvalue
+	MOVE.L VAR_DEFVALUE(A4),(A5)+			 ;save defvalue
 
 ;new
-  MOVE.B VARFLAGS(A4),(A5)+
-  MOVE.L (A4),D2    ;type
-  MOVE.B D2,(A5)+
-  CLR.W (A5)+
-  CMP.L #5,D2
+	MOVE.B VARFLAGS(A4),(A5)+
+	MOVE.L (A4),D2	;type
+	MOVE.B D2,(A5)+
+	CLR.W (A5)+
+	CMP.L #5,D2
 	BMI.S	.c0
-  MOVE.L D2,A2
-  MOVE.W OID(A2),D2
-  CLR.B -3(A5)
-  MOVE.W D2,-2(A5)
+	MOVE.L D2,A2
+	MOVE.W OID(A2),D2
+	CLR.B -3(A5)
+	MOVE.W D2,-2(A5)
 .c0
-  MOVE.W VAR_PTRREPCOUNT(A4),(A5)+
-  MOVE.L VAR_DIMDATA(A4),A2
-  MOVE.W #-1,(A5)+
-  MOVE.L A2,D2
-  BEQ.S .c2
-  MOVE.W (A2)+,D2
-  MOVE.W D2,-2(A5)
-  TST.W D2
-  BLE.S .c2
-  SUBQ.W #1,D2
+	MOVE.W VAR_PTRREPCOUNT(A4),(A5)+
+	MOVE.L VAR_DIMDATA(A4),A2
+	MOVE.W #-1,(A5)+
+	MOVE.L A2,D2
+	BEQ.S .c2
+	MOVE.W (A2)+,D2
+	MOVE.W D2,-2(A5)
+	TST.W D2
+	BLE.S .c2
+	SUBQ.W #1,D2
 .c1
-  MOVE.W (A2)+,(A5)+
-  DBF D2,.c1
+	MOVE.W (A2)+,(A5)+
+	DBF D2,.c1
 .c2
 ;endnew
 
@@ -11923,7 +11923,7 @@ SYMEND:
 	MOVE.L	A1,A5
 	BRA.W	.LOOP
 
-      WRITEMODINFOS:
+		WRITEMODINFOS:
 	MOVEQ	#0,D1			; D1=MOD COUNT
 	MOVE.L	CSTACK_BUF,D5
 	MOVE.L	D5,A5			; D5,A5=BUF
@@ -12052,7 +12052,7 @@ SYMEND:
 	BSR	WRITEFILE
 .LEAVE:	RTS
 
-      KILLEXE:
+		KILLEXE:
 	MOVE.L HANDLE(PC),D1
 	BEQ .NOHAN
 	MOVE.L DOSBASE(PC),A6
@@ -12075,11 +12075,11 @@ SYMEND:
 .2:	JSR	-72(A6)
 .1:	RTS
 
-      CLEANUPALL:
-    move.l  DOSBASE,a6
-    move.l  DOS_RDA,d1
-    beq.S   .SKP
-    JSR -$35A(A6)
+		CLEANUPALL:
+	move.l	DOSBASE,a6
+	move.l	DOS_RDA,d1
+	beq.S	.SKP
+	JSR -$35A(A6)
 .SKP:
 	BSR	CLOSECON
 	BSR	CLOSELOCK
@@ -12096,7 +12096,7 @@ SYMEND:
 	JSR	-414(A6)
 .1:	RTS
 
-      OPENCON:
+		OPENCON:
 	MOVE.L	#CONNAME,D1
 	MOVE.L	#1006,D2
 	MOVE.L	DOSBASE(PC),A6
@@ -12105,7 +12105,7 @@ SYMEND:
 	BEQ	LEAVEFAST		; NO CON: --> DEEP TROUBLE
 	RTS
 
-      HOLDCON:
+		HOLDCON:
 	MOVEM.L	D0-D7/A0-A6,-(A7)
 	BTST	#2,CODEPREFS+1
 	BEQ.S	.2
@@ -12113,7 +12113,7 @@ SYMEND:
 .2:	MOVEM.L	(A7)+,D0-D7/A0-A6
 	RTS
 
-      CLOSECON:
+		CLOSECON:
 	BSR	HOLDCON
 	TST.W	CONOUT
 	BEQ.S	.1			; NO CON: SO DONT CLOSE IT
@@ -12122,20 +12122,20 @@ SYMEND:
 	JSR	-36(A6)
 .1:	RTS
 
-      READCON:
+		READCON:
 	MOVE.L	WORK(PC),D2
 	MOVE.L	#10,D3
-      READSTRING:			; D2=ADR, D3=LEN
+		READSTRING:			; D2=ADR, D3=LEN
 	MOVE.L	STOUT(PC),D1
 	MOVE.L	DOSBASE(PC),A6
 	JSR	-42(A6)
 	RTS
 
-      CONNAME:
+		CONNAME:
 	DC.B	'CON:40/40/560/80/Amiga E Compiler Output',0
 	EVEN
 
-      FIXRETVALUE:
+		FIXRETVALUE:
 	MOVEQ	#0,D0
 	MOVE.W	RETERROR(PC),D1
 	BMI.S	.1
@@ -12151,21 +12151,21 @@ SYMEND:
 	MOVE.L	BYTEOFF(PC),D0
 .1:	RTS
 
-      LEAVEERROR:
+		LEAVEERROR:
 	BSR	ERROR
 	BSR	KILLEXE
-      LEAVEOTHERERROR:
+		LEAVEOTHERERROR:
 	BSR	CLEANUPALL
-      LEAVEFAST:
+		LEAVEFAST:
 	MOVE.L	INITSTACK(PC),A7
 	BSR.S	FIXRETVALUE
 	RTS
 
 
-      INSTALLHANDLER:
-    ifd debug
-      BRA.S .1
-    endif
+		INSTALLHANDLER:
+	ifd debug
+		BRA.S .1
+	endif
 	;rts
 	;TST.W	CONOUT			; DONT INSTALL IF IN ASMONE
 	;BNE.S	.1
@@ -12176,10 +12176,10 @@ SYMEND:
 	;DIVU	#0,D0
 .1:	RTS
 
-      SETOLDHANDLER:
-    ifd debug
-      BRA.S .1
-    endif
+		SETOLDHANDLER:
+	ifd debug
+		BRA.S .1
+	endif
 	MOVE.L	4.W,A6
 	MOVE.L	276(A6),A0
 	MOVE.L	OLDTRAP,D0
@@ -12187,7 +12187,7 @@ SYMEND:
 	MOVE.L	D0,50(A0)
 .1:	RTS
 
-      TRAPHANDLER:
+		TRAPHANDLER:
 	MOVE.L	(A7)+,D0
 	MOVE.W	D0,GURUNUM
 	MOVEQ	#3,D1
@@ -12215,7 +12215,7 @@ SYMEND:
 .4:	MOVEQ	#0,D0
 .5:	MOVE.L	D0,CRASHPC
 	JSR	CHECKCOOKIES
-      DAMAGEDCOOKIES:			; ENTRY FOR OWN-GEN ERRORS
+		DAMAGEDCOOKIES:			; ENTRY FOR OWN-GEN ERRORS
 	MOVE.W	LINENUM(PC),LINENUMC
 	LEA	INTERNALMESSY(PC),A0
 	LEA	CURSPOT(PC),A1
@@ -12223,32 +12223,32 @@ SYMEND:
 	BNE.S	IEEEWARN
 	BSR	WRITEFORMAT
 	BRA	LEAVEOTHERERROR
-      IEEEWARN:
+		IEEEWARN:
 	MOVE.L	#IEEEMESSY,D2
 	MOVEQ	#IEEEEND-IEEEMESSY,D3
 	BSR	WRITECON
 	BRA	LEAVEOTHERERROR
 
 
-      OLDTRAP:	DC.L	0
+		OLDTRAP:	DC.L	0
 
-      CURSPOT:	DC.W	0
-      GURUNUM:	DC.W	0
-      LINENUMC:	DC.W	0
-      BUFSPOT:	DC.W	0
-      CRASHPC:	DC.L	0
+		CURSPOT:	DC.W	0
+		GURUNUM:	DC.W	0
+		LINENUMC:	DC.W	0
+		BUFSPOT:	DC.W	0
+		CRASHPC:	DC.L	0
 
-      INTERNALMESSY:	DC.B	"EVO INTERNAL ERROR [%d,%d,%d,%d,$%lx] (please report!)",10,0
+		INTERNALMESSY:	DC.B	"EVO INTERNAL ERROR [%d,%d,%d,%d,$%lx] (please report!)",10,0
 			EVEN
-      IEEEMESSY:	DC.B	"PROBLEM: your `mathieeesingbas.library' is"
-      			DC.B	" not properly patched (see docs)",10
-      IEEEEND:		EVEN
+		IEEEMESSY:	DC.B	"PROBLEM: your `mathieeesingbas.library' is"
+				DC.B	" not properly patched (see docs)",10
+		IEEEEND:		EVEN
 
 
 
-      NOERMESSAGE:
+		NOERMESSAGE:
 	DC.B	'no errors'
-      NEMEND:
+		NEMEND:
 	EVEN
 
 
@@ -12336,7 +12336,7 @@ ERROR35:	MOVEQ	#35,D0
 		CLR.W	ERRWHERE
 		BRA	LEAVEERROR
 ERROR36:	MOVEQ	#36,D0
-		BRA	LEAVEERROR   
+		BRA	LEAVEERROR	 
 ERROR37:	MOVEQ	#37,D0
 		CLR.W	ERRWHERE
 		BRA	LEAVEERROR
@@ -12503,7 +12503,7 @@ ERROR108:	MOVEQ	#108,D0
 	CURLABNAME:	DC.L	FOFF
 	LABPRES:	DC.L	0
 	LABPRES2:	DC.L	0
-	LABLOG:		DC.L    0
+	LABLOG:		DC.L	0
 	VAROFFSET:	DC.W	0
 	VARNO:		DC.W	0
 	PROCF:		DC.W	0
@@ -12516,7 +12516,7 @@ ERROR108:	MOVEQ	#108,D0
 	COMPMESSY:	DC.B	'parsing and compiling ...',10
 	ENDCOMPMESSY:	EVEN
 
-      PASS1:
+		PASS1:
 	MOVE.L #-1,warnsenabled
 	MOVE.W	#-1,EXPORTFLAG
 	BTST	#6,CODEPREFS+2
@@ -12533,14 +12533,14 @@ ERROR108:	MOVEQ	#108,D0
 	LEA	CURINTERIM(PC),A0
 	MOVE.L	8(A0),(A0)
 	MOVE.L	CURINTERIM(PC),A0
-      COMPILELINE:
+		COMPILELINE:
 	MOVE.L	CURACODE(PC),A4
 	MOVE.L	ESTACK(PC),A5
 	MOVE.L	CURINTERIM(PC),A3
 	MOVEQ	#5,D0
 	BSR	ADDLABEL
 	MOVE.W	#2,ERRWHERE
-      COMPILELOOP:
+		COMPILELOOP:
 	BSR	WRITELINENUM		; TRASHES D7
 	MOVE.W	(A3)+,D7
 	CMP.W	#-1,D7
@@ -12561,47 +12561,47 @@ ERROR108:	MOVEQ	#108,D0
 	MOVE.L	A4,CURACODE
 	JSR	CHECK3
 	BRA.S	COMPILELOOP
-      COMPILEOUTS:
+		COMPILEOUTS:
 	TST.W	PROCF
 	BNE	ERROR9
 	MOVE.L	A5,ESTACK
 	MOVE.L	A3,CURINTERIM
 	MOVE.W	#-1,LINENUM
 
-    MOVEM.L     D0/A0,-(A7)
+	MOVEM.L		D0/A0,-(A7)
 	MOVE.L	A4,CURACODE
 
-    MOVE.L      HunkList,A0
-    CMP.L       #$3e9,H_TYPE(A0)
-    BEQ         .nonew
-    
-    MOVE.L      CURACODE,H_END(A0)
-    move.l      a0,d0
+	MOVE.L		HunkList,A0
+	CMP.L		#$3e9,H_TYPE(A0)
+	BEQ			.nonew
+	
+	MOVE.L		CURACODE,H_END(A0)
+	move.l		a0,d0
 
-    GETML        A0
-    MOVE.L      HunkList,(A0)+
-    MOVE.L      A0,HunkList
-    exg.L       A0,D0
-    move.l      d0,H_PREV(A0)
-    exg.l       a0,d0
-    
-    MOVE.L      CURACODE,(A0)+
-    move.l      #$3E9,(a0)+
-    clr.l       (a0)+
-    clr.l       (a0)+
-    clr.l       (a0)+
-    clr.l       (a0)+
-    clr.l       (a0)+
-    DONEM       A0
-    ADDQ.L      #1,NumHunks
+	GETML		 A0
+	MOVE.L		HunkList,(A0)+
+	MOVE.L		A0,HunkList
+	exg.L		A0,D0
+	move.l		d0,H_PREV(A0)
+	exg.l		a0,d0
+	
+	MOVE.L		CURACODE,(A0)+
+	move.l		#$3E9,(a0)+
+	clr.l		(a0)+
+	clr.l		(a0)+
+	clr.l		(a0)+
+	clr.l		(a0)+
+	clr.l		(a0)+
+	DONEM		A0
+	ADDQ.L		#1,NumHunks
 .nonew:
-    MOVEM.L     (A7)+,D0/A0
+	MOVEM.L		(A7)+,D0/A0
 
 	BSR.S	LINKDATA
 	MOVE.L	A4,CURACODE
 	RTS	
 
-      LINKDATA:
+		LINKDATA:
 	LEA	STRINGLINK(PC),A6
 	MOVE.L	A4,.A4S
 .L:	MOVE.L	(A6),A6
@@ -12657,7 +12657,7 @@ ERROR108:	MOVEQ	#108,D0
 .NOSTRO:
 	MOVEQ	#0,D0
 
-	BTST    #4,ICODEPREFS+3     ;estring constants
+	BTST	#4,ICODEPREFS+3		;estring constants
 	BEQ.S .noestring
 	;strlen + strmax
 	MOVE.L A4,D0
@@ -12667,7 +12667,7 @@ ERROR108:	MOVEQ	#108,D0
 .nopad
 	MOVE.L #-1,(A4)+
 
-.noestring  
+.noestring	
 	MOVE.W	4(A6),D0
 	BSR	ADDLABEL
 
@@ -12681,9 +12681,9 @@ ERROR108:	MOVEQ	#108,D0
 	JSR	CHECK3
 	MOVE.W	-4(A3),D0
 
-	BTST    #4,ICODEPREFS+3     ;estring constants
+	BTST	#4,ICODEPREFS+3		;estring constants
 	BEQ.S .noestring2
- 	;strlen + strmax
+	;strlen + strmax
 	MOVE.W D0,-4(A4)
 	MOVE.W D0,-2(A4)
 .noestring2
@@ -12706,7 +12706,7 @@ ERROR108:	MOVEQ	#108,D0
 .1:	RTS
 .A4S:	DC.L	0
 
-      DOINSMAIN:			; FIRST INTERIM IN D7
+		DOINSMAIN:			; FIRST INTERIM IN D7
 	CMP.W	#IOFF+59,D7
 	BEQ.S	.1
 .2:	BSR	DOINS
@@ -12722,12 +12722,12 @@ ERROR108:	MOVEQ	#108,D0
 	BEQ.S	.3
 	BRA.S	.2
 
-      EXPORTFLAG:	DC.W	0
-      FLTFLAG:		DC.W	0
-      DEFFLAG:		DC.W	0
-      HANDLEFLAG:	DC.W	0
+		EXPORTFLAG:	DC.W	0
+		FLTFLAG:		DC.W	0
+		DEFFLAG:		DC.W	0
+		HANDLEFLAG:	DC.W	0
 
-      DOINS:
+		DOINS:
 	TST.W	SCOPE
 	BEQ.S	.2
 	TST.W	DEFFLAG
@@ -12761,9 +12761,9 @@ ERROR108:	MOVEQ	#108,D0
 	BEQ	DOJOB
 	CMP.W	#IOFF+48,D7
 	BEQ	DOJOB
-	CMP.W	#IOFF+83,D7     ;fatal allowed
+	CMP.W	#IOFF+83,D7		;fatal allowed
 	BEQ	DOJOB
-	CMP.W	#IOFF+84,D7     ;warn allowed
+	CMP.W	#IOFF+84,D7		;warn allowed
 	BEQ	DOJOB
 	BRA	ERROR35
 .DH:	CMP.W	#IOFF+17,D7
@@ -12773,10 +12773,10 @@ ERROR108:	MOVEQ	#108,D0
 	BEQ	.DHB
 	BSR	HANDLEPROCREALLY
 	BRA	.DHB
-      DOINSOUT:
+		DOINSOUT:
 	RTS
 
-      DOEXP:
+		DOEXP:
 	TST.W	PROCF
 	BNE.S	.1
 	MAKEWARN 7 ; CODE OUTSIDE PROCS
@@ -12786,66 +12786,66 @@ ERROR108:	MOVEQ	#108,D0
 	CLR.W	EXPSTAT
 	BRA.S	DOINSOUT
 
-      EXPSTAT:	DC.W	0
+		EXPSTAT:	DC.W	0
 
-      DOASM:
+		DOASM:
 	BSR	ASM_COMPILE		; WITH D7
 	BRA.S	DOINSOUT
 
-      DOJOB:
+		DOJOB:
 	BSR.S	DOKEYWORD
 	BRA	DOINSOUT
 
-      STOPJOB:				; END JOBCODE PROCESSING
+		STOPJOB:				; END JOBCODE PROCESSING
 	LEA	.1(PC),A2
 	RTS
 .1:	DC.W	0
 
-      DOKEYWORD:
+		DOKEYWORD:
 	SUB.W	#IOFF,D7
 	ASL.W	#2,D7
 	LEA	INSJOBTAB,A2
 	MOVE.L	0(A2,D7.W),A2
-      JOBLOOP:
-      CLR.W odoset
+		JOBLOOP:
+		CLR.W odoset
 	MOVE.W	(A2)+,D7
 	TST.W	D7
 	BEQ.S	JOBOUT
 	ASL.W	#2,D7
 	MOVE.L	JOBROUTTAB(PC,D7.W),A0
 	JMP	(A0)
-      JOBOUT:
+		JOBOUT:
 	RTS
 
-      JOBROUTTAB:
-	DC.L	JOBOUT,GETPARAMLABEL,JOBEXP,GETPARAMVAR,GETCOMMA   ; 0
-	DC.L	SAVESTIDENT,FORWARDREFERENCE,CHECKSTIDENT	   ; 5
-	DC.L	MAKEBRANCH,COPY2,COPY4,COPYN,COPY6,COPY8	   ; 8
-	DC.L	COPY10,REMEMBERLAB,EXPORNILL,PROCFLAGON		   ; 14
-	DC.L	PROCFLAGOFF,CHECK2LAB,REMINDCURPOS,POPLAB	   ; 18
-	DC.L	INSERTVAROFF,PUSHVAR,POPVAR,PUSHLAB		   ; 22
-	DC.L	PUSHLAB2,POPLAB2,NEWLAB2,MAKEBRANCH2		   ; 26
-	DC.L	SETFLAG,SKIPFLAG,CLEARFLAG,SKIPDEFLOCAL,GETNRLOC   ; 30
-	DC.L	INSERTVAROFFDEST,GETBRACKLEFT,GETBRACKRIGHT	   ; 35
-	DC.L	DOINCBIN,DOLONG,DOINT,DOCHAR,JOBINS,EXPECT	   ; 38
-	DC.L	SERROR,EXPECT2,JOBSKIP,EXPECTASSIGN,EXPECTTO	   ; 44
-	DC.L	DOMIDFOR,ENDGLOBVAR,ELSEMAKELAB,ELSEUSELAB	   ; 49
-	DC.L	ELSEDEFLAB,ELSEWAISTELAB,DOOBJECT,OPTIIF	   ; 53
-	DC.L	DOELSECH,DORETURN,MAKEBRANCHL,JOBINSIF,JOBEXPIF	   ; 57
-	DC.L	JOBFORSTEP,HANDLEPROC,DOEXCEPT,CLOSEHANDLER	   ; 62
-	DC.L	PUSHTYPE,POPTYPE,RTSRTD,DONEW,EXPECTRETURNIS	   ; 66
-	DC.L	SELECTOF,EXPECTOFOBJECT,SAVEREGSPROC,DOEND	   ; 71
-	DC.L	FILLEXIT,DOSUPER,DOUBLEIF,INCDEC,EXPECT3	   ; 75
-	DC.L	JOBOUT,JOBOUT,FILLCONT,DOFATAL,DOWARN	   ; 80
-	DC.L	JOB_SECTION, INS_FLAG, INVERT_BRANCH, STACK_CHECK, STACK_UPDATE  ;85
-	DC.L	JOB_AUTOPROC        ;90
+		JOBROUTTAB:
+	DC.L	JOBOUT,GETPARAMLABEL,JOBEXP,GETPARAMVAR,GETCOMMA	 ; 0
+	DC.L	SAVESTIDENT,FORWARDREFERENCE,CHECKSTIDENT		 ; 5
+	DC.L	MAKEBRANCH,COPY2,COPY4,COPYN,COPY6,COPY8		 ; 8
+	DC.L	COPY10,REMEMBERLAB,EXPORNILL,PROCFLAGON			 ; 14
+	DC.L	PROCFLAGOFF,CHECK2LAB,REMINDCURPOS,POPLAB		 ; 18
+	DC.L	INSERTVAROFF,PUSHVAR,POPVAR,PUSHLAB			 ; 22
+	DC.L	PUSHLAB2,POPLAB2,NEWLAB2,MAKEBRANCH2			 ; 26
+	DC.L	SETFLAG,SKIPFLAG,CLEARFLAG,SKIPDEFLOCAL,GETNRLOC	 ; 30
+	DC.L	INSERTVAROFFDEST,GETBRACKLEFT,GETBRACKRIGHT		 ; 35
+	DC.L	DOINCBIN,DOLONG,DOINT,DOCHAR,JOBINS,EXPECT		 ; 38
+	DC.L	SERROR,EXPECT2,JOBSKIP,EXPECTASSIGN,EXPECTTO		 ; 44
+	DC.L	DOMIDFOR,ENDGLOBVAR,ELSEMAKELAB,ELSEUSELAB		 ; 49
+	DC.L	ELSEDEFLAB,ELSEWAISTELAB,DOOBJECT,OPTIIF		 ; 53
+	DC.L	DOELSECH,DORETURN,MAKEBRANCHL,JOBINSIF,JOBEXPIF		 ; 57
+	DC.L	JOBFORSTEP,HANDLEPROC,DOEXCEPT,CLOSEHANDLER		 ; 62
+	DC.L	PUSHTYPE,POPTYPE,RTSRTD,DONEW,EXPECTRETURNIS		 ; 66
+	DC.L	SELECTOF,EXPECTOFOBJECT,SAVEREGSPROC,DOEND		 ; 71
+	DC.L	FILLEXIT,DOSUPER,DOUBLEIF,INCDEC,EXPECT3		 ; 75
+	DC.L	JOBOUT,JOBOUT,FILLCONT,DOFATAL,DOWARN		 ; 80
+	DC.L	JOB_SECTION, INS_FLAG, INVERT_BRANCH, STACK_CHECK, STACK_UPDATE	 ;85
+	DC.L	JOB_AUTOPROC		;90
 
-      DOBECOMESMETHOD:
+		DOBECOMESMETHOD:
 	CMP.W	#42,6(A3)
 	BEQ	DOEXP
-      DOBECOMES:
+		DOBECOMES:
 	MOVE.L	(A3)+,A1
-    MOVE.L  A1,EAIDENT
+	MOVE.L	A1,EAIDENT
 
 	CMP.W	#ASSGN,(A3)
 	BNE	COMPLEXBECOMES
@@ -12864,64 +12864,64 @@ ERROR108:	MOVEQ	#108,D0
 	BEQ	ERROR6
 	ADDQ.L	#2,A3
 
-    move.l  a4,-(a7)
+	move.l	a4,-(a7)
 	MOVE.W	#17,EAREQUEST
 	BSR	EAEXP
-    move.l  (a7)+,a2            ; a2 now - output code before expression
+	move.l	(a7)+,a2			; a2 now - output code before expression
 	TST.L	D0
 	BNE.W	.OPT
-    BTST    #2,ICODEPREFS+3
-    BNE     .SKdupa
+	BTST	#2,ICODEPREFS+3
+	BNE		.SKdupa
 
-    TST.L   LAST_CMD_ADR        ; see if we can optimize
-    beq     .SKdupa
-    move.l  LAST_CMD_ADR,a0
-    move.l  a4,d0
-    sub.l   a0,d0
-    cmp.l   #4,d0
-    bne     .SK1
-    btst    #5,CODEPREFS
-    beq     .SK1
-    cmp.l   #$F2006400,(a0)
-    bne     .SK1
-    subq.l  #4,a4
-    move.l  a4,d0
-    sub.l   a2,d0
-    cmp.l   #8,d0
-    beq     .OPTI8
+	TST.L	LAST_CMD_ADR		; see if we can optimize
+	beq		.SKdupa
+	move.l	LAST_CMD_ADR,a0
+	move.l	a4,d0
+	sub.l	a0,d0
+	cmp.l	#4,d0
+	bne		.SK1
+	btst	#5,CODEPREFS
+	beq		.SK1
+	cmp.l	#$F2006400,(a0)
+	bne		.SK1
+	subq.l	#4,a4
+	move.l	a4,d0
+	sub.l	a2,d0
+	cmp.l	#8,d0
+	beq		.OPTI8
 .O8B:
-    move.w  .F1,(a4)+
-    move.l  a4,d1
-    jsr     GVA1D0_0
-    cmp.l   a4,d1
-    beq     .SK0
-    move.w  -(a4),d0
-    move.w  .F1+2(pc),(a4)+
-    move.w  d0,(a4)+
-    bra     .OPT
+	move.w	.F1,(a4)+
+	move.l	a4,d1
+	jsr		GVA1D0_0
+	cmp.l	a4,d1
+	beq		.SK0
+	move.w	-(a4),d0
+	move.w	.F1+2(pc),(a4)+
+	move.w	d0,(a4)+
+	bra		.OPT
 .SK0:
-    move.w  .F1+2(PC),(A4)+
-    bra     .OPT
+	move.w	.F1+2(PC),(A4)+
+	bra		.OPT
 .SK1:
-    cmp.w   #6,d0
-    bne     .SK2
-    cmp.w   #$203c,(a0)
-    bne     .SK2
-    move.l  a0,a4
-    move.l  2(a4),-(a7)
-    move.w  #$2b7c,(a4)+
-    move.l  a4,a2
-    JSR     GVA1D2_9
-    moveq   #0,d2
-    cmp.l   a4,a2
-    beq     .SK1S
-    move.w  -(a4),d2
-    move.l  (a7)+,(a4)+
-    move.w  d2,(a4)+
-    bra     .OPT
+	cmp.w	#6,d0
+	bne		.SK2
+	cmp.w	#$203c,(a0)
+	bne		.SK2
+	move.l	a0,a4
+	move.l	2(a4),-(a7)
+	move.w	#$2b7c,(a4)+
+	move.l	a4,a2
+	JSR		GVA1D2_9
+	moveq	#0,d2
+	cmp.l	a4,a2
+	beq		.SK1S
+	move.w	-(a4),d2
+	move.l	(a7)+,(a4)+
+	move.w	d2,(a4)+
+	bra		.OPT
 .SK1S:
-    move.l  (a7)+,(a4)+
-    bra     .OPT
+	move.l	(a7)+,(a4)+
+	bra		.OPT
 .SK2:
 .SKdupa:
 	MOVE.W	.1(PC),(A4)+
@@ -12932,43 +12932,43 @@ ERROR108:	MOVEQ	#108,D0
 	CPU040
 .F1:fmove.s fp0,4(a5)
 .F2:fsmove.s #0,fp0
-.F3:fmove.s #0,fp0   
+.F3:fmove.s #0,fp0	 
 	CPU000
-    
-.2: move.l  #0,2(a5)
+	
+.2: move.l	#0,2(a5)
 .OPTI8:
-    MOVE.L  .F2,d0
-    cmp.l   (a2),d0
-    bne     .O82
-    bra     .O8
+	MOVE.L	.F2,d0
+	cmp.l	(a2),d0
+	bne		.O82
+	bra		.O8
 .O82:
-    MOVE.L  .F3,d0
-    cmp.l   (a2),d0
-    bne     .O8B
+	MOVE.L	.F3,d0
+	cmp.l	(a2),d0
+	bne		.O8B
 .O8:
-    subq.l  #8,a4
-    move.l  4(a4),d0
-    move.w  .2,(a4)+
-    move.l  a4,a2
-    jsr     GVA1D2_9
-    cmp.l   a4,a2
-    bne     .O8X
-    move.l  d0,(a4)+
-    bra     .OPT
+	subq.l	#8,a4
+	move.l	4(a4),d0
+	move.w	.2,(a4)+
+	move.l	a4,a2
+	jsr		GVA1D2_9
+	cmp.l	a4,a2
+	bne		.O8X
+	move.l	d0,(a4)+
+	bra		.OPT
 .O8X:
-    move.w  -(A4),d2
-    move.l  d0,(a4)+
-    move.w  d2,(a4)+
-    bra     .OPT
+	move.w	-(A4),d2
+	move.l	d0,(a4)+
+	move.w	d2,(a4)+
+	bra		.OPT
 
 
-      PTRCOMPLEX:			; uses a0,d0
+		PTRCOMPLEX:			; uses a0,d0
 	SUBQ.L	#2,A3
 	MOVE.L	A3,A0
 	BRA.S	COMPLEXST
-      COMPLEXBECOMES:
+		COMPLEXBECOMES:
 	LEA	-6(A3),A0
-      COMPLEXST:
+		COMPLEXST:
 	MOVE.L	A0,-(A7)		; complexstart -->STACK (D7)
 	BSR	EATLEXP
 	BSR	EXP
@@ -12983,12 +12983,12 @@ ERROR108:	MOVEQ	#108,D0
 	BRA	DOINSOUT
 
 
-      NOASSIGN:
+		NOASSIGN:
 	MOVE.L	A0,A3			; FROM COMPLEXST
 	BSR	EXP
 	BRA	DOINSOUT
 
-      EATLEXP:				; uses d0
+		EATLEXP:				; uses d0
 	MOVE.W	(A3)+,D0
 	BEQ	.3
 	CMP.W	#IDENT,D0
@@ -13016,7 +13016,7 @@ ERROR108:	MOVEQ	#108,D0
 .2:	RTS
 .1:	ADDQ.L	#4,A3
 	BRA.S	EATLEXP
-.4:	MAKEWARN 4   ; a.complex=1 a statement
+.4:	MAKEWARN 4	 ; a.complex=1 a statement
 	;MOVE.W	LINENUM,ASSLINE
 .3:	ADDQ.L	#8,A7
 	BRA.S	NOASSIGN
@@ -13025,7 +13025,7 @@ ERROR108:	MOVEQ	#108,D0
 	ADDQ.L	#2,A3
 	BRA	DOEXP
 
-      DOMULTIPLE:
+		DOMULTIPLE:
 	SUBQ.L	#2,A3
 	MOVE.L	A3,-(A7)
 .L:	CMP.W	#IDENT,(A3)+		; SKIP VARS
@@ -13061,7 +13061,7 @@ ERROR108:	MOVEQ	#108,D0
 .1:	MOVE.L	D0,2(A5)
 	
 
-      DOLAB:
+		DOLAB:
 	BTST	#3,CODEPREFS+3
 	BNE.S	.1
 .2:	MOVE.W	4(A3),D0
@@ -13071,13 +13071,13 @@ ERROR108:	MOVEQ	#108,D0
 	BEQ	DOBECOMES
 	CMP.W	#35,D0
 	BEQ	DOBECOMESMETHOD
-	CMP.W	#41,D0  
+	CMP.W	#41,D0	
 	BEQ	DOBECOMES
 	CMP.W	#COM,D0
 	BEQ	DOMULTIPLE
 	CMP.W	#11,D0
 	BNE.S	.3
-	MAKEWARN 4   ; a=1 a statement
+	MAKEWARN 4	 ; a=1 a statement
 	;MOVE.W	LINENUM,ASSLINE
 .nwarn:
 .3:	CMP.W	#19,D0
@@ -13098,7 +13098,7 @@ ERROR108:	MOVEQ	#108,D0
 
 ;	NOTEZBIEN:	DEZE MOGEN NIET MEER REGISTERS VERSTOREN!
 
-      ADDLABEL:				; D0 LABEL (A4 IS ADR. LABEL)
+		ADDLABEL:				; D0 LABEL (A4 IS ADR. LABEL)
 	MOVE.L	LABM+8(PC),A0		; THRASHES A0/D0!
 	LSL.L	#2,D0
 	AND.L	#$3FFFF,D0
@@ -13106,26 +13106,26 @@ ERROR108:	MOVEQ	#108,D0
 	RTS
 
 NEWOP:	DC.W	0		; 0=NO32, X=NEWOP
-NEWOP020: DC.W  0       ; 0=NoBcc.L, X=NEWOP
+NEWOP020: DC.W	0		; 0=NoBcc.L, X=NEWOP
 
-      ADDBRANCH:			; D0 LABEL (A4 IS ADR. NA OP.)
+		ADDBRANCH:			; D0 LABEL (A4 IS ADR. NA OP.)
 	MOVE.L	A4,D1
 	SUBQ.L	#2,D1			; +TRASH: D1/A0, -TRASH: D0 !
 	TST.W	NEWOP
 	BEQ.S	.NL
 	BTST	#2,CODEPREFS+3
 	BEQ.S	.NL
-	TST.W   SectionUsed   ;dont do JSR to BSR.L optimisations with multiple sections
-	BNE     .LONG
-	TST.W   NEWOP020
-	BEQ     .LONG
-	CMP.W   #1,ECPU
-	BMI     .LONG
-	subq.l  #4,a4
-	move.w  NEWOP020,(a4)+
-	CLR.W   NEWOP020
-	CLR.W   NEWOP
-	BRA     ADDBRANCHPCREL32
+	TST.W	SectionUsed		;dont do JSR to BSR.L optimisations with multiple sections
+	BNE		.LONG
+	TST.W	NEWOP020
+	BEQ		.LONG
+	CMP.W	#1,ECPU
+	BMI		.LONG
+	subq.l	#4,a4
+	move.w	NEWOP020,(a4)+
+	CLR.W	NEWOP020
+	CLR.W	NEWOP
+	BRA		ADDBRANCHPCREL32
 .LONG:
 	MOVE.L	#$30000,-2(A4)
 	ADDQ.L	#2,A4
@@ -13144,13 +13144,13 @@ NEWOP020: DC.W  0       ; 0=NoBcc.L, X=NEWOP
 	MOVE.L	D1,(A0)+
 	MOVE.W	D0,(A0)+
 	MOVE.W	LINENUM(PC),(A0)+
-	CLR.W   (A0)+  
+	CLR.W	(A0)+	
 	DONEM	A0
-	CLR.W   NEWOP
+	CLR.W	NEWOP
  
 	RTS
 
-      ADDBRANCHUSINGTEMPSPACE:			; D0 LABEL (A4 IS ADR. NA OP.)
+		ADDBRANCHUSINGTEMPSPACE:			; D0 LABEL (A4 IS ADR. NA OP.)
 	MOVE.L	A4,D1
 	SUBQ.L	#2,D1			; +TRASH: D1/A0, -TRASH: D0 !
 	TST.W	NEWOP
@@ -13168,18 +13168,18 @@ NEWOP020: DC.W  0       ; 0=NoBcc.L, X=NEWOP
 .NL:
 
 	MOVE.L tempspacedataptr(PC),A0
-	CMP.L   #tempspacebuffend-10,A0
-	BPL     ERROR84
+	CMP.L	#tempspacebuffend-10,A0
+	BPL		ERROR84
 
-	MOVE.W  #3,(A0)+
+	MOVE.W	#3,(A0)+
 	MOVE.L	D1,(A0)+
 	MOVE.W	D0,(A0)+
 	MOVE.W	LINENUM(PC),(A0)+
 	MOVE.L A0,tempspacedataptr
-	CLR.W   NEWOP
+	CLR.W	NEWOP
 	RTS
 
-      ADDBRANCHRELOC:			; D0 LABEL (A4 IS ADR. VOOR REL.LONG.)
+		ADDBRANCHRELOC:			; D0 LABEL (A4 IS ADR. VOOR REL.LONG.)
 	MOVE.L	A4,D1			; +TRASH: D1/A0, -TRASH: D0 !
 	MOVE.L	#$30000,(A4)+
 	GETM	A0
@@ -13189,57 +13189,57 @@ NEWOP020: DC.W  0       ; 0=NoBcc.L, X=NEWOP
 	MOVE.L	D1,(A0)+
 	MOVE.W	D0,(A0)+
 	MOVE.W	LINENUM(PC),(A0)+
-	CLR.W   (A0)+  
+	CLR.W	(A0)+	
 	DONEM	A0
 	RTS
 ;; ADD BRANCH PCREL 32
 ADDBRANCHPCREL32:
-    MOVE.L  A4,D1
-    MOVE.L  #$90000,(A4)+
-    GETM    A0
-    MOVE.L  BRANCHLIST,(A0)
-    MOVE.L  A0,BRANCHLIST
-    ADDQ.L  #4,A0
-    MOVE.L  D1,(A0)+
-    MOVE.W  D0,(A0)+
-    MOVE.W	LINENUM(PC),(A0)+
-    CLR.W   (A0)+
-    DONEM   A0
-    RTS
+	MOVE.L	A4,D1
+	MOVE.L	#$90000,(A4)+
+	GETM	A0
+	MOVE.L	BRANCHLIST,(A0)
+	MOVE.L	A0,BRANCHLIST
+	ADDQ.L	#4,A0
+	MOVE.L	D1,(A0)+
+	MOVE.W	D0,(A0)+
+	MOVE.W	LINENUM(PC),(A0)+
+	CLR.W	(A0)+
+	DONEM	A0
+	RTS
 ;*-*
 ;; ADD BRANCH PCREL 16 EXTENDED
 ADDBRANCHPCREL16E:
-    MOVE.L  A4,D1
-    CLR.W   (A4)+
-    GETM    A0
-    MOVE.L  BRANCHLIST(PC),(A0)
-    MOVE.L  A0,BRANCHLIST
-    ADDQ.L  #4,A0
-    MOVE.L  D1,(A0)+
-    MOVE.W  D0,(A0)+
-    MOVE.W	LINENUM(PC),(A0)+
-    MOVE.W  #1,(A0)+
-    DONEM   A0
-    RTS
+	MOVE.L	A4,D1
+	CLR.W	(A4)+
+	GETM	A0
+	MOVE.L	BRANCHLIST(PC),(A0)
+	MOVE.L	A0,BRANCHLIST
+	ADDQ.L	#4,A0
+	MOVE.L	D1,(A0)+
+	MOVE.W	D0,(A0)+
+	MOVE.W	LINENUM(PC),(A0)+
+	MOVE.W	#1,(A0)+
+	DONEM	A0
+	RTS
 ;*-*
 ;; ADD BRANCH PCREL 32 EXTENDED
 ADDBRANCHPCREL32E:
-    MOVE.L  A4,D1
-    MOVE.L  #$90000,(A4)+
-    GETM    A0
-    MOVE.L  BRANCHLIST(PC),(A0)
-    MOVE.L  A0,BRANCHLIST
-    ADDQ.L  #4,A0
-    MOVE.L  D1,(A0)+
-    MOVE.W  D0,(A0)+
-    MOVE.W	LINENUM(PC),(A0)+
-    MOVE.W  #1,(A0)+
-    DONEM   A0
-    RTS
+	MOVE.L	A4,D1
+	MOVE.L	#$90000,(A4)+
+	GETM	A0
+	MOVE.L	BRANCHLIST(PC),(A0)
+	MOVE.L	A0,BRANCHLIST
+	ADDQ.L	#4,A0
+	MOVE.L	D1,(A0)+
+	MOVE.W	D0,(A0)+
+	MOVE.W	LINENUM(PC),(A0)+
+	MOVE.W	#1,(A0)+
+	DONEM	A0
+	RTS
 
-      BRANCHLIST:	DC.L	0
+		BRANCHLIST:	DC.L	0
 
-      GETPARAMLABEL:			; 1
+		GETPARAMLABEL:			; 1
 	CMP.W	#IDENT,(A3)+
 	BNE	ERROR4
 	MOVE.L	(A3)+,A0
@@ -13250,13 +13250,13 @@ ADDBRANCHPCREL32E:
 	BNE	ERROR4
 	BRA	JOBLOOP
 
-      JOBEXP:				; 2
+		JOBEXP:				; 2
 	MOVE.L A4,JOBEXPST
 	BSR	EXP
 	BRA	JOBLOOP
-JOBEXPST:	DC.L  0
+JOBEXPST:	DC.L	0
 
-      GETPARAMVAR:			; 3
+		GETPARAMVAR:			; 3
 	MOVE.W	(A3)+,D6
 	CMP.W	#IDENT,D6
 	BNE	ERROR6
@@ -13270,82 +13270,82 @@ JOBEXPST:	DC.L  0
 	BEQ	ERROR6
 	BRA	JOBLOOP
 
-      GETCOMMA:				; 4
+		GETCOMMA:				; 4
 	MOVE.W	(A3)+,D6
 	CMP.B	#COM,D6
 	BNE	ERROR5
 	BRA	JOBLOOP
 
-      NEWLABEL:				; => D0 LAB
+		NEWLABEL:				; => D0 LAB
 	MOVE.L	CURLABNAME(PC),D0
 	ADDQ.L	#1,CURLABNAME
 	BSR	CHECKLABBUF
 	RTS
 
-      SAVESTIDENT:			; 5
+		SAVESTIDENT:			; 5
 	MOVE.W	(A2)+,(A5)+
 	BRA	JOBLOOP
 
-      CHECKSTIDENT:			; 7
+		CHECKSTIDENT:			; 7
 	MOVE.W	-(A5),D0
 	CMP.W	(A2)+,D0
 	BNE	ERROR9
 	BRA	JOBLOOP
 
-      FORWARDREFERENCE:			; 6
+		FORWARDREFERENCE:			; 6
 	BSR.S	NEWLABEL
 	MOVE.L	D0,(A5)+
 	MOVE.L	D0,LABPRES
 	BRA	JOBLOOP
 
-      REMINDCURPOS:			; 20
+		REMINDCURPOS:			; 20
 	BSR.S	NEWLABEL
 	MOVE.L	D0,(A5)+
 	BSR	ADDLABEL
 	BRA	JOBLOOP
 
-      MAKEBRANCH:			; 8
+		MAKEBRANCH:			; 8
 	MOVE.L	LABPRES,D0
 	CLR.W	NEWOP
 	BSR	ADDBRANCH
 	BRA	JOBLOOP
 
-      REMEMBERLAB:			; 15
+		REMEMBERLAB:			; 15
 	MOVE.L	-(A5),D0
 	BSR	ADDLABEL
 	BRA	JOBLOOP
 
-      POPLAB:				; 21
+		POPLAB:				; 21
 	MOVE.L	-(A5),LABPRES
 	BRA	JOBLOOP
 
-      COPY2:				; 9
+		COPY2:				; 9
 	MOVE.W	(A2)+,(A4)+
 	BRA	JOBLOOP
 
-      COPY4:				; 10
+		COPY4:				; 10
 	MOVE.L	(A2)+,(A4)+
 	BRA	JOBLOOP
 
-      COPY6:				; 12
-	MOVE.L	(A2)+,(A4)+
-	MOVE.W	(A2)+,(A4)+
-	BRA	JOBLOOP
-
-      COPY8:				; 13
-	MOVE.L	(A2)+,(A4)+
-	MOVE.L	(A2)+,(A4)+
-	BRA	JOBLOOP
-
-      COPY10:				; 14
-	MOVE.L	(A2)+,(A4)+
+		COPY6:				; 12
 	MOVE.L	(A2)+,(A4)+
 	MOVE.W	(A2)+,(A4)+
 	BRA	JOBLOOP
 
-      COPYN:				; 11
+		COPY8:				; 13
+	MOVE.L	(A2)+,(A4)+
+	MOVE.L	(A2)+,(A4)+
+	BRA	JOBLOOP
+
+		COPY10:				; 14
+	MOVE.L	(A2)+,(A4)+
+	MOVE.L	(A2)+,(A4)+
+	MOVE.W	(A2)+,(A4)+
+	BRA	JOBLOOP
+
+		COPYN:				; 11
 	MOVE.W	(A2)+,D0
-      COPYNLOOP:
+		COPYNLOOP:
 	MOVE.W	(A2)+,(A4)+
 	DBRA	D0,COPYNLOOP
 	BRA	JOBLOOP
@@ -13358,7 +13358,7 @@ CURINTERIM:	DC.L 0			; [1] ADR. OF CURRENT INTERIM
 TOKENEND:	DC.L 0,0,0,10000,100*KB
 CURLIBASC:
 CURACODE:	DC.L 0,0		; [3] ADR. OF CURRENT OBJPART
-ACODE:		DC.L 0			;     ADR. OF OBJECTCODE
+ACODE:		DC.L 0			;		ADR. OF OBJECTCODE
 		DC.L 0,MAXSTACK+1000,MINIMUM_ACODE
 HEAP:		DC.L 0			; [5] ADR. OF CURRENT HEAPSPACE
 		DC.L 0,0,0,2000,20*KB
@@ -13396,7 +13396,7 @@ LIBINFO:	DC.L	0
 ;----------------------------
 
 
-      EXPORNILL:			; 16
+		EXPORNILL:			; 16
 	TST.W	(A3)
 	BEQ.W	MAKEMOVEQ
 ;	CMP.W	#$400,(A3)
@@ -13436,14 +13436,14 @@ LIBINFO:	DC.L	0
 .C:	DC.W	0
 .M:	MOVE.L	D0,D0
 .R:	MOVE.L	(A7)+,D0
-      MAKEMOVEQ:
+		MAKEMOVEQ:
 	MOVE.W	EXPSTART,(A4)+
 	BRA	JOBLOOP
-      MAKED0:
+		MAKED0:
 	ADDQ.L	#2,A3
 	BRA	JOBLOOP
 
-      PROCFLAGON:			; 17
+		PROCFLAGON:			; 17
 	TST.W	PROCF
 	BNE	ERROR9
 	BSR.W	NEWLABEL
@@ -13458,7 +13458,7 @@ LIBINFO:	DC.L	0
 	MOVE.L	A0,COMPILEPROC
 	CLR.L	PROCMASK		; + REV
 	MOVE.W	4(A0),NRLOC
-	BTST	#0,2(A0)      ;rtd flags
+	BTST	#0,2(A0)		;rtd flags
 	BEQ.S	.1
 	MOVE.W	(A0),NRARG
 	BRA.S	.2
@@ -13478,7 +13478,7 @@ LIBINFO:	DC.L	0
 	PROCSTARTADR:	DC.L	0
 	CLEARXTRAW:	LEA	40(A7),A7
 
-      PROCFLAGOFF:			; 18
+		PROCFLAGOFF:			; 18
 	TST.W	PROCF
 	BEQ	ERROR9
 	MOVE.L	PROCEND(PC),D0
@@ -13503,7 +13503,7 @@ LIBINFO:	DC.L	0
 .2:
 	MOVE.L	A0,-(A7)
 	MOVEA.L	COMPILEPROC(PC),A0
-	BTST	#4,2(A0)      ;safe proc flags
+	BTST	#4,2(A0)		;safe proc flags
 	BEQ.S	.7
 	MOVE.L	.5(PC),(A4)+
 .7:	MOVE.L	(A7)+,A0
@@ -13523,11 +13523,11 @@ LIBINFO:	DC.L	0
 .3:	MOVEM.L	(A7)+,D3-D7
 .5:	MOVEM.L	(A7)+,D2-D7/A2-A6
 
-      CHECK2LAB:			; 19
+		CHECK2LAB:			; 19
 	BSR.S	CHLAB
 	BRA	JOBLOOP
 
-      CHLAB:
+		CHLAB:
 	MOVE.W	(A3)+,D6
 	CMP.W	#IDENT,D6
 	BNE	ERROR4
@@ -13545,7 +13545,7 @@ LIBINFO:	DC.L	0
 	MOVE.L	(A0),A0
 	CMP.B	#'m',(A0)
 	BEQ.S	MAINFOUND
-      MAINBACK:
+		MAINBACK:
 	CMP.L	#FOFF,D0
 	BMI.S	.1
 	MOVE.L	D0,A1
@@ -13554,9 +13554,9 @@ LIBINFO:	DC.L	0
 .1:	BSR	ADDLABEL
 	RTS
 
-      MAINF:	DC.W	0
+		MAINF:	DC.W	0
 
-      MAINFOUND:
+		MAINFOUND:
 	CMP.B	#'a',1(A0)
 	BNE.S	MAINBACK
 	CMP.B	#'i',2(A0)
@@ -13575,69 +13575,69 @@ LIBINFO:	DC.L	0
 	BEQ.S	MAINBACK
 	BRA	ERROR48
 
-      INSERTVAROFF:			; 22
+		INSERTVAROFF:			; 22
 	SUBQ.L	#2,A4
 	MOVE.L	CURIDENTREC(PC),A0
 	JSR	GVA0D2_0
 	BRA	JOBLOOP
 
-      INSERTVAROFFDEST:			; 35
+		INSERTVAROFFDEST:			; 35
 	SUBQ.L	#2,A4
 	MOVE.L	CURIDENTREC(PC),A0
 	JSR	GVA0D2_9
 	JSR OPTIFOR
 	BRA	JOBLOOP
 
-      PUSHVAR:				; 23
+		PUSHVAR:				; 23
 	MOVE.L	CURIDENTREC(PC),(A5)+
 	BRA	JOBLOOP
 
-      POPVAR:				; 24
+		POPVAR:				; 24
 	MOVEA.L	-(A5),A0
 	MOVE.L	A0,CURIDENTREC
 	MOVE.B	4(A0),TYPELAB
 	MOVE.W	10(A0),VAROFFSET
 	BRA	JOBLOOP
 
-      PUSHLAB:				; 25
+		PUSHLAB:				; 25
 	MOVE.L	LABPRES(PC),(A5)+
 	BRA	JOBLOOP
 
-      PUSHLAB2:				; 26
+		PUSHLAB2:				; 26
 	MOVE.L	LABPRES2(PC),(A5)+
 	BRA	JOBLOOP
 
-      POPLAB2:				; 27
+		POPLAB2:				; 27
 	MOVE.L	-(A5),LABPRES2
 	BRA	JOBLOOP
 
-      NEWLAB2:				; 28
+		NEWLAB2:				; 28
 	BSR	NEWLABEL
 	MOVE.L	D0,(A5)+
 	MOVE.L	D0,LABPRES2
 	BRA	JOBLOOP
 
-      MAKEBRANCH2:			; 29
+		MAKEBRANCH2:			; 29
 	MOVE.L	LABPRES2(PC),D0
 	CLR.W	NEWOP
 	BSR	ADDBRANCH
 	BRA	JOBLOOP
 
-      SETFLAG:				; 30
+		SETFLAG:				; 30
 	MOVE.W	#-1,FLAG
 	BRA	JOBLOOP
 
-      SKIPFLAG:				; 31
+		SKIPFLAG:				; 31
 	MOVE.W	(A2)+,D0
 	TST.W	FLAG
 	BNE.S	SKIPOUT
-      SKIPLOOP:
+		SKIPLOOP:
 	TST.W	(A2)+			; NOP
 	DBRA	D0,SKIPLOOP
-      SKIPOUT:
+		SKIPOUT:
 	BRA	JOBLOOP
 
-      CLEARFLAG:			; 32
+		CLEARFLAG:			; 32
 	MOVE.W	#0,FLAG
 	BRA	JOBLOOP			; was: "OUT"
 
@@ -13655,11 +13655,11 @@ OPTIFOR:
 	AND.L	#$ff00f1ff,D3
 	CMP.L	#$70002000,D3
 	BNE.S .0
-  
+	
 	MOVE.W -2(A4),D3
 	AND.W #$e00,D3
 	OR.W D3,-4(A4)
-  
+	
 	SUBQ.L #2,A4
 	BRA .4
 .1:
@@ -13682,31 +13682,31 @@ OPTIFOR:
 	LSR.W #4,D3
 	LSR.W #5,D3
 	OR.W D3,-4(A4)
-  
+	
 	SUBQ.L #2,A4
 	BRA .4
-  
+	
 .0:
 	MOVE.L A4,D3
 	SUB.L JOBEXPST,D3
 	CMP.L #8,D3
 	BNE.S .3
-  
+	
 	CMP.W #$203C,-8(A4)
 	BNE.S .3
-  
+	
 	MOVE.W -2(A4),D3
 	AND.W	#$f1ff,D3
 	CMP.W	#$2000,D3
 	BNE.S .3
-  
+	
 	MOVE.W -2(A4),D3
 	AND.W #$e00,D3
 	OR.W D3,-8(A4)
-  
+	
 	SUBQ.L #2,A4
 	BRA .4
-  
+	
 .3:
 	CMP.L #10,D3
 	BNE.S .4
@@ -13716,7 +13716,7 @@ OPTIFOR:
 
 	CMP.W #$2b40,-4(A4)
 	BEQ.S .5
-  
+	
 	CMP.W #$2940,-4(A4)
 	BNE.S .4
 
@@ -13724,10 +13724,10 @@ OPTIFOR:
 	MOVE.W -4(A4),D3
 	MOVE.B #$7C,D3
 	MOVE.W D3,-10(a4)
-  
+	
 	MOVE.W -2(A4),D3
 	MOVE.W D3,-4(A4)
-  
+	
 	SUBQ.L #2,A4
 .4:
 	MOVE.L (A7)+,D3
@@ -13739,16 +13739,16 @@ OPTIFOR:
 	ADDQ.L #6,A0
 	CMP.L A0,A4
 	BNE .1
-    CMP.B #$70,-6(A4)
-    BNE.S .1
-    CMP.W #$6600,-4(A4)
-    BNE.S .1
-    TST.B -5(A4)
-    BEQ.S .1   
+	CMP.B #$70,-6(A4)
+	BNE.S .1
+	CMP.W #$6600,-4(A4)
+	BNE.S .1
+	TST.B -5(A4)
+	BEQ.S .1	 
 
-    MOVE.L -4(A4),-6(A4)
-    MOVE.B #$60,-6(A4)
-    SUB.L #2,A4
+	MOVE.L -4(A4),-6(A4)
+	MOVE.B #$60,-6(A4)
+	SUB.L #2,A4
 .1:	MOVE.L A0,(A7)+
 	RTS
 
@@ -13769,7 +13769,7 @@ LDEF:	MACRO
 	DBCNT:	DC.L	0
 
 
-      SKIPDEFLOCAL:			; 33
+		SKIPDEFLOCAL:			; 33
 	MOVEQ	#0,D6			; D6=DEFARGS COUNT
 	MOVE.W	(A2)+,D5		; 1=PROC,2=LOCAL,3=DEF
 
@@ -13816,21 +13816,21 @@ LDEF:	MACRO
 	SUB.L	A6,D0
 	MOVE.W	D0,-2(A6)
 
-	MOVE.W 	#7,(A0)+			;define proc linenum
+	MOVE.W	#7,(A0)+			;define proc linenum
 	MOVE.W	LINENUM(PC),(A0)+	;write linenum
 
 	MOVE.L	D1,A1			; THIS BIT ADDS A "5" SELF EXTENSION
 	MOVE.L	18(A1),D0 ;self ident
 	BEQ.S	.NSELF
-	MOVE.L 	#$50006,(A0)+	;self definition
+	MOVE.L	#$50006,(A0)+	;self definition
 	MOVE.W	LINENUM(PC),(A0)+
 	MOVE.L	D0,A1
 	MOVE.W	10(A1),(A0)+
 
 	MOVE.L	D1,A1
 	MOVE.L	10(A1),A1 ;obj header
-	MOVE.W 6(A1),(A0)+  ;obj oid
-  
+	MOVE.W 6(A1),(A0)+	;obj oid
+	
 .NSELF:
 	CLR.W	(A0)+			; TO BE ABLE TO DETECT A 5
 	DONEM	A0
@@ -13868,26 +13868,26 @@ LDEF:	MACRO
 .DAB:
 	CMP.W	#19,D2			; colon (:)
 	BEQ	.2
-  
+	
 	BSET #7,VARFLAGS(a0)
 
 	CMP.W	#29,D2			; [
 	BNE.W	.1
 
-	CLR.L VAR_IMPORTDATA(A0)    ;specifying array size overrides imported data
+	CLR.L VAR_IMPORTDATA(A0)	;specifying array size overrides imported data
 
 	BCLR #7,VARFLAGS(a0)
 
- 	MOVEQ.L #1,D2
- 	MOVE.L A6,-(A7)
-  
+	MOVEQ.L #1,D2
+	MOVE.L A6,-(A7)
+	
 	MOVE.L tempspacedataptr(PC),A6
-  CMP.L   #tempspacebuffend-8,A6
-  BPL     ERROR84
+	CMP.L		#tempspacebuffend-8,A6
+	BPL		ERROR84
 	MOVE.W #1,(A6)+
 	MOVE.L A0,(A6)+
- 	CLR.W (A6)+
-  CLR.W .dcount
+	CLR.W (A6)+
+	CLR.W .dcount
 
 .nextdim
 	ADD.W #1,.dcount
@@ -13896,16 +13896,16 @@ LDEF:	MACRO
 	MOVE.L	D0,-(A7)
 	MOVEM.L	D2/D3/D4/A0,-(A7)
 	BSR	ASM_GRABVALUE
-   
+	 
 	MOVEM.L	(A7)+,D2/D3/D4/A0
 	MULU	D1,D2
-    CMP.L   #32768,D2
-    BGE     ERROR85
-    
-    CMP.L   #tempspacebuffend-2,A6
-    BPL     ERROR84
-    
-	MOVE.W  D2,(A6)+
+	CMP.L	#32768,D2
+	BGE		ERROR85
+	
+	CMP.L	#tempspacebuffend-2,A6
+	BPL		ERROR84
+	
+	MOVE.W	D2,(A6)+
 	MOVE.W	(A3)+,D1
 	TST.L	D0
 	BEQ.S	.222
@@ -13923,13 +13923,13 @@ LDEF:	MACRO
 	MOVEQ.L #0,D1
 	MOVE.W .dcount,D1
 	ADD.W #1,D1
-	ADD.W D1,D1  	
+	ADD.W D1,D1		
 	SUB.L D1,A6
 	;CMP.W #4,D1
 	;BEQ .singledim
 	MOVE.W .dcount,(A6)
 
-	ADD.L D1,A6  
+	ADD.L D1,A6	 
 	MOVE.L A6,tempspacedataptr
  
 .singledim:
@@ -13941,22 +13941,22 @@ LDEF:	MACRO
 	BNE.S	.NAR
 	BSR	.SETREG
 	MOVE.W	(A3)+,D1
-.NAR:	CMP.W	#IOFF+41,D1   ;ARRAY
+.NAR:	CMP.W	#IOFF+41,D1		;ARRAY
 	BEQ	.3
-	CMP.W	#IOFF+42,D1       ;STRING
+	CMP.W	#IOFF+42,D1			;STRING
 	BEQ	.4
-	CMP.W	#IOFF+47,D1       ;LIST
+	CMP.W	#IOFF+47,D1			;LIST
 	BEQ	.LIST
 
-	CMP.W   #IOFF+20,D1	;LONG
+	CMP.W	#IOFF+20,D1	;LONG
 	BEQ .3A
-	CMP.W   #IOFF+21,D1	;INT
+	CMP.W	#IOFF+21,D1	;INT
 	BEQ .3A
-	CMP.W   #IOFF+22,D1	;CHAR
+	CMP.W	#IOFF+22,D1	;CHAR
 	BEQ .3A
-	CMP.W   #IOFF+109,D1	;BYTE
+	CMP.W	#IOFF+109,D1	;BYTE
 	BEQ .3A
-	CMP.W   #IOFF+110,D1	;WORD
+	CMP.W	#IOFF+110,D1	;WORD
 	BEQ .3A
 	CMP.W	#31,D1
 	BEQ	.3A
@@ -13971,7 +13971,7 @@ LDEF:	MACRO
 	BTST	#3,5(A0)
 	BEQ.S	.NREG
 	ADD.W	#30000,D2
-.NREG:	MOVE.W	D2,(A6)+  ; add regoff
+.NREG:	MOVE.W	D2,(A6)+	; add regoff
 	MOVE.L A0,-(A7) ;save variable
 	ADD.L #1,DBCNT
 
@@ -13998,7 +13998,7 @@ LDEF:	MACRO
 	SUBQ #1,D0
 
 .copyvars:
-	MOVE.L  -(A1),(A0)+ ;copy saved variable
+	MOVE.L	-(A1),(A0)+ ;copy saved variable
 	DBF D0,.copyvars
 	MOVE.L	A0,DBCUR
 	
@@ -14013,7 +14013,7 @@ LDEF:	MACRO
 	DONEM	A0
 	BRA.S	.NDBF
 .NZ:
-	MOVE.W	D0,8(A0)  ;update length
+	MOVE.W	D0,8(A0)	;update length
 	DONEH	A1
 	MOVE.L	DBTAIL(PC),D0
 	BNE.S	.LA2
@@ -14030,8 +14030,8 @@ LDEF:	MACRO
 	MOVEM.L D0/A0-A4,-(A7)
 	LEA TEMPSPACEDATABUF,A0
 	LEA tempspacedataptr(PC),A1
-	MOVE.L (A1),A4  ;get current dimsdatapt
-	MOVE.L A0,(A1)  ;reset back to start
+	MOVE.L (A1),A4	;get current dimsdatapt
+	MOVE.L A0,(A1)	;reset back to start
  
 	CMP.L A0,A4
 	BEQ .nodata
@@ -14048,7 +14048,7 @@ LDEF:	MACRO
 	MOVE.W D0,(A3)+
 	SUB.W #1,D0
 .copydim:
-	MOVE.W (A0)+,(A3)+  ;dimension offsets
+	MOVE.W (A0)+,(A3)+	;dimension offsets
 	DBF d0,.copydim
 	BRA.S .copydone
 .notdim:
@@ -14058,7 +14058,7 @@ LDEF:	MACRO
 	MOVE.L A6,-(A7)
 	MOVE.L (A0)+,A6
 	MOVE.L (A0)+,A1
-  
+	
 	MOVE.L	OACC(A6),(A3)
 	MOVE.L	A3,OACC(A6)
 	ADDQ.L	#4,A3
@@ -14076,7 +14076,7 @@ LDEF:	MACRO
 	MOVE.L (A0)+,(A3)+
 	MOVE.W (A0)+,(A3)+
 	MOVE.W (A0)+,(A3)+
-	CLR.W   (A3)+  
+	CLR.W	(A3)+	
 	BRA.S .copydone
 
 .notbranchreloc
@@ -14086,7 +14086,7 @@ LDEF:	MACRO
 	CMP.L A0,A4
 	BNE .copyall
 	DONEM A3
-  
+	
 .nodata:
 	MOVEM.L (A7)+,D0/A0-A4
 	RTS
@@ -14147,9 +14147,9 @@ LDEF:	MACRO
 	MOVEQ	#-1,D2			; TEST: D2 WAS INTERIM
 
 .2:	ADDQ.L	#2,A3
-	CLR.L VAR_IMPORTDATA(A0)    ;specifying type overrides imported data
+	CLR.L VAR_IMPORTDATA(A0)	;specifying type overrides imported data
 .AGAIN:
-	CMP.W	#IOFF+44,(A3)+      ;PTR
+	CMP.W	#IOFF+44,(A3)+		;PTR
 	BEQ.S	.PTR
 	BSET #7,VARFLAGS(a0) ;set LONG var flag
 	CMP.W	#IOFF+20,-2(A3)		; a:LONG
@@ -14171,11 +14171,11 @@ LDEF:	MACRO
 	BEQ	.1
 	BRA.S	.AGAIN
 .PTR:
-    MOVE.W  #0,VAR_PTRREPCOUNT(A0)           ; references
-    CMP.W   #IOFF+39,(A3)+  ;TO
+	MOVE.W	#0,VAR_PTRREPCOUNT(A0)			 ; references
+	CMP.W	#IOFF+39,(A3)+	;TO
 	BNE	ERROR33
-    CMP.W   #IOFF+44,(A3)	;PTR TO PTR
-    BEQ .MULTIPTR
+	CMP.W	#IOFF+44,(A3)	;PTR TO PTR
+	BEQ .MULTIPTR
 .PTR_BACK:
 	BSR.W	.SETT	
 	BRA	.1
@@ -14183,13 +14183,13 @@ LDEF:	MACRO
 	;handle repeated ptr to ptr to ptr etc
 .MULTIPTR:
 .MULTI_00:
-    CMP.W   #IOFF+44,(A3)
-    BNE .PTR_BACK
-    ADDQ.L  #2,A3
-    CMP.W   #IOFF+39,(A3)+
-    BNE ERROR33
-    ADDQ.W  #1,VAR_PTRREPCOUNT(A0)
-    BRA .MULTI_00
+	CMP.W	#IOFF+44,(A3)
+	BNE .PTR_BACK
+	ADDQ.L	#2,A3
+	CMP.W	#IOFF+39,(A3)+
+	BNE ERROR33
+	ADDQ.W	#1,VAR_PTRREPCOUNT(A0)
+	BRA .MULTI_00
 
 .OBJ:
 	BCLR #7,VARFLAGS(a0) ; clear the long var flag
@@ -14201,23 +14201,23 @@ LDEF:	MACRO
 	MOVE.L	(A3)+,A6
 
 ;check EXPORTED VAR isnt referencing a private object
-  TSTMOD
-  BEQ.S .noprivchk1
-  TST.W	SCOPE
+	TSTMOD
+	BEQ.S .noprivchk1
+	TST.W	SCOPE
 	BNE.S	.noprivchk1
 
-  BTST #2,VARFLAGS(A0)
-  BEQ.S .noprivchk1
+	BTST #2,VARFLAGS(A0)
+	BEQ.S .noprivchk1
 
-  BSET #3,OFLAGS(A6)      ;set referenced flag
+	BSET #3,OFLAGS(A6)		;set referenced flag
 
-  BTST #0,OFLAGS(A6)
-  BNE.S .noprivchk1
-  BTST #1,OFLAGS(A6)
-  BNE.S .noprivchk1
-  BRA.W ERROR107
+	BTST #0,OFLAGS(A6)
+	BNE.S .noprivchk1
+	BTST #1,OFLAGS(A6)
+	BNE.S .noprivchk1
+	BRA.W ERROR107
 .noprivchk1
-  
+	
 	MOVEQ #0,D2
 	MOVE.W	OSIZE(A6),D2
 	MOVE.L	D2,D7
@@ -14241,40 +14241,40 @@ LDEF:	MACRO
 .W2:	CMP.W	#IOFF+22,D1		; "OF CHAR"
 	BNE.S .W3
 	BRA.S	.SK
-.W3:  
+.W3:	
 	CMP.W	#IOFF+109,D1		; "OF BYTE"
 	BNE.S	.W4
-	BTST #5,ICODEPREFS+3        ;LEGACY MODE
-	BNE     ERROR90
+	BTST #5,ICODEPREFS+3		;LEGACY MODE
+	BNE		ERROR90
 	BSET #5,5(A0)
 	BRA.S	.SK
-.W4:  
+.W4:	
 	CMP.W	#IOFF+110,D1		; "OF WORD"
 	BNE	ERROR33
 	LSL.L	#1,D2
 	MOVE.W	#2,2(A0)
-	BTST #5,ICODEPREFS+3        ;LEGACY MODE
-	BNE     ERROR90
+	BTST #5,ICODEPREFS+3		;LEGACY MODE
+	BNE		ERROR90
 	BSET #6,5(A0)
 .SK:	RTS
 .W5:	MOVE.L	A4,-(A7)		; "OF <object>"
 	MOVE.L	(A3)+,A4
-  
-  ;check EXPORTED VAR isnt referencing a private object
-  TSTMOD
-  BEQ.S .noprivchk2
-  TST.W	SCOPE
-  BNE.S	.noprivchk2
-  BTST #2,VARFLAGS(A0)
-  BEQ.S .noprivchk2
+	
+	;check EXPORTED VAR isnt referencing a private object
+	TSTMOD
+	BEQ.S .noprivchk2
+	TST.W	SCOPE
+	BNE.S	.noprivchk2
+	BTST #2,VARFLAGS(A0)
+	BEQ.S .noprivchk2
 
-  BSET #3,OFLAGS(A4)      ;set referenced flag
+	BSET #3,OFLAGS(A4)		;set referenced flag
 
-  BTST #0,OFLAGS(A4)
-  BNE.S .noprivchk2
-  BTST #1,OFLAGS(A4)
-  BNE.S .noprivchk2
-  BRA.W ERROR107
+	BTST #0,OFLAGS(A4)
+	BNE.S .noprivchk2
+	BTST #1,OFLAGS(A4)
+	BNE.S .noprivchk2
+	BRA.W ERROR107
 .noprivchk2
 
 	MOVE.L	A4,(A0)
@@ -14286,43 +14286,43 @@ LDEF:	MACRO
 	CMP.W	#IOFF+45,(A3)		; "OF"
 	BNE.S	.SK2
 	ADDQ.L	#2,A3
-	CMP.W   #IOFF+44,(A3)		;PTR
-	BEQ     .ARR_00
+	CMP.W	#IOFF+44,(A3)		;PTR
+	BEQ		.ARR_00
 .3B:	BSR	.SETT
 .SK2:	CMP.L	#MAXINT,D2
 	BPL	ERROR85
 	BSR.W	.5			; a[100]:ARRAY OF <TYPE>
 	BRA	.1
 .ARR_00:
-	MOVE.W  #-1,VAR_PTRREPCOUNT(A0)
-	LSL.L   #2,D2
+	MOVE.W	#-1,VAR_PTRREPCOUNT(A0)
+	LSL.L	#2,D2
 .ARR_01:
-	CMP.W   #IOFF+44,(A3)	;PTR
-	BNE     .ARR_02
-	ADDQ.L  #2,A3
-	CMP.W   #IOFF+39,(A3)+  ; TO
+	CMP.W	#IOFF+44,(A3)	;PTR
+	BNE		.ARR_02
+	ADDQ.L	#2,A3
+	CMP.W	#IOFF+39,(A3)+	; TO
 	BNE ERROR33
-	ADDQ.W  #1,VAR_PTRREPCOUNT(A0)
+	ADDQ.W	#1,VAR_PTRREPCOUNT(A0)
 	BRA .ARR_01
 .ARR_02:
-	MOVE.L  D2,-(A7)
-	BSR     .SETT
-	MOVE.L  (A7)+,D2
+	MOVE.L	D2,-(A7)
+	BSR		.SETT
+	MOVE.L	(A7)+,D2
 .ARR_03:
-	CMP.L   #MAXINT,D2
+	CMP.L	#MAXINT,D2
 	BPL ERROR85
-	BSR   .5          ; a[100]:ARRAY OF <TYPE>
+	BSR		.5			; a[100]:ARRAY OF <TYPE>
 	BRA	.1
 .3A:	MOVE.L	D2,D7
 	SUBQ.L	#2,A3
 	BRA.S	.3B
 
 	
-.4:	CMP.W  #1,.dcount
-    BGT     ERROR33
-    LDEF
+.4:	CMP.W	#1,.dcount
+	BGT		ERROR33
+	LDEF
 
-    MOVE.L	D2,D7
+	MOVE.L	D2,D7
 	ADDQ.L	#1,D2
 	CMP.L	#MAXINT,D2
 	BPL	ERROR31
@@ -14340,10 +14340,10 @@ LDEF:	MACRO
 	BRA	.1
 
 .LIST:
-    CMP.W  #1,.dcount
-    BGT     ERROR33
-    LDEF
-    MOVE.W	#4,2(A0)		; SET TO "PTR TO LONG"
+	CMP.W	#1,.dcount
+	BGT		ERROR33
+	LDEF
+	MOVE.W	#4,2(A0)		; SET TO "PTR TO LONG"
 	MOVE.L	D2,D7
 	LSL.L	#2,D2
 	CMP.L	#MAXINT,D2
@@ -14385,7 +14385,7 @@ LDEF:	MACRO
 .CNT:
 ;init here
 	MOVE.L A6,-(A7)
-  
+	
 	MOVE.L (a0),a6
 	CMP.L #5,A6
 	BCS .G3
@@ -14414,11 +14414,11 @@ LDEF:	MACRO
 	MOVE.W	#$4eb9,NEWOP
 
 	BSR	ADDBRANCHUSINGTEMPSPACE
-  
+	
 	MOVE.W #-1,DONEDEL
 	MOVEM.L (a7)+,D0-D1/A0
 
-.skipDEL:  
+.skipDEL:	
 	;TST.W	ODEL(A6)
 	;BEQ.W	.G3
 	MOVEM.L A0/D0/D1/D7,-(A7)
@@ -14458,7 +14458,7 @@ LDEF:	MACRO
 .GOBJ2:	MOVE.L	4(A4),(A0)
 .GOBJ3:	MOVE.L	4(A4),4(A0)
 .LOBJ: LEA 0(A0),A1
-.LD1  MOVEQ #0,D1
+.LD1	MOVEQ #0,D1
 	MOVE.W #1,D1
 .LOBJ2: LEA 0(A0,D1.L),A1
 
@@ -14474,8 +14474,8 @@ LDEF:	MACRO
 
 	MOVEQ #-1,D7
 
-	CMP.L   #tempspacebuffend-10,A0
-	BPL     ERROR84
+	CMP.L	#tempspacebuffend-10,A0
+	BPL		ERROR84
 
 	MOVE.W #2,(A0)+
 	MOVE.L A6,(A0)+
@@ -14498,7 +14498,7 @@ LDEF:	MACRO
 	MOVE.W	.GOBJ2(PC),(A4)+
 	TST.L D0
 	BEQ.S .off0_1
-	OR.W #$200,-2(A4)   ;change from A0 TO A1
+	OR.W #$200,-2(A4)	;change from A0 TO A1
 .off0_1:
 	MOVE.L	A4,(A0)+
 	CLR.W	(A4)+
@@ -14506,7 +14506,7 @@ LDEF:	MACRO
 .G1:	MOVE.W	.GOBJ3(PC),(A4)+
 	TST.L D0
 	BEQ.S .off0_2
-	OR.W #$200,-2(A4)   ;change from A0 TO A1
+	OR.W #$200,-2(A4)	;change from A0 TO A1
 .off0_2:
 	MOVE.L	A4,(A0)+
 	CLR.W	(A4)+
@@ -14520,9 +14520,9 @@ LDEF:	MACRO
 	MOVE.L D1,A6
 	BTST #1,OFLAGS(A6)
 	BEQ.S .nottyped
-	TST.W   PTRREPCOUNT(A6)
+	TST.W	PTRREPCOUNT(A6)
 	BPL.S .nottyped
-	TST.W   OSIZE(A6)     ;its a pointer
+	TST.W	OSIZE(A6)		;its a pointer
 	BNE.S .nottyped
 	CMP.L #5,OPTRTYPE(A6) ;its not an object
 	BMI.S .nottyped
@@ -14540,7 +14540,7 @@ LDEF:	MACRO
 .nodim
 	SUBQ #1,D1
 	MOVEM.L D0/A6,-(A7)
-	ADD.W  OOFF(A6),D0
+	ADD.W	OOFF(A6),D0
 	MOVE.L OPTRTYPE(A6),A6
 
 .arrloop2
@@ -14610,7 +14610,7 @@ LDEF:	MACRO
 	BNE	ERROR33			; regvars only local
 	RTS
 
-TERES:  DC.L  0
+TERES:	DC.L	0
 BEGDEF:	DC.L	0
 DONEDEL: DC.W 0
 tempspacedataptr: DC.L 0
@@ -14624,10 +14624,10 @@ CHECKLASTIDENT:
 	BTST	#3,5(A2)		; SEE IF REGVAR
 	BEQ.S	.nooptident
 	MOVE.W	10(A2),D3
-  
+	
 	OR.B	D3,-1(A4)
 	;MOVE.L #-1,lastident
-  
+	
 .nooptident
 	MOVE.L (A7)+,A2
 	RTS
@@ -14645,13 +14645,13 @@ EATINYEXP:
 	JMP tinyent
 
 tinyret:
-  MOVE.L D0,eatinyres
-  MOVE.L tinyexpres(PC),D0
+	MOVE.L D0,eatinyres
+	MOVE.L tinyexpres(PC),D0
 
-	MOVE.L	BEGDEF,D5		; NOTE:    DEF a=x   -->problems
+	MOVE.L	BEGDEF,D5		; NOTE:		 DEF a=x	 -->problems
 	LEA	.OD0(PC),A0
-  TST.W odoset
-  BEQ.S .TTT
+	TST.W odoset
+	BEQ.S .TTT
 	CMP.L	(A0),D0
 	BNE.S	.TTT
 	CLR.L eatinyres
@@ -14661,16 +14661,16 @@ tinyret:
 .TTT:	ADDQ.L	#4,A7
 	MOVE.L EAIDENT,lastident
 .TT:	MOVE.L	D0,(A0)			; put to .OD0
-    MOVE.W #1,odoset
-  RTS
+	MOVE.W #1,odoset
+	RTS
 
 .OD0:	DC.L	0
 odoset DC.W 0
 lastident: DC.L -1
 eatinyres: DC.L 0
-tinyexpres:  DC.L 0
+tinyexpres:	 DC.L 0
 
-      GETNRLOC:				; 34 NRLOC IN -2(A4)
+		GETNRLOC:				; 34 NRLOC IN -2(A4)
 	MOVE.W	NRLOC(PC),-2(A4)
 	BNE	JOBLOOP
 	BTST	#6,CODEPREFS+1 
@@ -14681,19 +14681,19 @@ tinyexpres:  DC.L 0
 	SUBQ.L	#4,A4
 	BRA	JOBLOOP
 
-      GETBRACKLEFT:			; 36
+		GETBRACKLEFT:			; 36
 	MOVE.W	(A3)+,D6
 	CMP.W	#17,D6
 	BNE	ERROR23
 	BRA	JOBLOOP
 
-      GETBRACKRIGHT:			; 37
+		GETBRACKRIGHT:			; 37
 	MOVE.W	(A3)+,D6
 	CMP.W	#18,D6
 	BNE	ERROR23
 	BRA	JOBLOOP
 
-      DOINCBIN:				; 38
+		DOINCBIN:				; 38
 	LEA	CURACODE(PC),A0
 	MOVE.L	8(A0),D3
 	ADD.L	12(A0),D3
@@ -14735,81 +14735,81 @@ tinyexpres:  DC.L 0
 	ADD.L	D6,A3
 	BRA	JOBLOOP
 
-;; 39               LONG
-DOLONG:               ; 39
-.2: CMP.W   #IDENT,-2(A3)
-    BEQ     .4
-.3: bsr     ASM_GRABVALUE
-    tst.l   d0
-    bmi     ERROR30
-    move.l  d1,(a4)+
-    CMP.W   #COM,(A3)
-    BNE.S   .1
-    ADDQ.L  #2,A3
-    BRA.S   .2
+;; 39				LONG
+DOLONG:					; 39
+.2: CMP.W	#IDENT,-2(A3)
+	BEQ		.4
+.3: bsr		ASM_GRABVALUE
+	tst.l	d0
+	bmi		ERROR30
+	move.l	d1,(a4)+
+	CMP.W	#COM,(A3)
+	BNE.S	.1
+	ADDQ.L	#2,A3
+	BRA.S	.2
 .1: BRA JOBLOOP
 .4: MOVem.L D0-D7/A0-A2/A5/A6,-(a7)
-    MOVE.L  (A3)+,a0
-    cmp.b   #LAB,4(a0)
-    bne ERROR4
-    move.w  10(a0),d0
-    bsr ADDBRANCHRELOC
-    movem.l (a7)+,d0-a2/a5/a6
-    cmp.w   #COM,(A3)
-    BNE .1
-    ADDQ.L  #2,a3
-    bra .2
+	MOVE.L	(A3)+,a0
+	cmp.b	#LAB,4(a0)
+	bne ERROR4
+	move.w	10(a0),d0
+	bsr ADDBRANCHRELOC
+	movem.l (a7)+,d0-a2/a5/a6
+	cmp.w	#COM,(A3)
+	BNE .1
+	ADDQ.L	#2,a3
+	bra .2
 ;*-*
-;; 40               INT
-DOINT:                ; 40
+;; 40				INT
+DOINT:					; 40
 .2:
-    bsr     ASM_GRABVALUE
-    tst.l   d0
-    bmi     ERROR30
-    move.w  d1,(a4)+
-    CMP.W   #COM,(A3)
-    BNE.S   .1
-    ADDQ.L  #2,A3
-    BRA.S   .2
+	bsr		ASM_GRABVALUE
+	tst.l	d0
+	bmi		ERROR30
+	move.w	d1,(a4)+
+	CMP.W	#COM,(A3)
+	BNE.S	.1
+	ADDQ.L	#2,A3
+	BRA.S	.2
 .1: BRA JOBLOOP
 ;*-*
-;; 41               CHAR
-DOCHAR:               ; 41
-.2: bsr     ASM_GRABVALUE
-    tst.l   d0
-    bmi     .3
-    move.b  d1,(a4)+
-.5: CMP.W   #COM,(A3)
-    BNE.S   .1
-    ADDQ.L  #2,A3
-    BRA.S   .2
-.1: MOVE.L  A4,D0
-    BTST    #0,D0
-    BEQ.S   .6
-    MOVE.B  #0,(A4)+
+;; 41				CHAR
+DOCHAR:					; 41
+.2: bsr		ASM_GRABVALUE
+	tst.l	d0
+	bmi		.3
+	move.b	d1,(a4)+
+.5: CMP.W	#COM,(A3)
+	BNE.S	.1
+	ADDQ.L	#2,A3
+	BRA.S	.2
+.1: MOVE.L	A4,D0
+	BTST	#0,D0
+	BEQ.S	.6
+	MOVE.B	#0,(A4)+
 .6: BRA JOBLOOP
-.3: CMP.W   #STR,(A3)+
-    BNE ERROR30
-    MOVE.W  (A3)+,D1        ; =REAL LEN
-    MOVE.W  (A3)+,D0        ; =WORD LEN
-    BRA.S .7
-.4: MOVE.B  (A3)+,(A4)+
-.7: DBRA    D1,.4
-    ADDQ.L  #1,A3
-    MOVE.L  A3,D0
-    BTST    #0,D0
-    BEQ.S   .5
-    ADDQ.L  #1,A3
-    BRA.S   .5
+.3: CMP.W	#STR,(A3)+
+	BNE ERROR30
+	MOVE.W	(A3)+,D1		; =REAL LEN
+	MOVE.W	(A3)+,D0		; =WORD LEN
+	BRA.S .7
+.4: MOVE.B	(A3)+,(A4)+
+.7: DBRA	D1,.4
+	ADDQ.L	#1,A3
+	MOVE.L	A3,D0
+	BTST	#0,D0
+	BEQ.S	.5
+	ADDQ.L	#1,A3
+	BRA.S	.5
 
-      JOBINS:				; 42
+		JOBINS:				; 42
 	MOVE.L	A5,-(A7)
 	BSR.S	DOINSREC
 	CMPA.L	(A7)+,A5
 	BNE	ERROR9
 	BRA	JOBLOOP
 
-      DOINSREC:
+		DOINSREC:
 	MOVE.W	(A3)+,D7
 	BEQ	ERROR0
 	CMP.W	#-1,D7
@@ -14819,43 +14819,43 @@ DOCHAR:               ; 41
 	MOVE.L	(A7)+,A2
 	RTS
 
-      EXPECT:				; 43 IF FOLLOWING CODE IS PRESENT, CONTINUE
-	MOVE.W	(A3),D0			;    WITH JOB, ELSE STOP.
+		EXPECT:				; 43 IF FOLLOWING CODE IS PRESENT, CONTINUE
+	MOVE.W	(A3),D0			;	 WITH JOB, ELSE STOP.
 	CMP.W	(A2)+,D0	
-	BEQ.S	.1			;    CONTINUE, EAT 1
+	BEQ.S	.1			;	 CONTINUE, EAT 1
 .2:	TST.W	(A2)+
-	BNE.S	.2			;    STOP, EAT ALL
+	BNE.S	.2			;	 STOP, EAT ALL
 	SUBQ.L	#2,A2	
 	BRA	JOBLOOP
 .1:	ADDQ.L	#2,A3
 	BRA	JOBLOOP
 
-      SERROR:
+		SERROR:
 	BRA	ERROR0			; 44
 
-      EXPECT2:				; 45 IF FOLLOWING CODE IS PRESENT, CONTINUE
-	MOVE.W	(A3),D0			;    WITH JOB, ELSE FIND PAST ZERO.
+		EXPECT2:				; 45 IF FOLLOWING CODE IS PRESENT, CONTINUE
+	MOVE.W	(A3),D0			;	 WITH JOB, ELSE FIND PAST ZERO.
 	CMP.W	(A2)+,D0	
-	BEQ.S	.1			;    CONTINUE, EAT 1
+	BEQ.S	.1			;	 CONTINUE, EAT 1
 .2:	TST.W	(A2)+
-	BNE.S	.2			;    STOP, EAT ALL TO NEXT ZERO
+	BNE.S	.2			;	 STOP, EAT ALL TO NEXT ZERO
 	BRA	JOBLOOP
 .1:	ADDQ.L	#2,A3
 	BRA	JOBLOOP
 
-      JOBSKIP:				; 46
+		JOBSKIP:				; 46
 	ADDQ.L	#2,A2
 	BRA	JOBLOOP
 
-      EXPECTASSIGN:			; 47
+		EXPECTASSIGN:			; 47
 	CMP.W	#ASSGN,(A3)+
 	BNE	ERROR2
 	BRA	JOBLOOP
 
-      EXPECTTO:				; 48 CHOMEUR
+		EXPECTTO:				; 48 CHOMEUR
 	BRA	JOBLOOP
 
-      DOMIDFOR:				; 49
+		DOMIDFOR:				; 49
 	CMP.W	#IOFF+39,(A3)+		; MUST BE "TO"
 	BNE	ERROR0
 	BSR	EXP			; AND MAKE NICE EXP FOR D0
@@ -14893,7 +14893,7 @@ DOCHAR:               ; 41
 .M3:	BMI	.6
 .M5:	BGT	.6
 
-      ENDGLOBVAR:			; 50
+		ENDGLOBVAR:			; 50
 	TST.W	SCOPE
 	BNE	JOBLOOP
 	MOVE.W	#-1,SCOPE
@@ -14904,15 +14904,15 @@ DOCHAR:               ; 41
 	MOVE.L	INITCODE(PC),(A4)+	; DELEGATES
 	MOVEQ	#6,D0
 	MOVE.W	.1(PC),NEWOP
-	MOVE.W  .1L2(PC),NEWOP020
+	MOVE.W	.1L2(PC),NEWOP020
 
 	BSR	ADDBRANCH 
 	MOVE.W #-1,DONEDEL
-  
-.skipDEL:  
+	
+.skipDEL:	
 
-  ;add any imported globals with default values
-  ;that have not already been specifically declared
+	;add any imported globals with default values
+	;that have not already been specifically declared
 
 	MOVEM.L D4/D6/D7/A3,-(A7)
 	MOVE.L	#IDENTHASH+4,D6
@@ -14930,89 +14930,89 @@ DOCHAR:               ; 41
 	TST.L VAR_IMPORTDATA(A3)
 	BEQ.W .noimport
 
-    MOVEM.L A4/A5/D0/D1,-(A7)
-    MOVE.L VAR_IMPORTDATA(A3),A4
+	MOVEM.L A4/A5/D0/D1,-(A7)
+	MOVE.L VAR_IMPORTDATA(A3),A4
 
-    MOVE.L (A4),VAR_DEFVALUE(A3)
-    MOVE.B 4(A4),VARFLAGS(A3)
+	MOVE.L (A4),VAR_DEFVALUE(A3)
+	MOVE.B 4(A4),VARFLAGS(A3)
 
-    MOVEQ #0,D1
-    MOVE.B 5(A4),D1
-    MOVE.L D1,(A3)   ;type
+	MOVEQ #0,D1
+	MOVE.B 5(A4),D1
+	MOVE.L D1,(A3)	 ;type
 
-    MOVE.W 6(A4),D1
-    BEQ.S .nooid
-    JSR FINDOID
-    MOVE.L D0,(A3)
+	MOVE.W 6(A4),D1
+	BEQ.S .nooid
+	JSR FINDOID
+	MOVE.L D0,(A3)
 .nooid
-    MOVE.W 8(A4),VAR_PTRREPCOUNT(A3)
-    GETML A5
-    LEA 10(A4),A4
-    MOVE.W (A4)+,D1
-    BLE.S .nodim
-    MOVE.L A5,VAR_DIMDATA(A3)
-    MOVE.W D1,(A5)+
-    SUBQ.W #1,D1
+	MOVE.W 8(A4),VAR_PTRREPCOUNT(A3)
+	GETML A5
+	LEA 10(A4),A4
+	MOVE.W (A4)+,D1
+	BLE.S .nodim
+	MOVE.L A5,VAR_DIMDATA(A3)
+	MOVE.W D1,(A5)+
+	SUBQ.W #1,D1
 .cc
-    MOVE.W (A4),D0
-    MOVE.W (A4)+,(A5)+
-    DBF D1,.cc
-    CMP.L #4,(A3)
-    BLE.S .noid1a
-    MOVE.L (A3),A4  ;get object
-    MOVE.W D0,D1
-    MULU OSIZE(A4),D1
+	MOVE.W (A4),D0
+	MOVE.W (A4)+,(A5)+
+	DBF D1,.cc
+	CMP.L #4,(A3)
+	BLE.S .noid1a
+	MOVE.L (A3),A4	;get object
+	MOVE.W D0,D1
+	MULU OSIZE(A4),D1
 .noid1a
-    MOVE.W D0,.SZ
-    DONEM A5
+	MOVE.W D0,.SZ
+	DONEM A5
 .nodim
-    MOVEM.L (A7)+,A4/A5/D0/D1
+	MOVEM.L (A7)+,A4/A5/D0/D1
 .noimport
 
-  TST.L VAR_IMPORTDATA(A3)
-  BEQ.W .noimp2
-  MOVEM.L A0/A5/D0/D1/D7,-(A7)
-  MOVE.L VAR_IMPORTDATA(A3),A5
+	TST.L VAR_IMPORTDATA(A3)
+	BEQ.W .noimp2
+	MOVEM.L A0/A5/D0/D1/D7,-(A7)
+	MOVE.L VAR_IMPORTDATA(A3),A5
 	MOVE.W VAR_PTRREPCOUNT(A3),.PTRREP
-  
-  MOVE.W 8(A5),D1        ;varptrrepcount
-  BPL.W .nooid2
-  
-  MOVE.W 6(A5),D1     ;varoid
-  BEQ.W .nooid2
-  
-  ;array of object
-  JSR FINDOID
-  MOVE.L D0,A5
-  MOVEQ #0,D1
-  MOVE.W OSIZE(A5),D1
-  
-  BSR .getarraytotsize
-  MULU D0,D1
-  MOVE.W D1,.SZ
-  
-  ADD.L D1,GLOBSTACK
-  NEG.W D1
-  
-  MOVE.L A5,-(A7)
-  LEA .I1(PC),A5
-  MOVE.W (A5)+,(A4)+
-  MOVE.W D1,(A4)+
-  LEA .I2(PC),A5
-  MOVE.W (A5)+,(A4)+
-  MOVE.W 10(A3),(A4)+
+	
+	MOVE.W 8(A5),D1		 ;varptrrepcount
+	BPL.W .nooid2
+	
+	MOVE.W 6(A5),D1		;varoid
+	BEQ.W .nooid2
+	
+	;array of object
+	JSR FINDOID
+	MOVE.L D0,A5
+	MOVEQ #0,D1
+	MOVE.W OSIZE(A5),D1
+	
+	BSR .getarraytotsize
+	MULU D0,D1
+	MOVE.W D1,.SZ
+	
+	ADD.L D1,GLOBSTACK
+	NEG.W D1
+	
+	MOVE.L A5,-(A7)
+	LEA .I1(PC),A5
+	MOVE.W (A5)+,(A4)+
+	MOVE.W D1,(A4)+
+	LEA .I2(PC),A5
+	MOVE.W (A5)+,(A4)+
+	MOVE.W 10(A3),(A4)+
 
 	MOVE.W	.GOBJ(PC),(A4)+
 
-  MOVE.L (A7)+,A5
+	MOVE.L (A7)+,A5
 
 
-  GETM A0
-  MOVEQ #0,D0
-  MOVEQ #0,D7
+	GETM A0
+	MOVEQ #0,D0
+	MOVEQ #0,D7
 .arrloop
 
-  BSR .recurseinit3
+	BSR .recurseinit3
 
 	TST.W .PTRREP
 	BLT.S .nptr
@@ -15030,77 +15030,77 @@ DOCHAR:               ; 41
 	BNE.S .some
 	SUBQ #2,A4
 .some:
-  DONEM A0
-  MOVEM.L (A7)+,A0/A5/D0/D1/D7
-  BRA .noimp2
+	DONEM A0
+	MOVEM.L (A7)+,A0/A5/D0/D1/D7
+	BRA .noimp2
 
 .getarraytotsize:
-  MOVEQ #1,D0
-  MOVEM.L A0/D1,-(A7)
-  TST.L VAR_DIMDATA(A3)
-  BEQ.S .g1
+	MOVEQ #1,D0
+	MOVEM.L A0/D1,-(A7)
+	TST.L VAR_DIMDATA(A3)
+	BEQ.S .g1
 
-  MOVE.L VAR_DIMDATA(A3),A0
-  MOVE.W (A0),D0
-  ADD.W D0,D0
-  MOVE.W (A0,D0),D0
+	MOVE.L VAR_DIMDATA(A3),A0
+	MOVE.W (A0),D0
+	ADD.W D0,D0
+	MOVE.W (A0,D0),D0
 .g1
-  MOVEM.L (A7)+,A0/A1
-  
-  RTS
+	MOVEM.L (A7)+,A0/A1
+	
+	RTS
 
 .nooid2
-  MOVEQ #0,D1
-  TST.L VAR_DIMDATA(A3)     ;if its not an array then size will be 0
-  BEQ.S .notarr
-  
-  MOVEQ #4,D1
-  TST.W VAR_PTRREPCOUNT(A3) ;if its an array of ptr then size will be 4*elements
-  BPL.S .isptr2
-  
-  MOVEQ #0,D1
-  MOVE.B 5(A5),D1   ;array element type (1/2/4)
+	MOVEQ #0,D1
+	TST.L VAR_DIMDATA(A3)		;if its not an array then size will be 0
+	BEQ.S .notarr
+	
+	MOVEQ #4,D1
+	TST.W VAR_PTRREPCOUNT(A3) ;if its an array of ptr then size will be 4*elements
+	BPL.S .isptr2
+	
+	MOVEQ #0,D1
+	MOVE.B 5(A5),D1	;array element type (1/2/4)
 .isptr2
-  MOVE.W D1,.SZ
-  BSR .getarraytotsize
-  MULU D0,D1
-  ADD.L #1,D1
-  AND.L #$fffffffe,D1
+	MOVE.W D1,.SZ
+	BSR .getarraytotsize
+	MULU D0,D1
+	ADD.L #1,D1
+	AND.L #$fffffffe,D1
 
 .notarr
-  TST.L D1
-  BEQ.S .noinit
-  ADD.L D1,GLOBSTACK
-  NEG.W D1
-  
-  MOVE.L A5,-(A7)
-  LEA .I1(PC),A5
-  MOVE.W (A5)+,(A4)+
-  MOVE.W D1,(A4)+
-  LEA .I2(PC),A5
-  MOVE.W (A5)+,(A4)+
-  MOVE.W 10(A3),(A4)+
+	TST.L D1
+	BEQ.S .noinit
+	ADD.L D1,GLOBSTACK
+	NEG.W D1
+	
+	MOVE.L A5,-(A7)
+	LEA .I1(PC),A5
+	MOVE.W (A5)+,(A4)+
+	MOVE.W D1,(A4)+
+	LEA .I2(PC),A5
+	MOVE.W (A5)+,(A4)+
+	MOVE.W 10(A3),(A4)+
 
-  MOVE.L (A7)+,A5
+	MOVE.L (A7)+,A5
 .noinit
-  MOVEM.L (A7)+,A0/A5/D0/D1/D7
+	MOVEM.L (A7)+,A0/A5/D0/D1/D7
 
 .noimp2
-  TST.L VAR_DEFVALUE(A3)
-  BEQ.W .LOOP
+	TST.L VAR_DEFVALUE(A3)
+	BEQ.W .LOOP
 
-  MOVE.W #$297c,(A4)+
-  MOVE.L VAR_DEFVALUE(A3),(A4)+
-  MOVE.W 10(A3),(a4)+
-  BRA.W .LOOP
+	MOVE.W #$297c,(A4)+
+	MOVE.L VAR_DEFVALUE(A3),(A4)+
+	MOVE.W 10(A3),(a4)+
+	BRA.W .LOOP
 .EX
-  MOVEM.L (A7)+,D4/D6/D7/A3
-  LEA .TESTRES(PC),A0
+	MOVEM.L (A7)+,D4/D6/D7/A3
+	LEA .TESTRES(PC),A0
 .copytest:
-  MOVE.W (A0)+,(A4)+
-  CMP.L #.ENDTEST,A0
-  BNE .copytest
-  
+	MOVE.W (A0)+,(A4)+
+	CMP.L #.ENDTEST,A0
+	BNE .copytest
+	
 	MOVE.L	INITCODE(PC),(A4)+	; MAIN
 	MOVEQ	#1,D0
 	MOVE.W	.1(PC),NEWOP
@@ -15122,9 +15122,9 @@ DOCHAR:               ; 41
 	BRA	JOBLOOP
 .4:	MOVE.L	D0,-28(A4)
 .1:	JSR	.4
-  CPU020
-.1L2:   BSR.L .1
-  CPU000
+	CPU020
+.1L2:	BSR.L .1
+	CPU000
 .6:	MOVE.L	-4(A4),A7
 .7:	MOVEQ	#-1,D0			; SUCCES
 .5:	MOVE.L	.6(PC),(A4)+
@@ -15137,7 +15137,7 @@ DOCHAR:               ; 41
 .GOBJ2:	MOVE.L	4(A4),(A0)
 .GOBJ3:	MOVE.L	4(A4),4(A0)
 .LOBJ: LEA 0(A0),A1
-.LD1  MOVEQ #0,D1
+.LD1	MOVEQ #0,D1
 	MOVE.W #1,D1
 .LOBJ2: LEA 0(A0,D1.L),A1
 .PTRREP: DC.W 0
@@ -15173,7 +15173,7 @@ DOCHAR:               ; 41
 	MOVE.W	.GOBJ2(PC),(A4)+
 	TST.L D0
 	BEQ.S .off0_1
-	OR.W #$200,-2(A4)   ;change from A0 TO A1
+	OR.W #$200,-2(A4)	;change from A0 TO A1
 .off0_1:
 	MOVE.L	A4,(A0)+
 	CLR.W	(A4)+
@@ -15181,7 +15181,7 @@ DOCHAR:               ; 41
 .GN1:	MOVE.W	.GOBJ3(PC),(A4)+
 	TST.L D0
 	BEQ.S .off0_2
-	OR.W #$200,-2(A4)   ;change from A0 TO A1
+	OR.W #$200,-2(A4)	;change from A0 TO A1
 .off0_2:
 	MOVE.L	A4,(A0)+
 	CLR.W	(A4)+
@@ -15195,9 +15195,9 @@ DOCHAR:               ; 41
 	MOVE.L D1,A5
 	BTST #1,OFLAGS(A5)
 	BEQ.S .nottyped
-	TST.W   OSIZE(A5)     ;its a pointer
+	TST.W	OSIZE(A5)		;its a pointer
 	BNE.S .nottyped
-  TST.W   PTRREPCOUNT(A5)
+	TST.W		PTRREPCOUNT(A5)
 	BPL.S .nottyped
 	CMP.L #5,OPTRTYPE(A5) ;its not an object
 	BMI.S .nottyped
@@ -15215,7 +15215,7 @@ DOCHAR:               ; 41
 .nodim2
 	SUBQ #1,D1
 	MOVEM.L D0/A5,-(A7)
-	ADD.W  OOFF(A5),D0
+	ADD.W	OOFF(A5),D0
 	MOVE.L OPTRTYPE(A5),A5
 
 .arrloop2
@@ -15242,32 +15242,32 @@ DOCHAR:               ; 41
 	RTS
 
 .TESTRES:
-  TST.L D2
-  BNE.S .RESOK
+	TST.L D2
+	BNE.S .RESOK
 	MOVE.L	-44(A4),D0
-  BEQ.S .NODOS
-  MOVE.L D0,A6
-  MOVE.L A2,D2
-  BEQ .NODOS
+	BEQ.S .NODOS
+	MOVE.L D0,A6
+	MOVE.L A2,D2
+	BEQ .NODOS
 .findend:
-  TST.B (A2)+
-  BNE.S .findend
-  MOVE.L A2,D3
-  SUB.L D2,D3
+	TST.B (A2)+
+	BNE.S .findend
+	MOVE.L A2,D3
+	SUB.L D2,D3
 	MOVE.L	-8(A4),D1
-  BEQ.S .NODOS
+	BEQ.S .NODOS
 	JSR	-48(A6)
 .NODOS
-  RTS
+	RTS
 .RESOK:
 .ENDTEST:
 
-      ELSEMAKELAB:			; 51
+		ELSEMAKELAB:			; 51
 	BSR.W	NEWLABEL
 	MOVE.L	D0,(A5)+
 	BRA	JOBLOOP
 
-      ELSEUSELAB:			; 52
+		ELSEUSELAB:			; 52
 	MOVE.L	-(A5),D0
 	MOVE.L	D0,D4
 	CLR.W	NEWOP
@@ -15275,16 +15275,16 @@ DOCHAR:               ; 41
 	MOVE.L	D4,(A5)+
 	BRA	JOBLOOP
 
-      ELSEDEFLAB:			; 53
+		ELSEDEFLAB:			; 53
 	MOVE.L	-(A5),D0
 	BSR	ADDLABEL
 	BRA	JOBLOOP
 
-      ELSEWAISTELAB:			; 54
+		ELSEWAISTELAB:			; 54
 	SUBQ.L	#4,A5
 	BRA	JOBLOOP
 
-      INHERITOBJECT:			; A1=OBJECTHEAD, A2=MEMBERTAIL
+		INHERITOBJECT:			; A1=OBJECTHEAD, A2=MEMBERTAIL
 	MOVEM.L	D0-D2/A0/A4-A6,-(A7)	; A3=SUPERCLASS INTERIM
 	CMP.W	#31,(A3)+
 	BNE	ERROR39
@@ -15303,15 +15303,15 @@ DOCHAR:               ; 41
 	BEQ.S	DONE1
 	GETM	A4
 
-	CLR.L	(A4)+               ;ONEXT
-	MOVE.L	(A0)+,(A4)+         ;OOFF/OFLAGS/DUMMY
-	MOVE.W	(A0)+,(A4)+         ;OSIZE
-	MOVE.W	OBJCOUNT(PC),(A4)+  ;OID
+	CLR.L	(A4)+				;ONEXT
+	MOVE.L	(A0)+,(A4)+			;OOFF/OFLAGS/DUMMY
+	MOVE.W	(A0)+,(A4)+			;OSIZE
+	MOVE.W	OBJCOUNT(PC),(A4)+	;OID
 	ADDQ.L	#2,A0
-	MOVE.L	(A0)+,(A4)+         ;OASCII
-	MOVE.W	(A0)+,(A4)+         ;PTRREPCOUNT
-	MOVE.L	(A0)+,(A4)+         ;DIMDATA
-	MOVE.L	(A0)+,(A4)+         ;OPTRTYPE
+	MOVE.L	(A0)+,(A4)+			;OASCII
+	MOVE.W	(A0)+,(A4)+			;PTRREPCOUNT
+	MOVE.L	(A0)+,(A4)+			;DIMDATA
+	MOVE.L	(A0)+,(A4)+			;OPTRTYPE
 	LEA	-22(A0),A0
 	LEA	-22(A4),A5
 	MOVE.L	A5,(A2)
@@ -15383,7 +15383,7 @@ DONE1:	MOVE.L	D1,SUPERSIZE		; STACK NEW OSIZE FROM SUPER
 	MOVE.L	SUPERSIZE,D1
 	RTS
 
-      NOINHERIT:
+		NOINHERIT:
 	MOVEM.L	D0-D2/A0/A4/A6,-(A7)
 	CLR.W	ODEL(A1)
 	MOVE.L	OMETHOD(A1),D1
@@ -15394,7 +15394,7 @@ DONE1:	MOVE.L	D1,SUPERSIZE		; STACK NEW OSIZE FROM SUPER
 .1:	MOVEM.L	(A7)+,D0-D2/A0/A4/A6
 	RTS
 	
-      NEWMETHODS:
+		NEWMETHODS:
 	TST.L	D1
 	BEQ.S	.DONE3
 
@@ -15430,7 +15430,7 @@ DONE1:	MOVE.L	D1,SUPERSIZE		; STACK NEW OSIZE FROM SUPER
 .DONE3:	MOVE.W	D0,ODEL(A1)
 	RTS
 
-      CREATEDELEGATEMEM:		; A1=OBJECTHEAD, A2=MEMBERTAIL
+		CREATEDELEGATEMEM:		; A1=OBJECTHEAD, A2=MEMBERTAIL
 	MOVEM.L	A4-A5,-(A7)
 	GETM	A4
 	CLR.L	(A4)+			; .NEXT
@@ -15451,9 +15451,9 @@ DONE1:	MOVE.L	D1,SUPERSIZE		; STACK NEW OSIZE FROM SUPER
 	MOVEM.L	(A7)+,A4-A5
 	RTS
 
-      SUPERSIZE:	DC.L	0
-      OBJCOUNT:		DC.W	0
-      OBJPRIV:		DC.W	0	; 0=PUB / 1=PRIV
+		SUPERSIZE:	DC.L	0
+		OBJCOUNT:		DC.W	0
+		OBJPRIV:		DC.W	0	; 0=PUB / 1=PRIV
 
 CHECKPR:	MACRO			; \1=TR.DX
 	MOVE.W	(A3),\1
@@ -15468,7 +15468,7 @@ CHECKPR:	MACRO			; \1=TR.DX
 	ADDQ.L	#2,A3
 	ENDM
 
-      FINDDOUBLEMEMBER:			; A0=MEMBER, A1=OBJH, USE D0, SAVE ALL
+		FINDDOUBLEMEMBER:			; A0=MEMBER, A1=OBJH, USE D0, SAVE ALL
 	MOVEM.L	A3-A5,-(A7)
 	LEA	OMEMB+4(A1),A3
 .L:	MOVE.L	ONEXT(A3),A3
@@ -15488,7 +15488,7 @@ CHECKPR:	MACRO			; \1=TR.DX
 .X:	MOVEM.L	(A7)+,A3-A5
 	RTS
 
-      DOOBJECT:				; 55
+		DOOBJECT:				; 55
 	MOVE.L	A2,-(A7)
 	CLR.W	OBJPRIV
 	ADDQ.W	#1,OBJCOUNT
@@ -15581,16 +15581,16 @@ CHECKPR:	MACRO			; \1=TR.DX
 .3: CMP.W	#IOFF+109,D0
 	BNE.S	.4
 	MOVEQ	#1,D2			; BYTE
-	BTST #5,ICODEPREFS+3        ;LEGACY MODE
-	BNE     ERROR90
-  
+	BTST #5,ICODEPREFS+3		;LEGACY MODE
+	BNE		ERROR90
+	
 	BSET #3,OFLAGS(A0)
 	BRA.S	.O
 .4: CMP.W	#IOFF+110,D0
 	BNE	.SOBJ
 	MOVEQ	#2,D2			; WORD
-	BTST #5,ICODEPREFS+3        ;LEGACY MODE
-	BNE     ERROR90
+	BTST #5,ICODEPREFS+3		;LEGACY MODE
+	BNE		ERROR90
 
 	BSET #4,OFLAGS(A0)
 .O:	MOVE.L	D2,D3
@@ -15600,7 +15600,7 @@ CHECKPR:	MACRO			; \1=TR.DX
 
 	CMP.L #65536,D1
 	BPL ERROR103
-  
+	
 	BTST	#0,1(A0)		; CHECK ON WORD BOUNDARIES
 	BEQ.S	.1
 
@@ -15612,7 +15612,7 @@ CHECKPR:	MACRO			; \1=TR.DX
 	BNE.S .notarray
 
 	MOVE.L OPTRTYPE(A0),D0
-  
+	
 .notarray:
 	BTST	#0,D0
 	BNE.S	.1
@@ -15659,44 +15659,44 @@ CHECKPR:	MACRO			; \1=TR.DX
 	BRA.W	.O2
 .PTR:	CMP.W	#IOFF+39,(A3)+
 	BNE	ERROR33
-  
-  MOVE.W  #0,PTRREPCOUNT(A0)
+	
+	MOVE.W	#0,PTRREPCOUNT(A0)
 	BSR	.GETT
 	MOVEQ	#4,D2
 	MOVEQ	#4,D3
 	BRA.W	.O2
 .ARRAY:	CMP.W	#29,D0			; []:ARRAY
 	BNE.W	.O
- 	
+	
 ;multi-dimensional array members in objects
- 	MOVEQ.L #1,D2
+	MOVEQ.L #1,D2
 	CLR.W .dcount
 	MOVE.L A6,-(A7)
- 	GETM A6
- 	CLR.W (A6)+
+	GETM A6
+	CLR.W (A6)+
 
 .nextdim
-    BTST #5,ICODEPREFS+3        ;LEGACY MODE
-    BEQ     .notlegacy
-    
-    TST.W   .dcount
-    BNE     ERROR90
+	BTST #5,ICODEPREFS+3		;LEGACY MODE
+	BEQ		.notlegacy
+	
+	TST.W	.dcount
+	BNE		ERROR90
 
 .notlegacy
 	ADD.W #1,.dcount
-  
+	
 	ADDQ.L	#6,A3			; ALSO SKIP ]OFFSET
-    MOVE.L  D1,-(A7)
+	MOVE.L	D1,-(A7)
 	MOVEM.L	D3/D4/A0/A6,-(A7)
-	MOVE.L  D2,-(A7)
+	MOVE.L	D2,-(A7)
 	BSR	ASM_GRABVALUE
-	MOVE.L  (A7)+,D2
+	MOVE.L	(A7)+,D2
 	MULU	D1,D2
-    CMP.L   #32768,D2
-    BGE     ERROR85
+	CMP.L	#32768,D2
+	BGE		ERROR85
 	MOVEM.L	(A7)+,D3/D4/A0/A6
-  	MOVE.W  D2,(A6)+
-    MOVE.L  (A7)+,D1
+	MOVE.W	D2,(A6)+
+	MOVE.L	(A7)+,D1
 	TST.L	D0
 	BEQ.S	.222
 	BMI	ERROR30
@@ -15713,23 +15713,23 @@ CHECKPR:	MACRO			; \1=TR.DX
 	CMP.W #29,(A3)		; [
 	BEQ.S .nextdim
 
-  	MOVEQ.L #0,D0
-  	MOVE.W .dcount,D0
-  	ADD.W #1,D0
-  	ADD.W D0,D0  	
-  	SUB.L D0,A6
-  	;CMP.W #4,D0
-  	;BEQ .singledim
-  	MOVE.L A6,DIMDATA(A0)
-    MOVEQ #0,D3
-    MOVE.W .dcount,D3
-    
-  	MOVE.W .dcount,(A6)
-  	ADD.L D0,A6
-  	DONEM	A6
+	MOVEQ.L #0,D0
+	MOVE.W .dcount,D0
+	ADD.W #1,D0
+	ADD.W D0,D0		
+	SUB.L D0,A6
+	;CMP.W #4,D0
+	;BEQ .singledim
+	MOVE.L A6,DIMDATA(A0)
+	MOVEQ #0,D3
+	MOVE.W .dcount,D3
+	
+	MOVE.W .dcount,(A6)
+	ADD.L D0,A6
+	DONEM	A6
 .singledim:
-  	MOVE.L (A7)+,A6
-   
+	MOVE.L (A7)+,A6
+	 
 	CMP.W	#19,(A3)+			;colon
 	BNE	ERROR0
 
@@ -15743,7 +15743,7 @@ CHECKPR:	MACRO			; \1=TR.DX
 	BPL.S	.DS
 	CMP.W	#IOFF+20,(A3)
 	BPL.S	.DG
-    BRA.S   .DS
+	BRA.S	.DS
 
 .dcount: DC.W 0
 
@@ -15753,7 +15753,7 @@ CHECKPR:	MACRO			; \1=TR.DX
 	BNE.S	.A2
 	ADDQ.L	#2,A3
 .DG:
-  MOVE.W #-1,PTRREPCOUNT(a0)
+	MOVE.W #-1,PTRREPCOUNT(a0)
 	BSR	.GETT
 	MOVEQ	#-16,D3			; $FFFFFFF0
 	AND.L	D0,D3
@@ -15787,11 +15787,11 @@ CHECKPR:	MACRO			; \1=TR.DX
 	CMP.W	#IOFF+44,D0		; PTR
 	BNE.S .GT1
 
-	ADD.W  #1,PTRREPCOUNT(A0)
+	ADD.W	#1,PTRREPCOUNT(A0)
 	BEQ.S .first
 
-	BTST #5,ICODEPREFS+3        ;LEGACY MODE
-	BNE     ERROR90
+	BTST #5,ICODEPREFS+3		;LEGACY MODE
+	BNE		ERROR90
 .first
 
 	MOVE.W	(A3)+,D0
@@ -15814,22 +15814,22 @@ CHECKPR:	MACRO			; \1=TR.DX
 .GT4: CMP.W	#IOFF+109,D0		; BYTE
 	BNE.S	.GT5
 	MOVEQ	#1,D0
-	BTST #5,ICODEPREFS+3        ;LEGACY MODE
-	BNE     ERROR90
+	BTST #5,ICODEPREFS+3		;LEGACY MODE
+	BNE		ERROR90
 	BSET	#3,OFLAGS(A0)
 	BRA.S	.GTE
 .GT5: CMP.W	#IOFF+110,D0		; WORD
 	BNE.S	.MUT
 	MOVEQ	#2,D0
-	BTST #5,ICODEPREFS+3        ;LEGACY MODE
-	BNE     ERROR90
+	BTST #5,ICODEPREFS+3		;LEGACY MODE
+	BNE		ERROR90
 
 	BSET	#4,OFLAGS(A0)
 .GTE:	MOVE.L	D0,OPTRTYPE(A0)
 	BSET	#1,OFLAGS(A0)
-  TST.W PTRREPCOUNT(A0)
-  BMI.S .NOTPTR
-  MOVE.L #4,D0
+	TST.W PTRREPCOUNT(A0)
+	BMI.S .NOTPTR
+	MOVE.L #4,D0
 .NOTPTR
 	RTS
 .MUT:	CMP.W	#45,D0			; MUTUALLY RECURSIVE PTR TO <OBJ>
@@ -15844,7 +15844,7 @@ CHECKPR:	MACRO			; \1=TR.DX
 ALIGN:	DC.W	0
 
 
-      DOUNION:
+		DOUNION:
 	MOVEM.L	D5/D6/D7,-(A7)
 	ADDQ.L	#2,A3
 	TST.W	(A3)
@@ -15924,16 +15924,16 @@ ALIGN:	DC.W	0
 .3: CMP.W	#IOFF+109,D0
 	BNE.S	.4
 	MOVEQ	#1,D2			; BYTE
-	BTST #5,ICODEPREFS+3        ;LEGACY MODE
-	BNE     ERROR90
+	BTST #5,ICODEPREFS+3		;LEGACY MODE
+	BNE		ERROR90
 
 	BSET	#3,OFLAGS(A0)
 	BRA.S	.O
 .4: CMP.W	#IOFF+110,D0
 	BNE.S	.SOBJ
 	MOVEQ	#2,D2			; WORD
-	BTST #5,ICODEPREFS+3        ;LEGACY MODE
-	BNE     ERROR90
+	BTST #5,ICODEPREFS+3		;LEGACY MODE
+	BNE		ERROR90
 
 	BSET	#4,OFLAGS(A0)
 .O:	MOVE.L	D2,D3
@@ -15950,7 +15950,7 @@ ALIGN:	DC.W	0
 	BNE.S .notarray
 
 	MOVE.L OPTRTYPE(A0),D0
-  
+	
 .notarray:
 	BTST	#0,D0
 	BNE.S	.1
@@ -15992,7 +15992,7 @@ ALIGN:	DC.W	0
 .PTR:	CMP.W	#IOFF+39,(A3)+
 	BNE	ERROR33
 
-	MOVE.W  #0,PTRREPCOUNT(A0)           ; references
+	MOVE.W	#0,PTRREPCOUNT(A0)			 ; references
 	BSR	.GETT
 	MOVEQ	#4,D2
 	MOVEQ	#4,D3
@@ -16001,27 +16001,27 @@ ALIGN:	DC.W	0
 	BNE.W	.O
 
 ;multi-dimensional array members in objects
- 	MOVEQ.L #1,D2
+	MOVEQ.L #1,D2
 	CLR.W .dcount
 	MOVE.L A6,-(A7)
- 	GETM A6
- 	CLR.W (A6)+
+	GETM A6
+	CLR.W (A6)+
 
 .nextdim
 	ADD.W #1,.dcount
-  
+	
 	ADDQ.L	#6,A3			; ALSO SKIP ]OFFSET
-	MOVE.L  D1,-(A7)
+	MOVE.L	D1,-(A7)
 	MOVEM.L	D3/D4/A0/A6,-(A7)
-	MOVE.L  D2,-(A7)
+	MOVE.L	D2,-(A7)
 	BSR	ASM_GRABVALUE
-	MOVE.L  (A7)+,D2
+	MOVE.L	(A7)+,D2
 	MULU	D1,D2
-    CMP.L   #32768,D2
-    BGE     ERROR85
+	CMP.L	#32768,D2
+	BGE		ERROR85
 	MOVEM.L	(A7)+,D3/D4/A0/A6
-    MOVE.W  D1,(A6)+
-	MOVE.L  (A7)+,D1
+	MOVE.W	D1,(A6)+
+	MOVE.L	(A7)+,D1
 	TST.L	D0
 	BEQ.S	.222
 	BMI	ERROR30
@@ -16038,22 +16038,22 @@ ALIGN:	DC.W	0
 	CMP.W #29,(A3)		; [
 	BEQ.S .nextdim
 
-  	MOVEQ.L #0,D0
-  	MOVE.W .dcount,D0
-  	ADD.W #1,D0
-  	ADD.W D0,D0  	
-  	SUB.L D0,A6
-  	CMP.W #4,D0
-  	BEQ .singledim
+	MOVEQ.L #0,D0
+	MOVE.W .dcount,D0
+	ADD.W #1,D0
+	ADD.W D0,D0		
+	SUB.L D0,A6
+	CMP.W #4,D0
+	BEQ .singledim
 	;TSTMOD
-	;BNE     ERROR48
+	;BNE	 ERROR48
 .singledim:
-  	MOVE.L A6,DIMDATA(A0)
-  	MOVE.W .dcount,(A6)
-  	ADD.L D0,A6
-  	DONEM	A6
-  	MOVE.L (A7)+,A6
-   
+	MOVE.L A6,DIMDATA(A0)
+	MOVE.W .dcount,(A6)
+	ADD.L D0,A6
+	DONEM	A6
+	MOVE.L (A7)+,A6
+	 
 	CMP.W	#19,(A3)+			;colon
 	BNE	ERROR0
 	CMP.W	#31,(A3)
@@ -16066,7 +16066,7 @@ ALIGN:	DC.W	0
 	BPL.S	.DS
 	CMP.W	#IOFF+20,(A3)
 	BPL.S	.DG
-    BRA.S   .DS
+	BRA.S	.DS
 
 .dcount: DC.W 0
 
@@ -16110,11 +16110,11 @@ ALIGN:	DC.W	0
 	CMP.W	#IOFF+44,D0		; PTR
 	BNE.S .GT1
 
-	ADD.W  #1,PTRREPCOUNT(A0)
+	ADD.W	#1,PTRREPCOUNT(A0)
 	BEQ.S .first
 
-	BTST #5,ICODEPREFS+3        ;LEGACY MODE
-	BNE     ERROR90
+	BTST #5,ICODEPREFS+3		;LEGACY MODE
+	BNE		ERROR90
 .first
 
 	MOVE.W	(A3)+,D0
@@ -16138,22 +16138,22 @@ ALIGN:	DC.W	0
 .GT4:	CMP.W	#IOFF+109,D0		; BYTE
 	BNE.S	.GT5
 	MOVEQ	#1,D0
-	BTST #5,ICODEPREFS+3        ;LEGACY MODE
-	BNE     ERROR90
+	BTST #5,ICODEPREFS+3		;LEGACY MODE
+	BNE		ERROR90
 	BSET	#3,OFLAGS(A0)
 	BRA.S	.GTE
 .GT5:	CMP.W	#IOFF+110,D0		; WORD
 	BNE.S	.MUT
 	MOVEQ	#2,D0
-	BTST #5,ICODEPREFS+3        ;LEGACY MODE
-	BNE     ERROR90
+	BTST #5,ICODEPREFS+3		;LEGACY MODE
+	BNE		ERROR90
 	BSET	#4,OFLAGS(A0)
 .GTE:	MOVE.L	D0,OPTRTYPE(A0)
 	BSET	#1,OFLAGS(A0)
 	TST.W PTRREPCOUNT(A0)
 	BMI.S .NOTPTR
 	MOVE.L #4,D0
-.NOTPTR  
+.NOTPTR	 
 	RTS
 .MUT:	CMP.W	#45,D0			; MUTUALLY RECURSIVE PTR TO <OBJ>
 	BNE	ERROR33
@@ -16166,13 +16166,13 @@ ALIGN:	DC.W	0
 	BRA.S	.GTE
 
 
-      OPTIIF:				; 56
-      	CMP.L	#$48C04A80,-4(A4)     ;ext.l d0, tst.l d0
-      	BEQ.S	.6
-      	CMP.L	#$49C04A80,-4(A4)     ;extb.l d0, tstl.l d0
-      	BNE.S	.5
-.6:    	SUBQ.L	#2,A4
-      	BRA.S	.3
+		OPTIIF:				; 56
+		CMP.L	#$48C04A80,-4(A4)		;ext.l d0, tst.l d0
+		BEQ.S	.6
+		CMP.L	#$49C04A80,-4(A4)		;extb.l d0, tstl.l d0
+		BNE.S	.5
+.6:		SUBQ.L	#2,A4
+		BRA.S	.3
 .5:	CMP.L	#$488048C0,-4(A4)	; EXT.W EXT.L
 	BNE.S	.1
 	CMP.B	#$C0,-5(A4)		; Scc D0
@@ -16197,7 +16197,7 @@ ALIGN:	DC.W	0
 	BNE.S	.7
 	SUBQ.L	#4,A4
 	BRA.S	.4
-  
+	
 .7	CMP.W	#$4A80,-2(A4)
 	BNE.S .3
 	SUBQ.L	#2,A4
@@ -16206,38 +16206,38 @@ ALIGN:	DC.W	0
 	SUBQ.L #2,A4
 	CMP.L NOTEXPADDR,A4
 	BNE.S .NotNot
-	CMP.W #$4680,(A4)     ;NOT.L D0
+	CMP.W #$4680,(A4)		;NOT.L D0
 	BNE.S .NotNot
-  
+	
 	SUBQ.L #2,A4
 	NOT.W IFLAG
-  
+	
 .NotNot
 	ADDQ.L #2,A4
 	MOVE.W	(A2)+,(A4)+
 	BSR.S	KILLTST
 	MOVE.L	(A2)+,(A4)+
 	BRA	JOBLOOP
-  
+	
 
-      KILLTST:
-      	CMP.W	#$4A80,-2(A4)		; TST.L	D0
-      	BEQ.S	.START
-      	RTS
+		KILLTST:
+		CMP.W	#$4A80,-2(A4)		; TST.L	D0
+		BEQ.S	.START
+		RTS
 .START:	
-	MOVEM.L	A0/D7,-(A7)   
- 	MOVE.L lastmoveshort,A0
- 	ADD.L #4,A0
- 	CMP.L A0,A4
- 	BNE .s1
+	MOVEM.L	A0/D7,-(A7)		
+	MOVE.L lastmoveshort,A0
+	ADD.L #4,A0
+	CMP.L A0,A4
+	BNE .s1
 	CMP.B #$70,-4(A4)	; moveq #x,d0
 	BEQ.S .2
 .s1:
 	MOVE.L lastextl,A0
- 	ADD.L #4,A0
- 	CMP.L A0,A4
- 	BNE .s2
-	CMP.W #$48C0,-4(A4)  ;EXT.L D0
+	ADD.L #4,A0
+	CMP.L A0,A4
+	BNE .s2
+	CMP.W #$48C0,-4(A4)	 ;EXT.L D0
 	BEQ.S .2
 .s2:
 	CMP.B	#$40,-5(A4)		; if "move.l d0,x(a5)"
@@ -16256,7 +16256,7 @@ ALIGN:	DC.W	0
 	CMP.B	#$20,-6(A4)		; if "move.l x(a5),d0"
 	BNE.S	.5C			; then del "tst.l d0"
 	MOVE.B	-5(A4),D7
-	AND.B   #$28,D7
+	AND.B	#$28,D7
 	CMP.B	#$28,D7
 	BEQ.S	.2
 ;	CMP.B	#$29,D7
@@ -16290,13 +16290,13 @@ ALIGN:	DC.W	0
 	BEQ.S	.2
 	MOVE.W	-4(A4),D7
 	AND.W	#$C0FF,D7			; D0,Dx
-	CMP.W	#$8080,D7			; OR.L  Dx,Dx
+	CMP.W	#$8080,D7			; OR.L	Dx,Dx
 	BEQ.S	.2
 	CMP.W	#$C080,D7			; AND.L	Dx,Dx
 	BEQ.S	.2
 	MOVE.W	-4(A4),D7
 	AND.W	#$FF80,D7			; Dx,D0
-	CMP.W	#$8080,D7			; OR.L  Dx,Dx
+	CMP.W	#$8080,D7			; OR.L	Dx,Dx
 	BEQ.S	.2
 	CMP.W	#$C080,D7			; AND.L	Dx,Dx
 	BEQ.S	.2	
@@ -16309,7 +16309,7 @@ ALIGN:	DC.W	0
 	BRA.S	.5
 
 
-      OPTITST:
+		OPTITST:
 	CMP.L	#$488048C0,-4(A4)	; EXT.W EXT.L
 	BNE.S	.1
 	CMP.B	#$C0,-5(A4)		; Scc D0
@@ -16330,11 +16330,11 @@ ALIGN:	DC.W	0
 .2:	RTS
 
 
-      DOELSECH:				; 57
+		DOELSECH:				; 57
 	MOVE.W	#1,ELSECHECK
 	BRA	JOBLOOP
 
-      DORETURN:				; 58
+		DORETURN:				; 58
 	TST.L	HANDLERPEA
 	BEQ.S	.2
 	TST.L	ENDPEA
@@ -16354,14 +16354,14 @@ ALIGN:	DC.W	0
 	MOVE.L	(A7)+,-76(A4)		; PUT PREVIOUS HANDLER BACK (CODE)
 	MOVE.L	(A7)+,-80(A4)		; (STACK)
 
-      MAKEBRANCHL:			; 59, like 8
+		MAKEBRANCHL:			; 59, like 8
 	MOVE.L	LABPRES,D0
 	MOVE.W	.1(PC),NEWOP
 	BSR	ADDBRANCH
 	BRA	JOBLOOP
 .1:	JMP	.1
 
-      JOBINSIF:				; 60
+		JOBINSIF:				; 60
 	TST.W	EXPRECC
 	BNE.S	.1
 	BSR.W	DOINSREC
@@ -16369,13 +16369,13 @@ ALIGN:	DC.W	0
 .1:	BSR	EXP
 	BRA	JOBLOOP
 
-      JOBEXPIF:				; 61
+		JOBEXPIF:				; 61
 	MOVE.L	LABPRES(PC),-(A7)
 	BSR	EXP
 	MOVE.L	(A7)+,LABPRES
 	BRA	JOBLOOP
 
-      JOBFORSTEP:			; 62
+		JOBFORSTEP:			; 62
 	MOVE.L	-(A5),A1		; A1=IDENTREC
 	MOVE.L	-(A5),D7		; D7=STEP
 	MOVEQ	#9,D1
@@ -16424,22 +16424,22 @@ ALIGN:	DC.W	0
 .SL:	SUBI.L	#8,2(A5)
 
 
-      SAFEPROCFLAG:
+		SAFEPROCFLAG:
 	DC.W	0
-      CHECKPARSEWARN:
+		CHECKPARSEWARN:
 	DC.W	0
-      STACKCHECKPROCFLAG:
+		STACKCHECKPROCFLAG:
 	DC.B	0
-      GETA4FLAG:
+		GETA4FLAG:
 	DC.B	0
 
-      
+		
 
-      HANDLEPROC:			; 63
+		HANDLEPROC:			; 63
 	CLR.L	ENDPEA
 	MOVE.L	A0,-(A7)
 	MOVEA.L	COMPILEPROC(PC),A0
-	BTST	#4,2(A0)      ;safe proc flags
+	BTST	#4,2(A0)		;safe proc flags
 	BEQ.S	.4
 	MOVEA.L	SAVEDREGSPTR(PC),A4
 	MOVE.L	.5(PC),(A4)+
@@ -16448,7 +16448,7 @@ ALIGN:	DC.W	0
 	BNE.S	.2
 	ADDQ.L	#2,A3
 	MOVE.W	#-1,HANDLEFLAG
-	BTST	#4,2(A0)      ;safe proc flags
+	BTST	#4,2(A0)		;safe proc flags
 	BNE.S	.6
 	MOVEA.L	SAVEDREGSPTR(PC),A4
 	MOVE.L	.3(PC),(A4)+
@@ -16461,7 +16461,7 @@ ALIGN:	DC.W	0
 .5:	MOVEM.L	D2-D7/A2-A6,-(A7)
 
 
-      HANDLEPROCREALLY:
+		HANDLEPROCREALLY:
 	LEA	.1(PC),A0
 	MOVE.L	(A0)+,(A4)+
 	MOVE.L	(A0)+,(A4)+
@@ -16484,7 +16484,7 @@ ALIGN:	DC.W	0
 	HANDLERPEA:	DC.L	0
 	ENDPEA:		DC.L	0
 
-      DOEXCEPT:				; 64
+		DOEXCEPT:				; 64
 	MOVEQ	#0,D1			; D1=DOFLAG
 	CMP.W	#IOFF+28,(A3)
 	BNE.S	.1
@@ -16513,7 +16513,7 @@ EREST:	MOVE.L	(A7)+,-88(A4)		; (A5) ; ook: RETURN/Raise()
 	BRA	EREST			; TO ENDPROC
 	CLR.L	-84(A4)
 
-      CLOSEHANDLER:			; 65
+		CLOSEHANDLER:			; 65
 	TST.L	HANDLERPEA
 	BEQ.S	.1
 	MOVE.L	ENDPEA(PC),D0
@@ -16527,64 +16527,64 @@ EREST:	MOVE.L	(A7)+,-88(A4)		; (A5) ; ook: RETURN/Raise()
 	MOVE.W	D0,-2(A0)
 .1:	BRA	JOBLOOP
 
-      PUSHTYPE:				; 66
+		PUSHTYPE:				; 66
 	MOVE.W	TYPELAB(PC),(A5)+
 	BRA	JOBLOOP
 
-      POPTYPE:				; 67
+		POPTYPE:				; 67
 	MOVE.W	-(A5),TYPELAB
 	BRA	JOBLOOP
 
 
-      RTSRTD:				; 68
-      	MOVEA.L	COMPILEPROC(PC),A0
-      	TST.W	(A0)			; NRARG
-      	BNE.S	.1
-        BTST	#6,CODEPREFS+1 
-        BNE .1
-      	TST.W	4(A0)			; NRLOC
-      	BNE.S	.1
-      	SUBQ.L	#2,A4
-.1:	CMP.W   #IOFF+85,(A3)	;WITH
-    BEQ .WITH
-    MOVE.W  NRARG(PC),D0
-    BEQ.S   .RTS
-    MOVE.W  .RTD(PC),(A4)+
-    LSL.W   #2,D0
-    MOVE.W  D0,(A4)+
-    BRA JOBLOOP
-.RTS:   MOVE.W  PROCRTS(PC),(A4)+
-    BRA JOBLOOP
+		RTSRTD:				; 68
+		MOVEA.L	COMPILEPROC(PC),A0
+		TST.W	(A0)			; NRARG
+		BNE.S	.1
+		BTST	#6,CODEPREFS+1 
+		BNE .1
+		TST.W	4(A0)			; NRLOC
+		BNE.S	.1
+		SUBQ.L	#2,A4
+.1:	CMP.W	#IOFF+85,(A3)	;WITH
+	BEQ .WITH
+	MOVE.W	NRARG(PC),D0
+	BEQ.S	.RTS
+	MOVE.W	.RTD(PC),(A4)+
+	LSL.W	#2,D0
+	MOVE.W	D0,(A4)+
+	BRA JOBLOOP
+.RTS:	MOVE.W	PROCRTS(PC),(A4)+
+	BRA JOBLOOP
 	CPU020
-.RTD:   RTD #4
+.RTD:	RTD #4
 	CPU000
 .WITH:
-    ADDQ.L  #2,A3
-    MOVE.W  (A3)+,D0
-    CMP.W   #$100+48-1,D0
-    BEQ .RTR
-    CMP.W   #$100+49-1,D0
-    BNE ERROR86
-    MOVE.W  .2(PC),(A4)+
-    TST.W   (A3)+
-    BNE ERROR0
-    BRA JOBLOOP
+	ADDQ.L	#2,A3
+	MOVE.W	(A3)+,D0
+	CMP.W	#$100+48-1,D0
+	BEQ .RTR
+	CMP.W	#$100+49-1,D0
+	BNE ERROR86
+	MOVE.W	.2(PC),(A4)+
+	TST.W	(A3)+
+	BNE ERROR0
+	BRA JOBLOOP
 .RTR:
-    MOVE.W  .3(PC),(A4)+
-    TST.W   (A3)+
-    BNE ERROR0
-    BRA JOBLOOP
+	MOVE.W	.3(PC),(A4)+
+	TST.W	(A3)+
+	BNE ERROR0
+	BRA JOBLOOP
 .2: RTE
 .3: RTR
 
-      DONEW:				; 69
+		DONEW:				; 69
 	;SUBQ.L	#2,A3
 	JSR GENLINENO
 	MOVEQ	#1,D0
 	BSR	NEWEXP
 	BRA	JOBLOOP
 
-      EXPECTRETURNIS:			; 70
+		EXPECTRETURNIS:			; 70
 	MOVE.W	(A3),D0
 	CMP.W	#IOFF+51,D0
 	BEQ.S	.1
@@ -16700,12 +16700,12 @@ PUTRA:	MACRO				; \1=DX,\2=TRASH.DX
 	MOVE.W	D0,0(A6,\2.L)
 	ENDM
 
-      SELECTOF:				; 71
-    BSR     ASM_GRABVALUE
-    TST.L   D0
-    BMI JOBLOOP
-    MOVE.L  D1,D7      
-     
+		SELECTOF:				; 71
+	BSR		ASM_GRABVALUE
+	TST.L	D0
+	BMI JOBLOOP
+	MOVE.L	D1,D7		 
+	 
 	CMP.L	#1,D7
 	BMI	ERROR31
 	CMP.L	#1024,D7
@@ -16808,7 +16808,7 @@ PUTRA:	MACRO				; \1=DX,\2=TRASH.DX
 .C1A:	BMI	.C1
 .C2:	CMP.L	#1,D0
 .C3:	BPL	.C1
-.C4:	ADD.L   D0,D0	; was LSL.L	#1,D0
+.C4:	ADD.L	D0,D0	; was LSL.L	#1,D0
 .C5A:	MOVE.W	.C6(PC,D0.L),D0
 .C5B:	JMP	.C6(PC,D0.W)
 .C6:	; TABLE START
@@ -16816,10 +16816,10 @@ PUTRA:	MACRO				; \1=DX,\2=TRASH.DX
 AAAAAA:	BLOCK2	#8,#IOFF+12
 	RTS
 
-      EXPECTOFOBJECT:			; 72
-    cmp.w   #IOFF+86,(a3)	;NOREGS
-    bne     .1
-    addq.l  #2,a3
+		EXPECTOFOBJECT:			; 72
+	cmp.w	#IOFF+86,(a3)	;NOREGS
+	bne		.1
+	addq.l	#2,a3
 .1: CMP.W	#IOFF+45,(A3)
 	BNE	JOBLOOP
 	ADDQ.L	#2,A3			; of_object
@@ -16839,12 +16839,12 @@ AAAAAA:	BLOCK2	#8,#IOFF+12
 	BRA	JOBLOOP
 .CODE:	MOVE.L	A0,2(A5)
 
-      SAVEREGSPROC:			; 73
+		SAVEREGSPROC:			; 73
 	LEA	SAVEDREGSPTR(PC),A0
 	MOVE.L	A4,(A0)
 	MOVE.L	COMPILEPROC(PC),A0	; COMPUTE MOVEMMASK
-	MOVE.B	3(A0),D0  ;numregvars
-	AND.W #15,D0      ;mask out flags
+	MOVE.B	3(A0),D0	;numregvars
+	AND.W #15,D0		;mask out flags
 	BEQ	.NR
 	SUBQ.W	#1,D0
 	MOVEQ	#7,D1
@@ -16862,7 +16862,7 @@ AAAAAA:	BLOCK2	#8,#IOFF+12
 .NR:	BRA	JOBLOOP
 SAVEDREGSPTR:	DC.L	0
 
-      DOEND:				; 74
+		DOEND:				; 74
 	MOVE.W	#-1,.ISM
 	CMP.W	#IDENT,(A3)+
 	BNE	ERROR6
@@ -17033,8 +17033,8 @@ DESTR:	MOVE.W	ODESTR(A6),D2		; GETS OBJ=A6, OSIZE=D0
 
 ; GETS BRANCH TO FILL AT -2(A4)
 
-  FILLCONT:           ; 82
- 	MOVE.L A5,A0
+	FILLCONT:				; 82
+	MOVE.L A5,A0
 .CL
 	MOVE.W	-2(A0),D0
 	CMP.W	#3,D0			; WHILE
@@ -17052,29 +17052,29 @@ DESTR:	MOVE.W	ODESTR(A6),D2		; GETS OBJ=A6, OSIZE=D0
 .C3:	CMP.W	#7,D0			; LOOP
 	BNE.S	.C4
 	MOVE.L	-10(A0),D0
-  BRA.W .D
+	BRA.W .D
 .C4 CMP.W	#2,D0			; IF/ENDIF
 	BNE.S	.C5
-  LEA -10(A0),A0
-  BRA.S .CL
+	LEA -10(A0),A0
+	BRA.S .CL
 .C5	CMP.W	#5,D0			; SELECT/ENDSELECT
-  BNE.S	.C6
-  LEA -10(A0),A0
-  BRA.S .CL
+	BNE.S	.C6
+	LEA -10(A0),A0
+	BRA.S .CL
 .C6	CMP.W	#8,D0			; SELECT_OF
-  BNE.W	ERROR9
-  LEA -2(A0),A0
-  BRA.S .CL
+	BNE.W	ERROR9
+	LEA -2(A0),A0
+	BRA.S .CL
 
 .D:	BCHG	#0,-4(A4)		; negate CC
 	JSR OPTIEXITCONT
 	CLR.W	NEWOP
 	BSR	ADDBRANCH
 	BRA	JOBLOOP
-  
+	
 
-      FILLEXIT:				; 75
-  MOVE.L A5,A0
+		FILLEXIT:				; 75
+	MOVE.L A5,A0
 .EL:
 	MOVE.W	-2(A0),D0
 	CMP.W	#3,D0			; WHILE
@@ -17092,19 +17092,19 @@ DESTR:	MOVE.W	ODESTR(A6),D2		; GETS OBJ=A6, OSIZE=D0
 .3:	CMP.W	#7,D0			; LOOP
 	BNE.S	.E4
 	MOVE.L	-6(A0),D0
-  BRA.S	.D
+	BRA.S	.D
 .E4 CMP.W	#2,D0			; IF/ENDIF
 	BNE.S	.E5
-  LEA -10(A0),A0
-  BRA.S .EL
+	LEA -10(A0),A0
+	BRA.S .EL
 .E5	CMP.W	#5,D0			; SELECT/ENDSELECT
-  BNE.S	.E6
-  LEA -10(A0),A0
-  BRA.S .EL
+	BNE.S	.E6
+	LEA -10(A0),A0
+	BRA.S .EL
 .E6	CMP.W	#8,D0			; SELECT_OF
-  BNE.W	ERROR9
-  LEA -2(A0),A0
-  BRA.S .EL
+	BNE.W	ERROR9
+	LEA -2(A0),A0
+	BRA.S .EL
  
 .D:	BCHG	#0,-4(A4)		; negate CC
 	JSR OPTIEXITCONT
@@ -17112,25 +17112,25 @@ DESTR:	MOVE.W	ODESTR(A6),D2		; GETS OBJ=A6, OSIZE=D0
 	BSR	ADDBRANCH
 	BRA	JOBLOOP
 
-      DOSUPER:				; 76
+		DOSUPER:				; 76
 	BSR	SUPEREXP
 	BRA	JOBLOOP
 
-      DOUBLEIF:				; 77
-      	CMP.L	#$488048C0,-4(A4)
-      	BEQ.S	.1
+		DOUBLEIF:				; 77
+		CMP.L	#$488048C0,-4(A4)
+		BEQ.S	.1
 	CMP.W	#$49C0,-2(A4)
-      	BNE	JOBLOOP
-.1:    	MOVE.W	#$4A80,(A4)+
-      	BRA	JOBLOOP
+		BNE	JOBLOOP
+.1:		MOVE.W	#$4A80,(A4)+
+		BRA	JOBLOOP
 
-      INCDEC:				; 78
+		INCDEC:				; 78
 	MOVEQ	#1,D0
-      	CMP.W	#COM,(A3)
-      	BNE.S	.1
-      	CMP.W	#VALUE,2(A3)
-      	BNE	ERROR0
-      	ADDQ.L	#4,A3
+		CMP.W	#COM,(A3)
+		BNE.S	.1
+		CMP.W	#VALUE,2(A3)
+		BNE	ERROR0
+		ADDQ.L	#4,A3
 	MOVE.L	(A3)+,D0
 	CMP.L	#9,D0
 	BPL.S	.2
@@ -17159,7 +17159,7 @@ DESTR:	MOVE.W	ODESTR(A6),D2		; GETS OBJ=A6, OSIZE=D0
 	BRA	JOBLOOP
 
 
-      EXPECT3:				; 79
+		EXPECT3:				; 79
 	MOVE.W	(A2)+,D0
 	CMP.W	(A3),D0			; IF expeted THEN go x STEPs
 	BNE.S	.1
@@ -17172,7 +17172,7 @@ DESTR:	MOVE.W	ODESTR(A6),D2		; GETS OBJ=A6, OSIZE=D0
 .1:	ADDQ.L	#2,A2
 	BRA	JOBLOOP
 
-      DOFATAL:				; 83
+		DOFATAL:				; 83
 	CMP.W	#STR,(A3)+
 	BNE	ERROR0
 	ADDQ.L	#2,A3
@@ -17182,11 +17182,11 @@ DESTR:	MOVE.W	ODESTR(A6),D2		; GETS OBJ=A6, OSIZE=D0
 	EXT.L	D6
 	ADD.L	D6,A3
 	BRA ERRORFATAL
-  
-      DOWARN:				; 84
+	
+		DOWARN:				; 84
 	CMP.W	#VALUE,(A3)
 	BEQ .wval
-  
+	
 	CMP.W	#STR,(A3)+
 	BNE	ERROR0
 	ADDQ.L	#2,A3
@@ -17218,7 +17218,7 @@ DESTR:	MOVE.W	ODESTR(A6),D2		; GETS OBJ=A6, OSIZE=D0
 	BSR	WRITEFORMAT
 	BSR	WRITELN
 	MOVEM.L	(A7)+,D0-D3/A0-A3
-  
+	
 .nowarns
 	LSL.W	#1,D6
 	EXT.L	D6
@@ -17231,179 +17231,179 @@ DESTR:	MOVE.W	ODESTR(A6),D2		; GETS OBJ=A6, OSIZE=D0
 	BRA	JOBLOOP
 
 
-;; 85               Section
-    JOB_SECTION:
-    BTST        #2,CODEPREFS+3
-    BEQ         ERROR44
-    MOVE.L      HunkList,A0
-    MOVE.L      A4,D0
-    CLR.W       (A4)
-    ADDQ.L      #3,D0
-    AND.L       #$fffffffc,D0
-    MOVE.L      D0,A4
-    
-    MOVE.L      A4,H_END(A0)
-    move.l      a0,d0
+;; 85				Section
+	JOB_SECTION:
+	BTST		#2,CODEPREFS+3
+	BEQ			ERROR44
+	MOVE.L		HunkList,A0
+	MOVE.L		A4,D0
+	CLR.W		(A4)
+	ADDQ.L		#3,D0
+	AND.L		#$fffffffc,D0
+	MOVE.L		D0,A4
+	
+	MOVE.L		A4,H_END(A0)
+	move.l		a0,d0
 
-    CMP.W   #IOFF+94,(A3)+		;CODE
-    BNE     .1
-    MOVE.L  #$3E9,D1
-    BRA     .X
-.1: CMP.W   #IOFF+95,-2(A3)		;DATA
-    BNE     ERROR88
-    MOVE.L  #$3EA,D1
-.X: CMP.W   #COM,(A3)
-    BNE     .XX
-    ADDQ.L  #2,A3
-    CMP.W   #IOFF+96,(A3)+		;CHIP
-    BNE     .X2
-    bset    #30,d1
-    BRA     .XX
-.X2:CMP.W   #IOFF+97,-2(A3)		;FAST
-    BNE     ERROR88
-    BSET    #31,D1
+	CMP.W	#IOFF+94,(A3)+		;CODE
+	BNE		.1
+	MOVE.L	#$3E9,D1
+	BRA		.X
+.1: CMP.W	#IOFF+95,-2(A3)		;DATA
+	BNE		ERROR88
+	MOVE.L	#$3EA,D1
+.X: CMP.W	#COM,(A3)
+	BNE		.XX
+	ADDQ.L	#2,A3
+	CMP.W	#IOFF+96,(A3)+		;CHIP
+	BNE		.X2
+	bset	#30,d1
+	BRA		.XX
+.X2:CMP.W	#IOFF+97,-2(A3)		;FAST
+	BNE		ERROR88
+	BSET	#31,D1
 .XX:
-    GETM        A0
-    MOVE.L      HunkList(PC),(A0)+
-    MOVE.L      A0,HunkList
-    exg.L       A0,D0
-    move.l      d0,H_PREV(A0)
-    exg.l       a0,d0
-    MOVE.L      A4,(A0)+
-    move.l      D1,(a0)+
-    clr.l       (a0)+
-    clr.l       (a0)+
-    clr.l       (a0)+
-    clr.l       (a0)+
-    clr.l       (a0)+
-    DONEM       A0
-    ADDQ.L      #1,NumHunks
-    bra         JOBLOOP
+	GETM		A0
+	MOVE.L		HunkList(PC),(A0)+
+	MOVE.L		A0,HunkList
+	exg.L		A0,D0
+	move.l		d0,H_PREV(A0)
+	exg.l		a0,d0
+	MOVE.L		A4,(A0)+
+	move.l		D1,(a0)+
+	clr.l		(a0)+
+	clr.l		(a0)+
+	clr.l		(a0)+
+	clr.l		(a0)+
+	clr.l		(a0)+
+	DONEM		A0
+	ADDQ.L		#1,NumHunks
+	bra			JOBLOOP
 
-; 86   INS_FLAG
+; 86	 INS_FLAG
 
-    INS_FLAG:
-    CLR.W IFLAG
-	MOVE.W	-2(A3),D0			;    WITH JOB, ELSE STOP.
+	INS_FLAG:
+	CLR.W IFLAG
+	MOVE.W	-2(A3),D0			;	 WITH JOB, ELSE STOP.
 	CMP.W	(A2)+,D0	
 	BNE.S	.1
-  
-    MOVE.W #-1,IFLAG
+	
+	MOVE.W #-1,IFLAG
 
-.1: bra         JOBLOOP
+.1: bra			JOBLOOP
 
-;87   INVERT_BRANCH
+;87		INVERT_BRANCH
 
-    INVERT_BRANCH:
-    TST.W IFLAG
-    BEQ.S .1
-  
-    EOR.W #$0100,-4(A4)
+	INVERT_BRANCH:
+	TST.W IFLAG
+	BEQ.S .1
+	
+	EOR.W #$0100,-4(A4)
 
-.1: bra         JOBLOOP
+.1: bra			JOBLOOP
 
-;88    STACK_CHECK
+;88		 STACK_CHECK
 STACK_CHECK:
 
-    MOVE.L COMPILEPROC,A0
-    BTST #7,3(A0)   ;GETA4 flag in PROC
-    BEQ.S .na4
+	MOVE.L COMPILEPROC,A0
+	BTST #7,3(A0)	;GETA4 flag in PROC
+	BEQ.S .na4
 
-    MOVE.W  #$2879,(a4)+
-    MOVEM.L A4,-(A7)
-    MOVEA.L	A4SAVEPTR(PC),A4
-    JSR	NEWLABEL
-    MOVE.L	D0,-(A7)
-    JSR	ADDLABEL
-    MOVEM.L	(A7)+,D0/A4
-    JSR	ADDBRANCHRELOC
+	MOVE.W	#$2879,(a4)+
+	MOVEM.L A4,-(A7)
+	MOVEA.L	A4SAVEPTR(PC),A4
+	JSR	NEWLABEL
+	MOVE.L	D0,-(A7)
+	JSR	ADDLABEL
+	MOVEM.L	(A7)+,D0/A4
+	JSR	ADDBRANCHRELOC
 .na4:
-    CLR.L STACKMODADDR
-    CLR.L XTRASTACK2
+	CLR.L STACKMODADDR
+	CLR.L XTRASTACK2
 
-    MOVE.L COMPILEPROC,A0
-    BTST #7,2(A0)     ;stackcheck flag in PROC
-    BNE.S .2
+	MOVE.L COMPILEPROC,A0
+	BTST #7,2(A0)		;stackcheck flag in PROC
+	BNE.S .2
 
-    TST.L STACKCHECK
-    BEQ.S .1
+	TST.L STACKCHECK
+	BEQ.S .1
 .2
 
-    JSR GENLINENO
-    
-    LEA .MOVE1(PC),A0
-    MOVE.L (A0)+,(A4)+		;MOVEM.L A0/D0,-(A7)
-    MOVE.W (A0)+,(A4)+		;MOVE.L 
-    MOVE.L A4,STACKMODADDR
-    MOVE.L (A0)+,(A4)+		;move value
-    MOVE.L (A0)+,(A4)+		;MOVE.L -144(A4),A0
-    MOVE.W (A0)+,(A4)+		;JSR (A0)
-    MOVE.L (A0)+,(A4)+		;MOVEM.L (A7)+,A0/D0
-.1  bra         JOBLOOP
+	JSR GENLINENO
+	
+	LEA .MOVE1(PC),A0
+	MOVE.L (A0)+,(A4)+		;MOVEM.L A0/D0,-(A7)
+	MOVE.W (A0)+,(A4)+		;MOVE.L 
+	MOVE.L A4,STACKMODADDR
+	MOVE.L (A0)+,(A4)+		;move value
+	MOVE.L (A0)+,(A4)+		;MOVE.L -144(A4),A0
+	MOVE.W (A0)+,(A4)+		;JSR (A0)
+	MOVE.L (A0)+,(A4)+		;MOVEM.L (A7)+,A0/D0
+.1	bra			JOBLOOP
 
 .MOVE1: MOVEM.L A0/D0,-(A7)
-        MOVE.L #0,D0
-        MOVE.L -144(A4),A0
-        JSR (A0)
-        MOVEM.L (A7)+,A0/D0
+		MOVE.L #0,D0
+		MOVE.L -144(A4),A0
+		JSR (A0)
+		MOVEM.L (A7)+,A0/D0
 STACKMODADDR: DC.L 0
 XTRASTACK2: DC.L 0
 
-;89    STACK_UPDATE
+;89		 STACK_UPDATE
 STACK_UPDATE:
 
-    MOVE.L COMPILEPROC,A0
-    BTST #7,2(A0)			;stack check proc flag
-    BNE.S .5
+	MOVE.L COMPILEPROC,A0
+	BTST #7,2(A0)			;stack check proc flag
+	BNE.S .5
 
-    TST.L STACKCHECK
-    BEQ.S .1
+	TST.L STACKCHECK
+	BEQ.S .1
 .5
-    CLR.B STACKCHECKPROCFLAG
-    MOVE.L STACKMODADDR,D0
-    BEQ.S .1
-    MOVE.L D0,A0
-    MOVEQ #0,D0
-    MOVE.W NRLOC,D0
-    NEG.W D0
-    ADD.L XTRASTACK,D0
-    ADD.L XTRASTACK2,D0
-    ADD.L #256+50,D0
-    MOVE.W PROCMASK,D1
-.3    TST.W D1
-    BEQ.S .4
-    BTST #0,D1
-    BEQ.S .2
-    ADDQ #4,D0
+	CLR.B STACKCHECKPROCFLAG
+	MOVE.L STACKMODADDR,D0
+	BEQ.S .1
+	MOVE.L D0,A0
+	MOVEQ #0,D0
+	MOVE.W NRLOC,D0
+	NEG.W D0
+	ADD.L XTRASTACK,D0
+	ADD.L XTRASTACK2,D0
+	ADD.L #256+50,D0
+	MOVE.W PROCMASK,D1
+.3		TST.W D1
+	BEQ.S .4
+	BTST #0,D1
+	BEQ.S .2
+	ADDQ #4,D0
 .2
-    LSR.W #1,D1
-    BRA.S .3
+	LSR.W #1,D1
+	BRA.S .3
 .4
-    MOVE.L D0,(A0)
-    
-.1  bra         JOBLOOP
+	MOVE.L D0,(A0)
+	
+.1	bra			JOBLOOP
 
-;90        Automatic procedure
+;90			 Automatic procedure
 JOB_AUTOPROC:
-    CMP.W   #IOFF+116,(A3)     ;SETUP
-    BMI     JOBLOOP
-    CMP.W   #IOFF+117,(A3)     ;CLEANUP
-    BGT     JOBLOOP
-    TSTMOD
-    BEQ     ERROR49
-    MOVE.L  COMPILEPROC(PC),A0
-    TST.W   (A0)
-    BNE     ERROR23
-    BTST    #1,2(A0)
-    BNE     ERROR39
+	CMP.W	#IOFF+116,(A3)		 ;SETUP
+	BMI		JOBLOOP
+	CMP.W	#IOFF+117,(A3)		 ;CLEANUP
+	BGT		JOBLOOP
+	TSTMOD
+	BEQ		ERROR49
+	MOVE.L	COMPILEPROC(PC),A0
+	TST.W	(A0)
+	BNE		ERROR23
+	BTST	#1,2(A0)
+	BNE		ERROR39
 
-    MOVEQ   #0,D0
-    MOVE.W  (A3)+,D0
-    SUB.W   #IOFF+116-5,D0  ;bits 5 and 6 for SETUP and CLEANUP
-    BSET    D0,3(A0)        ;set in flags2
-    MOVE.L  14(A0),A0
-    BSET    #2,5(A0)        ;set export
-    BRA JOBLOOP
+	MOVEQ	#0,D0
+	MOVE.W	(A3)+,D0
+	SUB.W	#IOFF+116-5,D0	;bits 5 and 6 for SETUP and CLEANUP
+	BSET	D0,3(A0)		;set in flags2
+	MOVE.L	14(A0),A0
+	BSET	#2,5(A0)		;set export
+	BRA JOBLOOP
 
 ;*-*
 
@@ -17412,114 +17412,114 @@ JOB_AUTOPROC:
 ; ************************************************************* ;
 
 APPEND_LISTS:
-    MOVE.L      #.MESSY,D2
-    MOVE.L      #.ENDMESSY,D3
-    SUB.L       D2,D3
-    BTST    #7,CODEPREFS+2
-    BNE.S   .1
-    JSR         WRITECON
+	MOVE.L		#.MESSY,D2
+	MOVE.L		#.ENDMESSY,D3
+	SUB.L		D2,D3
+	BTST	#7,CODEPREFS+2
+	BNE.S	.1
+	JSR			WRITECON
 .1:
-    BTST        #2,CODEPREFS+3
-    BEQ         .append
-    CMP.L       #1,NumHunks
-    BEQ         .append
-    MOVE.L      HunkList,A0
-    MOVE.L      A4,H_END(A0)
-    MOVE.L      a0,-(a7)
-    move.l      a4,-(a7)
-    bsr         APPEND
-    move.l      (a7)+,d7
-    move.l      (a7)+,d6
-    cmp.l       a4,d7
-    beq         .nothingtodo
-    GETM        A0
-    MOVE.L      HunkList,(A0)+
-    MOVE.L      A0,HunkList
-    exg.L       A0,D6
-    move.l      d6,H_PREV(A0)
-    exg.l       a0,d6
-    MOVE.L      d7,(A0)+
-    move.l      #$3ea,(a0)+
-    move.l      a4,(a0)+
-    clr.l       (a0)+
-    clr.l       (a0)+
-    DONEM       A0
-    ADDQ.L      #1,NumHunks
+	BTST		#2,CODEPREFS+3
+	BEQ			.append
+	CMP.L		#1,NumHunks
+	BEQ			.append
+	MOVE.L		HunkList,A0
+	MOVE.L		A4,H_END(A0)
+	MOVE.L		a0,-(a7)
+	move.l		a4,-(a7)
+	bsr			APPEND
+	move.l		(a7)+,d7
+	move.l		(a7)+,d6
+	cmp.l		a4,d7
+	beq			.nothingtodo
+	GETM		A0
+	MOVE.L		HunkList,(A0)+
+	MOVE.L		A0,HunkList
+	exg.L		A0,D6
+	move.l		d6,H_PREV(A0)
+	exg.l		a0,d6
+	MOVE.L		d7,(A0)+
+	move.l		#$3ea,(a0)+
+	move.l		a4,(a0)+
+	clr.l		(a0)+
+	clr.l		(a0)+
+	DONEM		A0
+	ADDQ.L		#1,NumHunks
 .nothingtodo:
-    MOVE.l      A4,CURACODE
-    rts
+	MOVE.l		A4,CURACODE
+	rts
 
 .append:
-    bsr         APPEND
-    MOVE.L      HunkList,A0
-    MOVE.L      A4,H_END(A0)
-    rts
+	bsr			APPEND
+	MOVE.L		HunkList,A0
+	MOVE.L		A4,H_END(A0)
+	rts
 
 .MESSY:
-    DC.B        'linking arrays ...',$A
+	DC.B		'linking arrays ...',$A
 .ENDMESSY:
-    EVEN
+	EVEN
 
 
 APPEND:
-    lea         IMMLH,A0
+	lea			IMMLH,A0
 .LOOP2:
-    move.l      a4,d0
-    btst        #0,d0
-    beq         .SK1
-    clr.b       (a4)+
+	move.l		a4,d0
+	btst		#0,d0
+	beq			.SK1
+	clr.b		(a4)+
 .SK1:
-    MOVE.l      (A0),D0
-    BEQ         .END2
-    MOVE.l      D0,A0
-    move.w      4(a0),d0
-    MOVE.L      A0,-(a7)
-    addq.l      #4,a4       ; look below
-    bsr         ADDLABEL
-    move.l      (a7)+,a0
-    move.l      a4,-(a7)
-    subq.l      #4,a4       ; look above
-    move.l      6(a0),a1
-    move.l      10(a0),d0
-    subq.l      #1,d0
-.11:move.b      (a1)+,(a4)+
-    dbf         d0,.11
+	MOVE.l		(A0),D0
+	BEQ			.END2
+	MOVE.l		D0,A0
+	move.w		4(a0),d0
+	MOVE.L		A0,-(a7)
+	addq.l		#4,a4		; look below
+	bsr			ADDLABEL
+	move.l		(a7)+,a0
+	move.l		a4,-(a7)
+	subq.l		#4,a4		; look above
+	move.l		6(a0),a1
+	move.l		10(a0),d0
+	subq.l		#1,d0
+.11:move.b		(a1)+,(a4)+
+	dbf			d0,.11
 
-    lea         14(a0),a1   ; ref list
-    move.l      a0,d7
-.1L:move.l      a4,a6
-    move.l      (a1),d0     ; next
-    beq         .1e         ; if any
-    move.l      d0,a1       ;
-    move.l      (a7),a4     ;
-    add.w       10(a1),a4   ;
-    move.w      8(a1),d0    ;
-    bsr         ADDBRANCHRELOC
-    move.l      a6,a4       ;
-    move.w      8(a1),d0    ;
-    bsr         ADDLABEL
-    move.l      4(a1),a0
-    move.w      (a0)+,d0
-.1c:tst.w       d0
-    beq         .1L
-    move.b      (a0)+,(a4)+
-    subq.l      #1,d0
-    bra         .1c
+	lea			14(a0),a1	; ref list
+	move.l		a0,d7
+.1L:move.l		a4,a6
+	move.l		(a1),d0		; next
+	beq			.1e			; if any
+	move.l		d0,a1		;
+	move.l		(a7),a4		;
+	add.w		10(a1),a4	;
+	move.w		8(a1),d0	;
+	bsr			ADDBRANCHRELOC
+	move.l		a6,a4		;
+	move.w		8(a1),d0	;
+	bsr			ADDLABEL
+	move.l		4(a1),a0
+	move.w		(a0)+,d0
+.1c:tst.w		d0
+	beq			.1L
+	move.b		(a0)+,(a4)+
+	subq.l		#1,d0
+	bra			.1c
 
-.1e:move.l      d7,a0
-    addq.l      #4,a7
-    bra         .LOOP2
+.1e:move.l		d7,a0
+	addq.l		#4,a7
+	bra			.LOOP2
 .END2:
-    MOVE.l      A4,CURACODE
-    rts
+	MOVE.l		A4,CURACODE
+	rts
 
-      CALCADR:
+		CALCADR:
 	MOVE.W	#10,CURSPOT
-    MOVE.L  CURACODE(PC),A4     ; A4=CODE
-    MOVE.L  A5,-(A7)
-    MOVE.L  HunkList(PC),A5
-    move.l  A4,H_END(A5)
-    MOVe.L  (a7)+,A5
+	MOVE.L	CURACODE(PC),A4		; A4=CODE
+	MOVE.L	A5,-(A7)
+	MOVE.L	HunkList(PC),A5
+	move.l	A4,H_END(A5)
+	MOVe.L	(a7)+,A5
 	MOVE.L	ACODE(PC),D2
 	MOVE.L	A4,D4
 	BTST	#1,D4
@@ -17541,7 +17541,7 @@ APPEND:
 	ADD.L	A6,D0
 	MOVE.L	D0,LABM			; SET USED
 	BSR	PUTRELOC
-      BRLOOP:
+		BRLOOP:
 	MOVE.L	(A5),A5
 	MOVE.L	A5,D0
 	BEQ.S	BROUT
@@ -17554,15 +17554,15 @@ APPEND:
 	MOVE.L	0(A6,D0.L),D2		; BRAnch to
 	BTST	#0,1(A0)		; IF BIT=1 --> .B OR .L RELOC
 	BNE.S	OTHERRELOC
-    BSR THRUHUNKS
-    TST.L   D0
-    BNE     ERROR44
-    
+	BSR THRUHUNKS
+	TST.L	D0
+	BNE		ERROR44
+	
 	SUB.L	A0,D2
-    CMP.W   #1,12(A5)
-    BNE .1
-    ADDQ.L  #2,D2
-;    ADDQ.L  #2,A0
+	CMP.W	#1,12(A5)
+	BNE .1
+	ADDQ.L	#2,D2
+;	 ADDQ.L	 #2,A0
 .1:
 	MOVE.L	#32768,D0
 	CMP.L	D0,D2
@@ -17572,7 +17572,7 @@ APPEND:
 	BMI	ERROR44
 	MOVE.W	D2,(A0)
 	BRA.S	BRLOOP
-      BROUT:
+		BROUT:
 	MOVE.L	NUMRELOC(PC),D0
 	BEQ.S	.1
 	CLR.L	(A4)+
@@ -17582,14 +17582,14 @@ APPEND:
 	MOVE.L	A4,CURACODE		; SET BACK.
 	MOVE.W	#-1,LINENUM
 	RTS
-      OTHERRELOC:
-    BTST    #3,1(A0)
-    BNE     XLONG
-    BNE ERROR45
+		OTHERRELOC:
+	BTST	#3,1(A0)
+	BNE		XLONG
+	BNE ERROR45
 	BTST	#1,1(A0)
 	BNE.S	LONG
-    BSR THRUHUNKS
-    TST.L   D0
+	BSR THRUHUNKS
+	TST.L	D0
 	BTST	#2,1(A0)		; 8 bit pcrel
 	BEQ.S	.1
 	SUBQ.L	#2,D2
@@ -17603,12 +17603,12 @@ APPEND:
 	BPL	ERROR45
 	MOVE.B	D2,1(A0)		; PTR A0 = RELOCEND-2
 	BRA	BRLOOP
-      LONG:
-    TSTMOD                  ; ALL MODULES linked to hunk #0!
-    BNE     .3
-    BSR     FINDNFIX            ; NOT allowed in modules!
-    BRA BRLOOP
-.3:      
+		LONG:
+	TSTMOD					; ALL MODULES linked to hunk #0!
+	BNE		.3
+	BSR		FINDNFIX			; NOT allowed in modules!
+	BRA BRLOOP
+.3:		 
 	BSR	INCRELOC
 	TST.W	2(A0)			; SEE IF THERE IS EFUNCNUM
 	BNE.S	.2
@@ -17624,7 +17624,7 @@ APPEND:
 	MOVE.L	D0,(A4)+
 	BRA	BRLOOP
 
-      INCRELOC:
+		INCRELOC:
 	TST.L	NUMRELOC		; 32BIT RELOC
 	BNE.S	.1
 	MOVE.L	#$3EC,(A4)+
@@ -17636,106 +17636,106 @@ APPEND:
 	RTS
 
 XLONG:
-    BTST    #1,1(A0)
-    BNE     .XRELOC
-    SUB.L   A0,D2
-    CMP.W   #1,12(A5)
-    BNE .1
-    ADDQ.L  #2,D2
+	BTST	#1,1(A0)
+	BNE		.XRELOC
+	SUB.L	A0,D2
+	CMP.W	#1,12(A5)
+	BNE .1
+	ADDQ.L	#2,D2
 .1:
-    MOVE.L  D2,(A0)
-    BRA     BRLOOP
+	MOVE.L	D2,(A0)
+	BRA		BRLOOP
 .XRELOC:
-    MOVE.L  12(A5),D2
-    ADD.L   D7,D2
-    BSR     FINDNFIX
-    BRA     BRLOOP
+	MOVE.L	12(A5),D2
+	ADD.L	D7,D2
+	BSR		FINDNFIX
+	BRA		BRLOOP
 
-;    MOVE.L  12(a5),(a0)
-;    BSR INCRELOC
-;    SUB.L   D7,A0
-;    MOVE.L  A0,(A4)+
-;    BRA     BRLOOP
+;	 MOVE.L	 12(a5),(a0)
+;	 BSR INCRELOC
+;	 SUB.L	 D7,A0
+;	 MOVE.L	 A0,(A4)+
+;	 BRA	 BRLOOP
 ;; ThruHunks - check if reference is between two hunks
-THRUHUNKS:          ; D2 = dest, A0 = src
-    MOVEM.L D1-A6,-(A7)
-    MOVE.L  HunkList(PC),D0
-.1: MOVE.L  D0,A1
-    CMP.L   H_ADDR(A1),D2
-    BGE     .2
-    MOVE.L  H_NEXT(A1),D0
-    BRA     .1
-.2: MOVE.L  A0,D1
-    CMP.L   H_ADDR(A1),D1
-    BMI     .3
-    CMP.L   H_END(A1),D1
-    BGE     .3
-    MOVEQ   #0,D0
-    MOVEm.L (A7)+,D1-A6
-    RTS
-.3: MOVEQ   #-1,D0
-    MOVEm.L (A7)+,D1-A6
-    rts
+THRUHUNKS:			; D2 = dest, A0 = src
+	MOVEM.L D1-A6,-(A7)
+	MOVE.L	HunkList(PC),D0
+.1: MOVE.L	D0,A1
+	CMP.L	H_ADDR(A1),D2
+	BGE		.2
+	MOVE.L	H_NEXT(A1),D0
+	BRA		.1
+.2: MOVE.L	A0,D1
+	CMP.L	H_ADDR(A1),D1
+	BMI		.3
+	CMP.L	H_END(A1),D1
+	BGE		.3
+	MOVEQ	#0,D0
+	MOVEm.L (A7)+,D1-A6
+	RTS
+.3: MOVEQ	#-1,D0
+	MOVEm.L (A7)+,D1-A6
+	rts
 ;*-*
 ;; FindNFix - sth like INCRELOC, but for multiple hunks
-FINDNFIX:           ; D7 = acode, D2 = dest, A0 = src
-    MOVEM.L D0-A6,-(A7)
-    TSTMOD
-    BEQ     .NORMAL
-    BSR INCRELOC
-    SUB.L   A0,D2
-    MOVE.L  D2,(A0)
-    MOVE.L  A0,(A4)+
-    BRA     .XIT
+FINDNFIX:			; D7 = acode, D2 = dest, A0 = src
+	MOVEM.L D0-A6,-(A7)
+	TSTMOD
+	BEQ		.NORMAL
+	BSR INCRELOC
+	SUB.L	A0,D2
+	MOVE.L	D2,(A0)
+	MOVE.L	A0,(A4)+
+	BRA		.XIT
 .NORMAL:
-    MOVE.L  NumHunks(PC),D1
-    SUBQ.L  #1,D1
-    MOVE.L  HunkList(PC),D0     ; adresses from the last to the first
-.1: MOVE.L  D0,A1
-    CMP.L   H_ADDR(A1),D2
-    BGE     .FND
-    SUBQ.L  #1,D1               ; next hunk
-    MOVE.L  H_NEXT(A1),D0
-    BEQ     ERROR57
-    bra     .1
-.FND:                           ; here we have the hunk number :)
-    MOVE.L  A1,A3               ; and the offset of REAL start
-    MOVE.L  HunkList(PC),D0     ; now the hunk where to put the reloc
-.2: MOVE.L  D0,A1
-    CMPA.L  H_ADDR(A1),A0
-    BGE     .FND2
-    MOVE.L  H_NEXT(A1),D0
-    BEQ ERROR57
-    bra     .2
+	MOVE.L	NumHunks(PC),D1
+	SUBQ.L	#1,D1
+	MOVE.L	HunkList(PC),D0		; adresses from the last to the first
+.1: MOVE.L	D0,A1
+	CMP.L	H_ADDR(A1),D2
+	BGE		.FND
+	SUBQ.L	#1,D1				; next hunk
+	MOVE.L	H_NEXT(A1),D0
+	BEQ		ERROR57
+	bra		.1
+.FND:							; here we have the hunk number :)
+	MOVE.L	A1,A3				; and the offset of REAL start
+	MOVE.L	HunkList(PC),D0		; now the hunk where to put the reloc
+.2: MOVE.L	D0,A1
+	CMPA.L	H_ADDR(A1),A0
+	BGE		.FND2
+	MOVE.L	H_NEXT(A1),D0
+	BEQ ERROR57
+	bra		.2
 .FND2:
-    MOVE.L  H_ADDR(A3),D0
-    SUB.L   D0,D2
-    MOVE.L  D2,(A0)
-    GETM    A2
-    MOVE.L  H_RELO(A1),(A2)+
-    MOVE.L  A2,H_RELO(A1)
-    MOVE.W  D1,(A2)+
-    SUB.L   H_ADDR(A1),A0
-    MOVE.L  A0,(A2)+            ; ta daaa!
-    DONEM   A2
+	MOVE.L	H_ADDR(A3),D0
+	SUB.L	D0,D2
+	MOVE.L	D2,(A0)
+	GETM	A2
+	MOVE.L	H_RELO(A1),(A2)+
+	MOVE.L	A2,H_RELO(A1)
+	MOVE.W	D1,(A2)+
+	SUB.L	H_ADDR(A1),A0
+	MOVE.L	A0,(A2)+			; ta daaa!
+	DONEM	A2
 .XIT
-    MOVEM.L (A7)+,D0-A6         ; filled! :)
-    RTS
+	MOVEM.L (A7)+,D0-A6			; filled! :)
+	RTS
 ;*-*
 
 NUMRELOC:	DC.L	0
 NUMRELADR:	DC.L	0
 
 ; LAST RELOC BYTE:
-; <0xx0> BIT #0 CLR -->                PCREL RELOC16
-; <0001>        SET --> BIT #1 CLR --> PCREL RELOC8
-; <0101>        SET --> BIT #1 CLR --> PCREL RELOC8 + ADJUST
-; <0x11>                       SET --> ABS   RELOC32 (ENTRY IN RELOCTAB)
+; <0xx0> BIT #0 CLR -->					 PCREL RELOC16
+; <0001>		SET --> BIT #1 CLR --> PCREL RELOC8
+; <0101>		SET --> BIT #1 CLR --> PCREL RELOC8 + ADJUST
+; <0x11>						 SET --> ABS	 RELOC32 (ENTRY IN RELOCTAB)
 ; <1001> BIT #0 SET --> BIT #1 CLR --> PCREL RELOC32
 
-      DIVRELOC:	DC.L	0
+		DIVRELOC:	DC.L	0
 
-      ADDDIVRELOC:			; ADR=D0
+		ADDDIVRELOC:			; ADR=D0
 	MOVE.L	A0,-(A7)
 	GETM	A0
 	MOVE.L	DIVRELOC(PC),(A0)
@@ -17746,53 +17746,53 @@ NUMRELADR:	DC.L	0
 	MOVE.L	(A7)+,A0
 	RTS
 
-      PUTRELOC:
-    MOVEM.L A0-A3/A6/D0-D7,-(A7)    ; EXPECTS CODE IN A4
-    LEA CODELIST(PC),A0     ; A0=CODEREM
-    MOVE.L  LABM+8,A2       ; A2=LABELS
-.XL:MOVE.L  (A0),A0
-    MOVE.L  A0,D0
-    BEQ.S   .E
-    CMP.W   #3,4(A0)
-    BNE.S   .LL
-    MOVE.L  6(A0),A3        ; A3=RELOCTAB
-    MOVE.L  10(A0),D3       ; D3=RELOCLEN
-    SUBQ.L  #1,D3
-.RL:MOVE.L  (A3)+,D2
-    BMI.S   .P
-;    BSR INCRELOC
-    ADD.L   D1,D2           ; ADD OFFSET IN D1
+		PUTRELOC:
+	MOVEM.L A0-A3/A6/D0-D7,-(A7)	; EXPECTS CODE IN A4
+	LEA CODELIST(PC),A0		; A0=CODEREM
+	MOVE.L	LABM+8,A2		; A2=LABELS
+.XL:MOVE.L	(A0),A0
+	MOVE.L	A0,D0
+	BEQ.S	.E
+	CMP.W	#3,4(A0)
+	BNE.S	.LL
+	MOVE.L	6(A0),A3		; A3=RELOCTAB
+	MOVE.L	10(A0),D3		; D3=RELOCLEN
+	SUBQ.L	#1,D3
+.RL:MOVE.L	(A3)+,D2
+	BMI.S	.P
+;	 BSR INCRELOC
+	ADD.L	D1,D2			; ADD OFFSET IN D1
 
-    MOVEM.L D2/d7/A0,-(A7)
-    MOVE.L  ACODE(PC),D7
-    ADD.L   D7,D2
-    MOVE.L  D2,A0
-    MOVE.L  (A0),D2
-    ADD.L   D7,D2
-    BSR     FINDNFIX
-    MOVEM.L (A7)+,D2/d7/A0
+	MOVEM.L D2/d7/A0,-(A7)
+	MOVE.L	ACODE(PC),D7
+	ADD.L	D7,D2
+	MOVE.L	D2,A0
+	MOVE.L	(A0),D2
+	ADD.L	D7,D2
+	BSR		FINDNFIX
+	MOVEM.L (A7)+,D2/d7/A0
 
-;    MOVE.L  D2,(A4)+
-.P: DBRA    D3,.RL
-    BRA     .XL
-.E: LEA DIVRELOC(PC),A2     ; ADD SOME VARIOUS RELOCS
-    MOVE.L  ACODE,D7
-.DL:MOVE.L  (A2),D0
-    BEQ.S   .DX
-    MOVE.L  D0,A2
-    MOVE.L  D0,A0
-    MOVE.L  4(A0),A0
-    MOVE.L  (A0),D2
-    ADd.L   D7,D2
-    BSR FINDNFIX
-    BRA.S   .DL
-.DX:    MOVEM.L (A7)+,A0-A3/A6/D0-D7
-    RTS
-.LL:CMP.W   #2,4(A0)
-    BNE.S   .PROC
-    MOVE.L  10(A0),D1       ; D1=ADD OFFSET
-    SUB.L   ACODE,D1
-    BRA.S   .XL
+;	 MOVE.L	 D2,(A4)+
+.P: DBRA	D3,.RL
+	BRA		.XL
+.E: LEA DIVRELOC(PC),A2		; ADD SOME VARIOUS RELOCS
+	MOVE.L	ACODE,D7
+.DL:MOVE.L	(A2),D0
+	BEQ.S	.DX
+	MOVE.L	D0,A2
+	MOVE.L	D0,A0
+	MOVE.L	4(A0),A0
+	MOVE.L	(A0),D2
+	ADd.L	D7,D2
+	BSR FINDNFIX
+	BRA.S	.DL
+.DX:	MOVEM.L (A7)+,A0-A3/A6/D0-D7
+	RTS
+.LL:CMP.W	#2,4(A0)
+	BNE.S	.PROC
+	MOVE.L	10(A0),D1		; D1=ADD OFFSET
+	SUB.L	ACODE,D1
+	BRA.S	.XL
 
 .PROC:	CMP.W	#5,4(A0)
 	BNE.S	.XL
@@ -17835,30 +17835,30 @@ NUMRELADR:	DC.L	0
 .PPL:	MOVE.L	(A1)+,A6
 	ADD.L	D1,A6
 
-    MOVEM.L D2/A0,-(A7)
-    MOVE.L  A6,A0
-    ADD.L   D7,A0
-    ADD.L   D7,D2
-    BSR     FINDNFIX
-    MOVEM.L (A7)+,D2/A0
+	MOVEM.L D2/A0,-(A7)
+	MOVE.L	A6,A0
+	ADD.L	D7,A0
+	ADD.L	D7,D2
+	BSR		FINDNFIX
+	MOVEM.L (A7)+,D2/A0
 	DBRA	D3,.PPL
 	BRA.W	.XL
 
 .NOTF:	MOVE.L	D0,ERROROBJ
 	BRA	ERROR57
 
-      BUILDSYMHUNK:			; GETS CODE IN A4
+		BUILDSYMHUNK:			; GETS CODE IN A4
 	MOVEM.L	D0-D7/A0-A3/A5/A6,-(A7)
 	BTST	#5,CODEPREFS+2
 	BEQ	NOSYM
 	TSTMOD
 	BNE	NOSYM
-    
-    MOVE.L   #0,hunknum
-    
+	
+	MOVE.L	 #0,hunknum
+	
 nexthunk:
-    
-    MOVE.L  A4,SYMADDR
+	
+	MOVE.L	A4,SYMADDR
 	MOVE.L	LABM+8,A0		; A0=LABELBUF
 	MOVE.L	ACODE,D3		; D3=ACODE
 	MOVEQ	#0,D0			; D0=NUMSYMS
@@ -17874,7 +17874,7 @@ nexthunk:
 	CMP.B	#LAB,4(A5)
 	BNE.S	.LOOP
 
-  
+	
 	;TST.L	6(A5)
 	;BEQ.S	.LOOP			; skip labels yesorno?
 	MOVEQ	#0,D1
@@ -17882,24 +17882,24 @@ nexthunk:
 	LSL.L	#2,D1
 	MOVE.L	0(A0,D1.L),D1
 
-    BSR OFFSETFRONHUNKSTART
-    CMP.L   #-1,D1
-    BEQ     .LOOP
+	BSR OFFSETFRONHUNKSTART
+	CMP.L	#-1,D1
+	BEQ		.LOOP
 
 	TST.L	D0			; FIRST SYM, START HUNK
 	BNE.S	.NF
 	MOVE.L	#$3F0,(A4)+
 .NF:
 
-    MOVE.L  D1,-(A7)
+	MOVE.L	D1,-(A7)
 
 	CLR.L	(A4)+
 	MOVE.L	A4,A6			; A6=BACKPATCH
 
 	BTST	#4,5(A5)
 	BEQ.S	.NMETH
-	MOVE.L 6(A5),A2   ;get proc
-	MOVE.L 10(A2),A2  ;get obj
+	MOVE.L 6(A5),A2		;get proc
+	MOVE.L 10(A2),A2	;get obj
 	MOVE.L OASCII(A2),A2
 .CLO:	MOVE.B	(A2)+,(A4)+
 	BNE.S	.CLO
@@ -17923,9 +17923,9 @@ nexthunk:
 	MOVE.W	10(A5),D1		; LABEL-ID
 	LSL.L	#2,D1
 	MOVE.L	0(A0,D1.L),D1
-    
-    MOVE.L (A7)+,(A4)+
-    ;BSR OFFSETFRONHUNKSTART
+	
+	MOVE.L (A7)+,(A4)+
+	;BSR OFFSETFRONHUNKSTART
 	;SUB.L	D3,D1
 	;MOVE.L	D1,(A4)+
 	ADDQ.L	#1,D0
@@ -17939,17 +17939,17 @@ ESYMS:
 	MOVEQ	#0,D6
 .3:	TST.B	(A3)+
 	BEQ.S	.4
-    
-    BTST #6,CODEPREFS       ;inline
-    BEQ .noinline
+	
+	BTST #6,CODEPREFS		;inline
+	BEQ .noinline
 
-    MOVE.L  D6,D5
-    LEA     EFUNCFLAGSTAB,A1
-    MOVE.B  0(A1,D5),D5
-    BTST    #2,D5		;inline?
-    BNE     .4  
+	MOVE.L	D6,D5
+	LEA		EFUNCFLAGSTAB,A1
+	MOVE.B	0(A1,D5),D5
+	BTST	#2,D5		;inline?
+	BNE		.4	
 
-.noinline:    
+.noinline:		
 	MOVE.L	D7,A1
 	MOVE.L	D6,D5
 	LSL.L	#4,D5
@@ -17959,9 +17959,9 @@ ESYMS:
 	ADD.L	#10,D1
 	LSL.L	#2,D1
 	MOVE.L	0(A0,D1.L),D1
-    BSR OFFSETFRONHUNKSTART
-    CMP.L   #-1,D1
-    BEQ     .4
+	BSR OFFSETFRONHUNKSTART
+	CMP.L	#-1,D1
+	BEQ		.4
 
 	TST.L	D0			; FIRST SYM, START HUNK
 	BNE.S	.NF
@@ -17969,7 +17969,7 @@ ESYMS:
 .NF:	CLR.L	(A4)+
 	MOVE.L	A4,A6			; A6=BACKPATCH
 
-    MOVE.L  D1,-(A7)
+	MOVE.L	D1,-(A7)
 
 	MOVE.L	(A1),A2			; A2=ASCII
 .CL:	MOVE.B	(A2)+,(A4)+
@@ -17985,80 +17985,80 @@ ESYMS:
 	SUB.L	A6,D4
 	LSR.L	#2,D4
 	MOVE.W	D4,-2(A6)
-   
-    MOVE.L  (A7)+,(A4)+
+	 
+	MOVE.L	(A7)+,(A4)+
 	ADDQ.L	#1,D0
 
 .4:	ADDQ.L	#1,D6
 	DBRA	D2,.3
 
 	TST.L	D0
-    SNE     D0
-    EXT.W   D0
-    EXT.L   D0
-    AND.L   D0,SYMADDR
-    TST.L   D0
+	SNE		D0
+	EXT.W	D0
+	EXT.L	D0
+	AND.L	D0,SYMADDR
+	TST.L	D0
 	BEQ.S	NOSYM2
 	CLR.L	(A4)+
-    MOVE.L  A4,SYMEND
-    
-    BSR SETHUNKSYMPTRS
+	MOVE.L	A4,SYMEND
+	
+	BSR SETHUNKSYMPTRS
 NOSYM2:
-    ADD.L    #1,hunknum
-    MOVE.L   hunknum,D2
-    CMP.L   NumHunks,d2
-    BNE     nexthunk
+	ADD.L	 #1,hunknum
+	MOVE.L	 hunknum,D2
+	CMP.L	NumHunks,d2
+	BNE		nexthunk
 
 NOSYM:
-    MOVEM.L	(A7)+,D0-D7/A0-A3/A5/A6
+	MOVEM.L	(A7)+,D0-D7/A0-A3/A5/A6
 	RTS
 
-hunknum    DC.L 0
+hunknum		 DC.L 0
 
 OFFSETFRONHUNKSTART:
-    MOVEM.L D2-A6,-(A7)
+	MOVEM.L D2-A6,-(A7)
 
-    MOVEQ #0,D4
-    MOVE.L  HunkList(PC),D3
-.1: MOVE.L  D3,A1
-    CMP.L   H_ADDR(A1),D1
-    BGE     .2
+	MOVEQ #0,D4
+	MOVE.L	HunkList(PC),D3
+.1: MOVE.L	D3,A1
+	CMP.L	H_ADDR(A1),D1
+	BGE		.2
 .3:
-    MOVE.L  H_NEXT(A1),D3
-    ADDQ.L  #1,D4
-    BRA     .1
-.2: CMP.L   H_END(A1),D1
-    BGE     .3
-    
-    CMP.L   hunknum,D4
-    BNE     .wronghunk
-    
-    SUB.L   H_ADDR(A1),D1
-    
-    MOVEm.L (A7)+,D2-A6
-    rts
+	MOVE.L	H_NEXT(A1),D3
+	ADDQ.L	#1,D4
+	BRA		.1
+.2: CMP.L	H_END(A1),D1
+	BGE		.3
+	
+	CMP.L	hunknum,D4
+	BNE		.wronghunk
+	
+	SUB.L	H_ADDR(A1),D1
+	
+	MOVEm.L (A7)+,D2-A6
+	rts
 .wronghunk
-    MOVEQ   #-1,D1
-    MOVEm.L (A7)+,D2-A6
-    rts
+	MOVEQ	#-1,D1
+	MOVEm.L (A7)+,D2-A6
+	rts
 
 SETHUNKSYMPTRS:
-    MOVEM.L D2-A6,-(A7)
-    MOVE.L  HunkList(PC),D3
-    MOVEQ   #0,D1   
+	MOVEM.L D2-A6,-(A7)
+	MOVE.L	HunkList(PC),D3
+	MOVEQ	#0,D1	
 
-.1: MOVE.L  D3,A1
-    CMP.L   hunknum,D1
-    BEQ     .thishunk
-    MOVE.L  H_NEXT(A1),D3
-    ADDQ.L  #1,D1
-    BRA     .1
+.1: MOVE.L	D3,A1
+	CMP.L	hunknum,D1
+	BEQ		.thishunk
+	MOVE.L	H_NEXT(A1),D3
+	ADDQ.L	#1,D1
+	BRA		.1
 
 .thishunk:
-    MOVE.L   SYMADDR,H_SYM(A1)
-    MOVE.L   SYMEND,H_SEND(A1)
-    MOVEm.L (A7)+,D2-A6
-    rts
+	MOVE.L	 SYMADDR,H_SYM(A1)
+	MOVE.L	 SYMEND,H_SEND(A1)
+	MOVEm.L (A7)+,D2-A6
+	rts
 
 
 ; ************************************************************* ;
@@ -18080,19 +18080,19 @@ SETHUNKSYMPTRS:
 ;			1	OPTI DONE, BUT DONT MOVE (MAY USE A0 TOO)
 ;			<ADR>	OPTI DONE, <ADR>..A4 IS CODE
 
-      EAEXP:
+		EAEXP:
 	MOVEM.L	A1/A2/D3/D4,-(A7)
-    MOVE.L  A4,-(a7)
-    MOVE.W  EAREQUEST,-(A7)
-    BCLR    #2,ICODEPREFS+3
+	MOVE.L	A4,-(a7)
+	MOVE.W	EAREQUEST,-(A7)
+	BCLR	#2,ICODEPREFS+3
 	BSR	EXP
-    MOVE.w  (A7)+,EAREQUEST
-    move.l  (a7)+,a1
+	MOVE.w	(A7)+,EAREQUEST
+	move.l	(a7)+,a1
 tinyent:
 	MOVE.L	A4,D3
 	SUB.L	A1,D3
 	CMP.L	#9,D3
-    BPL     .LASTADR
+	BPL		.LASTADR
 	CMP.L	#2,D3
 	BNE	.1
 
@@ -18118,7 +18118,7 @@ tinyent:
 	BEQ	.X
 	MOVE.W	10(A2),D3
 	BRA.S .VAR2
-  
+	
 .3:	MOVE.B	1(A1),D4
 	BEQ.S	.3A
 	EXT.W	D4
@@ -18167,7 +18167,7 @@ tinyent:
 	AND.W	#%1111111111111000,D3
 	CMP.W	#%0010000000000000,D3
 	BNE	.X
-	BRA.S .canopt  ; 
+	BRA.S .canopt	; 
 	;BSR.W	DOOPT			; ** MOVE.L Dx,Rx/-(A7)/2(A5)
 	;BRA	.OK
 
@@ -18256,23 +18256,23 @@ tinyent:
 	BRA.S	.OKNM
 
 .LASTADR:
-    btst    #2,ICODEPREFS+3
-    bne     .X
-    move.l  LAST_CMD_ADR,d0
-    beq     .X
-    move.l  d0,a1
-    move.l  a4,d0
-    sub.l   a1,d0
-    cmp.l   #6,d0
-    bgt     .X
-    cmp.w   #16,EAREQUEST
-    bne     .X
-    cmp.w   #2,d0
-    bgt     .X
-    cmp.w   #$2008,(a1)     ; ** MOVE.L A0,D0 [arrays]
-    bne     .X
-    move.w  #$2f08,(a1)     ; ** -> MOVE.L A0,-(A7)
-    bra     .OKNM
+	btst	#2,ICODEPREFS+3
+	bne		.X
+	move.l	LAST_CMD_ADR,d0
+	beq		.X
+	move.l	d0,a1
+	move.l	a4,d0
+	sub.l	a1,d0
+	cmp.l	#6,d0
+	bgt		.X
+	cmp.w	#16,EAREQUEST
+	bne		.X
+	cmp.w	#2,d0
+	bgt		.X
+	cmp.w	#$2008,(a1)		; ** MOVE.L A0,D0 [arrays]
+	bne		.X
+	move.w	#$2f08,(a1)		; ** -> MOVE.L A0,-(A7)
+	bra		.OKNM
 
 
 .OK:	MOVE.L	A1,D0
@@ -18325,8 +18325,8 @@ GRUNT:	MOVE.L	EAIDENT(PC),A6
 
 
 
-      EAREQUEST:	DC.W	0	; 0-15=REG, 16=STACK, 17,25=VAR
-      EAIDENT:		DC.L	0
+		EAREQUEST:	DC.W	0	; 0-15=REG, 16=STACK, 17,25=VAR
+		EAIDENT:		DC.L	0
 
 OPTMQADD:
 	MOVE.L (A1),D3
@@ -18384,9 +18384,9 @@ OPTMQADD:
 	BRA	.did
 .6:	MOVE.W	#1,A0
 
-      TINYEXP:				; GENERATES CODE FOR D0, JUST VALUES
+		TINYEXP:				; GENERATES CODE FOR D0, JUST VALUES
 	MOVE.W	(A3)+,D0		; TRASHES JUST D0
-	CMP.W 	#VALUE,D0
+	CMP.W	#VALUE,D0
 	BEQ.S	.1
 	CMP.W	#43,D0
 	BEQ.S	.1
@@ -18404,26 +18404,26 @@ OPTMQADD:
 	BPL.S	.3
 	CMP.L	#-128,D0
 	BMI.S	.3
- 	MOVE.L A4,lastmoveshort
+	MOVE.L A4,lastmoveshort
 	MOVE.B	.4(PC),(A4)+
 	MOVE.B	D0,(A4)+
 	RTS
 .3: BTST #0,D0
- 	BNE.S .3a
- 	CMP.L	#255,D0
+	BNE.S .3a
+	CMP.L	#255,D0
 	BPL.S	.3a
 	CMP.L	#-256,D0
 	BMI.S	.3a
 
 	MOVE.L A4,lastmoveshort
 	MOVE.B	.4(PC),(A4)+
-	MOVE.W  D0,-(A7)
-	ASR.L   #1,D0
+	MOVE.W	D0,-(A7)
+	ASR.L	#1,D0
 	MOVE.B	D0,(A4)+
 	MOVE.W	.6(PC),(A4)+
-	MOVE.W  (A7)+,D0
+	MOVE.W	(A7)+,D0
 	RTS
-  
+	
 .3a	MOVE.W	.5(PC),(A4)+
 	MOVE.L	D0,(A4)+
 	RTS
@@ -18441,7 +18441,7 @@ OPTMQADD:
 	BRA.S	.1
 
 
-      FINDMEMBER:	; *** FIND O.MEMBER, D1=TRASH,a1=first->REAL,a6=obj
+		FINDMEMBER:	; *** FIND O.MEMBER, D1=TRASH,a1=first->REAL,a6=obj
 	MOVE.W	OID(A6),D1
 	CMP.W	OID(A1),D1
 	BEQ.S	.X
@@ -18468,33 +18468,33 @@ OPTMQADD:
 	BRA	ERROR42
 
 SPSET:
-        DC.W 0
+		DC.W 0
 TYPERF_XXX:
-        DC.W    0
+		DC.W	0
 DIMS_REMAIN:
-        DC.W    0
+		DC.W	0
 FIRST_DIM:
-        DC.B    0
+		DC.B	0
 DIM_VALUE:
-        DC.B    0
+		DC.B	0
 
 ELEMENT_COUNT:
-        DC.W    0
+		DC.W	0
 DIMSPTR:
-        DC.L   0
+		DC.L	 0
 DIMSPTR2:
-        DC.L   0
+		DC.L	 0
 
 
-dtext:  DC.B 'debug %lx - %lx',10,0
-    EVEN
-dtext2:  DC.B 'debug %lx - %s',10,0
-    EVEN
-dval:   DC.L 0
-dval2:  DC.L 0
+dtext:	DC.B 'debug %lx - %lx',10,0
+	EVEN
+dtext2:	 DC.B 'debug %lx - %s',10,0
+	EVEN
+dval:	DC.L 0
+dval2:	DC.L 0
 
 
-      EADDRESSMODI:			; D5=-1/OTHER,A3=VOOR HELE EXP
+		EADDRESSMODI:			; D5=-1/OTHER,A3=VOOR HELE EXP
 	MOVEM.L	D3-D5/A1,-(A7)		; D0=[0=-->D0,1=-->D1,2=D0-->]
 
 	CLR.W DIMS_REMAIN
@@ -18506,7 +18506,7 @@ dval2:  DC.L 0
 	MOVE.B #1,FIRST_DIM
 	MOVE.W #-1,TYPERF_XXX
 
-	CMP.W	#-1,D5			;     SET(D5) PAR     PAR
+	CMP.W	#-1,D5			;		SET(D5) PAR		PAR
 	BNE.S	.1
 	CMP.W	#1,D0
 	BNE.S	.1
@@ -18529,7 +18529,7 @@ dval2:  DC.L 0
 	SNE D1
 	MOVE.W D1,FORCESIGNED
 
-	MOVE.L VAR_DIMDATA(A0),D1  
+	MOVE.L VAR_DIMDATA(A0),D1	
 	BEQ .nodimdata
 	MOVE.L D1,A1
 	MOVEQ #0,D1
@@ -18544,69 +18544,69 @@ dval2:  DC.L 0
 	ADD.L D1,D1
 	MOVE.W (A1,D1.L),D1
 	MOVE.W D1,ELEMENT_COUNT
-  
+	
 .nodimdata:
-	MOVE.W VAR_PTRREPCOUNT(A0),TYPERF_XXX  ; number of PTR TOs
+	MOVE.W VAR_PTRREPCOUNT(A0),TYPERF_XXX	; number of PTR TOs
 	MOVE.W	(A3)+,D1
 	CMP.W	#33,D1			; SEE IF IDENT++
 	BPL	PLX
 PLB:
-    CLR.L CASTSPEC
-    CMP.W   #41,D1        ;   ::
-    BNE     .0
-    CMP.W   #31,(A3)+
-    BNE ERROR42
-    MOVE.L  (A3),CASTSPEC
-    MOVE.L  (A3),.SPEC1
-    MOVE.L  (A3),.SSPEC1
-    MOVE.L  (A3),.SPEC
-    MOVE.L  (A3)+,.SSPEC
-    MOVE.W  (A3)+,D1
-    CLR.L   .TDRF
-    MOVE.W  #-1,TYPERF_XXX
-    BRA .0_2        ; .DREFL
+	CLR.L CASTSPEC
+	CMP.W	#41,D1			;		::
+	BNE		.0
+	CMP.W	#31,(A3)+
+	BNE ERROR42
+	MOVE.L	(A3),CASTSPEC
+	MOVE.L	(A3),.SPEC1
+	MOVE.L	(A3),.SSPEC1
+	MOVE.L	(A3),.SPEC
+	MOVE.L	(A3)+,.SSPEC
+	MOVE.W	(A3)+,D1
+	CLR.L	.TDRF
+	MOVE.W	#-1,TYPERF_XXX
+	BRA .0_2		; .DREFL
 .0:
-  
+	
 	MOVE.L	(A0),.SPEC
 	MOVE.L	(A0),.SSPEC
 	MOVE.L	(A0),.SPEC1
 	MOVE.L	(A0),.SSPEC1
 	CLR.B	.TDRF
 .DREFL:
-    MOVE.L  COMPILEPROC(PC),A1
-    CMP.L   18(A1),A0
-    BEQ .0_2                    ; self cant be a ptr to ptr ... - problems
+	MOVE.L	COMPILEPROC(PC),A1
+	CMP.L	18(A1),A0
+	BEQ .0_2					; self cant be a ptr to ptr ... - problems
 
 .NDIM:
-   
-    TST.W SPSET
-    BEQ.S .nr
+	 
+	TST.W SPSET
+	BEQ.S .nr
 
-    MOVE.L  .SPEC2,.SPEC
-    MOVE.L	.SSPEC2,.SSPEC
-    CLR.W SPSET
+	MOVE.L	.SPEC2,.SPEC
+	MOVE.L	.SSPEC2,.SSPEC
+	CLR.W SPSET
 .nr
-    TST.W DIMS_REMAIN
-    BNE.S .arr
-    
-    TST.W   TYPERF_XXX
-    BMI     .0_2
+	TST.W DIMS_REMAIN
+	BNE.S .arr
+	
+	TST.W	TYPERF_XXX
+	BMI		.0_2
 
-    SUB.W #1,TYPERF_XXX
-    BMI     .0_2
+	SUB.W #1,TYPERF_XXX
+	BMI		.0_2
 
-    BRA     .0_0
+	BRA		.0_0
 
-.arr    
-    TST.W   TYPERF_XXX
-    BMI     .0_2
-    
+.arr	
+	TST.W	TYPERF_XXX
+	BMI		.0_2
+	
 .0_0:
-    MOVE.L  .SPEC,.SPEC2
-    MOVE.L  .SSPEC,.SSPEC2
-    MOVE.L  #4,.SPEC
-    MOVE.L  #4,.SSPEC
-    MOVE.W #-1,SPSET
+	MOVE.L	.SPEC,.SPEC2
+	MOVE.L	.SSPEC,.SSPEC2
+	MOVE.L	#4,.SPEC
+	MOVE.L	#4,.SSPEC
+	MOVE.W #-1,SPSET
 
 .0_2:
 
@@ -18614,20 +18614,20 @@ PLB:
 	MOVE.W	D5,.KEEPD5
 
 	MOVEQ	#0,D3
-	CMP.W	#29,D1      ;[
+	CMP.W	#29,D1		;[
 	BNE.W	.8
 	ADDQ.L	#4,A3			; SKIP ]OFFSET
 	CMP.W	#30,(A3)
 	BEQ.W	.10
 
-	CMP.W #8,(A3)   ;special case for checking negative values immeditely followed by ]
+	CMP.W #8,(A3)	;special case for checking negative values immeditely followed by ]
 	BNE.S .notminus
 	TST.L DIMSPTR2
 	BEQ.S .notminus
 
 	CMP.W	#VALUE,2(A3)
 	BNE	.notminus
-	CMP.W	#30,8(A3)   ;next is "]" ?
+	CMP.W	#30,8(A3)	;next is "]" ?
 	BNE	.notminus
 
 	BRA.W ERROR106
@@ -18635,16 +18635,16 @@ PLB:
 
 	CMP.W	#VALUE,(A3)
 	BNE	.9
-	CMP.W	#30,6(A3)   ;next is "]" ?
+	CMP.W	#30,6(A3)	;next is "]" ?
 	BNE	.9
-  
+	
 	MOVE.L DIMSPTR,D1
 	BEQ .nodp
-  
+	
 	MOVE.L D1,A6
 	MOVEQ #0,D1
 	MOVE.W ELEMENT_COUNT,D1
-	DIVU  (A6)+,D1
+	DIVU	(A6)+,D1
 
 	TST.B FIRST_DIM
 	BEQ.S .notfirst1
@@ -18682,7 +18682,7 @@ PLB:
 	TST.B DIM_VALUE
 	BNE.S .dval
 
-	MOVE.W	.dimsaddd2(PC),(A4)+    ;tested
+	MOVE.W	.dimsaddd2(PC),(A4)+	;tested
 	MOVE.L D3,(A4)+
 	BRA.S .contf1
 
@@ -18714,13 +18714,13 @@ PLB:
 
 .nodim
 	MOVEM.L (A7)+,D0/A1
-  
+	
 	ADDQ.L	#6,A3
 	BRA.W	.10
 
 .9:	CMP.W	#IDENT,(A3)
 	BNE	.9B
-	CMP.W	#30,6(A3)   ;"]"
+	CMP.W	#30,6(A3)	;"]"
 	BNE	.9B
 
 	CLR.B DIM_VALUE
@@ -18733,20 +18733,20 @@ PLB:
 .first2
 	MOVE.L	2(A3),A6
 	MOVE.W	.OPTID2(PC),(A4)+
-	JSR	GVA6D3_0                    ;generate array index into d2 / tested
+	JSR	GVA6D3_0					;generate array index into d2 / tested
 	ADDQ.L	#6,A3
 	MOVEQ	#-1,D3
 
 ;array check range
 	MOVE.L DIMSPTR2,D1
 	BEQ.S .noarrcheck
-  
+	
 	TST.L ARRAYCHECK 
 	BEQ.S .noarrcheck
 
 	JSR GENLINENO
 
- 	MOVE.L D0,-(A7)
+	MOVE.L D0,-(A7)
 	MOVE.W .arrycheckd2,(A4)+
 	MOVE.L D1,A6
 	MOVEQ #0,D0
@@ -18772,7 +18772,7 @@ PLB:
 	MOVE.L D1,A6
 	MOVEQ #0,D1
 	MOVE.W ELEMENT_COUNT,D1
-	DIVU  (A6)+,D1
+	DIVU	(A6)+,D1
 	CMP.W #1,D1
 	BEQ.S .nomul1
 	MOVE.W	.dimsmuld2(PC),(A4)+
@@ -18822,7 +18822,7 @@ PLB:
 
 	MOVE.L D0,-(A7)
 	MOVE.W .arrycheckd2,(A4)
-	AND.W #$FBFF,(A4)+      ;change D2 to D0
+	AND.W #$FBFF,(A4)+		;change D2 to D0
 
 	MOVE.L D1,A6
 	MOVEQ #0,D0
@@ -18844,11 +18844,11 @@ PLB:
 
 	MOVE.L DIMSPTR,D1
 	BEQ .nodp3
-  
+	
 	MOVE.L D1,A6
 	MOVEQ #0,D1
 	MOVE.W ELEMENT_COUNT,D1
-	DIVU  (A6)+,D1
+	DIVU	(A6)+,D1
 	CMP.W #1,D1
 	BEQ.S .nomul3
 	MOVE.W	.dimsmuld0(PC),(A4)+
@@ -18862,7 +18862,7 @@ PLB:
 	TST.B FIRST_DIM
 	BNE.S .nodp3a
 
-	MOVE.L	.dimsaddmoved2(PC),(A4)+    ;tested
+	MOVE.L	.dimsaddmoved2(PC),(A4)+	;tested
 	BRA.W	.32
 
 .nodp3
@@ -18881,8 +18881,8 @@ PLB:
 	CMP.W #0,D2
 	BCS.S .arrokd2
 	MOVE.L	#"INDX",-84(A4)
-	MOVE.L  -148(A4),-96(A4)
- 	MOVE.L -140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L -140(A4),A0
 	JMP (A0)
 .arrokd2
 
@@ -18903,7 +18903,7 @@ PLB:
 
 	MOVE.L D0,-(A7)
 	MOVE.W .arrycheckd2,(A4)
-	AND.W #$FBFF,(A4)+      ;change D2 to D0
+	AND.W #$FBFF,(A4)+		;change D2 to D0
 
 	MOVE.L D1,A6
 	MOVEQ #0,D0
@@ -18929,7 +18929,7 @@ PLB:
 	MOVE.L D1,A6
 	MOVEQ #0,D1
 	MOVE.W ELEMENT_COUNT,D1
-	DIVU  (A6)+,D1
+	DIVU	(A6)+,D1
 	CMP.W #1,D1
 	BEQ.S .nomul4
 	MOVE.W	.dimsmuld0(PC),(A4)+
@@ -18961,10 +18961,10 @@ PLB:
 	MOVE.W	.RETA0(PC),(A4)+
 .NDR2:	MOVEM.L	(A7)+,D0/D3/A0
 	MOVEQ	#-1,D3
-.10:	CMP.W	#30,(A3)+     ;should be ]
+.10:	CMP.W	#30,(A3)+		;should be ]
 	BNE	ERROR34
 	MOVE.W	(A3)+,D1
-  
+	
 	CMP.W #1,DIMS_REMAIN
 	BLT .8
 
@@ -18978,12 +18978,12 @@ PLB:
 	BMI.S .8
 
 .zz
-	SUBQ.W  #1,TYPERF_XXX
+	SUBQ.W	#1,TYPERF_XXX
 	BRA.S .8a
 .dims:
-	SUBQ.W  #1,DIMS_REMAIN
-  
-	CMP.W #29,D1  ; [ expected
+	SUBQ.W	#1,DIMS_REMAIN
+	
+	CMP.W #29,D1	; [ expected
 	BEQ .NDIM
 	SUB.W #2,A3
 	BRA ERROR83
@@ -19001,14 +19001,14 @@ PLB:
 	CLR.L DIMSPTR
 	CMP.W	#41,D1			; CHECK FOR POINTERTYPE
 	BNE.S	.NCAST
-	CMP.W	#31,(A3)+       ; objecttype
+	CMP.W	#31,(A3)+		; objecttype
 	BNE	ERROR40
 	MOVE.L	(A3)+,A6
 	MOVE.L A6,CASTSPEC
 	MOVE.L	A6,.SSPEC		; -
-	MOVE.L  A6,.SSPEC1
+	MOVE.L	A6,.SSPEC1
 	MOVE.W	(A3)+,D1
-.NCAST:	CMP.W	#35,D1      ;should be .
+.NCAST:	CMP.W	#35,D1		;should be .
 	BNE	.11
 	CMP.L	#5,(A0)			; -
 	BPL.S	.NC2			; -
@@ -19025,18 +19025,18 @@ PLB:
 	BEQ.S	.NMS1
 	MOVE.L	.SPEC(PC),METHODSPEC
 .NMS1:
-  	MOVE.W #-1,METHCALL
-  	BRA .SKM
-  
+	MOVE.W #-1,METHCALL
+	BRA .SKM
+	
 .notmeth:
 	MOVE.L	.SSPEC(PC),.SPEC
-    MOVE.L	.SSPEC(PC),.SPEC1
-	CMP.W	#39,(A3)+     ; object member
+	MOVE.L	.SSPEC(PC),.SPEC1
+	CMP.W	#39,(A3)+		; object member
 	BNE	ERROR40
-	CMP.W	#17,4(A3)     ;  "("
+	CMP.W	#17,4(A3)		;	 "("
 ;	BEQ	.EADDRMETHOD2
 
- 	BNE.S .notmeth2
+	BNE.S .notmeth2
 	MOVE.L	(A3),A6
 	MOVE.L	OASCII(A6),(A3)
 	MOVE.W	#42,-(A3)
@@ -19048,7 +19048,7 @@ PLB:
 	MOVE.L	.SPEC(PC),METHODSPEC
 .NMS2:
 	MOVE.W #-1,METHCALL
- 	BRA.S .SKM
+	BRA.S .SKM
 
 
 .notmeth2:
@@ -19060,7 +19060,7 @@ PLB:
 	BNE.S	.CASTO
 	MOVE.L	D1,A6			; A6=OBJECTHEAD
 .CASTO:	
-    BSR	FINDMEMBER
+	BSR	FINDMEMBER
 	BRA.S	.SKM
 .FAKEO:	DC.L	0,0,0,0,0,0
 .SKMS:	SUBQ.L	#2,A3			; JUMPSPOT FOR OBJ[I]
@@ -19085,19 +19085,19 @@ PLB:
 	MOVE.W D1,ELEMENT_COUNT
 
 	MOVE.L A2,DIMSPTR
-  
+	
 .nodimdata:
-	MOVE.W PTRREPCOUNT(A1),TYPERF_XXX  ; number of PTR TOs
+	MOVE.W PTRREPCOUNT(A1),TYPERF_XXX	; number of PTR TOs
 .noobj1:
-	MOVE.L	.SPEC(PC),D5    ;object
+	MOVE.L	.SPEC(PC),D5	;object
 	CMP.L #5,D5
-	BMI.S  .12
+	BMI.S	.12
 	MOVE.L	D5,A2
-	MOVE.W	4(A2),D5    ;OSIZE
+	MOVE.W	4(A2),D5	;OSIZE
 	BRA.S	.12
 .11:	MOVE.L	.SPEC(PC),D5		; D5=OBJSIZE
 	CMP.L	#MAXOBJSIZE,D5
-	BPL	.SKMS 			; !!!ERROR40
+	BPL	.SKMS			; !!!ERROR40
 .15:	SUBQ.L	#2,A3
 .12:	BSR	PP			; D2=INC/DEC
 	MOVEQ	#2,D1
@@ -19140,13 +19140,13 @@ PLB:
 
 .EO:
 
-    CMP.W   #1,D5
-    BEQ     .SO
-    CMP.L   #-1,D3
+	CMP.W	#1,D5
+	BEQ		.SO
+	CMP.L	#-1,D3
 	BNE	ERROR31
-    CLR.W   .THE_FACTOR
-    CMP.W   #1,ECPU
-    BPL     .020_SCALE_FACTOR
+	CLR.W	.THE_FACTOR
+	CMP.W	#1,ECPU
+	BPL		.020_SCALE_FACTOR
 	CMP.W	#2,D5
 	BEQ.W	.S1
 	CMP.W	#4,D5
@@ -19154,12 +19154,12 @@ PLB:
 	CMP.W	#8,D5
 	BEQ.W	.S3
 .020_SCALE_FACTOR:
-    CMP.W   #2,D5
-    BEQ     .SF1
-    CMP.W   #4,D5
-    BEQ     .SF2
-    CMP.W   #8,D5
-    BEQ     .SF3
+	CMP.W	#2,D5
+	BEQ		.SF1
+	CMP.W	#4,D5
+	BEQ		.SF2
+	CMP.W	#8,D5
+	BEQ		.SF3
 	CMP.W	#16,D5
 	BEQ.W	.S4
 
@@ -19177,8 +19177,8 @@ PLB:
 	MOVE.L (A7)+,A4
 	MOVEM.L (A7)+,D0-D7 
 
-	CMP.W   #1,ECPU
-	BPL     .020_MULS
+	CMP.W	#1,ECPU
+	BPL		.020_MULS
 
 	MOVE.L A0,-(A7)
 	LEA .longmuls(PC),A0
@@ -19193,9 +19193,9 @@ PLB:
 	BRA.S	.SO
 
 .020_MULS
-	MOVE.L	.28_020(PC),(A4)+   ; generate muls.l
-	MOVE.W  #0,(A4)+
-	MOVE.W	D5,(A4)+        ; object size
+	MOVE.L	.28_020(PC),(A4)+	; generate muls.l
+	MOVE.W	#0,(A4)+
+	MOVE.W	D5,(A4)+		; object size
 	BRA.S	.SO
 
 .mulsdone
@@ -19204,8 +19204,8 @@ PLB:
 	BRA.S	.SO
 
 .arrayindex
-	MOVE.W	.28(PC),(A4)+   ; generate mulu
-	MOVE.W	D5,(A4)+        ; object size
+	MOVE.W	.28(PC),(A4)+	; generate mulu
+	MOVE.W	D5,(A4)+		; object size
 	BRA.S	.SO
  
 .longmuls
@@ -19227,11 +19227,11 @@ PLB:
 .S2:	MOVE.W	.29+2(PC),(A4)+		; LONG
 	BRA.S	.SO
 .SF1:MOVE.W #1,.THE_FACTOR
-    BRA     .SO
+	BRA		.SO
 .SF2:MOVE.W #2,.THE_FACTOR
-    BRA     .SO
+	BRA		.SO
 .SF3:MOVE.W #3,.THE_FACTOR
-    BRA     .SO
+	BRA		.SO
 .S1:	MOVE.W	.29(PC),(A4)+		; INT
 .SO:	MOVEQ	#0,D1
 	CMP.L	D1,A1
@@ -19247,7 +19247,7 @@ PLB:
 .IO:	MOVEQ	#0,D1			
 	CMP.L	A1,D1
 	BEQ.S	.14
-	MOVE.W	(A1),D1     ;A1=MEMBER, (A1)=OOFF
+	MOVE.W	(A1),D1		;A1=MEMBER, (A1)=OOFF
 .14:
 
 	MOVE.L D5,-(A7)
@@ -19308,7 +19308,7 @@ PLB:
 	TST.L	OPTRTYPE(A1)
 	BNE.S	.111
 	MOVE.L	.SPEC(PC),.SSPEC
-    MOVE.L	.SPEC(PC),.SSPEC1
+	MOVE.L	.SPEC(PC),.SSPEC1
 	BRA.S	.16B
 .111:	BTST	#1,OFLAGS(A1)
 	BEQ.S	.17 ;.16B			; was 17! (caused uninit .spec)
@@ -19322,7 +19322,7 @@ PLB:
 	TST.L	(A7)+
 	BEQ.S	.17
 	MOVE.L	.SPEC(PC),.SSPEC
-    MOVE.L	.SPEC(PC),.SSPEC1
+	MOVE.L	.SPEC(PC),.SSPEC1
 	BRA.S	.17
 .16:	MOVE.L	D5,D4
 	TST.W METHCALL
@@ -19404,48 +19404,48 @@ PLB:
 .IND1:
 ; *** indexed version
 
-    CMP.W   #ASSGN,(A3)
-    BEQ     .ENHANCE0
-    CMP.W   #11,2(A3)       ; =
-    BEQ     .EXPEXT0
+	CMP.W	#ASSGN,(A3)
+	BEQ		.ENHANCE0
+	CMP.W	#11,2(A3)		; =
+	BEQ		.EXPEXT0
 .E0_B0:
 	LSL.W	#2,D0
 	MOVE.W EAOFFSET,D7
 	ADD.W	D0,D7
 	LSR.W	#2,D0
 	MOVE.L A4,.tmpA4
-	MOVE.L  a0,-(sp)
+	MOVE.L	a0,-(sp)
 	LEA		.20,A0
 	MOVE.L	(A0,D7.W),(A4)+
-	MOVE.L  (sp)+,a0
+	MOVE.L	(sp)+,a0
 
-	MOVE.L  THE_OFFSET,D1
-	CLR.L   THE_OFFSET
-	CMP.L   #128,D1
-	BPL.S   .bigoff1
-	OR.W    D1,-2(A4)
-  
+	MOVE.L	THE_OFFSET,D1
+	CLR.L	THE_OFFSET
+	CMP.L	#128,D1
+	BPL.S	.bigoff1
+	OR.W	D1,-2(A4)
+	
 	BRA.S .E0_B
 .bigoff1:
 	CMP.W #32768,D1
-	BPL.S   .longoff1
-	CMP.W   #1,ECPU
-	BPL.S   .020_wordoff
+	BPL.S	.longoff1
+	CMP.W	#1,ECPU
+	BPL.S	.020_wordoff
 	MOVE.L -(A4),-(sp)
 	MOVE.W .addword000(PC),(A4)+
 	MOVE.W D1,(A4)+
 	MOVE.L (sp)+,(A4)+
 	BRA.S .E0_B
-  
+	
 .020_wordoff:
-	OR.W    #$0120,-2(a4)
+	OR.W	#$0120,-2(a4)
 	MOVE.W D1,(A4)+
 	BRA.S .E0_B
 .addword000:
 	LEA 200(A0),A0
-.longoff1:  
-	CMP.W   #1,ECPU
-	BPL.S   .020_longoff
+.longoff1:	
+	CMP.W	#1,ECPU
+	BPL.S	.020_longoff
 	MOVE.L -(A4),-(sp)
 	MOVE.W .addlong000(PC),(A4)+
 	MOVE.L D1,(A4)+
@@ -19454,20 +19454,20 @@ PLB:
 .addlong000:
 	ADDA.L #200,A0
 .020_longoff:
-	OR.W    #$0130,-2(a4)
+	OR.W	#$0130,-2(a4)
 	MOVE.L D1,(A4)+
 
 .E0_B:
-    TST.W   .THE_FACTOR
-    BEQ     .E0_S0
-    MOVE.W  .THE_FACTOR,D1
-    LSL.W   #8,D1
-    LSL.W   #1,D1
-    MOVE.L A4,-(sp)
-    MOVE.L .tmpA4,A4
-    OR.W    D1,2(A4)
-    MOVE.L (sp)+,A4
-    CLR.W   .THE_FACTOR
+	TST.W	.THE_FACTOR
+	BEQ		.E0_S0
+	MOVE.W	.THE_FACTOR,D1
+	LSL.W	#8,D1
+	LSL.W	#1,D1
+	MOVE.L A4,-(sp)
+	MOVE.L .tmpA4,A4
+	OR.W	D1,2(A4)
+	MOVE.L (sp)+,A4
+	CLR.W	.THE_FACTOR
 .E0_S0:
 	BSR	.EXTL
 	CMP.W	#2,D4
@@ -19488,17 +19488,17 @@ PLB:
 	MOVE.L (sp)+,A4
 	BRA	.21
 .THE_FACTOR:
-    DC.W    0
+	DC.W	0
 ;; Enhance
 .ENHANCE0:
-    CMP.W   #2,D0
-    BPL     .E0_B0
-    ADDQ.L  #2,A3
-    MOVE.L  .E0_S(PC),(A4)+
-    BSR     EXP
-    MOVE.L  .E0_R(PC),(A4)+
-    MOVE.L  .20+8(PC),(A4)+
-    BRA     .E0_B
+	CMP.W	#2,D0
+	BPL		.E0_B0
+	ADDQ.L	#2,A3
+	MOVE.L	.E0_S(PC),(A4)+
+	BSR		EXP
+	MOVE.L	.E0_R(PC),(A4)+
+	MOVE.L	.20+8(PC),(A4)+
+	BRA		.E0_B
 
 .20:	MOVE.W	0(A0,D2.L),D0		; LONG
 	MOVE.W	0(A0,D2.L),D1
@@ -19509,64 +19509,64 @@ PLB:
 	LEA	0(A0,D2.L),A0
 	LEA	0(A0,D2.L),A0
 
-.E0_S:  MOVEM.L  D2/A0,-(A7)
-.E0_R:  MOVEM.L  (A7)+,D2/A0
+.E0_S:	MOVEM.L	 D2/A0,-(A7)
+.E0_R:	MOVEM.L	 (A7)+,D2/A0
 
 
 ;; Extend
 .EXPEXT0:
-    CMP.W   #0,D0
-    BNE     .E0_B0
-    MOVE.W  (A3),D1
-    CMP.W   #7,D1   ;7-10 = +-*/
-    BMI     .E0_B0
-    CMP.W   #10,D1
-    BLE     .EXP_C0
-    CMP.W   #47,D1  ;<<
-    BMI     .E0_B0
-    CMP.W   #48,D1  ;>>
-    BLE     .EXP_C0
-    CMP.W   #IOFF+29,D1 ;AND
-    BMI     .E0_B0
-    CMP.W   #IOFF+30,D1 ;OR
-    BGT     .E0_B0
+	CMP.W	#0,D0
+	BNE		.E0_B0
+	MOVE.W	(A3),D1
+	CMP.W	#7,D1	;7-10 = +-*/
+	BMI		.E0_B0
+	CMP.W	#10,D1
+	BLE		.EXP_C0
+	CMP.W	#47,D1	;<<
+	BMI		.E0_B0
+	CMP.W	#48,D1	;>>
+	BLE		.EXP_C0
+	CMP.W	#IOFF+29,D1 ;AND
+	BMI		.E0_B0
+	CMP.W	#IOFF+30,D1 ;OR
+	BGT		.E0_B0
 .EXP_C0:
-    MOVE.W  (A3),2(A3)
-    MOVE.W  #51,(A3)
+	MOVE.W	(A3),2(A3)
+	MOVE.W	#51,(A3)
 
-    LSL.W   #2,D0
-    MOVE.W EAOFFSET,D7
-  	ADD.W	D0,D7
-    LSR.W   #2,D0
-    MOVE.L A4,.tmpA4
-    MOVE.L .20(PC,D7.W),(A4)+      ;
+	LSL.W	#2,D0
+	MOVE.W EAOFFSET,D7
+	ADD.W	D0,D7
+	LSR.W	#2,D0
+	MOVE.L A4,.tmpA4
+	MOVE.L .20(PC,D7.W),(A4)+		 ;
 
-	MOVE.L  THE_OFFSET,D1
-	;CLR.L   THE_OFFSET     - this is still needed later
-	CMP.L   #128,D1
-	BPL.S   .bigoff2
-	OR.W    D1,-2(A4)
+	MOVE.L	THE_OFFSET,D1
+	;CLR.L	 THE_OFFSET		- this is still needed later
+	CMP.L	#128,D1
+	BPL.S	.bigoff2
+	OR.W	D1,-2(A4)
 	BRA.S .dofac
 .bigoff2:
 	CMP.W #32768,D1
-	BPL.S   .longoff2
-	CMP.W   #1,ECPU
-	BPL.S   .020_wordoff2
+	BPL.S	.longoff2
+	CMP.W	#1,ECPU
+	BPL.S	.020_wordoff2
 	MOVE.L -(A4),-(sp)
 	MOVE.W .addword000_2(PC),(A4)+
 	MOVE.W D1,(A4)+
 	MOVE.L (sp)+,(A4)+
 	BRA.S .dofac
-  
+	
 .020_wordoff2:
-	OR.W    #$0120,-2(a4)
+	OR.W	#$0120,-2(a4)
 	MOVE.W D1,(A4)+
 	BRA.S .dofac
 .addword000_2:
 	LEA 200(A0),A0
-.longoff2:  
-	CMP.W   #1,ECPU
-	BPL.S   .020_longoff_2
+.longoff2:	
+	CMP.W	#1,ECPU
+	BPL.S	.020_longoff_2
 	MOVE.L -(A4),-(sp)
 	MOVE.W .addlong000_2(PC),(A4)+
 	MOVE.L D1,(A4)+
@@ -19575,65 +19575,65 @@ PLB:
 .addlong000_2:
 	ADDA.L #200,A0
 .020_longoff_2:
-	OR.W    #$0130,-2(a4)
+	OR.W	#$0130,-2(a4)
 	MOVE.L D1,(A4)+
 .dofac
-    TST.W   .THE_FACTOR
-    BEQ .EXP_C0_0
-    MOVE.W  .THE_FACTOR,D1
-    LSL.W   #8,D1
-    LSL.W   #1,D1
-    MOVE.L  A4,-(sp)
-    MOVE.L  .tmpA4,A4
-    OR.W    D1,2(A4)
-    MOVE.L  (sp)+,A4
+	TST.W	.THE_FACTOR
+	BEQ .EXP_C0_0
+	MOVE.W	.THE_FACTOR,D1
+	LSL.W	#8,D1
+	LSL.W	#1,D1
+	MOVE.L	A4,-(sp)
+	MOVE.L	.tmpA4,A4
+	OR.W	D1,2(A4)
+	MOVE.L	(sp)+,A4
 .EXP_C0_0:
-    BSR     .EXTL
-    CMP.W   #2,D4
-    BEQ.S   .EXP_C0_2
-    BPL.S   .EXP_C0_1
-    TST.W   D4
-    BEQ     ERROR0                  ; compiler should not use this code, anyway..
-    MOVE.L  A4,-(sp)
-    MOVE.L  .tmpA4,A4
-    BCLR    #5,(A4)               ; .B/.L size
-    MOVE.L  (sp)+,A4
-    BRA.S   .EXP_C0_2
+	BSR		.EXTL
+	CMP.W	#2,D4
+	BEQ.S	.EXP_C0_2
+	BPL.S	.EXP_C0_1
+	TST.W	D4
+	BEQ		ERROR0					; compiler should not use this code, anyway..
+	MOVE.L	A4,-(sp)
+	MOVE.L	.tmpA4,A4
+	BCLR	#5,(A4)					; .B/.L size
+	MOVE.L	(sp)+,A4
+	BRA.S	.EXP_C0_2
 .EXP_C0_1:
-    MOVE.L  A4,-(sp)
-    MOVE.L  .tmpA4,A4
-    BCLR    #4,(A4)               ; same here
-    MOVE.L  (sp)+,A4
+	MOVE.L	A4,-(sp)
+	MOVE.L	.tmpA4,A4
+	BCLR	#4,(A4)					; same here
+	MOVE.L	(sp)+,A4
 .EXP_C0_2:
-    MOVE.L  D4,-(A7)
-    MOVE.L  .EXP_ST2,(A4)+
-    BSR     EXP
-    MOVE.L  .EXP_RS2,(A4)+
-    MOVE.L  (A7)+,D4
-    MOVEQ   #2,D0
-    MOVEQ   #0,D2
-    BRA     .E0_B0
+	MOVE.L	D4,-(A7)
+	MOVE.L	.EXP_ST2,(A4)+
+	BSR		EXP
+	MOVE.L	.EXP_RS2,(A4)+
+	MOVE.L	(A7)+,D4
+	MOVEQ	#2,D0
+	MOVEQ	#0,D2
+	BRA		.E0_B0
 .EXP_ST2:
-    MOVEM.L D2/A0,-(A7)
+	MOVEM.L D2/A0,-(A7)
 .EXP_RS2:
-    MOVEM.L (A7)+,D2/A0
+	MOVEM.L (A7)+,D2/A0
 
 
 ; *** simple version
 
-.23:CMP.W   #ASSGN,(A3)
-    BEQ     .ENHANCE1
-    CMP.W   #11,2(A3)
-    BEQ     .EXPEXT1
+.23:CMP.W	#ASSGN,(A3)
+	BEQ		.ENHANCE1
+	CMP.W	#11,2(A3)
+	BEQ		.EXPEXT1
 .E1_B0:
-    cmp.w   #4,d0
-    bmi     .E1_B00
-    tst.w   D4
-    beq     .DO
-    bra     .21
+	cmp.w	#4,d0
+	bmi		.E1_B00
+	tst.w	D4
+	beq		.DO
+	bra		.21
 .E1_B00:
 	MOVE.W EAOFFSET,D7
- 	LSR.W #1,D7
+	LSR.W #1,D7
 	ADD.W	D0,D7
 	ADD.W	D0,D7
 	MOVE.W	.24(PC,D7.W),(A4)+
@@ -19644,33 +19644,33 @@ PLB:
 	BEQ.W	.21
 	BPL.S	.25
 	TST.W	D4
-    BEQ     .DO         ; SKIP MOVE.X SET
-    MOVE.L A4,-(A7)
-    MOVE.L .tmpA4,A4
-    BCLR	#5,-2(A4)
-    MOVE.L (A7)+,A4
-    BRA     .21
+	BEQ		.DO			; SKIP MOVE.X SET
+	MOVE.L A4,-(A7)
+	MOVE.L .tmpA4,A4
+	BCLR	#5,-2(A4)
+	MOVE.L (A7)+,A4
+	BRA		.21
 .tmpA4: DC.L 0
 .25:	MOVE.L A4,-(A7)
-    MOVE.L .tmpA4,A4
-    BCLR	#4,-2(A4)
-    MOVE.L (A7)+,A4
-    BRA     .21
+	MOVE.L .tmpA4,A4
+	BCLR	#4,-2(A4)
+	MOVE.L (A7)+,A4
+	BRA		.21
 ;; Enhance1 (:=)
 .ENHANCE1:
-    CMP.W   #2,D0
-    BPL     .E1_B0
-    ADDQ.L  #2,A3
-    MOVE.W  .E1_S(PC),(A4)+
-;    BSR     SD0
-    BSR     EXP
-;    BSR     RD0
-    MOVE.W  .E1_R(PC),(A4)+
-    MOVE.W  .24+4(PC),(A4)+
-    BRA     .E1_B
+	CMP.W	#2,D0
+	BPL		.E1_B0
+	ADDQ.L	#2,A3
+	MOVE.W	.E1_S(PC),(A4)+
+;	 BSR	 SD0
+	BSR		EXP
+;	 BSR	 RD0
+	MOVE.W	.E1_R(PC),(A4)+
+	MOVE.W	.24+4(PC),(A4)+
+	BRA		.E1_B
 
-.E1_S:  MOVE.L  A0,-(A7)
-.E1_R:  MOVE.L  (A7)+,A0
+.E1_S:	MOVE.L	A0,-(A7)
+.E1_R:	MOVE.L	(A7)+,A0
 
 .24:	MOVE.W	(A0),D0
 	MOVE.W	(A0),D1
@@ -19683,93 +19683,93 @@ PLB:
 
 ;; Extended (+=, -=, etc.)
 .EXPEXT1:
-    CMP.W   #0,D0
-    BNE     .E1_B0
-    MOVE.W  (A3),D1
-    CMP.W   #7,D1
-    BMI     .E1_B0
-    CMP.W   #10,D1
-    BLE     .EXP_C1
-    CMP.W   #47,D1
-    BMI     .E1_B0
-    CMP.W   #48,D1
-    BLE     .EXP_C1
-    CMP.W   #IOFF+29,D1
-    BMI     .E1_B0
-    CMP.W   #IOFF+30,D1
-    BGT     .E1_B0
+	CMP.W	#0,D0
+	BNE		.E1_B0
+	MOVE.W	(A3),D1
+	CMP.W	#7,D1
+	BMI		.E1_B0
+	CMP.W	#10,D1
+	BLE		.EXP_C1
+	CMP.W	#47,D1
+	BMI		.E1_B0
+	CMP.W	#48,D1
+	BLE		.EXP_C1
+	CMP.W	#IOFF+29,D1
+	BMI		.E1_B0
+	CMP.W	#IOFF+30,D1
+	BGT		.E1_B0
 .EXP_C1:
-    MOVE.W  (A3),2(A3)
-    MOVE.W  #51,(A3)
+	MOVE.W	(A3),2(A3)
+	MOVE.W	#51,(A3)
 
-    MOVE.W EAOFFSET,D7
-    LSR.W #1,D7
-    ADD.W   D0,D7
-    ADD.W   D0,D7
-    MOVE.W  .24(PC,D7.W),(A4)+      ;
-    MOVE.L	A4,.tmpA4
-    BSR     .EXTL
-    CMP.W   #2,D4
-    BEQ.S   .EXP_C1_2
-    BPL.S   .EXP_C1_1
-    TST.W   D4
-    BEQ     ERROR0                  ; compiler should not use this code, anyway..
-    MOVE.L A4,-(A7)
-    MOVE.L .tmpA4,A4
-    BCLR    #5,-2(A4)               ; .B/.L size
-    MOVE.L (A7)+,A4
-    BRA.S   .EXP_C1_2
+	MOVE.W EAOFFSET,D7
+	LSR.W #1,D7
+	ADD.W	D0,D7
+	ADD.W	D0,D7
+	MOVE.W	.24(PC,D7.W),(A4)+		;
+	MOVE.L	A4,.tmpA4
+	BSR		.EXTL
+	CMP.W	#2,D4
+	BEQ.S	.EXP_C1_2
+	BPL.S	.EXP_C1_1
+	TST.W	D4
+	BEQ		ERROR0					; compiler should not use this code, anyway..
+	MOVE.L A4,-(A7)
+	MOVE.L .tmpA4,A4
+	BCLR	#5,-2(A4)				; .B/.L size
+	MOVE.L (A7)+,A4
+	BRA.S	.EXP_C1_2
 .EXP_C1_1:
-    MOVE.L A4,-(A7)
-    MOVE.L .tmpA4,A4
-    BCLR    #4,-2(A4)               ; same here
-    MOVE.L (A7)+,A4
+	MOVE.L A4,-(A7)
+	MOVE.L .tmpA4,A4
+	BCLR	#4,-2(A4)				; same here
+	MOVE.L (A7)+,A4
 .EXP_C1_2:
-    MOVE.L  D4,-(A7)
-    MOVE.W  .EXP_ST,(A4)+
-    BSR     EXP
-    MOVE.W  .EXP_RS,(A4)+
-    MOVE.L  (A7)+,D4
-    MOVEQ   #2,D0
-    MOVEQ   #0,d2
-    BRA     .E1_B0
+	MOVE.L	D4,-(A7)
+	MOVE.W	.EXP_ST,(A4)+
+	BSR		EXP
+	MOVE.W	.EXP_RS,(A4)+
+	MOVE.L	(A7)+,D4
+	MOVEQ	#2,D0
+	MOVEQ	#0,d2
+	BRA		.E1_B0
 
 ; *** relative(a0) version
 
-.40:CMP.W   #ASSGN,(A3)
-    BEQ     .ENHANCE2
+.40:CMP.W	#ASSGN,(A3)
+	BEQ		.ENHANCE2
 
-    CMP.W   #11,2(A3)
-    BEQ     .EXPEXT2
+	CMP.W	#11,2(A3)
+	BEQ		.EXPEXT2
 .E2_B:
-    CMP.W   #4,D0
-    BMI     .E2_B0
-    CMP.W   #8,D3
-    BGT     .E2_B0
-    CMP.W   #-8,D3
-    BMI     .E2_B0
-    move.l  d0,-(a7)
-    tst.w   d3
-    smi     d0
-    eor.l   d0,d3
-    and.l   #$100,d0
-    or.l    #$5088,d0
-    move.w  d0,(a4)
-    and.l   #7,d3
-    lsl.w   #8,d3
-    lsl.w   #1,d3
-    or.w    d3,(a4)+
-    move.l  (a7)+,d0
-    tst.w   d4
-    beq     .DO
-    bra     .21
+	CMP.W	#4,D0
+	BMI		.E2_B0
+	CMP.W	#8,D3
+	BGT		.E2_B0
+	CMP.W	#-8,D3
+	BMI		.E2_B0
+	move.l	d0,-(a7)
+	tst.w	d3
+	smi		d0
+	eor.l	d0,d3
+	and.l	#$100,d0
+	or.l	#$5088,d0
+	move.w	d0,(a4)
+	and.l	#7,d3
+	lsl.w	#8,d3
+	lsl.w	#1,d3
+	or.w	d3,(a4)+
+	move.l	(a7)+,d0
+	tst.w	d4
+	beq		.DO
+	bra		.21
 
 .E2_B0
 	LSL.W	#2,D0
 	MOVE.W EAOFFSET,D7
 	ADD.W	D0,D7
 	LSR.W	#2,D0
-	MOVE.L  A4,.tmpA4
+	MOVE.L	A4,.tmpA4
 	MOVE.W	.42(PC,D7.W),(A4)+
 
 .E2_B1:
@@ -19794,19 +19794,19 @@ PLB:
 
 ;; Enhanced (assigns in lists)
 .ENHANCE2:
-    CMP.W   #2,D0
-    BPL     .E2_B
-    ADDQ.L  #2,A3
-    MOVE.W  .E2_S(PC),(A4)+
-    MOVE.L  D3,-(A7)
-    BSR     EXP
-    MOVE.L  (A7)+,D3
-    MOVE.W  .E2_R(PC),(A4)+
-    MOVE.W  .42+8(PC),(A4)+
-    BRA     .E2_B1
+	CMP.W	#2,D0
+	BPL		.E2_B
+	ADDQ.L	#2,A3
+	MOVE.W	.E2_S(PC),(A4)+
+	MOVE.L	D3,-(A7)
+	BSR		EXP
+	MOVE.L	(A7)+,D3
+	MOVE.W	.E2_R(PC),(A4)+
+	MOVE.W	.42+8(PC),(A4)+
+	BRA		.E2_B1
 
-.E2_S:  MOVE.L  A0,-(A7)
-.E2_R:  MOVE.L  (A7)+,A0
+.E2_S:	MOVE.L	A0,-(A7)
+.E2_R:	MOVE.L	(A7)+,A0
 
 .42:	MOVE.W	2(A0),D0
 	MOVE.W	2(A0),D1
@@ -19819,63 +19819,63 @@ PLB:
 
 ;; Extended (+=, -=, etc.)
 .EXPEXT2:
-    CMP.W   #0,D0
-    BNE     .E2_B
-    MOVE.W  (A3),D1
-    CMP.W   #7,D1
-    BMI     .E2_B
-    CMP.W   #10,D1
-    BLE     .EXP_C2
-    CMP.W   #47,D1
-    BMI     .E2_B
-    CMP.W   #48,D1
-    BLE     .EXP_C2
-    CMP.W   #IOFF+29,D1
-    BMI     .E2_B
-    CMP.W   #IOFF+30,D1
-    BGT     .E2_B
+	CMP.W	#0,D0
+	BNE		.E2_B
+	MOVE.W	(A3),D1
+	CMP.W	#7,D1
+	BMI		.E2_B
+	CMP.W	#10,D1
+	BLE		.EXP_C2
+	CMP.W	#47,D1
+	BMI		.E2_B
+	CMP.W	#48,D1
+	BLE		.EXP_C2
+	CMP.W	#IOFF+29,D1
+	BMI		.E2_B
+	CMP.W	#IOFF+30,D1
+	BGT		.E2_B
 .EXP_C2:
-    MOVE.W  (A3),2(A3)
-    MOVE.W  #51,(A3)
+	MOVE.W	(A3),2(A3)
+	MOVE.W	#51,(A3)
 
-    LSL.W   #2,D0
-    MOVE.W EAOFFSET,D7
-    ADD.W   D0,D7
-    LSR.W   #2,D0
-    MOVE.L  A4,.tmpA4
-    MOVE.W  .42(PC,D7.W),(A4)+      ;
+	LSL.W	#2,D0
+	MOVE.W EAOFFSET,D7
+	ADD.W	D0,D7
+	LSR.W	#2,D0
+	MOVE.L	A4,.tmpA4
+	MOVE.W	.42(PC,D7.W),(A4)+		;
 
-    MOVE.W  D3,(A4)+
-    BSR     .EXTL
-    CMP.W   #2,D4
-    BEQ.S   .EXP_C2_2
-    BPL.S   .EXP_C2_1
-    TST.W   D4
-    BEQ     ERROR0                  ; compiler should not use this code, anyway..
-    MOVE.L  A4,-(sp)
-    MOVE.L  .tmpA4,A4
-    BCLR    #5,(A4)               ; .B/.L size
-    MOVE.L  (sp)+,A4
-    BRA.S   .EXP_C2_2
+	MOVE.W	D3,(A4)+
+	BSR		.EXTL
+	CMP.W	#2,D4
+	BEQ.S	.EXP_C2_2
+	BPL.S	.EXP_C2_1
+	TST.W	D4
+	BEQ		ERROR0					; compiler should not use this code, anyway..
+	MOVE.L	A4,-(sp)
+	MOVE.L	.tmpA4,A4
+	BCLR	#5,(A4)					; .B/.L size
+	MOVE.L	(sp)+,A4
+	BRA.S	.EXP_C2_2
 .EXP_C2_1:
-    MOVE.L  A4,-(sp)
-    MOVE.L  .tmpA4,A4
-    BCLR    #4,(A4)               ; same here
-    MOVE.L  (sp)+,A4
+	MOVE.L	A4,-(sp)
+	MOVE.L	.tmpA4,A4
+	BCLR	#4,(A4)					; same here
+	MOVE.L	(sp)+,A4
 .EXP_C2_2:
-    MOVem.L  D3/D4,-(A7)
-    MOVE.W  .EXP_ST,(A4)+
-    BSR     EXP
-    MOVE.W  .EXP_RS,(A4)+
-    MOVEQ   #2,D0
-    MOVEM.L (A7)+,D3/D4
-    moveq   #0,d2
-    BRA     .E2_B
+	MOVem.L	 D3/D4,-(A7)
+	MOVE.W	.EXP_ST,(A4)+
+	BSR		EXP
+	MOVE.W	.EXP_RS,(A4)+
+	MOVEQ	#2,D0
+	MOVEM.L (A7)+,D3/D4
+	moveq	#0,d2
+	BRA		.E2_B
 
 .EXP_ST:
-    MOVE.L  A0,-(A7)
+	MOVE.L	A0,-(A7)
 .EXP_RS:
-    MOVE.L  (A7)+,A0
+	MOVE.L	(A7)+,A0
 ;*-*
 ;*-*
 
@@ -19903,16 +19903,16 @@ PLB:
 	TST.B	.TDRF
 	BNE.W	.DLOOP
 
-    cmp.w   #1,d0
-    ble     .doopti
+	cmp.w	#1,d0
+	ble		.doopti
 .do21p:
 
 
 	LSL.W	#1,D0
-    move.l  a0,-(a7)
-    lea     .MA0(PC),a0
-    MOVE.W  0(a0,D0.W),(A4)+
-    move.l  (a7)+,a0
+	move.l	a0,-(a7)
+	lea		.MA0(PC),a0
+	MOVE.W	0(a0,D0.W),(A4)+
+	move.l	(a7)+,a0
 	LSR.W	#1,D0
 	
 .21:
@@ -19929,48 +19929,48 @@ PLB:
 	BNE	.DLOOP
 	MOVEQ	#1,D1			; OUT!
 	BSR	GENID
-  
+	
 	TST.W METHCALL
 	BEQ XIT
 	BRA .EADDRMETHOD3
 
 .doopti:
-    move.w  -2(A4),d1
-    and.w   #$FFF8,d1
-    cmp.w   #$2040,d1
-    beq     .dodo2
-    cmp.w   #$206d,-4(a4)
-    beq     .dodo1
-    cmp.w   #$206c,-4(a4)
-    beq     .dodo1
-    bra     .do21p
+	move.w	-2(A4),d1
+	and.w	#$FFF8,d1
+	cmp.w	#$2040,d1
+	beq		.dodo2
+	cmp.w	#$206d,-4(a4)
+	beq		.dodo1
+	cmp.w	#$206c,-4(a4)
+	beq		.dodo1
+	bra		.do21p
 .dodo1:
-    subq.l  #4,a4
-    move.l  a4,LAST_CMD_ADR
-    addq.l  #4,a4
-    move.w  -4(a4),d1
-    and.w   #$F,D1
-    or.w    #$2020,d1
-    move.w  d1,-4(a4)
-    lsl.w   #8,d0
-    lsl.w   #1,d0
-    or.w    d0,-4(a4)
-    lsr.w   #8,d0
-    lsr.w   #1,d0
-    bra     .21
+	subq.l	#4,a4
+	move.l	a4,LAST_CMD_ADR
+	addq.l	#4,a4
+	move.w	-4(a4),d1
+	and.w	#$F,D1
+	or.w	#$2020,d1
+	move.w	d1,-4(a4)
+	lsl.w	#8,d0
+	lsl.w	#1,d0
+	or.w	d0,-4(a4)
+	lsr.w	#8,d0
+	lsr.w	#1,d0
+	bra		.21
 .dodo2:
-    subq.l  #2,a4
-    move.l  a4,LAST_CMD_ADR
-    addq.l  #2,a4
-    move.w  -2(a4),d1
-    and.w   #$FFBF,D1
-    lsl.w   #8,d0
-    lsl.w   #1,d0
-    move.w  d1,-2(a4)
-    or.w    d0,-2(a4)
-    lsr.w   #8,d0
-    lsr.w   #1,d0
-    bra     .21
+	subq.l	#2,a4
+	move.l	a4,LAST_CMD_ADR
+	addq.l	#2,a4
+	move.w	-2(a4),d1
+	and.w	#$FFBF,D1
+	lsl.w	#8,d0
+	lsl.w	#1,d0
+	move.w	d1,-2(a4)
+	or.w	d0,-2(a4)
+	lsr.w	#8,d0
+	lsr.w	#1,d0
+	bra		.21
 
 .DLOOP:	MOVE.W	.KEEPD5(PC),D5
 	EXT.L	D5
@@ -20006,9 +20006,9 @@ PLB:
 .27:	MOVE.L	(A7)+,D2
 	EXG.L	D0,D2
 .28:	MULU	#1,D2
-  CPU020
+	CPU020
 .28_020: MULS.L	#1,D2
-  CPU000
+	CPU000
 .29:	ASL.L	#1,D2
 	ASL.L	#2,D2
 	ASL.L	#3,D2
@@ -20096,8 +20096,8 @@ EAOFFSET: DC.W 0
 LASTMEMBER:	DC.L	0
 FORCEUNSIGNED: DC.W 0
 FORCESIGNED: DC.W 0
-METHCALL:    DC.W 0
-THE_OFFSET:  DC.L    0
+METHCALL:	 DC.W 0
+THE_OFFSET:	 DC.L	 0
 
 makesoftmuls:
 	moveq #0,d6
@@ -20113,17 +20113,17 @@ makesoftmuls:
 	cmp.w #1,d5
 	ble.s .noinit
 	move.w moveinit,(a4)+
-  add.l #3,d6
-  tst.w ECPU
-  bne.s .noinit
-	add.l #1,d6   ;68000 is 4 cycles
+	add.l #3,d6
+	tst.w ECPU
+	bne.s .noinit
+	add.l #1,d6		;68000 is 4 cycles
 .noinit
 	add.l d5,d5
 	add.l #24+38+38,d5
 
- 	cmp.w   #1,ECPU
-	bmi.s   .cpu68000
-  
+	cmp.w	#1,ECPU
+	bmi.s	.cpu68000
+	
 	moveq #44,d5
 
 .cpu68000
@@ -20154,9 +20154,9 @@ alldone
 allzeros
 	move.w moveq0,(a4)+
 	add.l #3,d6
-  tst.w ECPU
-  bne.s alldone
-	add.l #1,d6   ;68000 is 4 cycles
+	tst.w ECPU
+	bne.s alldone
+	add.l #1,d6		;68000 is 4 cycles
 	bra.s alldone
 	
 found1
@@ -20194,8 +20194,8 @@ counted
 	tst.w d7
 	bne.s .skipfirstadd
 	add.l #3,d6
-  tst.w ECPU
-  bne.s .n68k1
+	tst.w ECPU
+	bne.s .n68k1
 	add.l #5,d6
 .n68k1
 	move.w addd0,(a4)+
@@ -20203,8 +20203,8 @@ counted
 	moveq #0,d7
 	bsr doshift
 	add.l #3,d6
-  tst.w ECPU
-  bne.s .n68k2
+	tst.w ECPU
+	bne.s .n68k2
 	add.l #5,d6
 .n68k2
 	move.w subd0,(a4)+
@@ -20226,15 +20226,15 @@ nozeros1
 	tst.w d7
 	bne.s .skipfirstadd
 	add.l #3,d6
-  tst.w ECPU
-  bne.s .n68k3
+	tst.w ECPU
+	bne.s .n68k3
 	add.l #5,d6
 .n68k3
 	move.w addd0,(a4)+
 .skipfirstadd
 	add.l #3,d6
-  tst.w ECPU
-  bne.s .n68k4
+	tst.w ECPU
+	bne.s .n68k4
 	add.l #5,d6
 .n68k4
 	moveq #0,d7
@@ -20255,8 +20255,8 @@ nozeros2
 	tst.w d7
 	bne.s .skipfirstadd
 	add.l #3,d6
-  tst.w ECPU
-  bne.s .n68k5
+	tst.w ECPU
+	bne.s .n68k5
 	add.l #5,d6
 .n68k5
 	move.w addd0,(a4)+
@@ -20269,8 +20269,8 @@ doshift
 	cmp.w #16,d2
 	bne.s not16
 	add.l #7,d6
-  tst.w ECPU
-  bne.s .n68k6
+	tst.w ECPU
+	bne.s .n68k6
 	add.l #5,d6
 .n68k6
 	move.w swapd2,(a4)+
@@ -20281,8 +20281,8 @@ not16
 	bne.s not1
 
 	add.l #3,d6
-  tst.w ECPU
-  bne.s .n68k7
+	tst.w ECPU
+	bne.s .n68k7
 	add.l #5,d6
 .n68k7
 	move.w shiftleft1,(a4)+
@@ -20293,8 +20293,8 @@ not1
 	blt.s lessthan9
 
 	add.l #8,d6
-  tst.w ECPU
-  bne.s .n68k8
+	tst.w ECPU
+	bne.s .n68k8
 	add.l #16,d6
 .n68k8
 	move.w lslimmd2,(a4)+
@@ -20304,8 +20304,8 @@ not1
 lessthan9
 
 	add.l #8,d6
-  tst.w ECPU
-  bne.s .n68k9
+	tst.w ECPU
+	bne.s .n68k9
 	add.l d2,d6
 	add.l d2,d6
 .n68k9
@@ -20337,7 +20337,7 @@ cleard2
 	eor.w d2,d2
 
 
-PLX:	CMP.W	#35,D1			; p++  p--
+PLX:	CMP.W	#35,D1			; p++	p--
 	BPL	PLB
 	SUBQ.L	#2,A3
 	MOVE.L	(A0),D5			; D5=OBJSIZE
@@ -20349,9 +20349,9 @@ PLX:	CMP.W	#35,D1			; p++  p--
 .NOBJ:	MOVEQ	#4,D6			; D6=NOPTR
 	BRA.S	PLS
 PL:	
-    MOVEQ	#0,D6			; D6=PTR
+	MOVEQ	#0,D6			; D6=PTR
 	MOVEQ	#4,D5			; D5=4(SIZE)
-	CMP.W	#IDENT,(A3)+		; ^p  ^p++  ^p--
+	CMP.W	#IDENT,(A3)+		; ^p	^p++	^p--
 	BNE	ERROR6
 	MOVE.L	(A3)+,A0		; A0=IDENT
 	TST.B	4(A0)
@@ -20460,9 +20460,9 @@ GENADD:	TST.L	D1			; value in d1
 	CMP.L	#128,D1
 	BMI.S	.GAR
 
-	CMP.W   #1,ECPU
+	CMP.W	#1,ECPU
 	BPL.S .GAR
-  
+	
 ;	CMP.W	#8,D1
 ;	BNE.S	.GA8
 ;	MOVEQ	#0,D1
@@ -20472,7 +20472,7 @@ GENADD:	TST.L	D1			; value in d1
 	RTS
 .GA5:	MOVE.W	.GA7(PC),(A4)+
 	MOVE.L	D1,(A4)+
-	CLR.L   THE_OFFSET
+	CLR.L	THE_OFFSET
 .GAR:
 	RTS
 ;.GA6:	ADDQ.L	#8,D2
@@ -20487,7 +20487,7 @@ XIT:	MOVEM.L	(A7)+,D3-D5/A1
 ; WERE NOT TO DISTURB ANY REGS, NOT EVEN IN GENERATED CODE (D1?)
 ; (IN CODE): PTR TO CHECK IS IN A0
 
-      NILCHECK:
+		NILCHECK:
 	MOVEM.L	D0/D1/A0/A6,-(A7)
 	MOVE.L	.CH(PC),(A4)+
 	MOVE.L	A4,A6			; A6=BRANCH BACKPATCH
@@ -20524,11 +20524,11 @@ XIT:	MOVEM.L	(A7)+,D3-D5/A1
 	
 
 ;;EXP
-      EXPRECC:	DC.W	0		; RECURSION DEPTH OF EXP()
+		EXPRECC:	DC.W	0		; RECURSION DEPTH OF EXP()
 
-      EXP:				; GENERATES EXP FOR D0
-    BCLR    #2,ICODEPREFS+3
-    MOVE.L  #0,LASTVARADDR
+		EXP:				; GENERATES EXP FOR D0
+	BCLR	#2,ICODEPREFS+3
+	MOVE.L	#0,LASTVARADDR
 	MOVEM.L	D3-D5/A1/A2,-(A7)	; WE DO HEAVY RECURSION
 	MOVE.L THE_OFFSET,-(A7)
 	CLR.W THE_OFFSET
@@ -20553,19 +20553,19 @@ XIT:	MOVEM.L	(A7)+,D3-D5/A1
 	MOVEQ	#-1,D5			; MUST BE = EXPBUT
 	LEA	EXPMOVE(PC),A1		;
 
-    CMP.W   #51,(A3)        ;assignment expr eg a<<=2, a+=2
-    BNE     EXPLOOP
-    MOVEQ   #1,D5           ; variable
-    ADDQ.L  #2,A3
-      EXPLOOP:
- 	BSR CHECKNOT
+	CMP.W	#51,(A3)		;assignment expr eg a<<=2, a+=2
+	BNE		EXPLOOP
+	MOVEQ	#1,D5			; variable
+	ADDQ.L	#2,A3
+		EXPLOOP:
+	BSR CHECKNOT
 	MOVE.W	(A3)+,D0
 	BEQ	EXPOUT
 	CMP.W	#COM,D0
 	BEQ	EXPOUT
 	CMP.W	#7,D0
 	BPL	EXPOPERATOR
-      EXPBACK:
+		EXPBACK:
 	CMP.W	#IOFF+71,D0
 	BEQ	EXPNOT
 	CMP.W	#IDENT,D0
@@ -20578,11 +20578,11 @@ XIT:	MOVEM.L	(A7)+,D3-D5/A1
 	BPL.W	EXPREG
 	CMP.W	#11,D0
 	BPL	EXPCOMPARATOR
-      EXPBACK2:
+		EXPBACK2:
 	CMP.W	#17,D0
 	BEQ	EXPREC
-    CMP.W   #52,D0	;SIZEOF
-    BEQ EXPLOOP
+	CMP.W	#52,D0	;SIZEOF
+	BEQ EXPLOOP
 	CMP.W	#LIBC,D0
 	BEQ	EXPLIBCALL
 	CMP.W	#22,D0
@@ -20595,16 +20595,16 @@ XIT:	MOVEM.L	(A7)+,D3-D5/A1
 	BEQ	EXPOUT
 	CMP.W	#30,D0
 	BEQ	EXPOUT
-    CMP.W   #50,D0
-    BEQ     EXPSWAP
+	CMP.W	#50,D0
+	BEQ		EXPSWAP
 	CMP.W	#32,D0
 	BEQ.W	EXPPTR
 	CMP.W	#IOFF+29,D0
 	BPL	EXPLOG
-      ANDORNOTBACK:
+		ANDORNOTBACK:
 	CMP.W	#IOFF+79,D0
 	BPL	EXPLOG2
-      ANDALSOORELSEBACK:
+		ANDALSOORELSEBACK:
 	CMP.W	#19,D0
 	BEQ	EXPOUT
 	CMP.W	#IOFF+2,D0
@@ -20641,20 +20641,20 @@ XIT:	MOVEM.L	(A7)+,D3-D5/A1
 	BEQ	EXPSHIFT
 	CMP.W	#48,D0
 	BEQ	EXPSHIFT
-    CMP.W   #49,D0
-    BEQ EXPQMARK            ; ?
+	CMP.W	#49,D0
+	BEQ EXPQMARK			; ?
 	CMP.W	#IOFF,D0
 	BMI	ERROR0
-      EXPOUT:
+		EXPOUT:
 	JSR		checkandalso2
-    TST.W   FLTFLAG
-    BEQ .0
-    BTST    #5,CODEPREFS
-    BEQ .0
-    CMP.L   #EXPCMP,A1
-    BEQ .0
-    move.l  a4,LAST_CMD_ADR
-    MOVE.L  .C0,(A4)+
+	TST.W	FLTFLAG
+	BEQ .0
+	BTST	#5,CODEPREFS
+	BEQ .0
+	CMP.L	#EXPCMP,A1
+	BEQ .0
+	move.l	a4,LAST_CMD_ADR
+	MOVE.L	.C0,(A4)+
 .0:
 	SUBQ.L	#2,A3
 	CMP.W	#1,D5
@@ -20664,7 +20664,7 @@ XIT:	MOVEM.L	(A7)+,D3-D5/A1
 	TST.W NOTEXP
 	BEQ.S .notok
 
-	INTERN  107
+	INTERN	107
 .notok:
 	MOVE.W	(A7)+,NOTEXP
 	MOVE.W	(A7)+,FLTFLAG
@@ -20674,7 +20674,7 @@ XIT:	MOVEM.L	(A7)+,D3-D5/A1
 	MOVE.W	(A7)+,METHCALL
 	MOVE.W	(A7)+,IFLAG
 	MOVE.W	(A7)+,EAOFFSET
- 	MOVE.L  (A7)+,THE_OFFSET
+	MOVE.L	(A7)+,THE_OFFSET
 	MOVEM.L	(A7)+,D3-D5/A1/A2
 	RTS
 	CPU040
@@ -20682,50 +20682,50 @@ XIT:	MOVEM.L	(A7)+,D3-D5/A1
 	CPU000
 
 checkandalso1:
-  CLR.W andalsoflag
-  PEA EXPANDALSO
-  CMPA.L	(A7)+,A1
-  BEQ.S isand3
-  PEA EXPORELSE
-  CMPA.L	(A7)+,A1
-  BEQ.S isor3
-  RTS
+	CLR.W andalsoflag
+	PEA EXPANDALSO
+	CMPA.L	(A7)+,A1
+	BEQ.S isand3
+	PEA EXPORELSE
+	CMPA.L	(A7)+,A1
+	BEQ.S isor3
+	RTS
 
 isor3:
-  MOVE.W #1,andalsoflag
-  MOVE.L #$6600fffe,(A4)+  ;bne
-  bra.s mklab
+	MOVE.W #1,andalsoflag
+	MOVE.L #$6600fffe,(A4)+	;bne
+	bra.s mklab
 
 isand3:
  
-  MOVE.W #1,andalsoflag
-  MOVE.L #$6700fffe,(A4)+ ;beq
+	MOVE.W #1,andalsoflag
+	MOVE.L #$6700fffe,(A4)+ ;beq
 mklab:
 	MOVEM.L	A0/D0/D1/d7,-(A7)
-  MOVE.L LABLOG,D0
-  TST.L D0
-  BNE.S .already
- 	JSR	NEWLABEL
-  MOVE.L	D0,LABLOG
+	MOVE.L LABLOG,D0
+	TST.L D0
+	BNE.S .already
+	JSR	NEWLABEL
+	MOVE.L	D0,LABLOG
 .already
 	CLR.W	NEWOP
 	JSR	ADDBRANCH 
 	MOVEM.L	(A7)+,A0/D0/D1/D7 
-  RTS
+	RTS
  
 checkandalso2:
-  TST.W andalsoflag
-  BEQ.S noandalso
-  TST.W NOTEXP
-  BNE.S noandalso
-  PEA EXPANDALSO
-  CMPA.L	(A7)+,A1
-  BEQ.S isandor4
-  PEA EXPORELSE
-  CMPA.L	(A7)+,A1
-  BEQ.S isandor4
+	TST.W andalsoflag
+	BEQ.S noandalso
+	TST.W NOTEXP
+	BNE.S noandalso
+	PEA EXPANDALSO
+	CMPA.L	(A7)+,A1
+	BEQ.S isandor4
+	PEA EXPORELSE
+	CMPA.L	(A7)+,A1
+	BEQ.S isandor4
 noandalso:
-  RTS
+	RTS
 isandor4:
 	CLR.W andalsoflag
 	MOVEM.L	A0/D0,-(A7)
@@ -20737,19 +20737,19 @@ isandor4:
 
 LAST_CMD_ADR DC.L 0
 lastmoveshort DC.L 0
-lastextl  DC.L 0
+lastextl	DC.L 0
 andalsoflag DC.W 0
 
-      EXPSHIFT:
-        CMP.W	#1,D5
-      	BNE	ERROR0
-      	MOVEQ	#3,D4
-      	LEA	.SHIFT(PC),A1
-      	CMP.W	#48,D0		; right ?
-      	BNE.S	.left
-      	ADDQ.L	#4,A1
+		EXPSHIFT:
+		CMP.W	#1,D5
+		BNE	ERROR0
+		MOVEQ	#3,D4
+		LEA	.SHIFT(PC),A1
+		CMP.W	#48,D0		; right ?
+		BNE.S	.left
+		ADDQ.L	#4,A1
 .left:	MOVEQ	#0,D5
-      	BRA	EXPLOOP
+		BRA	EXPLOOP
 .SHIFT:
 	ASL.L	D1,D0
 	ASL.L	#8,D0
@@ -20757,18 +20757,18 @@ andalsoflag DC.W 0
 	ASR.L	#8,D0
 
 
-      EXPREG:
-      	CMP.W	#1,D5
-      	BEQ	ERROR0
+		EXPREG:
+		CMP.W	#1,D5
+		BEQ	ERROR0
 	CMP.W	#$828,D0	; max asm
 	BPL	ERROR0
- 	MOVEQ	#1,D5
+	MOVEQ	#1,D5
 	CLR.L	-(A7)
-      	CMP.W	#$508,D0
-      	BPL.S	.AREG
-      	TST.B	D0
-      	BNE.S	.1
-      	BRA.S	.5
+		CMP.W	#$508,D0
+		BPL.S	.AREG
+		TST.B	D0
+		BNE.S	.1
+		BRA.S	.5
 .AREG:	CMP.W	#VALUE,-8(A3)
 	BNE.S	.1
 	TST.W	-6(A3)
@@ -20785,19 +20785,19 @@ andalsoflag DC.W 0
 .5:	TST.L	(A7)+
 	BEQ.S	.3
 	MOVE.W	-4(A3),(A4)+
-.3    	BRA.W	EXPLOOP
+.3		BRA.W	EXPLOOP
 
 
 
-      EXPREOBJ:
+		EXPREOBJ:
 	SUBQ.L	#2,A3
-      	MOVEQ	#0,D0
-      	PEA	FAKEIDENT(PC)
-      	MOVE.L	(A7)+,-(A3)
-      	MOVE.W	#IDENT,-(A3)
-      	BSR.W	EADDRESSMODI
-      	BRA.W	EXPLOOP
-      	
+		MOVEQ	#0,D0
+		PEA	FAKEIDENT(PC)
+		MOVE.L	(A7)+,-(A3)
+		MOVE.W	#IDENT,-(A3)
+		BSR.W	EADDRESSMODI
+		BRA.W	EXPLOOP
+		
 	DC.L	0	; NEXT
 FAKEIDENT:
 	DC.L	FAKEOBJ	; ETYPE
@@ -20807,8 +20807,8 @@ FAKEIDENT:
 	DC.W	0	; LINENUM
 	DC.L	0	; HEAVY
 	DC.L	0	; VAR_NAME
-	DC.L    0   ; VAR_DEFVALUE
-	DC.L    0   ; VAR_IMPORTDATA
+	DC.L	0	; VAR_DEFVALUE
+	DC.L	0	; VAR_IMPORTDATA
 	DC.W	0	; VAR_PTRREPCOUNT
 	DC.L	0	; DIMDATA
 	DC.L	0	; ONEXT
@@ -20827,14 +20827,14 @@ FAKEOBJ:
 .ASC:	DC.B	1,1,1,1,1,0
 
 
-      EXPNOT:
+		EXPNOT:
 	ADDQ.W	#1,NOTEXP
 	BRA	EXPLOOP
 NOTEXP:	DC.W	0
 NOTEXPADDR: DC.L 0
 
-      EXPPTR:
-    CLR.L   LAST_CMD_ADR
+		EXPPTR:
+	CLR.L	LAST_CMD_ADR
 	CMP.W	#1,D5
 	BEQ	ERROR0
 	MOVEQ	#1,D0
@@ -20846,7 +20846,7 @@ NOTEXPADDR: DC.L 0
 .1:	MOVEQ	#1,D5
 	BRA	EXPLOOP
 
-      EXPBUT:
+		EXPBUT:
 	CMP.W	#1,D5
 	BNE	ERROR0
 ;	MOVE.W	(A3),D0
@@ -20896,7 +20896,7 @@ GTYPE:	MACRO				; \1=TRASH.AX, \2=RESULT.DX
 .GTN1:
 	CMP.W	#IOFF+110,\2
 	BNE.S .GTN2
-  MOVEQ #2,\2
+	MOVEQ #2,\2
 	BRA.S	.GTOUT
 .GTN2:
 	CMP.W	#IOFF+20,\2
@@ -20938,22 +20938,22 @@ GEAT:	MACRO				; \1=THRASH.DX
 	ENDM
 
 MOVED0FP0: MACRO
-    tst.w   FLTFLAG
-    beq     .NOMOVE
-    btst    #5,CODEPREFS
-    beq     .NOMOVE
-    move.l  A4,LAST_CMD_ADR
-    MOVE.L  .D0FP0(pc),(a4)+
-    bra     .NOMOVE
+	tst.w	FLTFLAG
+	beq		.NOMOVE
+	btst	#5,CODEPREFS
+	beq		.NOMOVE
+	move.l	A4,LAST_CMD_ADR
+	MOVE.L	.D0FP0(pc),(a4)+
+	bra		.NOMOVE
 .D0FP0:
 	CPU040
-    fmove.s d0,fp0
+	fmove.s d0,fp0
 	CPU000
 .NOMOVE:
-    ENDM
+	ENDM
 
-      EXPSUPER:
-    CLR.L   LAST_CMD_ADR
+		EXPSUPER:
+	CLR.L	LAST_CMD_ADR
 	CMP.W	#1,D5
 	BEQ	ERROR0
 	MOVE.L LABLOG,-(A7)
@@ -20963,7 +20963,7 @@ MOVED0FP0: MACRO
 	MOVE.L (A7)+,LABLOG
 	MOVEQ	#1,D5
 	BRA	EXPLOOP
-      SUPEREXP:
+		SUPEREXP:
 	CMP.W	#IDENT,(A3)+
 	BNE	ERROR0
 	MOVE.L	(A3)+,A0		; A0=IDENT
@@ -20991,15 +20991,15 @@ MOVED0FP0: MACRO
 	MOVE.L	2(A3),A0
 	MOVE.L	OASCII(A0),2(A3)
 	MOVE.W	#42,(A3)
-  
-.ok  
+	
+.ok	 
 	BSR	EXPCALLMETHOD		; call SUPER-METHOD
 	MOVE.L	METHODFREEZ(PC),A6
 	CLR.L	METHODFREEZ
 	RTS
 
-      EXPNEW:
-    CLR.L   LAST_CMD_ADR
+		EXPNEW:
+	CLR.L	LAST_CMD_ADR
 	CMP.W	#1,D5
 	BEQ	ERROR0
 	MOVE.L LABLOG,-(A7)
@@ -21012,9 +21012,9 @@ MOVED0FP0: MACRO
 	BRA	EXPLOOP
 
 newobj: DC.W 0
-      NEWEXP:
+		NEWEXP:
 	CLR.W newobj
-  
+	
 .notass
 	MOVE.W	D0,-(A7)
 .NLOOP:	CMP.W	#IDENT,(A3)+
@@ -21023,7 +21023,7 @@ newobj: DC.W 0
 	TST.B	4(A0)
 	;BEQ	ERROR22
 	BNE.S .isobj
-  
+	
 	MOVE.L VAR_NAME(A0),D1
 	JSR FINDOBJ
 	TST.L	D0
@@ -21045,7 +21045,7 @@ newobj: DC.W 0
 	CMP.L	#5,D0
 	BMI.S	.0
 .wasobj
- 	MOVE.L	D0,A6
+	MOVE.L	D0,A6
 	MOVEQ #0,D0
 	MOVE.W	OSIZE(A6),D0
 
@@ -21108,7 +21108,7 @@ newobj: DC.W 0
 	MOVE.W	.S2(PC),(A4)+		; just NEW p
 	MOVE.W	D0,(A4)+
 	BRA.S .2
-  
+	
 .lg
 	MOVE.W	.S3(PC),(A4)+		; just NEW p
 	MOVE.L	D0,(A4)+
@@ -21139,7 +21139,7 @@ newobj: DC.W 0
 
 	MOVE.L	A6,D0
 	BEQ.W	.4B
-  ;init method pointer
+	;init method pointer
 	;TST.W	ODEL(A6)
 	;BEQ.W	.4B
 	MOVE.L	A0,METHODIDENT
@@ -21185,7 +21185,7 @@ newobj: DC.W 0
 .isobj2
 	MOVE.L .RESTA0_2,(A4)+
 	BRA.S .wasa0
-.noa0  
+.noa0	
 	MOVE.W .RESTA0,-2(A4)
 .wasa0
 	TST.W	.ISM
@@ -21193,7 +21193,7 @@ newobj: DC.W 0
 	BRA.S .4B
 .3a:
 	CMP.L #0,A0
-  	BNE.S .isa0
+	BNE.S .isa0
 	BRA.S .4B
 .isa0
 	MOVE.W .ST2(PC),-4(A4)
@@ -21239,7 +21239,7 @@ newobj: DC.W 0
 	MOVE.W	.GOBJ2(PC),(A4)+
 	TST.L D0
 	BEQ.S .off0_1
-	OR.W #$200,-2(A4)   ;change from A0 TO A1
+	OR.W #$200,-2(A4)	;change from A0 TO A1
 .off0_1:
 	MOVE.L	A4,(A0)+
 	CLR.W	(A4)+
@@ -21247,7 +21247,7 @@ newobj: DC.W 0
 .G1:	MOVE.W	.GOBJ3(PC),(A4)+
 	TST.L D0
 	BEQ.S .off0_2
-	OR.W #$200,-2(A4)   ;change from A0 TO A1
+	OR.W #$200,-2(A4)	;change from A0 TO A1
 .off0_2:
 	MOVE.L	A4,(A0)+
 	CLR.W	(A4)+
@@ -21261,9 +21261,9 @@ newobj: DC.W 0
 	MOVE.L D1,A6
 	BTST #1,OFLAGS(A6)
 	BEQ.S .nottyped
-	TST.W   OSIZE(A6)     ;its a pointer
+	TST.W	OSIZE(A6)		;its a pointer
 	BNE.S .nottyped
-	TST.W   PTRREPCOUNT(A6)
+	TST.W	PTRREPCOUNT(A6)
 	BPL.S .nottyped
 	CMP.L #5,OPTRTYPE(A6) ;its not an object
 	BMI.S .nottyped
@@ -21281,7 +21281,7 @@ newobj: DC.W 0
 .nodim
 	SUBQ #1,D1
 	MOVEM.L D0/A6,-(A7)
-	ADD.W  OOFF(A6),D0
+	ADD.W	OOFF(A6),D0
 	MOVE.W PTRREPCOUNT(A6),.PTRREP
 	MOVE.L OPTRTYPE(A6),A6
 
@@ -21328,8 +21328,8 @@ newobj: DC.W 0
 .GOBJ3:	MOVE.L	4(A4),4(A0)
 .GOBJ4: MOVE.L 4(A0),D0
 .LOBJ: LEA 0(A0),A1
-.LD1  MOVEQ #0,D1
-    MOVE.W #1,D1
+.LD1	MOVEQ #0,D1
+	MOVE.W #1,D1
 .LOBJ2: LEA 0(A0,D1.L),A1
 .RESTA0:	MOVE.L	(A7)+,D0
 .RESTA0_2:	MOVE.L	-4(A7),D0
@@ -21410,11 +21410,11 @@ newobj: DC.W 0
 	BMI.W	.NOO
 	MOVE.B	-2(A4),D0
 	JSR newchkmoveq
-	CMP.B	#$70,D0			; MOVEQ  #x,D0
+	CMP.B	#$70,D0			; MOVEQ	 #x,D0
 	BEQ.S	.TJOB
 	MOVE.W	-2(A4),D0
 	CMP.B #2,D0
-	BLE.S  .VS1
+	BLE.S	.VS1
 	AND.W #$FF08,D0
 	CMP.W	#$2000,D0			; MOVE.L Dx,D0
 	BEQ.S	.TJOB
@@ -21496,37 +21496,37 @@ newobj: DC.W 0
 .SL2:	MOVE.L	A6,D0
 
 clrallnewchk:	
-	CLR.W   src1
-	CLR.L   src2
-	CLR.W   src3
-	CLR.L   src4
-	CLR.L   len
+	CLR.W	src1
+	CLR.L	src2
+	CLR.W	src3
+	CLR.L	src4
+	CLR.L	len
 	RTS
 
 clrnewchk:	
-	CLR.W   src1
-	CLR.L   src2
-	CLR.L   len
+	CLR.W	src1
+	CLR.L	src2
+	CLR.L	len
 	RTS
 
 newchkmoveq:
-	CLR.W   src1
-	CLR.L   src2
+	CLR.W	src1
+	CLR.L	src2
 	MOVE.L	#2,len
-	MOVE.W  -2(A4),src1
+	MOVE.W	-2(A4),src1
 	RTS
 
 newchkmovei:
-	MOVE.W  -6(A4),src1
-	MOVE.L  -4(A4),src2
-	MOVE.L  #6,len
+	MOVE.W	-6(A4),src1
+	MOVE.L	-4(A4),src2
+	MOVE.L	#6,len
 	RTS
 
 newchkmovevar:
-	MOVE.W  D0,src1
-	CLR.L   src2
-	MOVE.L  #4,len
-	MOVE.W  -2(A4),src2
+	MOVE.W	D0,src1
+	CLR.L	src2
+	MOVE.L	#4,len
+	MOVE.W	-2(A4),src2
 	RTS
 
 newchkopt:
@@ -21555,42 +21555,42 @@ len:	DC.L 0
 
 ;; "?"
 EXPQMARK:
-    CMP.W   #1,D5
-    BNE     ERROR0
-    bset    #2,ICODEPREFS+3
-    MOVE.W  #$4A80,(A4)+        ; TST.L D0
-    MOVE.W  #$6700,(A4)+        ; BNE   xxx
-    MOVE.L  A4,-(A7)
-    CLR.W   (A4)+               ; BNE   (*+2) - temp
+	CMP.W	#1,D5
+	BNE		ERROR0
+	bset	#2,ICODEPREFS+3
+	MOVE.W	#$4A80,(A4)+		; TST.L D0
+	MOVE.W	#$6700,(A4)+		; BNE	xxx
+	MOVE.L	A4,-(A7)
+	CLR.W	(A4)+				; BNE	(*+2) - temp
 
-    BSR     EXP                 ; <EXP>
+	BSR		EXP					; <EXP>
 
-    CMP.W   #19,(A3)            ; "... ? <a> : <b>" ?
-    BNE     .1
-    MOVE.W  #$6000,(A4)+        ; BRA   xxx
-    MOVE.L  A4,A1
-    CLR.W   (A4)+               ; BRA   (*+2) - temp
+	CMP.W	#19,(A3)			; "... ? <a> : <b>" ?
+	BNE		.1
+	MOVE.W	#$6000,(A4)+		; BRA	xxx
+	MOVE.L	A4,A1
+	CLR.W	(A4)+				; BRA	(*+2) - temp
 .1:
-    MOVE.L  A4,D0
-    MOVE.L  (A7),A0
-    SUB.L   (A7)+,D0
-    MOVE.W  D0,(A0)             ; make _real_ BNE
+	MOVE.L	A4,D0
+	MOVE.L	(A7),A0
+	SUB.L	(A7)+,D0
+	MOVE.W	D0,(A0)				; make _real_ BNE
 
-    CMP.W   #19,(A3)            ; <a> ? <b> [: <c>]
-    BNE     .X
-    ADDQ.L  #2,A3
-    MOVE.L  A1,-(A7)
-    BSR     EXP
-    MOVE.L  A4,D0
-    MOVE.L  (A7),A0
-    SUB.L   (A7)+,D0
-    MOVE.W  D0,(A0)
-.X: BRA     EXPLOOP
+	CMP.W	#19,(A3)			; <a> ? <b> [: <c>]
+	BNE		.X
+	ADDQ.L	#2,A3
+	MOVE.L	A1,-(A7)
+	BSR		EXP
+	MOVE.L	A4,D0
+	MOVE.L	(A7),A0
+	SUB.L	(A7)+,D0
+	MOVE.W	D0,(A0)
+.X: BRA		EXPLOOP
 
 ;*-*
 ;; "{"
-      CURLY:
-    CLR.L   LAST_CMD_ADR
+		CURLY:
+	CLR.L	LAST_CMD_ADR
 	CMP.W	#1,D5
 	BEQ	ERROR0
 	CMP.W	#IDENT,(A3)+
@@ -21748,7 +21748,7 @@ EXPQMARK:
 .L4:	;CMP.W	#VALUE,(A3)
 	;BEQ.S	.L4A			; this code caused
 	;MOVEQ	#1,D0			; some errors especialy 
-	;BSR.W	.CURLYLIST		; if in brackets ident is closed  
+	;BSR.W	.CURLYLIST		; if in brackets ident is closed	
 .L4A:	MOVE.W	-4(A4),D0		; 4 ex. : ... .a[x]
 	CMP.W	.5B(PC),D0
 	BNE.S	.L5
@@ -21882,10 +21882,10 @@ EXPQMARK:
 	EVEN
 
 
-      STRINGLINK:	DC.L	0
+		STRINGLINK:	DC.L	0
 
-      EXPSTRING:
-    CLR.L   LAST_CMD_ADR
+		EXPSTRING:
+	CLR.L	LAST_CMD_ADR
 	CMP.W	#1,D5
 	BEQ	ERROR0
 	MOVEQ	#0,D0
@@ -21915,7 +21915,7 @@ EXPQMARK:
 	ADD.W	D0,A3
 	MOVE.W	(A0)+,(A4)+
 	DONEM	A6
-      PLUSTRINGS:
+		PLUSTRINGS:
 	CMP.L	#$70006,(A3)
 	BNE.S	.X
 	ADDQ.L	#6,A3
@@ -21941,24 +21941,24 @@ EXPQMARK:
 	BRA	EXPLOOP
 
 
-      EXPSTRINGCODE:
+		EXPSTRINGCODE:
 	LEA	EXPSTRINGCODE2(PC),A0	; 6-2 BYTES
 	MOVE.L	A0,D1
-      EXPSTRINGCODE2:
+		EXPSTRINGCODE2:
 	LEA	EXPSTRINGCODE(PC),A0	; 6-2 BYTES
 	MOVE.L	A0,D0
-      LONGLEA:
+		LONGLEA:
 	LEA	EXPSTRINGCODE,A0
 
-      MAKESTRLEN:
+		MAKESTRLEN:
 	MOVE.L	#0,-36(A4)
-      MAKESTRLEN2:
+		MAKESTRLEN2:
 	MOVEQ	#0,D0
 	MOVE.L	D0,-36(A4)
 
-      D0EXT:	EXT.L	D0
+		D0EXT:	EXT.L	D0
 
-      EXPREC:
+		EXPREC:
 	CMP.W	#1,D5
 	BEQ	ERROR0
 	MOVE.L LABLOG,-(A7)
@@ -21971,13 +21971,13 @@ EXPQMARK:
 	MOVEQ	#1,D5
 	BRA	EXPLOOP
 
-      EXPCONSNIL:
+		EXPCONSNIL:
 	MOVEQ	#1,D5
 	MOVEQ	#0,D1
 	BRA	VALUENTRY
 
-      EXPCONS:
-    CLR.L   LAST_CMD_ADR
+		EXPCONS:
+	CLR.L	LAST_CMD_ADR
 	CMP.W	#1,D5
 	BEQ	ERROR0
 	MOVE.L LABLOG,-(A7)
@@ -22034,9 +22034,9 @@ EXPQMARK:
 .4B:	BSR.W	.7
 .7:	LEA	4(A7),A7
 
-      EXPFLT:
-    BTST    #5,CODEPREFS
-    BNE     .FP
+		EXPFLT:
+	BTST	#5,CODEPREFS
+	BNE		.FP
 	BSET	#3,CODEPREFS+1		; USE MATHIEEESINGBAS
 	CMP.W	#0,D5
 	BEQ	ERROR0			; ALWAYS AFTER (1) OR (-1)
@@ -22061,49 +22061,49 @@ EXPQMARK:
 	JSR	-30(A6)
 
 .FP:
-    CMP.W   #0,D5
-    BEQ ERROR0          ; ALWAYS AFTER (1) OR (-1)
-    TST.W   FLTFLAG
-    BEQ.S   .F1
-    CLR.W   FLTFLAG         ; CLEAR FLOATMODUS
-    CMP.W   #-1,D5
-    BEQ ERROR0
-    MOVE.L  .F2(PC),(A4)+
-;    MOVE.L  .FF(PC),(A4)+  ; uncomment for rounding
-;    MOVE.L  .FF+4(PC),(A4)+
-;    MOVE.L  .FF+8(PC),(A4)+
-;    CMP.W   #1,ECPU
-;    BGT     .FXZ
-;    MOVE.L  .FF+12(PC),(A4)+
-;    MOVE.W  .FF+18(PC),(A4)+
-    BRA EXPLOOP
+	CMP.W	#0,D5
+	BEQ ERROR0			; ALWAYS AFTER (1) OR (-1)
+	TST.W	FLTFLAG
+	BEQ.S	.F1
+	CLR.W	FLTFLAG			; CLEAR FLOATMODUS
+	CMP.W	#-1,D5
+	BEQ ERROR0
+	MOVE.L	.F2(PC),(A4)+
+;	 MOVE.L	 .FF(PC),(A4)+	; uncomment for rounding
+;	 MOVE.L	 .FF+4(PC),(A4)+
+;	 MOVE.L	 .FF+8(PC),(A4)+
+;	 CMP.W	 #1,ECPU
+;	 BGT	 .FXZ
+;	 MOVE.L	 .FF+12(PC),(A4)+
+;	 MOVE.W	 .FF+18(PC),(A4)+
+	BRA EXPLOOP
 .FXZ:
-    MOVe.L  .FF+16(PC),(A4)+
-    BRA EXPLOOP
-.F1:MOVE.W  #-1,FLTFLAG     ; SET FLOATMODUS
-    CMP.W   #-1,D5
+	MOVe.L	.FF+16(PC),(A4)+
+	BRA EXPLOOP
+.F1:MOVE.W	#-1,FLTFLAG		; SET FLOATMODUS
+	CMP.W	#-1,D5
 
-    BEQ.S   .F3
-    MOVE.L  .F2+4(PC),(a4)+
+	BEQ.S	.F3
+	MOVE.L	.F2+4(PC),(a4)+
 .F3:BRA EXPLOOP
 
 	CPU040
 .F2:FMOVE.L FP0,D0
-    FMOVE.L D0,FP0
-.FF:FMOVE.L D0,FP1  ; 4
-    FCMP    FP1,FP0 ; 4
-    FSLT    D2      ; 4
-    EXT.W   D2      ; 2
-    EXT.L   D2      ; 2
+	FMOVE.L D0,FP0
+.FF:FMOVE.L D0,FP1	; 4
+	FCMP	FP1,FP0 ; 4
+	FSLT	D2		; 4
+	EXT.W	D2		; 2
+	EXT.L	D2		; 2
 	CPU020
-    EXTB.L  D2      ; 2
+	EXTB.L	D2		; 2
 	CPU000
-    ADD.L   D2,D0   ; 2
+	ADD.L	D2,D0	; 2
 ;*-*
 ;; "`"
-    
-      EXPQUOTE:
-    CLR.L   LAST_CMD_ADR
+	
+		EXPQUOTE:
+	CLR.L	LAST_CMD_ADR
 	CMP.W	#1,D5
 	BEQ	ERROR0
 	MOVE.L LABLOG,-(A7)
@@ -22129,10 +22129,10 @@ EXPQMARK:
 	BRA	.1
 .2:	RTS
 
-      EXPOFFSETOF:
-    CLR.L   LAST_CMD_ADR
+		EXPOFFSETOF:
+	CLR.L	LAST_CMD_ADR
 
-  MOVE.W (A3)+,D0
+	MOVE.W (A3)+,D0
 	CMP.W	#IDENT,D0
 	BNE	.obj
 	MOVE.L	(A3)+,A0		; A0=IDENT
@@ -22153,316 +22153,316 @@ EXPQMARK:
 	CMP.W	#39,2(A3)
 	BNE	ERROR40
 	ADDQ.L	#4,A3
-  MOVEM.L A1/D1,-(A7)
+	MOVEM.L A1/D1,-(A7)
 	MOVE.L	(A3)+,A1		; A1=MEMBER
 	BSR	FINDMEMBER		; D1=TRASH,a1=first->REAL,a6=obj
 	MOVEQ #0,D0
 	MOVE.W	OOFF(A1),D0
-  MOVEM.L (A7)+,A1/D1
+	MOVEM.L (A7)+,A1/D1
 
-  LEA -6(A3),A3
-  MOVE.W  #VALUE,(A3)+
-  MOVE.L D0,(A3)
-  BRA EXPVALUE
+	LEA -6(A3),A3
+	MOVE.W	#VALUE,(A3)+
+	MOVE.L D0,(A3)
+	BRA EXPVALUE
 
 .obj:
-    CMP.W   #31,D0
-    BNE ERROR40
-    MOVE.L  (A3)+,A6
-    BRA .objback
+	CMP.W	#31,D0
+	BNE ERROR40
+	MOVE.L	(A3)+,A6
+	BRA .objback
 
  ;; ARRAYSIZE
-      EXPARRAYSIZE:
-    CLR.L   LAST_CMD_ADR
-    MOVE.W  (A3),D0
-    MOVE.L #1,.dimno
+		EXPARRAYSIZE:
+	CLR.L	LAST_CMD_ADR
+	MOVE.W	(A3),D0
+	MOVE.L #1,.dimno
 
-    CMP.W   #VALUE,D0
-    BNE.S   .nval
+	CMP.W	#VALUE,D0
+	BNE.S	.nval
 
-    ADDQ.L	#2,A3 
-    MOVE.L  A3,.dimerrpos
-    
-    MOVE.L  (A3)+,.dimno
+	ADDQ.L	#2,A3 
+	MOVE.L	A3,.dimerrpos
+	
+	MOVE.L	(A3)+,.dimno
 
-    CMP.W	#COM,(A3)+
-    BNE.W	ERROR5
+	CMP.W	#COM,(A3)+
+	BNE.W	ERROR5
 
-    MOVE.W (A3),D0
+	MOVE.W (A3),D0
 .nval:
-    CMP.W   #IDENT,D0
-    BEQ.S    .ident
+	CMP.W	#IDENT,D0
+	BEQ.S	 .ident
 
-    CMP.W   #31,D0
-    BNE.S .derror40
+	CMP.W	#31,D0
+	BNE.S .derror40
 
-    ADDQ.L	#2,A3 
-    CMP.W #35,4(A3)
-    BNE.S .derror40
+	ADDQ.L	#2,A3 
+	CMP.W #35,4(A3)
+	BNE.S .derror40
 
-    ADDQ.L	#6,A3 
-    CMP.W	#39,(A3)+
-    BNE.S .derror40
-    MOVE.L  -8(A3),A6
-    BRA .MB2a
+	ADDQ.L	#6,A3 
+	CMP.W	#39,(A3)+
+	BNE.S .derror40
+	MOVE.L	-8(A3),A6
+	BRA .MB2a
 
 .derror40 BRA ERROR40
 
 .ident
-    ADDQ.L  #2,A3
-    MOVE.L  (A3)+,A0
-      
-    TST.B	4(A0)
-    BEQ	ERROR22
-    
-    CMP.W #35,(A3)
-    BEQ .MB2
+	ADDQ.L	#2,A3
+	MOVE.L	(A3)+,A0
+		
+	TST.B	4(A0)
+	BEQ	ERROR22
+	
+	CMP.W #35,(A3)
+	BEQ .MB2
 
-    MOVE.L VAR_DIMDATA(A0),D0
-    BEQ.S .derror40
-    MOVE.L D0,A0
-    
-    MOVE.L .dimno,D0
-    BLE.S .derror104
-    SWAP D0
-    TST.W D0
-    BNE.S .derror104
-    SWAP D0
-    CMP.W (A0),D0
-    BGT.S .derror104
+	MOVE.L VAR_DIMDATA(A0),D0
+	BEQ.S .derror40
+	MOVE.L D0,A0
+	
+	MOVE.L .dimno,D0
+	BLE.S .derror104
+	SWAP D0
+	TST.W D0
+	BNE.S .derror104
+	SWAP D0
+	CMP.W (A0),D0
+	BGT.S .derror104
 
-    ADD.W D0,D0
-    LEA (A0,D0.W),A0
-  
-    MOVE.W (A0),D0
-    CMP.L #1,.dimno
-    BEQ.S .5
+	ADD.W D0,D0
+	LEA (A0,D0.W),A0
+	
+	MOVE.W (A0),D0
+	CMP.L #1,.dimno
+	BEQ.S .5
 
-    DIVU.W -2(A0),D0
+	DIVU.W -2(A0),D0
 
-.5: CMP.L   #126,D0
-    BGT.S     .6
-    BSR SD0
-    MOVE.B  .3(PC),(A4)+
-    MOVE.B  D0,(A4)+
-    BSR RD0
-    MOVEQ   #1,D5
-    BRA EXPLOOP
+.5: CMP.L	#126,D0
+	BGT.S		.6
+	BSR SD0
+	MOVE.B	.3(PC),(A4)+
+	MOVE.B	D0,(A4)+
+	BSR RD0
+	MOVEQ	#1,D5
+	BRA EXPLOOP
 .6: BSR SD0
-    MOVE.W  .7(PC),(A4)+
-    AND.L #$ffff,D0
-    MOVE.L  D0,(A4)+
-    BSR RD0
-    MOVEQ   #1,D5
-    BRA EXPLOOP
+	MOVE.W	.7(PC),(A4)+
+	AND.L #$ffff,D0
+	MOVE.L	D0,(A4)+
+	BSR RD0
+	MOVEQ	#1,D5
+	BRA EXPLOOP
 
-.3: MOVEQ   #0,D0
-.7: MOVE.L  #0,D0
+.3: MOVEQ	#0,D0
+.7: MOVE.L	#0,D0
 .dimno: DC.L 0
 .dimerrpos: DC.L 0
 .derror104:
-    MOVE.L .dimerrpos,A3
-    BRA ERROR104
-    
+	MOVE.L .dimerrpos,A3
+	BRA ERROR104
+	
 .MB2:
-    ADDQ.L	#2,A3 
-    CMP.W	#39,(A3)+
-    BNE	ERROR40
-    MOVE.L  (A0),A6
+	ADDQ.L	#2,A3 
+	CMP.W	#39,(A3)+
+	BNE	ERROR40
+	MOVE.L	(A0),A6
 .MB2a:
-    MOVEM.L A1/D1,-(A7)
-    MOVE.L	(A3)+,A1		; A1=MEMBER
-    BSR	FINDMEMBER		; D1=TRASH,a1=first->REAL,a6=obj
-   
-    TST.L DIMDATA(A1)
-    BEQ ERROR40
+	MOVEM.L A1/D1,-(A7)
+	MOVE.L	(A3)+,A1		; A1=MEMBER
+	BSR	FINDMEMBER		; D1=TRASH,a1=first->REAL,a6=obj
+	 
+	TST.L DIMDATA(A1)
+	BEQ ERROR40
 
-    MOVE.l DIMDATA(A1),A1
-    MOVE.W 2(A1),D0
-    MOVEM.L (A7)+,A1/D1
-    
-    BRA.S  .5
+	MOVE.l DIMDATA(A1),A1
+	MOVE.W 2(A1),D0
+	MOVEM.L (A7)+,A1/D1
+	
+	BRA.S	.5
 
  ;; SIZEOF
-      EXPSIZEOF:
-    MOVE.W D0,.tok
-    CLR.L   LAST_CMD_ADR
-    MOVE.W  (A3),D0
-    CMP.W   #IOFF+109,D0
-    BEQ .0
-    CMP.W   #IOFF+110,D0
-    BEQ .0
-    CMP.W   #IOFF+20,D0 ;LONG,INT or CHAR
-    BPL   .1
-    CMP.W   #IDENT,D0
-    BEQ     .4
-    CMP.W   #31,D0
-    BNE ERROR40
-    MOVE.W  #52,-2(A3)
-    MOVE.W  #VALUE,(A3)+
-    MOVE.L  (A3),A0
-    CMP.W #35,4(A3)
-    BEQ.S .MB
+		EXPSIZEOF:
+	MOVE.W D0,.tok
+	CLR.L	LAST_CMD_ADR
+	MOVE.W	(A3),D0
+	CMP.W	#IOFF+109,D0
+	BEQ .0
+	CMP.W	#IOFF+110,D0
+	BEQ .0
+	CMP.W	#IOFF+20,D0 ;LONG,INT or CHAR
+	BPL		.1
+	CMP.W	#IDENT,D0
+	BEQ		.4
+	CMP.W	#31,D0
+	BNE ERROR40
+	MOVE.W	#52,-2(A3)
+	MOVE.W	#VALUE,(A3)+
+	MOVE.L	(A3),A0
+	CMP.W #35,4(A3)
+	BEQ.S .MB
 
-    MOVE.W  4(A0),2(A3)
-    BEQ ERROR40
-    CLR.W   (A3)
-    BRA EXPVALUE
+	MOVE.W	4(A0),2(A3)
+	BEQ ERROR40
+	CLR.W	(A3)
+	BRA EXPVALUE
 .MB:
-    ADDQ.L	#6,A3 
-    CMP.W	#39,(A3)+
-    BNE	ERROR40
-    MOVE.L  -8(A3),A6
-    MOVEM.L A1/D1,-(A7)
-    MOVE.L	(A3)+,A1		; A1=MEMBER
-    BSR	FINDMEMBER		; D1=TRASH,a1=first->REAL,a6=obj
-    MOVEQ #0,D0
-    MOVE.W	OSIZE(A1),D0
-    BEQ.S .z
-    CMP.W #4,D0
-    BNE.S .s
+	ADDQ.L	#6,A3 
+	CMP.W	#39,(A3)+
+	BNE	ERROR40
+	MOVE.L	-8(A3),A6
+	MOVEM.L A1/D1,-(A7)
+	MOVE.L	(A3)+,A1		; A1=MEMBER
+	BSR	FINDMEMBER		; D1=TRASH,a1=first->REAL,a6=obj
+	MOVEQ #0,D0
+	MOVE.W	OSIZE(A1),D0
+	BEQ.S .z
+	CMP.W #4,D0
+	BNE.S .s
 .z:
-    MOVE.L OPTRTYPE(A1),D1
-    BEQ.S .s
-    MOVE.L D1,D0
-    
-    TST.L DIMDATA(A1)
-    BNE .arr2
+	MOVE.L OPTRTYPE(A1),D1
+	BEQ.S .s
+	MOVE.L D1,D0
+	
+	TST.L DIMDATA(A1)
+	BNE .arr2
 
-    CMP.W #IOFF+112,.tok
-    BNE.S .arr2
-    
-    MOVEQ #4,D0
-    BRA.S .s
-    
+	CMP.W #IOFF+112,.tok
+	BNE.S .arr2
+	
+	MOVEQ #4,D0
+	BRA.S .s
+	
 .arr2
-    CMP.L #5,D0
-    BMI.S .s
-    
-    MOVE.L D0,A1
-    MOVEQ #0,D0
-    MOVE.W OSIZE(A1),D0
+	CMP.L #5,D0
+	BMI.S .s
+	
+	MOVE.L D0,A1
+	MOVEQ #0,D0
+	MOVE.W OSIZE(A1),D0
 .s:
 
-    MOVEM.L (A7)+,A1/D1
-    
-    LEA -12(A3),A3
-    MOVE.L D0,(A3)
-    MOVE.W #52,4(A3)
-    MOVE.W #52,6(A3)
-    MOVE.W #52,8(A3)
-    MOVE.W #52,10(A3)
-    BRA EXPVALUE
-.0: ADDQ.L  #2,A3
-    SUB.W   #IOFF+109,D0
-    EOR.W   #1,D0
-    ADD.W   #1,D0
-    BRA.S .C
-.1: CMP.W   #IOFF+23,D0
-    BPL ERROR0
-    ADDQ.L  #2,A3
-    SUB.W   #IOFF+20,D0
+	MOVEM.L (A7)+,A1/D1
+	
+	LEA -12(A3),A3
+	MOVE.L D0,(A3)
+	MOVE.W #52,4(A3)
+	MOVE.W #52,6(A3)
+	MOVE.W #52,8(A3)
+	MOVE.W #52,10(A3)
+	BRA EXPVALUE
+.0: ADDQ.L	#2,A3
+	SUB.W	#IOFF+109,D0
+	EOR.W	#1,D0
+	ADD.W	#1,D0
+	BRA.S .C
+.1: CMP.W	#IOFF+23,D0
+	BPL ERROR0
+	ADDQ.L	#2,A3
+	SUB.W	#IOFF+20,D0
 .C:
-    CMP.W   #1,D5
-    BEQ ERROR0
-    MOVE.L LABLOG,-(A7)
-    BSR.W   SD0
-    MOVE.B  .3(PC),(A4)+
-    MOVE.B  .2(PC,D0.W),(A4)+
-    BSR.W   RD0
-    MOVE.L (A7)+,LABLOG
-    MOVEQ   #1,D5
-    BRA EXPLOOP
-.4: ADDQ.L  #2,A3
-    MOVE.L  (A3)+,A0
-      
-    TST.B	4(A0)
-    BEQ	ERROR22
-    
-    MOVE.L  (A0),D0 ;etype
+	CMP.W	#1,D5
+	BEQ ERROR0
+	MOVE.L LABLOG,-(A7)
+	BSR.W	SD0
+	MOVE.B	.3(PC),(A4)+
+	MOVE.B	.2(PC,D0.W),(A4)+
+	BSR.W	RD0
+	MOVE.L (A7)+,LABLOG
+	MOVEQ	#1,D5
+	BRA EXPLOOP
+.4: ADDQ.L	#2,A3
+	MOVE.L	(A3)+,A0
+		
+	TST.B	4(A0)
+	BEQ	ERROR22
+	
+	MOVE.L	(A0),D0 ;etype
 
-    CMP.W #35,(A3)
-    BEQ.S .MB2
+	CMP.W #35,(A3)
+	BEQ.S .MB2
 
-    TST.L VAR_DIMDATA(A0)
-    BNE.S .arr
-    CMP.W #IOFF+112,.tok
-    BEQ.S .p
+	TST.L VAR_DIMDATA(A0)
+	BNE.S .arr
+	CMP.W #IOFF+112,.tok
+	BEQ.S .p
 .arr
-    BTST #7,VARFLAGS(A0)
-    BEQ.S .nospecial
-.p    MOVEQ #4,D0
-    BRA.S .5 
+	BTST #7,VARFLAGS(A0)
+	BEQ.S .nospecial
+.p		MOVEQ #4,D0
+	BRA.S .5 
 
-.2: DC.B    4,2,1,0
+.2: DC.B	4,2,1,0
 
 .nospecial
-    CMP.L   #4,D0
-    BLE.S     .5
-    MOVE.L  D0,A0
-    MOVEQ #0,D0
-    MOVE.W  OSIZE(A0),D0
-.5: CMP.L   #126,D0
-    BGT.S     .6
-    BSR SD0
-    MOVE.B  .3(PC),(A4)+
-    MOVE.B  D0,(A4)+
-    BSR RD0
-    MOVEQ   #1,D5
-    BRA EXPLOOP
+	CMP.L	#4,D0
+	BLE.S		.5
+	MOVE.L	D0,A0
+	MOVEQ #0,D0
+	MOVE.W	OSIZE(A0),D0
+.5: CMP.L	#126,D0
+	BGT.S		.6
+	BSR SD0
+	MOVE.B	.3(PC),(A4)+
+	MOVE.B	D0,(A4)+
+	BSR RD0
+	MOVEQ	#1,D5
+	BRA EXPLOOP
 .6: BSR SD0
-    MOVE.W  .7(PC),(A4)+
-    AND.L #$ffff,D0
-    MOVE.L  D0,(A4)+
-    BSR RD0
-    MOVEQ   #1,D5
-    BRA EXPLOOP
+	MOVE.W	.7(PC),(A4)+
+	AND.L #$ffff,D0
+	MOVE.L	D0,(A4)+
+	BSR RD0
+	MOVEQ	#1,D5
+	BRA EXPLOOP
 
-.3: MOVEQ   #0,D0
-.7: MOVE.L  #0,D0
+.3: MOVEQ	#0,D0
+.7: MOVE.L	#0,D0
 .tok: DC.W 0
 
 .MB2:
-    ADDQ.L	#2,A3 
-    CMP.W	#39,(A3)+
-    BNE	ERROR40
-    MOVE.L  D0,A6
-    MOVEM.L A1/D1,-(A7)
-    MOVE.L	(A3)+,A1		; A1=MEMBER
-    BSR	FINDMEMBER		; D1=TRASH,a1=first->REAL,a6=obj
-    MOVEQ #0,D0
-    MOVE.W	OSIZE(A1),D0
-    BEQ.S .z1
-    CMP.W #4,D0
-    BNE.S .s1
+	ADDQ.L	#2,A3 
+	CMP.W	#39,(A3)+
+	BNE	ERROR40
+	MOVE.L	D0,A6
+	MOVEM.L A1/D1,-(A7)
+	MOVE.L	(A3)+,A1		; A1=MEMBER
+	BSR	FINDMEMBER		; D1=TRASH,a1=first->REAL,a6=obj
+	MOVEQ #0,D0
+	MOVE.W	OSIZE(A1),D0
+	BEQ.S .z1
+	CMP.W #4,D0
+	BNE.S .s1
 .z1:
-    MOVE.L OPTRTYPE(A1),D1
-    BEQ.S .s1
-    MOVE.L D1,D0
-   
-    TST.L DIMDATA(A1)
-    BNE .arr3
+	MOVE.L OPTRTYPE(A1),D1
+	BEQ.S .s1
+	MOVE.L D1,D0
+	 
+	TST.L DIMDATA(A1)
+	BNE .arr3
 
-    CMP.W #IOFF+112,.tok
-    BNE.S .arr3
-    
-    MOVEQ #4,D0
-    BRA.S .s1
-    
+	CMP.W #IOFF+112,.tok
+	BNE.S .arr3
+	
+	MOVEQ #4,D0
+	BRA.S .s1
+	
 .arr3
-    CMP.L #5,D0
-    BMI.S .s1
-    
-    MOVE.L D0,A1
-    MOVEQ #0,D0
-    MOVE.W OSIZE(A1),D0
+	CMP.L #5,D0
+	BMI.S .s1
+	
+	MOVE.L D0,A1
+	MOVEQ #0,D0
+	MOVE.W OSIZE(A1),D0
 .s1:
 
-    MOVEM.L (A7)+,A1/D1
-    BRA .5
+	MOVEM.L (A7)+,A1/D1
+	BRA .5
 ;*-*
 
-      EXPIF:
+		EXPIF:
 	MOVE.L	D0,D7			; FOR DOJOB
 	CMP.W	#1,D5
 	BEQ	ERROR0
@@ -22480,345 +22480,345 @@ EXPQMARK:
 	BSR.W	RD0
 	MOVE.L (A7)+,LABLOG 
 	MOVEQ	#1,D5
-    bset    #2,ICODEPREFS+3
+	bset	#2,ICODEPREFS+3
 	BRA	EXPLOOP
 
-      ELSECHECK:	DC.W	0
+		ELSECHECK:	DC.W	0
 
 ;; ==
 EXP_CHECK:
-    CMp.W   #1,D5
-    BNE ERROR0
-    addq.l  #2,a3
-    TST.W   FLTFLAG
-    BNE     .FLOATS
-    CMP.W   #29,(A3)+
-    BNE ERROR0
-    MOVe.L  A1,-(A7)
-    ADDQ.L  #4,A3
-    BSR NEWLABEL
-    MOVE.L  D0,-(A7)
+	CMp.W	#1,D5
+	BNE ERROR0
+	addq.l	#2,a3
+	TST.W	FLTFLAG
+	BNE		.FLOATS
+	CMP.W	#29,(A3)+
+	BNE ERROR0
+	MOVe.L	A1,-(A7)
+	ADDQ.L	#4,A3
+	BSR NEWLABEL
+	MOVE.L	D0,-(A7)
 .LOOP:
-    BSR SD0
-    BSR EXP
-    LEA EXPCMP(PC),A1
-    BSR RD0
-    CMp.W   #IOFF+39,(A3)
-    BNe .OTHER
-    TST.W   FLTFLAG
-    MOVE.L  .CODE0(PC),(A4)+
-    BSR NEWLABEL
-    MOVE.L  D0,-(A7)
-    CLR.W   NEWOP
-    BSR ADDBRANCH
-    ADDQ.L #2,A3
-    BSR SD0
-    BSR EXP
-    LEA EXPCMP(PC),A1
-    BSR RD0
-    MOVE.L  .CODE1(PC),(A4)+
-    MOVE.L  4(A7),D0
-    BSR ADDBRANCH
-    MOVE.L  (A7)+,D0
-    BSR ADDLABEL
-    BRA .NEXT
+	BSR SD0
+	BSR EXP
+	LEA EXPCMP(PC),A1
+	BSR RD0
+	CMp.W	#IOFF+39,(A3)
+	BNe .OTHER
+	TST.W	FLTFLAG
+	MOVE.L	.CODE0(PC),(A4)+
+	BSR NEWLABEL
+	MOVE.L	D0,-(A7)
+	CLR.W	NEWOP
+	BSR ADDBRANCH
+	ADDQ.L #2,A3
+	BSR SD0
+	BSR EXP
+	LEA EXPCMP(PC),A1
+	BSR RD0
+	MOVE.L	.CODE1(PC),(A4)+
+	MOVE.L	4(A7),D0
+	BSR ADDBRANCH
+	MOVE.L	(A7)+,D0
+	BSR ADDLABEL
+	BRA .NEXT
 .OTHER:
-    MOVE.L  .CODE2(PC),(A4)+
-    MOVE.L  (A7),D0
-    BSR ADDBRANCH
+	MOVE.L	.CODE2(PC),(A4)+
+	MOVE.L	(A7),D0
+	BSR ADDBRANCH
 .NEXT:
-    CMP.W   #COM,(A3)+
-    BEQ .LOOP
+	CMP.W	#COM,(A3)+
+	BEQ .LOOP
 
-    CMP.W   #30,-2(A3)
-    BNE ERROR34
-    MOVE.L  .CODE3(PC),(A4)+
-    CLR.W   (A4)+
-    BSR NEWLABEL
-    MOVe.L  D0,-(A7)
-    BSR ADDBRANCH
-    MOVE.L  4(A7),D0
-    BSR ADDLABEL
-    MOVE.W  .CODE4(PC),(A4)+
-    MOVE.L  (A7)+,D0
-    BSR ADDLABEL
-    ADDQ.L  #4,A7
-    MOVEQ   #1,D5
-    MOVE.L  (A7)+,A1
-    BRA EXPLOOP
+	CMP.W	#30,-2(A3)
+	BNE ERROR34
+	MOVE.L	.CODE3(PC),(A4)+
+	CLR.W	(A4)+
+	BSR NEWLABEL
+	MOVe.L	D0,-(A7)
+	BSR ADDBRANCH
+	MOVE.L	4(A7),D0
+	BSR ADDLABEL
+	MOVE.W	.CODE4(PC),(A4)+
+	MOVE.L	(A7)+,D0
+	BSR ADDLABEL
+	ADDQ.L	#4,A7
+	MOVEQ	#1,D5
+	MOVE.L	(A7)+,A1
+	BRA EXPLOOP
 
 .FLOATS:
-    BTST    #5,CODEPREFS
-    BEQ     .IEEE
+	BTST	#5,CODEPREFS
+	BEQ		.IEEE
 
-    CMP.W   #29,(A3)+
-    BNE ERROR0
-    MOVe.L  A1,-(A7)
-    ADDQ.L  #4,A3
-    BSR NEWLABEL
-    MOVE.L  D0,-(A7)
+	CMP.W	#29,(A3)+
+	BNE ERROR0
+	MOVe.L	A1,-(A7)
+	ADDQ.L	#4,A3
+	BSR NEWLABEL
+	MOVE.L	D0,-(A7)
 .LOOP2:
-    BSR SD0
-    BSR EXP
-    LEA EXPCMP(PC),A1
+	BSR SD0
+	BSR EXP
+	LEA EXPCMP(PC),A1
 
-    CMP.W   #IOFF+39,(A3)
-    BNE     .00
-    MOVEQ   #2,D3
-    BRA     .01
-.00:MOVEQ   #0,D3
+	CMP.W	#IOFF+39,(A3)
+	BNE		.00
+	MOVEQ	#2,D3
+	BRA		.01
+.00:MOVEQ	#0,D3
 .01:BSR RD0
-    CMp.W   #IOFF+39,(A3)
-    BNe .OTHER2
-    TST.W   FLTFLAG
-    MOVE.L  .CODE5(PC),(A4)+
-    BSR NEWLABEL
-    MOVE.L  D0,-(A7)
-    CLR.W   NEWOP
-    BSR ADDBRANCH
-    ADDQ.L #2,A3
-    BSR SD0
-    BSR EXP
-    LEA EXPCMP(PC),A1
-    MOVEQ   #4,D3
-    BSR RD0
-    MOVE.L  .CODE5(PC),(A4)+
-    MOVE.L  4(A7),D0
-    BSR ADDBRANCH
-    MOVE.L  (A7)+,D0
-    BSR ADDLABEL
-    BRA .NEXT2
+	CMp.W	#IOFF+39,(A3)
+	BNe .OTHER2
+	TST.W	FLTFLAG
+	MOVE.L	.CODE5(PC),(A4)+
+	BSR NEWLABEL
+	MOVE.L	D0,-(A7)
+	CLR.W	NEWOP
+	BSR ADDBRANCH
+	ADDQ.L #2,A3
+	BSR SD0
+	BSR EXP
+	LEA EXPCMP(PC),A1
+	MOVEQ	#4,D3
+	BSR RD0
+	MOVE.L	.CODE5(PC),(A4)+
+	MOVE.L	4(A7),D0
+	BSR ADDBRANCH
+	MOVE.L	(A7)+,D0
+	BSR ADDLABEL
+	BRA .NEXT2
 .OTHER2:
-    MOVE.L  .CODE5(PC),(A4)+
-    MOVE.L  (A7),D0
-    BSR ADDBRANCH
+	MOVE.L	.CODE5(PC),(A4)+
+	MOVE.L	(A7),D0
+	BSR ADDBRANCH
 .NEXT2:
-    CMP.W   #COM,(A3)+
-    BEQ .LOOP2
+	CMP.W	#COM,(A3)+
+	BEQ .LOOP2
 
-    CMP.W   #30,-2(A3)
-    BNE ERROR34
-    MOVE.L  .CODE3(PC),(A4)+
-    CLR.W   (A4)+
-    BSR NEWLABEL
-    MOVe.L  D0,-(A7)
-    BSR ADDBRANCH
-    MOVE.L  4(A7),D0
-    BSR ADDLABEL
-    MOVE.W  .CODE4(PC),(A4)+
-    MOVE.L  (A7)+,D0
-    BSR ADDLABEL
-    ADDQ.L  #4,A7
-    MOVEQ   #1,D5
-    MOVE.L  (A7)+,A1
-    MOVE.L  .CODE6(PC),(A4)+
-    BRA EXPLOOP
+	CMP.W	#30,-2(A3)
+	BNE ERROR34
+	MOVE.L	.CODE3(PC),(A4)+
+	CLR.W	(A4)+
+	BSR NEWLABEL
+	MOVe.L	D0,-(A7)
+	BSR ADDBRANCH
+	MOVE.L	4(A7),D0
+	BSR ADDLABEL
+	MOVE.W	.CODE4(PC),(A4)+
+	MOVE.L	(A7)+,D0
+	BSR ADDLABEL
+	ADDQ.L	#4,A7
+	MOVEQ	#1,D5
+	MOVE.L	(A7)+,A1
+	MOVE.L	.CODE6(PC),(A4)+
+	BRA EXPLOOP
 
 .IEEE:
-    CMP.W   #29,(A3)+
-    BNE ERROR0
-    MOVe.L  A1,-(A7)
-    ADDQ.L  #4,A3
-    BSR NEWLABEL
-    MOVE.L  D0,-(A7)
-    MOVE.W  .CODE7(PC),(A4)+
+	CMP.W	#29,(A3)+
+	BNE ERROR0
+	MOVe.L	A1,-(A7)
+	ADDQ.L	#4,A3
+	BSR NEWLABEL
+	MOVE.L	D0,-(A7)
+	MOVE.W	.CODE7(PC),(A4)+
 .LOOP3:
-    BSR EXP
-    MOVE.L  .CODE8(PC),(A4)+
-    CMP.W   #IOFF+39,(A3)
-    BNE     .20
-    MOVE.W  .CODEB(PC),D3
-    BRA     .21
-.20:MOVE.W  .CODEA(PC),D3
+	BSR EXP
+	MOVE.L	.CODE8(PC),(A4)+
+	CMP.W	#IOFF+39,(A3)
+	BNE		.20
+	MOVE.W	.CODEB(PC),D3
+	BRA		.21
+.20:MOVE.W	.CODEA(PC),D3
 .21:LEA EXPCMP(PC),A1
-    BSR CLOSEEXP
-    CMP.W   #IOFF+39,(A3)
-    BNE .OTHER3
-    TST.W   FLTFLAG
-    MOVE.L  .CODE5(PC),(A4)+
-    BSR NEWLABEL
-    MOVE.L  D0,-(A7)
-    CLR.W   NEWOP
-    BSR ADDBRANCH
-    ADDQ.L #2,A3
-    BSR EXP
-    MOVE.L  .CODE8(PC),(A4)+
-    LEA EXPCMP(PC),A1
-    MOVE.W  .CODEC(PC),D3
-    BSR CLOSEEXP
-    MOVE.L  .CODE5(PC),(A4)+
-    MOVE.L  4(A7),D0
-    BSR ADDBRANCH
-    MOVE.L  (A7)+,D0
-    BSR ADDLABEL
-    BRA .NEXT3
+	BSR CLOSEEXP
+	CMP.W	#IOFF+39,(A3)
+	BNE .OTHER3
+	TST.W	FLTFLAG
+	MOVE.L	.CODE5(PC),(A4)+
+	BSR NEWLABEL
+	MOVE.L	D0,-(A7)
+	CLR.W	NEWOP
+	BSR ADDBRANCH
+	ADDQ.L #2,A3
+	BSR EXP
+	MOVE.L	.CODE8(PC),(A4)+
+	LEA EXPCMP(PC),A1
+	MOVE.W	.CODEC(PC),D3
+	BSR CLOSEEXP
+	MOVE.L	.CODE5(PC),(A4)+
+	MOVE.L	4(A7),D0
+	BSR ADDBRANCH
+	MOVE.L	(A7)+,D0
+	BSR ADDLABEL
+	BRA .NEXT3
 .OTHER3:
-    MOVE.L  .CODE5(PC),(A4)+
-    MOVE.L  (A7),D0
-    BSR ADDBRANCH
+	MOVE.L	.CODE5(PC),(A4)+
+	MOVE.L	(A7),D0
+	BSR ADDBRANCH
 .NEXT3:
-    CMP.W   #COM,(A3)+
-    BEQ .LOOP3
+	CMP.W	#COM,(A3)+
+	BEQ .LOOP3
 
-    CMP.W   #30,-2(A3)
-    BNE ERROR34
-    MOVE.L  .CODE3(PC),(A4)+
-    CLR.W   (A4)+
-    BSR NEWLABEL
-    MOVE.L  D0,-(A7)
-    BSR ADDBRANCH
-    MOVE.L  4(A7),D0
-    BSR ADDLABEL
-    MOVE.W  .CODE4(PC),(A4)+
-    MOVE.L  (A7)+,D0
-    BSR ADDLABEL
-    ADDQ.L  #4,A7
-    MOVEQ   #1,D5
-    MOVE.L  (A7)+,A1
-    MOVE.W  .CODE9(PC),(A4)+
-    BRA EXPLOOP
+	CMP.W	#30,-2(A3)
+	BNE ERROR34
+	MOVE.L	.CODE3(PC),(A4)+
+	CLR.W	(A4)+
+	BSR NEWLABEL
+	MOVE.L	D0,-(A7)
+	BSR ADDBRANCH
+	MOVE.L	4(A7),D0
+	BSR ADDLABEL
+	MOVE.W	.CODE4(PC),(A4)+
+	MOVE.L	(A7)+,D0
+	BSR ADDLABEL
+	ADDQ.L	#4,A7
+	MOVEQ	#1,D5
+	MOVE.L	(A7)+,A1
+	MOVE.W	.CODE9(PC),(A4)+
+	BRA EXPLOOP
 
 .CODE0:
-    BMI     .CODE0  ;4
+	BMI		.CODE0	;4
 .CODE1:
-    BLE     .CODE1  ;4
+	BLE		.CODE1	;4
 .CODE2:
-    BEQ     .CODE2  ;4
+	BEQ		.CODE2	;4
 .CODE3:
-    MOVEQ   #0,D0   ;2
-    BRA     .CODE3  ;4
+	MOVEQ	#0,D0	;2
+	BRA		.CODE3	;4
 .CODE4:
-    MOVEQ   #-1,D0  ;2
+	MOVEQ	#-1,D0	;2
 .CODE5:
-    BNE     .CODE5
+	BNE		.CODE5
 .CODE6:
 	CPU040
-    FMOVE.L D0,FP0
+	FMOVE.L D0,FP0
 	CPU000
 .CODE7:
-    MOVE.L  D0,-(A7)
+	MOVE.L	D0,-(A7)
 .CODE8:
-    MOVE.L  D0,D1
-    MOVe.L  (A7),D0
+	MOVE.L	D0,D1
+	MOVe.L	(A7),D0
 .CODE9:
-    ADDQ.L  #4,A7
+	ADDQ.L	#4,A7
 .CODEA:
-    SEQ D0
+	SEQ D0
 .CODEB:
-    SLT D0
+	SLT D0
 .CODEC:
-    SLE D0
+	SLE D0
 ;*-*
 
 	CPU040
 FEXPRCODE1:
-    FMOVE.S FP0,-(A7)   ; 4
-    FMOVE   FP0,FP0     ; 4
+	FMOVE.S FP0,-(A7)	; 4
+	FMOVE	FP0,FP0		; 4
 FEXPRCODE2:
-    FMOVE.S (A7)+,FP0   ; 4
-    FSMOVE.S (A7)+,FP0  ; 4
+	FMOVE.S (A7)+,FP0	; 4
+	FSMOVE.S (A7)+,FP0	; 4
 FEXPRCODE_USED_REGS:
-    DC.W    0           ; should not fail ;)
+	DC.W	0			; should not fail ;)
 FEXPSTART:
-    FMOVE.L #0,FP0
+	FMOVE.L #0,FP0
 FEXPS:
-    FMOVEM.X FP2-FP7,-(A7)
+	FMOVEM.X FP2-FP7,-(A7)
 FEXPR:
-    FMOVEM.X (A7)+,FP2-FP7
+	FMOVEM.X (A7)+,FP2-FP7
 	CPU000
 
 
-      EXPRCODE1:
+		EXPRCODE1:
 	MOVE.L	D0,-(A7)
-      EXPRCODE2:
+		EXPRCODE2:
 	MOVE.L	D0,D1
 	MOVE.L	(A7)+,D0
-      EXTL:
+		EXTL:
 	EXT.W	D0
 	EXT.L	D0
-      MOVEQ:    ; seems to be unused
-	MOVEQ	#0,D0    ; seems to be unused
+		MOVEQ:	; seems to be unused
+	MOVEQ	#0,D0	 ; seems to be unused
 	
-      DOEXTL:
-      	TST.W	ECPU
-      	BEQ.S	.1
-      	MOVE.W	#$49C0,(A4)+			; EXTB.L D0
-      	RTS
-.1:    	MOVE.L	EXTL(PC),(A4)+
-      	RTS
+		DOEXTL:
+		TST.W	ECPU
+		BEQ.S	.1
+		MOVE.W	#$49C0,(A4)+			; EXTB.L D0
+		RTS
+.1:		MOVE.L	EXTL(PC),(A4)+
+		RTS
 
 ;; ExpSwap
 EXPSWAP:
-    MOVE.L  LASTVARADDR,-(A7)
-    TST.L   LASTVARADDR
-    BEQ     ERROR0
-    
-    ;offset from lastvaraddr should be exactly 6 eg no additional tokens after
-    ;the variable eg a[0] or a.prop, just variable and :=: tokens
-    MOVE.L  A3,D0
-    SUB.L   LASTVARADDR,D0
-    CMP.L   #6,d0
-    BEQ     .varok1
+	MOVE.L	LASTVARADDR,-(A7)
+	TST.L	LASTVARADDR
+	BEQ		ERROR0
+	
+	;offset from lastvaraddr should be exactly 6 eg no additional tokens after
+	;the variable eg a[0] or a.prop, just variable and :=: tokens
+	MOVE.L	A3,D0
+	SUB.L	LASTVARADDR,D0
+	CMP.L	#6,d0
+	BEQ		.varok1
  
-    MOVE.L  LASTVARADDR,A3
-    ADDQ.L  #4,A3
-    BRA     ERROR0
+	MOVE.L	LASTVARADDR,A3
+	ADDQ.L	#4,A3
+	BRA		ERROR0
 
 .varok1
-    
+	
 	MOVE.L LABLOG,-(A7)
-    BSR SD0
-    BSR EXP
-    MOVEQ   #1,D4
-    BSR RD0
-    MOVE.L (A7)+,LABLOG
-    TST.L   LASTVARADDR
-    BEQ     ERROR0
+	BSR SD0
+	BSR EXP
+	MOVEQ	#1,D4
+	BSR RD0
+	MOVE.L (A7)+,LABLOG
+	TST.L	LASTVARADDR
+	BEQ		ERROR0
 
 
-    ;offset from lastvaraddr should be exactly 4 eg no additional tokens after
-    ;the variable eg a[0] or a.prop, just the variable token and nothing else
+	;offset from lastvaraddr should be exactly 4 eg no additional tokens after
+	;the variable eg a[0] or a.prop, just the variable token and nothing else
 
-    MOVE.L  A3,A0
-    SUB.L   LASTVARADDR,A0
-    CMP.L   #4,A0
-    BEQ     .varok2
+	MOVE.L	A3,A0
+	SUB.L	LASTVARADDR,A0
+	CMP.L	#4,A0
+	BEQ		.varok2
 
-    MOVE.L  LASTVARADDR,A3
-    ADDQ.L  #4,A3
-    BRA     ERROR0
+	MOVE.L	LASTVARADDR,A3
+	ADDQ.L	#4,A3
+	BRA		ERROR0
 
 .varok2
-    MOVE.L  LASTVARADDR,A0
-    MOVE.L  (A0),A0
-    MOVE.W  .1(PC),(A4)+
-    BSR GVA0D0_9
+	MOVE.L	LASTVARADDR,A0
+	MOVE.L	(A0),A0
+	MOVE.W	.1(PC),(A4)+
+	BSR GVA0D0_9
 
-    ;get old var
-    MOVe.L  (A7)+,a0
-    MOVE.L  (A0),A0
-    MOVE.W  .2(PC),(A4)+
-    BSR GVA0D0_9
+	;get old var
+	MOVe.L	(A7)+,a0
+	MOVE.L	(A0),A0
+	MOVE.W	.2(PC),(A4)+
+	BSR GVA0D0_9
 
-    BRA EXPLOOP
+	BRA EXPLOOP
 
-.1: MOVE.L  D0,2(A5)
-.2: MOVE.L  D1,2(A5)
+.1: MOVE.L	D0,2(A5)
+.2: MOVE.L	D1,2(A5)
 ;*-*
 
-      CLOSEEXP:
+		CLOSEEXP:
 	TST.W	FLTFLAG
 	BNE.S	CLOSEFLT
-      CLFLTB:
-    CMP.B   #1,D4
-    BEQ     .2
+		CLFLTB:
+	CMP.B	#1,D4
+	BEQ		.2
 	CMP.W	#2,D4
 	BEQ.S	.1
-    CMP.W   #3,D4
-    BEQ     .S
+	CMP.W	#3,D4
+	BEQ		.S
 	MOVE.W	4(A1,D4.W),(A4)+	; OP
-    CMP.W   #4,D4
-    BNE     .5
+	CMP.W	#4,D4
+	BNE		.5
 	TST.W	ECPU
 	BEQ.S	.3
 .5
@@ -22841,26 +22841,26 @@ EXPSWAP:
 ;	MOVE.L	EXTL(PC),(A4)+
 ;	RTS
 	BRA.W	DOEXTL
-.S: MOVE.W  (A1),(A4)+
-    RTS
+.S: MOVE.W	(A1),(A4)+
+	RTS
 
-      CLOSEFLT:
+		CLOSEFLT:
 	CMP.W	#-1,D5			; NO MOVE
 	BEQ.S	CLFLTB
 	PEA	EXPCMP(PC)
 	CMPA.L	(A7)+,A1		; NO AND/OR
 	BMI.S	CLFLTB
 
-    btst    #5,CODEPREFS
-    bne     .DONEFP
+	btst	#5,CODEPREFS
+	bne		.DONEFP
 
 	MOVE.L	D0,-(A7)
 	BSR	MAKEFLTOPER
 	TST.W	D0
 	BNE.S	.2			; SEE IF SPCMP
 
-    btst    #5,CODEPREFS
-    bne .4
+	btst	#5,CODEPREFS
+	bne .4
 
 	MOVE.W	D3,(A4)+
 ;	MOVE.L	EXTL(PC),(A4)+
@@ -22868,206 +22868,206 @@ EXPSWAP:
 .2:	MOVE.L	(A7)+,D0
 	RTS
 
-.3: move.w  #1,FINISHFPEXP
-    bsr MAKEFLTOPER
-    TST.W   D0
-    BNE.S   .2          ; SEE IF SPCMP
+.3: move.w	#1,FINISHFPEXP
+	bsr MAKEFLTOPER
+	TST.W	D0
+	BNE.S	.2			; SEE IF SPCMP
 .4:
-    bsr EXPFPCMP
-    bra .2
+	bsr EXPFPCMP
+	bra .2
 
 .DONEFP:
-    moveq   #0,d1
-    cmp.l   #EXPPLUS,a1
-    beq     .FADD
-    cmp.l   #EXPMINUS,a1
-    beq     .FSUB
-    cmp.l   #EXPMUL,a1
-    beq     .FMUL
-    cmp.l   #EXPDIV,a1
-    beq     .FDIV
-    cmp.l   #EXPCMP,a1
-    beq     .FCMP
-    bra     ERROR0
+	moveq	#0,d1
+	cmp.l	#EXPPLUS,a1
+	beq		.FADD
+	cmp.l	#EXPMINUS,a1
+	beq		.FSUB
+	cmp.l	#EXPMUL,a1
+	beq		.FMUL
+	cmp.l	#EXPDIV,a1
+	beq		.FDIV
+	cmp.l	#EXPCMP,a1
+	beq		.FCMP
+	bra		ERROR0
 .FADD:
-    cmp.w   #2,ECPU
-    spl     d0
-    and.l   #4,d0
-    lea     .FC,a0
-    add.l   d0,a0
-    bra     .FFIX
+	cmp.w	#2,ECPU
+	spl		d0
+	and.l	#4,d0
+	lea		.FC,a0
+	add.l	d0,a0
+	bra		.FFIX
 .FSUB:
-    cmp.w   #2,ECPU
-    spl     d0
-    and.l   #4,d0
-    lea     .FC+8,a0
-    add.l   d0,a0
-    bra     .FFIX
+	cmp.w	#2,ECPU
+	spl		d0
+	and.l	#4,d0
+	lea		.FC+8,a0
+	add.l	d0,a0
+	bra		.FFIX
 .FMUL:
-    cmp.w   #2,ECPU
-    spl     d0
-    and.l   #4,d0
-    lea     .FC+16,a0
-    add.l   d0,a0
-    bra     .FFIX
+	cmp.w	#2,ECPU
+	spl		d0
+	and.l	#4,d0
+	lea		.FC+16,a0
+	add.l	d0,a0
+	bra		.FFIX
 .FDIV:
-    cmp.w   #2,ECPU
-    spl     d0
-    and.l   #4,d0
-    lea     .FC+24,a0
-    add.l   d0,a0
-    bra     .FFIX
+	cmp.w	#2,ECPU
+	spl		d0
+	and.l	#4,d0
+	lea		.FC+24,a0
+	add.l	d0,a0
+	bra		.FFIX
 .FCMP:
-    lea     .FC+32,a0
-    moveq   #-1,d1
+	lea		.FC+32,a0
+	moveq	#-1,d1
 .FFIX:
-    move.l  a4,d0
-    sub.l   LAST_CMD_ADR,d0
-    cmp.l   #8,d0
-    beq     .OPTI
+	move.l	a4,d0
+	sub.l	LAST_CMD_ADR,d0
+	cmp.l	#8,d0
+	beq		.OPTI
 .OPTIBACK
-    move.l  (a0),(a4)+
-    tst.l   d1
-    beq     .FXIT
-    bsr     EXPFPCMP
+	move.l	(a0),(a4)+
+	tst.l	d1
+	beq		.FXIT
+	bsr		EXPFPCMP
 .FXIT:
-    rts
+	rts
 .OPTI:
-    move.l  .FO,d0
-    cmp.l   -8(a4),d0
-    bne     .OPTIBACK
-    cmp.w   #2,ECPU
-    spl     d0
-    and.l   #4,d0
-    cmp.l   #EXPMUL,a1
-    beq     .OPTIMUL
-    cmp.l   #EXPPLUS,a1
-    bne     .OPTIBACK
+	move.l	.FO,d0
+	cmp.l	-8(a4),d0
+	bne		.OPTIBACK
+	cmp.w	#2,ECPU
+	spl		d0
+	and.l	#4,d0
+	cmp.l	#EXPMUL,a1
+	beq		.OPTIMUL
+	cmp.l	#EXPPLUS,a1
+	bne		.OPTIBACK
 
-    subq.l  #8,a4
-    lea     .FR,a0
-    add.l   d0,a0
-    move.l  (a0),(a4)+
-    rts
+	subq.l	#8,a4
+	lea		.FR,a0
+	add.l	d0,a0
+	move.l	(a0),(a4)+
+	rts
 .OPTIMUL:
-    subq.l  #8,a4
-    lea     .FR+8,a0
-    add.l   d0,a0
-    move.l  (a0),(a4)+
-    rts
+	subq.l	#8,a4
+	lea		.FR+8,a0
+	add.l	d0,a0
+	move.l	(a0),(a4)+
+	rts
 
 	CPU040
 .FO:FMOVE.S FP0,D0
-.FR:FADD.S  (A7)+,FP0
-    FSADD.S (A7)+,FP0
-    FMUL.S  (A7)+,FP0
-    FSGLMUL.S (A7)+,FP0
+.FR:FADD.S	(A7)+,FP0
+	FSADD.S (A7)+,FP0
+	FMUL.S	(A7)+,FP0
+	FSGLMUL.S (A7)+,FP0
 
-.FC:FADD.S  D0,FP0
-    FSADD.S D0,FP0
-    FSUB.S  D0,FP0
-    FSSUB.S D0,FP0
-    FMUL.S  D0,FP0
-    FSGLMUL.S D0,FP0
-    FDIV.S  D0,FP0
-    FSGLDIV.S D0,FP0
-    FCMP.S  D0,FP0
+.FC:FADD.S	D0,FP0
+	FSADD.S D0,FP0
+	FSUB.S	D0,FP0
+	FSSUB.S D0,FP0
+	FMUL.S	D0,FP0
+	FSGLMUL.S D0,FP0
+	FDIV.S	D0,FP0
+	FSGLDIV.S D0,FP0
+	FCMP.S	D0,FP0
 	CPU000
 RD0:	CMP.W	#-1,D5
 	BEQ.S	.1
-    BTST    #5,CODEPREFS
-    BEQ     .0
-    TST.W   FLTFLAG
-    BNE     .2
+	BTST	#5,CODEPREFS
+	BEQ		.0
+	TST.W	FLTFLAG
+	BNE		.2
 .0: MOVE.L	EXPRCODE2(PC),(A4)+
 	BSR	CLOSEEXP
 .1:	RTS
-.2: cmp.w   #2,ECPU
-    bpl     .2O
-    MOVE.L  FEXPRCODE2(PC),(A4)+
-    bra     .2X
-.2O:MOVe.L  FEXPRCODE2+4(PC),(A4)+
+.2: cmp.w	#2,ECPU
+	bpl		.2O
+	MOVE.L	FEXPRCODE2(PC),(A4)+
+	bra		.2X
+.2O:MOVe.L	FEXPRCODE2+4(PC),(A4)+
 .2X:BSR CLOSEEXP
-    RTS
+	RTS
 
 SD0:
 	CMP.W	#-1,D5
 	BEQ.S	.1
-    tst.l   LAST_CMD_ADR
-    bne     .OPTI
+	tst.l	LAST_CMD_ADR
+	bne		.OPTI
 .OB:
-    BCLR    #2,ICODEPREFS+3
-    BTST    #5,CODEPREFS
-    BEQ .0
-    TST.W   FLTFLAG
-    BNE .2
-    
+	BCLR	#2,ICODEPREFS+3
+	BTST	#5,CODEPREFS
+	BEQ .0
+	TST.W	FLTFLAG
+	BNE .2
+	
 .0:	MOVE.W	EXPRCODE1(PC),(A4)+
 .1:	RTS
-.2: move.l  FEXPRCODE1(PC),(A4)+
-    RTS
+.2: move.l	FEXPRCODE1(PC),(A4)+
+	RTS
 
 
 
 .OPTI:
-    btst    #2,ICODEPREFS+3
-    bne     .OB
-    move.l  a4,d0
-    sub.l   LAST_CMD_ADR,d0
-    cmp.w   #2,d0
-    beq     .O2
-    cmp.w   #4,d0
-    beq     .O4
-    cmp.w   #6,d0
-    beq     .O6
-    bra     .OB
-.O4:move.l  LAST_CMD_ADR,a0
-    move.w  (a0),d0
-    and.l   #$FFFE,d0
-    cmp.w   #$202c,d0
-    bne     .OB
-    move.w  (a0),d0
-    and.l   #1,d0
-    or.w    #$2f2c,d0
-    move.w  d0,(a0)
-    rts
-.O6:move.l  LAST_CMD_ADR,a0
-    cmp.w   #$203c,(a0)
-    bne     .OB
-    move.l  2(a0),d0
-    cmp.l   #32767,d0
-    bgt     .O60
-    cmp.l   #-32768,d0
-    bpl     .O61
+	btst	#2,ICODEPREFS+3
+	bne		.OB
+	move.l	a4,d0
+	sub.l	LAST_CMD_ADR,d0
+	cmp.w	#2,d0
+	beq		.O2
+	cmp.w	#4,d0
+	beq		.O4
+	cmp.w	#6,d0
+	beq		.O6
+	bra		.OB
+.O4:move.l	LAST_CMD_ADR,a0
+	move.w	(a0),d0
+	and.l	#$FFFE,d0
+	cmp.w	#$202c,d0
+	bne		.OB
+	move.w	(a0),d0
+	and.l	#1,d0
+	or.w	#$2f2c,d0
+	move.w	d0,(a0)
+	rts
+.O6:move.l	LAST_CMD_ADR,a0
+	cmp.w	#$203c,(a0)
+	bne		.OB
+	move.l	2(a0),d0
+	cmp.l	#32767,d0
+	bgt		.O60
+	cmp.l	#-32768,d0
+	bpl		.O61
 .O60:
-    move.w  #$4879,(a0)
-    rts
+	move.w	#$4879,(a0)
+	rts
 .O61:
-    move.w  #$4878,(a0)
-    move.w  d0,2(a0)
-    subq.l  #2,a4
-    rts
-.O2:move.l  LAST_CMD_ADR,a0
-    move.w  (a0),d0
-    and.l   #$FF00,d0
-    cmp.w   #$7000,d0
-    bne     .OB
-    move.w  (a0),d0
-    and.l   #$FF,d0
-    move.w  #$4878,(a0)
-    ext.w   d0
-    move.w  d0,(a4)+
-    rts
+	move.w	#$4878,(a0)
+	move.w	d0,2(a0)
+	subq.l	#2,a4
+	rts
+.O2:move.l	LAST_CMD_ADR,a0
+	move.w	(a0),d0
+	and.l	#$FF00,d0
+	cmp.w	#$7000,d0
+	bne		.OB
+	move.w	(a0),d0
+	and.l	#$FF,d0
+	move.w	#$4878,(a0)
+	ext.w	d0
+	move.w	d0,(a4)+
+	rts
 ;*-*
 
 poprawka=1
-  IFeq poprawka
+	IFeq poprawka
 ;; new imm list
 EXPIMMLIST:
-	CLR.L   LAST_CMD_ADR
-	cmp.w   #-1,d5
-	bne     ERROR0
-	addq.l  #4,a3       ; skip ] off
+	CLR.L	LAST_CMD_ADR
+	cmp.w	#-1,d5
+	bne		ERROR0
+	addq.l	#4,a3		; skip ] off
 
 	CMP.W	#30,(A3)
 	BNE.S .L0
@@ -23082,263 +23082,263 @@ EXPIMMLIST:
 .EL:	MOVE.L	#0,D0
 	LEA	.EL+6(PC),A0
 	MOVE.L	A0,D0
-    
+	
 .L0 
-    move.l  a5,-(a7)
-    moveq   #0,d5
-.L1:CHESTB  A5,D1,20,ERROR46
-    addq.l  #1,d5
-    move.l  a3,a0
-    cmp.w   #LIBC,(A3)
-    beq     .L2
-    cmp.w   #STR,(a3)
-    beq     .L4
-    movem.l d5/a0,-(a7)
-    jsr     ASM_GRABVALUE
-    movem.l (A7)+,d5/a0
-    tst.l   d0
-    bmi     .L2
-    move.w  #1,(a5)+    ; value
-    move.l  d1,(a5)+
-    bra     .L3
-.L4:move.w  #3,(a5)+
-    addq.l  #4,a3
-    moveq   #0,d0
-    move.w  (a3)+,d0
-    lsl.w   #1,d0
-    move.l  d0,-(a7)
-    addq.l  #2,d0
-    jsr     NEW
-    tst.l   d0
-    beq     ERROR38
-    move.l  d0,a0
-    move.l  a0,(a5)+
-    move.l  (a7)+,d0
-    move.w  d0,(a0)+
+	move.l	a5,-(a7)
+	moveq	#0,d5
+.L1:CHESTB	A5,D1,20,ERROR46
+	addq.l	#1,d5
+	move.l	a3,a0
+	cmp.w	#LIBC,(A3)
+	beq		.L2
+	cmp.w	#STR,(a3)
+	beq		.L4
+	movem.l d5/a0,-(a7)
+	jsr		ASM_GRABVALUE
+	movem.l (A7)+,d5/a0
+	tst.l	d0
+	bmi		.L2
+	move.w	#1,(a5)+	; value
+	move.l	d1,(a5)+
+	bra		.L3
+.L4:move.w	#3,(a5)+
+	addq.l	#4,a3
+	moveq	#0,d0
+	move.w	(a3)+,d0
+	lsl.w	#1,d0
+	move.l	d0,-(a7)
+	addq.l	#2,d0
+	jsr		NEW
+	tst.l	d0
+	beq		ERROR38
+	move.l	d0,a0
+	move.l	a0,(a5)+
+	move.l	(a7)+,d0
+	move.w	d0,(a0)+
 .L4c:
-    tst.w   d0
-    beq     .L3
-    move.b  (a3)+,(a0)+
-    subq.l  #1,d0
-    bra     .L4c
-.L2:move.l  a0,a3
-    move.w  #16,EAREQUEST
-    move.l  d5,-(a7)
-    bsr     EAEXP
-    tst.l   d0
-    bne     .OPTI
-    move.w  .K4,(a4)+
+	tst.w	d0
+	beq		.L3
+	move.b	(a3)+,(a0)+
+	subq.l	#1,d0
+	bra		.L4c
+.L2:move.l	a0,a3
+	move.w	#16,EAREQUEST
+	move.l	d5,-(a7)
+	bsr		EAEXP
+	tst.l	d0
+	bne		.OPTI
+	move.w	.K4,(a4)+
 .OPTI:
-    move.l  (a7)+,d5
-    move.w  #2,(a5)+    ; expression
-.L3:cmp.w   #COM,(a3)+
-    beq     .L1
-    move.w  #-1,(a5)+   ; done ;)
-    cmp.w   #30,-2(a3)  ; d5 now: numentries
-    bne     ERROR34     ; set backwards!
-    moveq   #4,D2       ; entry size
-    sub.l   a2,a2       ; object
-    cmp.w   #19,(a3)    ; typed?
-    bne     .CNT
-    addq.l  #2,a3
-    move.w  (a3)+,d0
-    cmp.w   #31,d0
-    bne     .C1
+	move.l	(a7)+,d5
+	move.w	#2,(a5)+	; expression
+.L3:cmp.w	#COM,(a3)+
+	beq		.L1
+	move.w	#-1,(a5)+	; done ;)
+	cmp.w	#30,-2(a3)	; d5 now: numentries
+	bne		ERROR34		; set backwards!
+	moveq	#4,D2		; entry size
+	sub.l	a2,a2		; object
+	cmp.w	#19,(a3)	; typed?
+	bne		.CNT
+	addq.l	#2,a3
+	move.w	(a3)+,d0
+	cmp.w	#31,d0
+	bne		.C1
 
-    move.l  (a3),a2    ; count members and calculate size
-    lea     OMEMB+4(a2),a2
-    moveq   #0,d0
-.C2:addq.l  #1,d0
-    tst.l   ONEXT(a2)
-    beq     .C3
-    move.l  ONEXT(a2),a2
-    bra     .C2
-.C3:move.l  (a3)+,a2
-    move.l  d5,d1
-    lsl.w   #2,d1
-    bra     .CNT
-.C1:  cmp.w  #IOFF+109,d0
-    beq.s   .CHR
-    cmp.w  #IOFF+110,d0
-    beq.s   .WORD
-    cmp.w   #IOFF+20,d0
-    bmi     ERROR40
-    cmp.w   #IOFF+22,d0
-    bgt     ERROR40
-    cmp.w   #IOFF+21,d0
-    bmi.s     .CNT
-    bgt.s     .CHR
+	move.l	(a3),a2		 ; count members and calculate size
+	lea		OMEMB+4(a2),a2
+	moveq	#0,d0
+.C2:addq.l	#1,d0
+	tst.l	ONEXT(a2)
+	beq		.C3
+	move.l	ONEXT(a2),a2
+	bra		.C2
+.C3:move.l	(a3)+,a2
+	move.l	d5,d1
+	lsl.w	#2,d1
+	bra		.CNT
+.C1:	cmp.w	 #IOFF+109,d0
+	beq.s	.CHR
+	cmp.w	#IOFF+110,d0
+	beq.s	.WORD
+	cmp.w	#IOFF+20,d0
+	bmi		ERROR40
+	cmp.w	#IOFF+22,d0
+	bgt		ERROR40
+	cmp.w	#IOFF+21,d0
+	bmi.s		.CNT
+	bgt.s		.CHR
 .WORD:
-    moveq   #2,d2
-    bra.s     .CNT
+	moveq	#2,d2
+	bra.s		.CNT
 .CHR:
-    moveq   #1,d2
+	moveq	#1,d2
 .CNT:
-    cmpa.l  #0,a2
-    bne     .CNT2
-    move.l  d5,d1
-    mulu    d2,d1
+	cmpa.l	#0,a2
+	bne		.CNT2
+	move.l	d5,d1
+	mulu	d2,d1
 .CNT2:
-    move.l  d1,-(a7)
-    GETM    A0          ; 0=next
-    MOVE.L  IMMLH,(A0)  ; 4=id
-    MOVE.L  A0,IMMLH    ; 6=list
-    addq.l  #4,a0       ; 10=size
-    move.l  a0,-(a7)
-    jsr     NEWLABEL
-    move.l  (a7)+,a0
-    move.w  d0,(a0)+
-    move.l  (a7)+,d1
-    addq.l  #4,d1
-    move.l  d1,d0
-    JSR     NEW
-    move.l  d0,(a0)+
-    move.l  d1,(a0)+    ; :)
-    clr.l   (a0)+
-    DONEM   A0
+	move.l	d1,-(a7)
+	GETM	A0			; 0=next
+	MOVE.L	IMMLH,(A0)	; 4=id
+	MOVE.L	A0,IMMLH	; 6=list
+	addq.l	#4,a0		; 10=size
+	move.l	a0,-(a7)
+	jsr		NEWLABEL
+	move.l	(a7)+,a0
+	move.w	d0,(a0)+
+	move.l	(a7)+,d1
+	addq.l	#4,d1
+	move.l	d1,d0
+	JSR		NEW
+	move.l	d0,(a0)+
+	move.l	d1,(a0)+	; :)
+	clr.l	(a0)+
+	DONEM	A0
 
-    move.l  IMMLH,A0
-    MOVE.W  4(a0),d0
-    move.w  .K1,NEWOP
-    MOVE.l  .K1S,(A4)+
-    move.l  a0,-(a7)
-    jsr     ADDBRANCH
-    move.l  (a7)+,a0
-    move.l  6(a0),a0
-    move.w  d5,(a0)
-    move.w  d5,2(a0)
+	move.l	IMMLH,A0
+	MOVE.W	4(a0),d0
+	move.w	.K1,NEWOP
+	MOVE.l	.K1S,(A4)+
+	move.l	a0,-(a7)
+	jsr		ADDBRANCH
+	move.l	(a7)+,a0
+	move.l	6(a0),a0
+	move.w	d5,(a0)
+	move.w	d5,2(a0)
 
-    move.l  (a7),a1
-    move.w  #-1,-(a7)
-    moveq   #0,d5
-    cmp.l   #0,a2
-    beq     .F1
-    move.l  OMEMB(a2),a6
-.FL:add.w   OOFF(a6),d5
-    MOVEQ #0,D2
-    move.w  OSIZE(a6),d2
-    beq     ERROR40
-    cmp.l   #4,d2
-    bgt     ERROR40
-.F1:moveq   #0,d0           ;
-    move.w  (a1)+,d0
-    cmp.w   #1,d0
-    bne     .F2
-    move.l  (a1)+,d0
-    cmp.l   #2,d2
-    blt     .Fb
-    beq     .Fi
-    move.l  d0,4(a0,d5)
-    bra     .F
-.Fb:move.b  d0,4(a0,d5)
-    bra     .F
-.Fi:move.w  d0,4(a0,d5)
-    bra     .F
-.F2:cmp.w   #2,d0
-    bne     .F3
+	move.l	(a7),a1
+	move.w	#-1,-(a7)
+	moveq	#0,d5
+	cmp.l	#0,a2
+	beq		.F1
+	move.l	OMEMB(a2),a6
+.FL:add.w	OOFF(a6),d5
+	MOVEQ #0,D2
+	move.w	OSIZE(a6),d2
+	beq		ERROR40
+	cmp.l	#4,d2
+	bgt		ERROR40
+.F1:moveq	#0,d0			;
+	move.w	(a1)+,d0
+	cmp.w	#1,d0
+	bne		.F2
+	move.l	(a1)+,d0
+	cmp.l	#2,d2
+	blt		.Fb
+	beq		.Fi
+	move.l	d0,4(a0,d5)
+	bra		.F
+.Fb:move.b	d0,4(a0,d5)
+	bra		.F
+.Fi:move.w	d0,4(a0,d5)
+	bra		.F
+.F2:cmp.w	#2,d0
+	bne		.F3
 
-    move.w  d5,-(a7)
-    move.w  d2,-(a7)
-    move.l  #-1,.T0
-    bra     .F
+	move.w	d5,-(a7)
+	move.w	d2,-(a7)
+	move.l	#-1,.T0
+	bra		.F
 
-.F3:cmp.w   #3,d0
-    bne     .F4
-    move.l  a0,-(a7)
-    GETM    A0
-    move.l  (a1)+,4(a0)
-    MOVE.L  a0,-(a7)
-    bsr     NEWLABEL
-    move.l  (a7)+,a0
-    move.w  d0,8(a0)
-    move.l  a1,-(a7)
-    move.l  IMMLH,a1
-    move.l  14(a1),(a0)
-    move.l  a0,14(a1)
-    move.l  (a7)+,a1
-    move.w  d5,10(a0)
-    add.l   #12,a0
-    DONEM   A0
-    move.l  (a7)+,a0
-    bra     .F
+.F3:cmp.w	#3,d0
+	bne		.F4
+	move.l	a0,-(a7)
+	GETM	A0
+	move.l	(a1)+,4(a0)
+	MOVE.L	a0,-(a7)
+	bsr		NEWLABEL
+	move.l	(a7)+,a0
+	move.w	d0,8(a0)
+	move.l	a1,-(a7)
+	move.l	IMMLH,a1
+	move.l	14(a1),(a0)
+	move.l	a0,14(a1)
+	move.l	(a7)+,a1
+	move.w	d5,10(a0)
+	add.l	#12,a0
+	DONEM	A0
+	move.l	(a7)+,a0
+	bra		.F
 
-.F: cmp.l   #0,a2
-    beq     .F1L
-    sub.w   OOFF(a6),d5
-    move.l  ONEXT(a6),d0
-    bne     .FN
-    move.l  OMEMB(a2),d0
-.FN:move.l  d0,a6
-    bra     .FL
+.F: cmp.l	#0,a2
+	beq		.F1L
+	sub.w	OOFF(a6),d5
+	move.l	ONEXT(a6),d0
+	bne		.FN
+	move.l	OMEMB(a2),d0
+.FN:move.l	d0,a6
+	bra		.FL
 .F1L:
-    add.l   d2,d5
-    bra     .F1
-.F4:cmp.w   #-1,d0
-    bne     ERROR0
+	add.l	d2,d5
+	bra		.F1
+.F4:cmp.w	#-1,d0
+	bne		ERROR0
 
 .VL:
-    move.w  (a7)+,d0
-    cmp.w   #-1,d0
-    beq     .VX
-    cmp.w   #2,d0
-    bmi     .VC
-    beq     .VI
-    move.w  .K0,(a4)+
-    move.w  (a7)+,(a4)+
-    bra     .VL
-.VI:move.l  .K2,(a4)+
-    add.w   #$2000,-2(a4)
-    move.w  (a7)+,(a4)+
-    bra     .VL
-.VC:move.l  .K2,(A4)+
-    move.w  (A7)+,(A4)+
-    bra     .VL
+	move.w	(a7)+,d0
+	cmp.w	#-1,d0
+	beq		.VX
+	cmp.w	#2,d0
+	bmi		.VC
+	beq		.VI
+	move.w	.K0,(a4)+
+	move.w	(a7)+,(a4)+
+	bra		.VL
+.VI:move.l	.K2,(a4)+
+	add.w	#$2000,-2(a4)
+	move.w	(a7)+,(a4)+
+	bra		.VL
+.VC:move.l	.K2,(A4)+
+	move.w	(A7)+,(A4)+
+	bra		.VL
 .VX:
-    move.l  (a7)+,a5
-    moveq   #1,d5
-    tst.l   .T0
-    bne     .X2
-    cmp.w   #$41FA,-4(a4)
-    beq     .X2
-    move.w  #$203c,-6(a4)
-    bra     EXPLOOP
-.X2:mOVE.L  A4,LAST_CMD_ADR
-    move.w  .K3,(a4)+
-    bra     EXPLOOP
+	move.l	(a7)+,a5
+	moveq	#1,d5
+	tst.l	.T0
+	bne		.X2
+	cmp.w	#$41FA,-4(a4)
+	beq		.X2
+	move.w	#$203c,-6(a4)
+	bra		EXPLOOP
+.X2:mOVE.L	A4,LAST_CMD_ADR
+	move.w	.K3,(a4)+
+	bra		EXPLOOP
 
-.K0:MOVE.L  (A7)+,4(A0)
-.K1:LEA     $0,A0
+.K0:MOVE.L	(A7)+,4(A0)
+.K1:LEA		$0,A0
 .K1S:
-    LEA     .K1S(PC),A0
-.K2:MOVE.L  (A7)+,D0
-    MOVE.B  D0,4(A0)
-.K3:MOVE.L  A0,D0
-.K4:MOVE.L  D0,-(A7)
+	LEA		.K1S(PC),A0
+.K2:MOVE.L	(A7)+,D0
+	MOVE.B	D0,4(A0)
+.K3:MOVE.L	A0,D0
+.K4:MOVE.L	D0,-(A7)
 .T0:
-    DC.L    0
+	DC.L	0
 IMMLH:
-    DC.L    0
+	DC.L	0
 ; list entry struct:
-; (  0) next
-; (  4) listid [used with addreloc etc]
-; (  6) list array
+; (	 0) next
+; (	 4) listid [used with addreloc etc]
+; (	 6) list array
 ; ( 10) list size
 ; ( 14) list references
 STRLH:
-    DC.L    0
+	DC.L	0
 ; string entry struct:
-; (  0) next
-; (  4) interim ptr
-; (  8) strid [used with addreloc etc]
+; (	 0) next
+; (	 4) interim ptr
+; (	 8) strid [used with addreloc etc]
 ;*-*
-  endc
-  ifne poprawka
+	endc
+	ifne poprawka
 ;; new imm list
 EXPIMMLIST:
-	CLR.L   LAST_CMD_ADR
-	cmp.w   #-1,d5
-	bne     ERROR0
-	addq.l  #4,a3       ; skip ] off
+	CLR.L	LAST_CMD_ADR
+	cmp.w	#-1,d5
+	bne		ERROR0
+	addq.l	#4,a3		; skip ] off
 	CMP.W	#30,(A3)
 	BNE.S .L0
 	ADDQ.L	#2,A3
@@ -23352,287 +23352,287 @@ EXPIMMLIST:
 .EL:	MOVE.L	#0,D0
 	LEA	.EL+6(PC),A0
 	MOVE.L	A0,D0
-    
-.L0    
-    move.l  a5,-(a7)
-    moveq   #0,d5
-.L1:CHESTB  A5,D1,20,ERROR46
-    addq.l  #1,d5
-    move.l  a3,a0
-    cmp.w   #LIBC,(A3)
-    beq     .L2
-    cmp.w   #STR,(a3)
-    beq     .L4
-    movem.l d5/a0,-(a7)
-    jsr     ASM_GRABVALUE
-    movem.l (A7)+,d5/a0
-    tst.l   d0
-    bmi     .L2
-    move.w  #1,(a5)+    ; value
-    move.l  d1,(a5)+
-    bra     .L3
-.L4:move.w  #3,(a5)+
-    addq.l  #4,a3
-    moveq   #0,d0
-    move.w  (a3)+,d0
-    lsl.w   #1,d0
-    move.l  d0,-(a7)
-    addq.l  #2,d0
-    jsr     NEW
-    tst.l   d0
-    beq     ERROR38
-    move.l  d0,a0
-    move.l  a0,(a5)+
-    move.l  (a7)+,d0
-    move.w  d0,(a0)+
+	
+.L0		 
+	move.l	a5,-(a7)
+	moveq	#0,d5
+.L1:CHESTB	A5,D1,20,ERROR46
+	addq.l	#1,d5
+	move.l	a3,a0
+	cmp.w	#LIBC,(A3)
+	beq		.L2
+	cmp.w	#STR,(a3)
+	beq		.L4
+	movem.l d5/a0,-(a7)
+	jsr		ASM_GRABVALUE
+	movem.l (A7)+,d5/a0
+	tst.l	d0
+	bmi		.L2
+	move.w	#1,(a5)+	; value
+	move.l	d1,(a5)+
+	bra		.L3
+.L4:move.w	#3,(a5)+
+	addq.l	#4,a3
+	moveq	#0,d0
+	move.w	(a3)+,d0
+	lsl.w	#1,d0
+	move.l	d0,-(a7)
+	addq.l	#2,d0
+	jsr		NEW
+	tst.l	d0
+	beq		ERROR38
+	move.l	d0,a0
+	move.l	a0,(a5)+
+	move.l	(a7)+,d0
+	move.w	d0,(a0)+
 .L4c:
-    tst.w   d0
-    beq     .L3
-    move.b  (a3)+,(a0)+
-    subq.l  #1,d0
-    bra     .L4c
-.L2:move.l  a0,a3
-    move.w  #16,EAREQUEST
-    move.l  d5,-(a7)
-    bsr     EAEXP
-    tst.l   d0
-    bne     .OPTI
-    move.w  .K4,(a4)+
+	tst.w	d0
+	beq		.L3
+	move.b	(a3)+,(a0)+
+	subq.l	#1,d0
+	bra		.L4c
+.L2:move.l	a0,a3
+	move.w	#16,EAREQUEST
+	move.l	d5,-(a7)
+	bsr		EAEXP
+	tst.l	d0
+	bne		.OPTI
+	move.w	.K4,(a4)+
 .OPTI:
-    move.l  (a7)+,d5
-    move.w  #2,(a5)+    ; expression
-.L3:cmp.w   #COM,(a3)+
-    beq     .L1
-    move.w  #-1,(a5)+   ; done ;)
-    cmp.w   #30,-2(a3)  ; d5 now: numentries
-    bne     ERROR34     ; set backwards!
-    moveq   #4,D2       ; entry size
-    sub.l   a2,a2       ; object
-    cmp.w   #19,(a3)    ; typed?
-    bne     .CNT
-    addq.l  #2,a3
-    move.w  (a3)+,d0
-    cmp.w   #31,d0
-    bne     .C1
+	move.l	(a7)+,d5
+	move.w	#2,(a5)+	; expression
+.L3:cmp.w	#COM,(a3)+
+	beq		.L1
+	move.w	#-1,(a5)+	; done ;)
+	cmp.w	#30,-2(a3)	; d5 now: numentries
+	bne		ERROR34		; set backwards!
+	moveq	#4,D2		; entry size
+	sub.l	a2,a2		; object
+	cmp.w	#19,(a3)	; typed?
+	bne		.CNT
+	addq.l	#2,a3
+	move.w	(a3)+,d0
+	cmp.w	#31,d0
+	bne		.C1
 
-    move.l  (a3),a2    ; count members and calculate size
-    lea     OMEMB+4(a2),a2
-    moveq   #0,d0
-.C2:addq.l  #1,d0
-    tst.l   ONEXT(a2)
-    beq     .C3
-    move.l  ONEXT(a2),a2
-    bra     .C2
-.C3:move.l  (a3)+,a2
-    move.l  d5,d1
-    lsl.w   #2,d1
-    bra     .CNT
-.C1:  cmp.w #IOFF+109,d0
-    beq.s   .CHR
-    cmp.w #IOFF+110,d0
-    beq.s   .WORD
-    cmp.w   #IOFF+20,d0
-    bmi     ERROR40
-    cmp.w   #IOFF+22,d0
-    bgt     ERROR40
-    cmp.w   #IOFF+21,d0
-    bmi.s     .CNT
-    bgt.s     .CHR
+	move.l	(a3),a2		 ; count members and calculate size
+	lea		OMEMB+4(a2),a2
+	moveq	#0,d0
+.C2:addq.l	#1,d0
+	tst.l	ONEXT(a2)
+	beq		.C3
+	move.l	ONEXT(a2),a2
+	bra		.C2
+.C3:move.l	(a3)+,a2
+	move.l	d5,d1
+	lsl.w	#2,d1
+	bra		.CNT
+.C1:	cmp.w #IOFF+109,d0
+	beq.s	.CHR
+	cmp.w #IOFF+110,d0
+	beq.s	.WORD
+	cmp.w	#IOFF+20,d0
+	bmi		ERROR40
+	cmp.w	#IOFF+22,d0
+	bgt		ERROR40
+	cmp.w	#IOFF+21,d0
+	bmi.s		.CNT
+	bgt.s		.CHR
 .WORD:
-    moveq   #2,d2
-    bra.s     .CNT
+	moveq	#2,d2
+	bra.s		.CNT
 .CHR:
-    moveq   #1,d2
+	moveq	#1,d2
 .CNT:
-    cmpa.l  #0,a2
-    bne     .CNT2
-    move.l  d5,d1
-    mulu    d2,d1
+	cmpa.l	#0,a2
+	bne		.CNT2
+	move.l	d5,d1
+	mulu	d2,d1
 .CNT2:
-    move.l  d1,-(a7)
-    GETM    A0          ; 0=next
-    MOVE.L  IMMLH,(A0)  ; 4=id
-    MOVE.L  A0,IMMLH    ; 6=list
-    addq.l  #4,a0       ; 10=size
-    move.l  a0,-(a7)
-    jsr     NEWLABEL
-    move.l  (a7)+,a0
-    move.w  d0,(a0)+
-    move.l  (a7)+,d1
-    addq.l  #4,d1
-    move.l  d1,d0
-    JSR     NEW
-    move.l  d0,(a0)+
-    move.l  d1,(a0)+    ; :)
-    clr.l   (a0)+
-    DONEM   A0
+	move.l	d1,-(a7)
+	GETM	A0			; 0=next
+	MOVE.L	IMMLH,(A0)	; 4=id
+	MOVE.L	A0,IMMLH	; 6=list
+	addq.l	#4,a0		; 10=size
+	move.l	a0,-(a7)
+	jsr		NEWLABEL
+	move.l	(a7)+,a0
+	move.w	d0,(a0)+
+	move.l	(a7)+,d1
+	addq.l	#4,d1
+	move.l	d1,d0
+	JSR		NEW
+	move.l	d0,(a0)+
+	move.l	d1,(a0)+	; :)
+	clr.l	(a0)+
+	DONEM	A0
 
-    move.l  IMMLH,A0
-    MOVE.W  4(a0),d0
-    move.w  .K1,NEWOP
-    MOVE.l  .K1S,(A4)+
-    move.l  a0,-(a7)
-    jsr     ADDBRANCH
-    move.l  (a7)+,a0
-    move.l  6(a0),a0
-    move.w  d5,(a0)
-    move.w  d5,2(a0)
+	move.l	IMMLH,A0
+	MOVE.W	4(a0),d0
+	move.w	.K1,NEWOP
+	MOVE.l	.K1S,(A4)+
+	move.l	a0,-(a7)
+	jsr		ADDBRANCH
+	move.l	(a7)+,a0
+	move.l	6(a0),a0
+	move.w	d5,(a0)
+	move.w	d5,2(a0)
 
-    move.l  (a7),a1
-    move.w  #-1,-(a7)
-    lea     OMEMB+4(a2),a6
-    moveq   #0,d5
-    moveq   #0,d1       ;x;
-.F: cmpa.l  #0,a2
-    beq     .F1
-    move.l  ONEXT(a6),d0
-    bne     .F0
-    move.l  OMEMB(A2),d0
-    moveq   #0,d1       ;x;
-.F0:move.l  d0,a6
-    moveq   #0,d2
-    sub.w   OOFF(a6),d1 ;x;
-    neg.w   d1          ;x;
-    add.w   d1,d5       ;x;
-    move.w  OOFF(a6),d1 ;x;
-    move.w  OSIZE(a6),d2
-    add.w   d2,d1       ;x;
-    beq     ERROR40
-    cmp.l   #4,d2
-    bgt     ERROR40
-.F1:moveq   #0,d0           ;
-    move.w  (a1)+,d0
-    cmp.w   #1,d0
-    bne     .F2
-    move.l  (a1)+,d0
-    cmp.w   #2,d2
-    blt     .Fb
-    beq     .Fi
-    move.l  d0,4(a0,d5)
-    bra     .Fc
-.Fb:move.b  d0,4(a0,d5)
-    bra     .Fc
-.Fi:move.w  d0,4(a0,d5)
-.Fc:add.l   d2,d5
-    bra     .F
-.F2:cmp.w   #2,d0
-    bne     .F3
+	move.l	(a7),a1
+	move.w	#-1,-(a7)
+	lea		OMEMB+4(a2),a6
+	moveq	#0,d5
+	moveq	#0,d1		;x;
+.F: cmpa.l	#0,a2
+	beq		.F1
+	move.l	ONEXT(a6),d0
+	bne		.F0
+	move.l	OMEMB(A2),d0
+	moveq	#0,d1		;x;
+.F0:move.l	d0,a6
+	moveq	#0,d2
+	sub.w	OOFF(a6),d1 ;x;
+	neg.w	d1			;x;
+	add.w	d1,d5		;x;
+	move.w	OOFF(a6),d1 ;x;
+	move.w	OSIZE(a6),d2
+	add.w	d2,d1		;x;
+	beq		ERROR40
+	cmp.l	#4,d2
+	bgt		ERROR40
+.F1:moveq	#0,d0			;
+	move.w	(a1)+,d0
+	cmp.w	#1,d0
+	bne		.F2
+	move.l	(a1)+,d0
+	cmp.w	#2,d2
+	blt		.Fb
+	beq		.Fi
+	move.l	d0,4(a0,d5)
+	bra		.Fc
+.Fb:move.b	d0,4(a0,d5)
+	bra		.Fc
+.Fi:move.w	d0,4(a0,d5)
+.Fc:add.l	d2,d5
+	bra		.F
+.F2:cmp.w	#2,d0
+	bne		.F3
 
-    move.w  d5,-(a7)
-    move.w  d2,-(a7)
-    add.l   d2,d5
-    move.l  #-1,.T0
-    bra     .F
+	move.w	d5,-(a7)
+	move.w	d2,-(a7)
+	add.l	d2,d5
+	move.l	#-1,.T0
+	bra		.F
 
-.F3:cmp.w   #3,d0
-    bne     .F4
-    move.l  a0,-(a7)
-    GETM    A0
-    move.l  (a1)+,4(a0)
-    MOVE.L  a0,-(a7)
-    bsr     NEWLABEL
-    move.l  (a7)+,a0
-    move.w  d0,8(a0)
-    move.l  a1,-(a7)
-    move.l  IMMLH,a1
-    move.l  14(a1),(a0)
-    move.l  a0,14(a1)
-    move.l  (a7)+,a1
-    move.w  d5,10(a0)
-    add.l   #12,a0
-    DONEM   A0
-    move.l  (a7)+,a0
-    add.l   d2,d5
-    bra     .F
+.F3:cmp.w	#3,d0
+	bne		.F4
+	move.l	a0,-(a7)
+	GETM	A0
+	move.l	(a1)+,4(a0)
+	MOVE.L	a0,-(a7)
+	bsr		NEWLABEL
+	move.l	(a7)+,a0
+	move.w	d0,8(a0)
+	move.l	a1,-(a7)
+	move.l	IMMLH,a1
+	move.l	14(a1),(a0)
+	move.l	a0,14(a1)
+	move.l	(a7)+,a1
+	move.w	d5,10(a0)
+	add.l	#12,a0
+	DONEM	A0
+	move.l	(a7)+,a0
+	add.l	d2,d5
+	bra		.F
 
-.F4:cmp.w   #-1,d0
-    BEQ     .VL
-    JMP     ERROR0
-    
+.F4:cmp.w	#-1,d0
+	BEQ		.VL
+	JMP		ERROR0
+	
 .VL:
-    move.w  (a7)+,d0
-    cmp.w   #-1,d0
-    beq     .VX
-    cmp.w   #2,d0
-    bmi     .VC
-    beq     .VI
-    move.w  .K0,(a4)+
-    move.w  (a7)+,(a4)+
-    bra     .VL
-.VI:move.l  .K2,(a4)+
-    add.w   #$2000,-2(a4)
-    move.w  (a7)+,(a4)+
-    bra     .VL
-.VC:move.l  .K2,(A4)+
-    move.w  (A7)+,(A4)+
-    bra     .VL
+	move.w	(a7)+,d0
+	cmp.w	#-1,d0
+	beq		.VX
+	cmp.w	#2,d0
+	bmi		.VC
+	beq		.VI
+	move.w	.K0,(a4)+
+	move.w	(a7)+,(a4)+
+	bra		.VL
+.VI:move.l	.K2,(a4)+
+	add.w	#$2000,-2(a4)
+	move.w	(a7)+,(a4)+
+	bra		.VL
+.VC:move.l	.K2,(A4)+
+	move.w	(A7)+,(A4)+
+	bra		.VL
 .VX:
-    move.l  (a7)+,a5
-    moveq   #1,d5
-    tst.l   .T0
-    bne     .X2
-    cmp.w   #$41FA,-4(a4)
-    beq     .X2
-    move.w  #$203c,-6(a4)
-    bra     EXPLOOP
-.X2:mOVE.L  A4,LAST_CMD_ADR
-    move.w  .K3,(a4)+
-    bra     EXPLOOP
+	move.l	(a7)+,a5
+	moveq	#1,d5
+	tst.l	.T0
+	bne		.X2
+	cmp.w	#$41FA,-4(a4)
+	beq		.X2
+	move.w	#$203c,-6(a4)
+	bra		EXPLOOP
+.X2:mOVE.L	A4,LAST_CMD_ADR
+	move.w	.K3,(a4)+
+	bra		EXPLOOP
 
-.K0:MOVE.L  (A7)+,4(A0)
-.K1:LEA     $0,A0
+.K0:MOVE.L	(A7)+,4(A0)
+.K1:LEA		$0,A0
 .K1S:
-    LEA     .K1S(PC),A0
-.K2:MOVE.L  (A7)+,D0
-    MOVE.B  D0,4(A0)
-.K3:MOVE.L  A0,D0
-.K4:MOVE.L  D0,-(A7)
+	LEA		.K1S(PC),A0
+.K2:MOVE.L	(A7)+,D0
+	MOVE.B	D0,4(A0)
+.K3:MOVE.L	A0,D0
+.K4:MOVE.L	D0,-(A7)
 .T0:
-    DC.L    0
+	DC.L	0
 IMMLH:
-    DC.L    0
+	DC.L	0
 ; list entry struct:
-; (  0) next
-; (  4) listid [used with addreloc etc]
-; (  6) list array
+; (	 0) next
+; (	 4) listid [used with addreloc etc]
+; (	 6) list array
 ; ( 10) list size
 ; ( 14) list references
 STRLH:
-    DC.L    0
+	DC.L	0
 ; string entry struct:
-; (  0) next
-; (  4) interim ptr
-; (  8) strid [used with addreloc etc]
+; (	 0) next
+; (	 4) interim ptr
+; (	 8) strid [used with addreloc etc]
 ;*-*
-  endc
+	endc
 
-      EXPOPERATOR:
+		EXPOPERATOR:
 	CMP.W	#11,D0
 	BPL	EXPBACK
 	CMP.W	#1,D5			; 0 OPER,COMP / 1 VAL,VAR
 	BNE.S	NEGVALUE
-      NEGBACK:
+		NEGBACK:
 	MOVEQ	#6,D4
 	CMP.W	#9,D0
 	BMI.S	EXPNODP
 	MOVEQ	#4,D4
-      EXPNODP:
+		EXPNODP:
 	CMP.W	#-1,D5
 	BNE.S	EXPNOTFIRST
 	CMP.W	#8,D0
 	BEQ.S .nerr
 	JMP ERROR0
 .nerr:
-    TST.W   FLTFLAG
-    BEQ     .0
-    BTST    #5,CODEPREFS
-    BEQ     .0
-    MOVE.L  FEXPSTART,(A4)+
-    MOVe.L  FEXPSTART+4,(A4)+
-    BRA EXPNOTFIRST
-.0: MOVE.W  EXPSTART,(A4)+
+	TST.W	FLTFLAG
+	BEQ		.0
+	BTST	#5,CODEPREFS
+	BEQ		.0
+	MOVE.L	FEXPSTART,(A4)+
+	MOVe.L	FEXPSTART+4,(A4)+
+	BRA EXPNOTFIRST
+.0: MOVE.W	EXPSTART,(A4)+
 
-      EXPNOTFIRST:
+		EXPNOTFIRST:
 	MOVEQ	#0,D5
 	SUB.W	#7,D0
 	MULU	#12,D0
@@ -23641,13 +23641,13 @@ STRLH:
 	ADD.L	(A7)+,D0
 	MOVE.L	D0,A1
 	BRA	EXPLOOP
-      NEGBACK1:
+		NEGBACK1:
 	SUBQ.L	#2,A3
 	CMP.W	#-1,D5
 	BEQ.S	NEGBACK
 	JMP	ERROR0
 
-      NEGVALUE:
+		NEGVALUE:
 	CMP.W	#8,D0
 	BEQ	.1
 	JMP ERROR0
@@ -23657,15 +23657,15 @@ STRLH:
 	CMP.W	#VALUE,(A3)+
 	BNE	NEGBACK1
 	NEG.L	(A3)
-      EXPVALUE:				; ENTRY
-    CLR.L   LAST_CMD_ADR
+		EXPVALUE:				; ENTRY
+	CLR.L	LAST_CMD_ADR
 	CMP.W	#1,D5
 	BNE .1
 	JMP ERROR0
 .1
 	TST.W	FLTFLAG
 	BNE.W	VALUEFLOAT
-      VALFLTBACK:
+		VALFLTBACK:
 
 	TST.W	D5			; SEE IF WE CAN OPTI CONSTS!
 	BEQ.S	.1
@@ -23678,13 +23678,13 @@ STRLH:
 
 .1:	MOVEQ	#1,D5
 	MOVE.L	(A3)+,D1
-  
+	
 .2: MOVE.L D0,-(A7)
 	MOVE.W NOTEXP(PC),D0
 	BEQ.S .2a
 	BTST #0,D0
 	BEQ.S .2a
-  
+	
 	NOT.L D1
 .2a: CLR.W NOTEXP
 	MOVE.L (A7)+,D0
@@ -23693,16 +23693,16 @@ STRLH:
 	MOVE.W	(A3)+,D0
 	BRA	EXPREG
 	
-      VALUENTRY:			; VAL IN D1, #1 IN D5
+		VALUENTRY:			; VAL IN D1, #1 IN D5
 	CMP.L	#4,D4
 	BEQ.S	SHORTBACK2
 	CMP.L	#3,D4
-	BEQ.W   DOSHIFTVAL
-    move.l  a4,LAST_CMD_ADR
+	BEQ.W	DOSHIFTVAL
+	move.l	a4,LAST_CMD_ADR
 	BRA	EXPSHORT
-      SHORTBACK:
+		SHORTBACK:
 	JMP	EXPSHORT2
-      SHORTBACK2:
+		SHORTBACK2:
  
 	MOVE.W	(A1),D0
 	CMP.W	EXPMUL(PC),D0
@@ -23775,11 +23775,11 @@ STRLH:
 	BSR.W	DOEXTL
 	BSR	OPTITST
 	BRA	EXPLOOP
-    DOSHIFTVAL:
-    	TST.L	D1
-    	BEQ.S	.end			; SHIFT nothing
-    	CMP.L	#8,D1
-    	BPL.S	.short
+	DOSHIFTVAL:
+		TST.L	D1
+		BEQ.S	.end			; SHIFT nothing
+		CMP.L	#8,D1
+		BPL.S	.short
 	MOVE.W	2(A1),(A4)
 	LSL.W	#8,D1
 	LSL.W	#1,D1
@@ -23831,14 +23831,14 @@ EXPSHORT2:
 	MOVE.W	(A1),D0
 	CMP.W	EXPMOVE,D0
 	BNE.W	.back
-	MOVE.L  D1,-(A7)
+	MOVE.L	D1,-(A7)
 	MOVE.L A4,lastmoveshort
 	MOVE.B	EXPSTART,(A4)+
 	ASR.L	#1,D1
 	MOVE.B	D1,(A4)+
 	MOVE.W	.1(PC),(A4)+
- 	MOVE.L	(A7)+,D1
- 	JMP	EXPLOOP
+	MOVE.L	(A7)+,D1
+	JMP	EXPLOOP
 .back JMP SHORTBACK2
 .1: ADD.L D0,D0
 
@@ -23872,109 +23872,109 @@ OPTI2:
 	BGE.S	.ASS
 	ADDQ.L	#3,D0
 .ASS:	ASR.L	#2,D0
-      VALUEFLOAT:
-    CLR.L   LAST_CMD_ADR
-    TST.W   FLTFLAG
-    BEQ     .0
-    BTST    #5,CODEPREFS
-    BNE EXPFPVAL
+		VALUEFLOAT:
+	CLR.L	LAST_CMD_ADR
+	TST.W	FLTFLAG
+	BEQ		.0
+	BTST	#5,CODEPREFS
+	BNE EXPFPVAL
 .0:
 	CMP.W	#-1,D5
 	BEQ.W	VALFLTBACK
 	CMP.L	#EXPCMP,A1		; NO AND/OR
 	BMI.W	VALFLTBACK
-    BRA EXPFLOATVAL
+	BRA EXPFLOATVAL
 
 EXPFPVAL:
-    CMP.W   #1,D5
-    BEQ.S     .ERR0
-    CMP.L   #EXPCMP,A1      ; NO AND/OR
-    BMI.W   VALFLTBACK
-    CMP.W   #-1,D5
-    BEQ     .FPFIRST
-    moveq   #0,d1
-    cmp.l   #EXPPLUS,a1
-    beq     .FADD
-    cmp.l   #EXPMINUS,a1
-    beq     .FSUB
-    cmp.l   #EXPMUL,a1
-    beq     .FMUL
-    cmp.l   #EXPDIV,a1
-    beq     .FDIV
-    cmp.l   #EXPCMP,a1
-    beq     .FCMP
-    bra.s     .ERR0
+	CMP.W	#1,D5
+	BEQ.S		.ERR0
+	CMP.L	#EXPCMP,A1		; NO AND/OR
+	BMI.W	VALFLTBACK
+	CMP.W	#-1,D5
+	BEQ		.FPFIRST
+	moveq	#0,d1
+	cmp.l	#EXPPLUS,a1
+	beq		.FADD
+	cmp.l	#EXPMINUS,a1
+	beq		.FSUB
+	cmp.l	#EXPMUL,a1
+	beq		.FMUL
+	cmp.l	#EXPDIV,a1
+	beq		.FDIV
+	cmp.l	#EXPCMP,a1
+	beq		.FCMP
+	bra.s		.ERR0
 .FADD:
-    cmp.w   #2,ECPU
-    spl     d0
-    and.l   #8,d0
-    lea     .FC,a1
-    add.l   d0,a1
-    bra     .FFIX
+	cmp.w	#2,ECPU
+	spl		d0
+	and.l	#8,d0
+	lea		.FC,a1
+	add.l	d0,a1
+	bra		.FFIX
 .ERR0:
 	JMP ERROR0
 
 .FSUB:
-    cmp.w   #2,ECPU
-    spl     d0
-    and.l   #8,d0
-    lea     .FC+16,a1
-    add.l   d0,a1
-    bra     .FFIX
+	cmp.w	#2,ECPU
+	spl		d0
+	and.l	#8,d0
+	lea		.FC+16,a1
+	add.l	d0,a1
+	bra		.FFIX
 .FMUL:
-    cmp.w   #2,ECPU
-    spl     d0
-    and.l   #8,d0
-    lea     .FC+32,a1
-    add.l   d0,a1
-    bra     .FFIX
+	cmp.w	#2,ECPU
+	spl		d0
+	and.l	#8,d0
+	lea		.FC+32,a1
+	add.l	d0,a1
+	bra		.FFIX
 .FDIV:
-    cmp.w   #2,ECPU
-    spl     d0
-    and.l   #8,d0
-    lea     .FC+48,a1
-    add.l   d0,a1
-    bra     .FFIX
+	cmp.w	#2,ECPU
+	spl		d0
+	and.l	#8,d0
+	lea		.FC+48,a1
+	add.l	d0,a1
+	bra		.FFIX
 .FCMP:
-    lea     .FC+64,a1
-    moveq   #-1,d1
+	lea		.FC+64,a1
+	moveq	#-1,d1
 .FFIX:
-    move.l  (a1),(a4)+
-    move.l  (a3)+,(a4)+
-    moveq   #1,d5
-    tst.l   d1
-    beq     EXPLOOP
-    bsr     EXPFPCMP
-    bra     EXPLOOP
+	move.l	(a1),(a4)+
+	move.l	(a3)+,(a4)+
+	moveq	#1,d5
+	tst.l	d1
+	beq		EXPLOOP
+	bsr		EXPFPCMP
+	bra		EXPLOOP
 
 	CPU040
 .FC:
-    FADD.S  #0,fp0    ; each 8
-    fsadd.s #0,fp0
-    fsub.s  #0,fp0
-    fssub.s #0,fp0
-    fmul.s  #0,fp0
-    fsglmul.s #0,fp0
-    fdiv.s  #0,fp0
-    fsgldiv.s #0,fp0
-    fcmp.s  #0,fp0   
+	FADD.S	#0,fp0		; each 8
+	fsadd.s #0,fp0
+	fsub.s	#0,fp0
+	fssub.s #0,fp0
+	fmul.s	#0,fp0
+	fsglmul.s #0,fp0
+	fdiv.s	#0,fp0
+	fsgldiv.s #0,fp0
+	fcmp.s	#0,fp0	 
 	CPU000
-    
+	
 .FPFIRST:
-    move.w  #-1,FLTFLAG
-    move.l  .FC2,(a4)+
-    move.l  (a3)+,(a4)+
-    moveq   #1,d5
-    bra EXPLOOP
-.FC2:   
+	move.w	#-1,FLTFLAG
+	move.l	.FC2,(a4)+
+	move.l	(a3)+,(a4)+
+	moveq	#1,d5
+	bra EXPLOOP
+.FC2:	
 	CPU040
-    FSMOVE.S #0,FP0
+	FSMOVE.S #0,FP0
 	CPU000
 
-      EXPFLOATVAL:
-    BTST    #5,CODEPREFS
-    BNE     EXPFPVAL
-    CMP.L   #EXPCMP,A1
+		EXPFLOATVAL:
+	BTST	#5,CODEPREFS
+	BNE		EXPFPVAL
+	CMP.L	#EXPCMP,A1
 	BMI.S	.ERR0
 	TST.W	D5
 	BMI.S	.3
@@ -23990,14 +23990,14 @@ EXPFPVAL:
 .2:	MOVEQ	#1,D5
 	BRA	EXPLOOP
 .ERR0:
-  JMP ERROR0
+	JMP ERROR0
 .1:	MOVE.L	#1,D1
 .3:	MOVE.W	.4(PC),(A4)+
 	MOVE.L	(A3)+,(A4)+
 	BRA.S	.2
 .4:	MOVE.L	#1,D0
 
-      EXPNEGFLOAT:
+		EXPNEGFLOAT:
 	ADDQ.L	#2,A3
 	MOVEM.L	D0-D1/A0-A1/A6,-(A7)
 	JSR	ISOPENMATH
@@ -24008,7 +24008,7 @@ EXPFPVAL:
 	MOVEM.L	(A7)+,D0-D1/A0-A1/A6
 	BRA.S	EXPFLOATVAL
 
-      EXPSHORT:
+		EXPSHORT:
 	CMP.L	#128,D1
 	BPL.W	SHORTBACK
 	CMP.L	#-128,D1
@@ -24026,12 +24026,12 @@ EXPFPVAL:
 	MOVE.B	D1,(A4)+
 	BRA	EXPLOOP
 
-      SHORTADD:
-      	TST.W	D1
-      	BPL.S	.1
-      	NEG.L	D1
-      	LEA	EXPMINUS(PC),A1
-      	MOVE.W	(A1),D0
+		SHORTADD:
+		TST.W	D1
+		BPL.S	.1
+		NEG.L	D1
+		LEA	EXPMINUS(PC),A1
+		MOVE.W	(A1),D0
 .1:	CMP.W	#9,D1
 	BPL	SHORTBACK
 	TST.W	D1
@@ -24039,7 +24039,7 @@ EXPFPVAL:
 	CMP.W	#8,D1
 	BNE.S	SHORTNO8
 	MOVEQ	#0,D1
-      SHORTNO8:
+		SHORTNO8:
 	CMP.W	EXPPLUS(PC),D0
 	BNE.S	SHORTSUB
 	MOVE.W	EXPADDQ(PC),D2
@@ -24048,7 +24048,7 @@ EXPFPVAL:
 	OR.W	D1,D2
 	MOVE.W	D2,(A4)+
 	BRA	EXPLOOP
-      SHORTSUB:
+		SHORTSUB:
 	CMP.W	EXPMINUS(PC),D0
 	BNE	SHORTBACK
 	MOVE.W	EXPSUBQ(PC),D2
@@ -24058,13 +24058,13 @@ EXPFPVAL:
 	MOVE.W	D2,(A4)+
 	BRA	EXPLOOP
 
-      EXPVAR:
-    CLR.L   LAST_CMD_ADR
+		EXPVAR:
+	CLR.L	LAST_CMD_ADR
 	CMP.W	#1,D5
-  BNE.S .ok
+	BNE.S .ok
 	JMP	ERROR0
 .ok
-  	MOVE.L  A3,LASTVARADDR
+	MOVE.L	A3,LASTVARADDR
 	MOVE.L	(A3)+,A0
 	BTST	#3,5(A0)
 	BEQ.S	.1
@@ -24072,26 +24072,26 @@ EXPFPVAL:
 	BEQ.S	.1
 	MOVE.L	ENDPEA(PC),D0
 	BEQ.S	.1
- 	MAKEWARN 8
+	MAKEWARN 8
 	;MOVE.W	LINENUM(PC),ASSLINE
 
 .1:	MOVE.W	(A3),D0			; CHECK COMPLEX
-    CMP.W   #11,2(A3)
-    BEQ     EXPEXT
+	CMP.W	#11,2(A3)
+	BEQ		EXPEXT
 EXPEXTBACK:
-    CMP.W   #33,D0          ; ++/--
-    BPL EXPVARC
-    CMP.W   #29,D0          ; []
-    BEQ EXPVARC
-    CMP.W   #41,D0          ; ::
-    BEQ EXPVARC
-    CMP.W   #17,D0          ; ()
-    BEQ EXPOWNFUNC
-      EXPVARCBACK:
+	CMP.W	#33,D0			; ++/--
+	BPL EXPVARC
+	CMP.W	#29,D0			; []
+	BEQ EXPVARC
+	CMP.W	#41,D0			; ::
+	BEQ EXPVARC
+	CMP.W	#17,D0			; ()
+	BEQ EXPOWNFUNC
+		EXPVARCBACK:
 	CMP.W	#ASSGN,(A3)
 	BEQ	EXPVARASSIGN
-      EXPVARASSBACK:
-    MOVE.L  A4,LAST_CMD_ADR
+		EXPVARASSBACK:
+	MOVE.L	A4,LAST_CMD_ADR
 	MOVE.W	10(A0),D0		; D0=VAROFFSET
 	MOVE.B	4(A0),D2		; D2=TYPE
 	CMP.B	#3,D2
@@ -24100,7 +24100,7 @@ EXPEXTBACK:
 	BEQ	EXPVARCMP
 	CMP.W	#3,D4
 	BEQ.W	DOSHIFTVAR
-	TST.W 	FLTFLAG
+	TST.W	FLTFLAG
 	BNE	.2
 .4:	CMP.W	#4,D4			; TAKE LOWWORD IF MULU/DIVU
 	BNE.S	.1
@@ -24131,7 +24131,7 @@ EXPEXTBACK:
 	PEA	EXPMUL(PC)
 	CMPA.L	(A7)+,A1
 	BEQ.S	.UD1
-  
+	
 	PEA	EXPDIV(PC)
 	CMPA.L	(A7)+,A1
 	BNE.S	.CE
@@ -24201,11 +24201,11 @@ EXPEXTBACK:
 	PEA	EXPCMP(PC)
 	CMPA.L	(A7)+,A1		; NO AND/OR
 	BMI	.4
-    BTST    #5,CODEPREFS
-    BNE EXPFPVAR
-    CMP.W   #-1,D5          ; SPXXX
-    BEQ .4
-      BLERK:
+	BTST	#5,CODEPREFS
+	BNE EXPFPVAR
+	CMP.W	#-1,D5			; SPXXX
+	BEQ .4
+		BLERK:
 	MOVE.W	.3(PC),(A4)+
 	BSR	GVA0D0D5_0
 	MOVEQ	#1,D5
@@ -24214,248 +24214,248 @@ EXPEXTBACK:
 .3:	MOVE.L	2(A5),D1
 
 EXPFPVAR:
-    cmp.w   #-1,D5
-    bne     .FNOT1ST
-    moveq   #0,d1
-    cmp.w   #2,ECPU
-    spl     d0
-    and.l   #6,d0
-    lea     .FC0,a1
-    add.l   d0,a1
-    bra     .FFIX
-    
+	cmp.w	#-1,D5
+	bne		.FNOT1ST
+	moveq	#0,d1
+	cmp.w	#2,ECPU
+	spl		d0
+	and.l	#6,d0
+	lea		.FC0,a1
+	add.l	d0,a1
+	bra		.FFIX
+	
 	CPU040
 .FC0:
-    FMOVE.S  2(A5),FP0
-    FSMOVE.S 2(a5),FP0
+	FMOVE.S	 2(A5),FP0
+	FSMOVE.S 2(a5),FP0
 	CPU000
 
 .FNOT1ST:
-    moveq   #0,d1
-    CMP.L   #EXPPLUS,A1
-    BEQ     .FADD
-    CMP.L   #EXPMINUS,A1
-    BEQ     .FSUB
-    CMP.L   #EXPDIV,A1
-    BEQ     .FDIV
-    CMP.L   #EXPMUL,A1
-    BEQ     .FMUL
-    CMP.L   #EXPCMP,A1
-    BEQ     .FCMP
-    JMP     ERROR0
+	moveq	#0,d1
+	CMP.L	#EXPPLUS,A1
+	BEQ		.FADD
+	CMP.L	#EXPMINUS,A1
+	BEQ		.FSUB
+	CMP.L	#EXPDIV,A1
+	BEQ		.FDIV
+	CMP.L	#EXPMUL,A1
+	BEQ		.FMUL
+	CMP.L	#EXPCMP,A1
+	BEQ		.FCMP
+	JMP		ERROR0
 .FADD:
-    cmp.w   #2,ECPU
-    spl     d0
-    and.l   #6,d0
-    lea     .FC1,a1
-    add.l   d0,a1
-    bra     .FFIX
+	cmp.w	#2,ECPU
+	spl		d0
+	and.l	#6,d0
+	lea		.FC1,a1
+	add.l	d0,a1
+	bra		.FFIX
 .FSUB:
-    cmp.w   #2,ECPU
-    spl     d0
-    and.l   #6,d0
-    lea     .FC1+12,a1
-    add.l   d0,a1
-    bra     .FFIX
+	cmp.w	#2,ECPU
+	spl		d0
+	and.l	#6,d0
+	lea		.FC1+12,a1
+	add.l	d0,a1
+	bra		.FFIX
 .FMUL:
-    cmp.w   #2,ECPU
-    spl     d0
-    and.l   #6,d0
-    lea     .FC1+24,a1
-    add.l   d0,a1
-    bra     .FFIX
+	cmp.w	#2,ECPU
+	spl		d0
+	and.l	#6,d0
+	lea		.FC1+24,a1
+	add.l	d0,a1
+	bra		.FFIX
 .FDIV:
-    cmp.w   #2,ECPU
-    spl     d0
-    and.l   #6,d0
-    lea     .FC1+36,a1
-    add.l   d0,a1
-    bra     .FFIX
+	cmp.w	#2,ECPU
+	spl		d0
+	and.l	#6,d0
+	lea		.FC1+36,a1
+	add.l	d0,a1
+	bra		.FFIX
 .FCMP:
-    lea     .FC1+48,a1
-    moveq   #-1,d1
+	lea		.FC1+48,a1
+	moveq	#-1,d1
 .FFIX:
-    move.w  (a1),(a4)+
-    move.l  a4,a2
-    jsr     GVA0D0_0
-    cmp.l   a4,a2
-    bne     .FFIX2
-    move.w  2(a1),(a4)+
-    moveq   #1,d5
-    bra     .FXIT
+	move.w	(a1),(a4)+
+	move.l	a4,a2
+	jsr		GVA0D0_0
+	cmp.l	a4,a2
+	bne		.FFIX2
+	move.w	2(a1),(a4)+
+	moveq	#1,d5
+	bra		.FXIT
 .FFIX2:
-    move.w  -(a4),d0
-    move.w  2(a1),(a4)+
-    move.w  d0,(a4)+
-    moveq   #1,d5
+	move.w	-(a4),d0
+	move.w	2(a1),(a4)+
+	move.w	d0,(a4)+
+	moveq	#1,d5
 .FXIT:
-    tst.l   d1
-    bpl     EXPLOOP
-    bsr     EXPFPCMP
-    bra     EXPLOOP
+	tst.l	d1
+	bpl		EXPLOOP
+	bsr		EXPFPCMP
+	bra		EXPLOOP
 
 	CPU040
 .FC1:
-    fadd.s  2(a5),fp0
-    fsadd.s 2(a5),fp0
-    fsub.s  2(a5),fp0
-    fssub.s 2(a5),fp0
-    fmul.s  2(a5),fp0
-    fsglmul.s 2(a5),fp0
-    fdiv.s  2(a5),fp0
-    fsgldiv.s 2(a5),fp0
-    fcmp.s  2(a5),fp0
+	fadd.s	2(a5),fp0
+	fsadd.s 2(a5),fp0
+	fsub.s	2(a5),fp0
+	fssub.s 2(a5),fp0
+	fmul.s	2(a5),fp0
+	fsglmul.s 2(a5),fp0
+	fdiv.s	2(a5),fp0
+	fsgldiv.s 2(a5),fp0
+	fcmp.s	2(a5),fp0
 	CPU000
 
-    DOSHIFTVAR:
-    	MOVE.W	#$222d,(A4)+		; move.l  x(a5),d1
-    	BSR	GVA0D0D5_0
-    	MOVE.W	(A1),(A4)+
-    	MOVEQ	#1,D5
+	DOSHIFTVAR:
+		MOVE.W	#$222d,(A4)+		; move.l	x(a5),d1
+		BSR	GVA0D0D5_0
+		MOVE.W	(A1),(A4)+
+		MOVEQ	#1,D5
 	BRA	EXPLOOP
 
 EXPEXT:
-    CMP.W   #-1,D5
-    BNE     EXPEXTBACK
-    CMP.W   #7,D0
-    BEQ     .PARSE
-    CMP.W   #8,D0
-    BEQ     .PARSE
-    CMP.W   #9,D0
-    BEQ     .PARSE
-    CMP.W   #10,D0
-    BEQ     .PARSE
-    CMP.W   #47,D0      ;<<
-    BEQ     .PARSE
-    CMP.W   #48,D0      ;>>
-    BEQ     .PARSE
-    CMP.W   #IOFF+29,D0
-    BEQ     .PARSE
-    CMP.W   #IOFF+30,D0
-    BEQ     .PARSE
-    BRA     EXPEXTBACK
+	CMP.W	#-1,D5
+	BNE		EXPEXTBACK
+	CMP.W	#7,D0
+	BEQ		.PARSE
+	CMP.W	#8,D0
+	BEQ		.PARSE
+	CMP.W	#9,D0
+	BEQ		.PARSE
+	CMP.W	#10,D0
+	BEQ		.PARSE
+	CMP.W	#47,D0		;<<
+	BEQ		.PARSE
+	CMP.W	#48,D0		;>>
+	BEQ		.PARSE
+	CMP.W	#IOFF+29,D0
+	BEQ		.PARSE
+	CMP.W	#IOFF+30,D0
+	BEQ		.PARSE
+	BRA		EXPEXTBACK
 .PARSE:
-    ADDQ.L  #4,A3
-    MOVEM.L D0-A2/A5/A6,-(A7)
-    BSR     EXP
-    MOVEM.L (A7)+,D0-A2/A5/A6
-    BTST.B  #3,5(A0)
-    BNE     .REGVAR
+	ADDQ.L	#4,A3
+	MOVEM.L D0-A2/A5/A6,-(A7)
+	BSR		EXP
+	MOVEM.L (A7)+,D0-A2/A5/A6
+	BTST.B	#3,5(A0)
+	BNE		.REGVAR
 
-    CMP.W   #9,D0
-    BMI     .GOOD
-    CMP.W   #IOFF+29,D0
-    BPL     .GOOD
-    MOVE.W  .C1(PC),(A4)+
-    BSR     GVA0D1_0
-    SUB.W   #9,D0
-    CMP.W   #2,D0
-    BMI.S   .S1
-    SUB.W   #36,D0      ;47 (<<) -9 -2
-.S1:LSL.L   #1,D0
+	CMP.W	#9,D0
+	BMI		.GOOD
+	CMP.W	#IOFF+29,D0
+	BPL		.GOOD
+	MOVE.W	.C1(PC),(A4)+
+	BSR		GVA0D1_0
+	SUB.W	#9,D0
+	CMP.W	#2,D0
+	BMI.S	.S1
+	SUB.W	#36,D0		;47 (<<) -9 -2
+.S1:LSL.L	#1,D0
 
-    MOVE.W  .C2(PC,D0),(A4)+
-    MOVE.W  .C1+4(PC),(A4)+
-    BSR     GVA0D2_9
-    MOVE.W  .C1+8(PC),(A4)+
-    MOVEQ   #1,D5
-    BRA EXPLOOP
-.C1:MOVE.L  -4(A5),D1
-    MOVE.L  D1,-4(A5)
-    MOVE.L  D1,D0
-.C2:MULS.W  D0,D1
-    DIVS.W  D0,D1
-    ASL.L   D0,D1       
-    ASR.L   D0,D1
-.C3:ADD.L   D0,-4(A5)
-    SUB.L   D0,-4(A5)
-    AND.L   D0,-4(A5)
-    OR.L    D0,-4(A5)
+	MOVE.W	.C2(PC,D0),(A4)+
+	MOVE.W	.C1+4(PC),(A4)+
+	BSR		GVA0D2_9
+	MOVE.W	.C1+8(PC),(A4)+
+	MOVEQ	#1,D5
+	BRA EXPLOOP
+.C1:MOVE.L	-4(A5),D1
+	MOVE.L	D1,-4(A5)
+	MOVE.L	D1,D0
+.C2:MULS.W	D0,D1
+	DIVS.W	D0,D1
+	ASL.L	D0,D1		
+	ASR.L	D0,D1
+.C3:ADD.L	D0,-4(A5)
+	SUB.L	D0,-4(A5)
+	AND.L	D0,-4(A5)
+	OR.L	D0,-4(A5)
 .GOOD:
-    BTST.B  #3,5(A0)
-    BNE     .REGVAR
-    SUb.W   #7,D0
-    cmp.w   #2,d0
-    bmi     .S2
-    sub.w   #IOFF+20,D0
-.S2:LSL.L   #2,D0
-    MOVE.W  .C3(PC,D0),(A4)+
-    BSR GVA0D1_0
-    MOVEQ   #1,D5
-    BRA EXPLOOP
+	BTST.B	#3,5(A0)
+	BNE		.REGVAR
+	SUb.W	#7,D0
+	cmp.w	#2,d0
+	bmi		.S2
+	sub.w	#IOFF+20,D0
+.S2:LSL.L	#2,D0
+	MOVE.W	.C3(PC,D0),(A4)+
+	BSR GVA0D1_0
+	MOVEQ	#1,D5
+	BRA EXPLOOP
 
-    MOVE.W  (A3),2(A3)
-    MOVE.L  -4(A3),-2(A3)
-    MOVE.W  -6(A3),-4(A3)
-    SUBQ.L  #6,A3
-    MOVE.W  #ASSGN,(A3)
-    BRA     EXPVARASSIGN
-.T1:DC.W    7,8,9,10,47,48,IOFF+29,IOFF+30,-1
+	MOVE.W	(A3),2(A3)
+	MOVE.L	-4(A3),-2(A3)
+	MOVE.W	-6(A3),-4(A3)
+	SUBQ.L	#6,A3
+	MOVE.W	#ASSGN,(A3)
+	BRA		EXPVARASSIGN
+.T1:DC.W	7,8,9,10,47,48,IOFF+29,IOFF+30,-1
 
 .REGVAR:
-    LEA     .T1(PC),A2
-    moveq   #0,d2
+	LEA		.T1(PC),A2
+	moveq	#0,d2
 .R01:
-    MOVE.W  (a2)+,d1
-    cmp.w   d1,d0
-    beq     .R02
-    addq.l  #1,d2
-    bra     .R01
+	MOVE.W	(a2)+,d1
+	cmp.w	d1,d0
+	beq		.R02
+	addq.l	#1,d2
+	bra		.R01
 .C4:
-    ADD.L   D0,D0
-    SUB.L   D0,D0
-    MULS    D0,D0
-    DIVS    D0,D0
-    ASL.L   d0,D0
-    ASR.L   D0,D0
-    ANd.L   D0,D0
-    OR.L    D0,D0
+	ADD.L	D0,D0
+	SUB.L	D0,D0
+	MULS	D0,D0
+	DIVS	D0,D0
+	ASL.L	d0,D0
+	ASR.L	D0,D0
+	ANd.L	D0,D0
+	OR.L	D0,D0
 .C5:
 	CPU020
-    MULS.L  D0,D0
-    DIVS.L  D0,D0
+	MULS.L	D0,D0
+	DIVS.L	D0,D0
 	CPU000
-    MOVE.L  D0,D0
+	MOVE.L	D0,D0
 .R02:
-    lsl.w   #1,d2
-    MOVE.W  .C4(PC,d2),(A4)+
-    MOVE.W  10(A0),D0
+	lsl.w	#1,d2
+	MOVE.W	.C4(PC,d2),(A4)+
+	MOVE.W	10(A0),D0
 
-    cmp.w   #1,ECPU
-    blt     .R001
-    cmp.w   #2*2,d2
-    bmi     .R001
-    cmp.w   #3*2,d2
-    bgt     .R001
-    subq.l  #2*2,d2
-    lsl.w   #1,d2
-    subq.l  #2,a4
-    move.L  .C5(PC,D2),(A4)+
-    or.w    D0,-2(A4)
-    lsl.w   #8,d0
-    lsl.w   #4,d0
-    bra     .R002
+	cmp.w	#1,ECPU
+	blt		.R001
+	cmp.w	#2*2,d2
+	bmi		.R001
+	cmp.w	#3*2,d2
+	bgt		.R001
+	subq.l	#2*2,d2
+	lsl.w	#1,d2
+	subq.l	#2,a4
+	move.L	.C5(PC,D2),(A4)+
+	or.w	D0,-2(A4)
+	lsl.w	#8,d0
+	lsl.w	#4,d0
+	bra		.R002
 .R001:
-    cmp.w   #4*2,d2
-    beq     .R002
-    cmp.w   #5*2,d2
-    beq     .R002
-    LSL.L   #8,d0
-    lsl.l   #1,d0
+	cmp.w	#4*2,d2
+	beq		.R002
+	cmp.w	#5*2,d2
+	beq		.R002
+	LSL.L	#8,d0
+	lsl.l	#1,d0
 .R002:
-    or.w    d0,-2(A4)
-    MOVEQ   #1,d5
-    move.w  .C5+8(PC),(A4)
-    MOVE.W  10(A0),D0
-    OR.W    D0,(A4)+
-    BRA EXPLOOP
+	or.w	d0,-2(A4)
+	MOVEQ	#1,d5
+	move.w	.C5+8(PC),(A4)
+	MOVE.W	10(A0),D0
+	OR.W	D0,(A4)+
+	BRA EXPLOOP
 
 LASTVARADDR:
-    DC.L    0
+	DC.L	0
 
-      EXPVARCMP:
-    CLR.L   LAST_CMD_ADR
-	TST.W 	FLTFLAG
+		EXPVARCMP:
+	CLR.L	LAST_CMD_ADR
+	TST.W	FLTFLAG
 	BNE	.1
 	MOVE.W	6(A1),(A4)+
 	BSR	GVA0D0D5_0
@@ -24466,9 +24466,9 @@ LASTVARADDR:
 	BRA	EXPLOOP
 
 .1:
-      BLAARGH:
-    BTST    #5,CODEPREFS
-    BNE     .FLOAT
+		BLAARGH:
+	BTST	#5,CODEPREFS
+	BNE		.FLOAT
 
 	BSET	#3,CODEPREFS+1		; USE MATHIEEESINGBAS
 	MOVE.W	.2(PC),(A4)+		; SPCMP
@@ -24485,63 +24485,63 @@ LASTVARADDR:
 	JSR	-42(A6)
 
 .FLOAT:
-    MOVEQ   #1,D5
-    move.w  .FC,(a4)+
-    move.l  a4,a2
-    bsr GVA0D0D5_0
-    cmp.l   a4,a2
-    bne .F2
-    move.w  .FC+2,(a4)+
-    bra .F3
-.F2:move.w  -(a4),d0
-    move.w  .FC+2,(a4)+
-    move.w  d0,(a4)+
-.F3:bsr     EXPFPCMP
-    bra     EXPLOOP
+	MOVEQ	#1,D5
+	move.w	.FC,(a4)+
+	move.l	a4,a2
+	bsr GVA0D0D5_0
+	cmp.l	a4,a2
+	bne .F2
+	move.w	.FC+2,(a4)+
+	bra .F3
+.F2:move.w	-(a4),d0
+	move.w	.FC+2,(a4)+
+	move.w	d0,(a4)+
+.F3:bsr		EXPFPCMP
+	bra		EXPLOOP
 .FC:
 	CPU040
-    fcmp.s  2(a5),fp0
+	fcmp.s	2(a5),fp0
 	CPU000
 ;*-*
 ;; FPCmp
 EXPFPCMP:
-    lea     EXPCMP,a1
-    CMP.W   #3,EFPU
-    BEQ .FLOAT_2
-    lsl.l   #2,d3
-    LEA     .FPCMP(PC),A0
-    MOVE.L  (A0,D3),(A4)+
+	lea		EXPCMP,a1
+	CMP.W	#3,EFPU
+	BEQ .FLOAT_2
+	lsl.l	#2,d3
+	LEA		.FPCMP(PC),A0
+	MOVE.L	(A0,D3),(A4)+
 	BSR.W	DOEXTL
-    RTS
+	RTS
 .FLOAT_2:
-    lsl.l   #2,d3
-    MOVE.W  #$70FF,(A4)+
-    LEA     .FPCMP2(PC),A0
-    MOVE.L  (A0,D3),(A4)+
-    move.w  #$7000,(a4)+
-    RTS
+	lsl.l	#2,d3
+	MOVE.W	#$70FF,(A4)+
+	LEA		.FPCMP2(PC),A0
+	MOVE.L	(A0,D3),(A4)+
+	move.w	#$7000,(a4)+
+	RTS
 
 	CPU040
 .FPCMP:
-    FSEQ    D0
-    FSGT    D0
-    FSLT    D0
-    FSGE    D0
-    FSLE    D0
-    FSNE    D0
+	FSEQ	D0
+	FSGT	D0
+	FSLT	D0
+	FSGE	D0
+	FSLE	D0
+	FSNE	D0
 .FPCMP2:
-    FBEQ    *+6
-    FBGT    *+6
-    FBLT    *+6
-    FBGE    *+6
-    FBLE    *+6
-    FBNE    *+6
+	FBEQ	*+6
+	FBGT	*+6
+	FBLT	*+6
+	FBGE	*+6
+	FBLE	*+6
+	FBNE	*+6
 ;*-*
 ;; :: .
 	CPU000
 
-      EXPVARC:     
-    CLR.L   LAST_CMD_ADR
+		EXPVARC:		 
+	CLR.L	LAST_CMD_ADR
 	CMP.W	#41,D0
 	BEQ.S	.3
 	CMP.W	#36,D0
@@ -24555,65 +24555,65 @@ EXPFPCMP:
 	MOVEQ	#1,D0
 	SUBQ.L	#6,A3
 
-    TST.W   D5
-    BMI     .i0
-    TST.W   FLTFLAG
-    BEQ     .i0
-    BTST    #5,CODEPREFS
-    BEQ     .i0
-    MOVE.L  .c0,(A4)+
+	TST.W	D5
+	BMI		.i0
+	TST.W	FLTFLAG
+	BEQ		.i0
+	BTST	#5,CODEPREFS
+	BEQ		.i0
+	MOVE.L	.c0,(A4)+
 .i0:
 	BSR	EADDRESSMODI
-    TST.W NOTEXP
-    BEQ .nonot
+	TST.W NOTEXP
+	BEQ .nonot
 
-    BTST #0,NOTEXP+1
-    BEQ .nonot
-    addq.l  #1,d5
-    lsl.l   #1,d5
-    MOVE.L A4,NOTEXPADDR
-    move.w  .N0(PC,D5.w),(a4)+
-    lsr.l   #1,d5
-    subq.l  #1,d5
+	BTST #0,NOTEXP+1
+	BEQ .nonot
+	addq.l	#1,d5
+	lsl.l	#1,d5
+	MOVE.L A4,NOTEXPADDR
+	move.w	.N0(PC,D5.w),(a4)+
+	lsr.l	#1,d5
+	subq.l	#1,d5
 .nonot
-    CLR.W NOTEXP
-    TST.W   D5
-    BMI     .i1
-    TST.W   FLTFLAG
-    BEQ     .i1
-    BTST    #5,CODEPREFS
-    BEQ     .i1
-    MOVE.L  .c1,(A4)+
+	CLR.W NOTEXP
+	TST.W	D5
+	BMI		.i1
+	TST.W	FLTFLAG
+	BEQ		.i1
+	BTST	#5,CODEPREFS
+	BEQ		.i1
+	MOVE.L	.c1,(A4)+
 .i1:
-    TST.W   FLTFLAG
-    BEQ     .0
-    BTST    #5,CODEPREFS
-    BEQ     .0
-    addq.l  #1,d5
-    lsl.l   #2,d5
-    move.l  .C0(PC,D5.w),(a4)+
-    lsr.l   #2,d5
-    subq.l  #1,d5
+	TST.W	FLTFLAG
+	BEQ		.0
+	BTST	#5,CODEPREFS
+	BEQ		.0
+	addq.l	#1,d5
+	lsl.l	#2,d5
+	move.l	.C0(PC,D5.w),(a4)+
+	lsr.l	#2,d5
+	subq.l	#1,d5
 	CMP.W	#-1,D5
-    beq .C1
-    bsr MAKEFLTOPER
-    tst.w   d0
-    bne     .C1
-    bsr EXPFPCMP
+	beq .C1
+	bsr MAKEFLTOPER
+	tst.w	d0
+	bne		.C1
+	bsr EXPFPCMP
 .C1:
-    moveq   #1,d5
-    bra EXPLOOP
-    bra     .0
+	moveq	#1,d5
+	bra EXPLOOP
+	bra		.0
 .C0:
 	CPU040
-    FMOVE.S D0,FP0
-    FMOVE.S D1,FP1
+	FMOVE.S D0,FP0
+	FMOVE.S D1,FP1
 	CPU000
 .N0:
-    NOT.L D0
-    NOT.L D1
+	NOT.L D0
+	NOT.L D1
 .ERR6
-  JMP ERROR6
+	JMP ERROR6
 
 .0: CMP.W	#-1,D5
 	BEQ.S	.1
@@ -24637,7 +24637,7 @@ EXPFPCMP:
 	BRA	EXPLOOP
 
 .ERR22:
-  JMP ERROR22
+	JMP ERROR22
 
 	CPU040
 .c0:FMOVE.S FP0,D0
@@ -24652,11 +24652,11 @@ EXPFPCMP:
 	CASTTMP2:	DC.L	0
 	METHODFREEZ:	DC.L	0	; FROZEN CALL WITH THIS OBJECT
 
-; WANTS   OBJ=A6,NAME=D0
+; WANTS		OBJ=A6,NAME=D0
 ; TRASHES A0/a6
 ; RETURNS D1=METHOD | NIL
 
-      FINDMETHOD:
+		FINDMETHOD:
 	LEA	OMETHOD(A6),A6
 	MOVE.L	A6,D1
 .L:	MOVE.L	D1,A6
@@ -24671,7 +24671,7 @@ EXPFPCMP:
 	BNE.S	.CL
 .ERR:	RTS
 
-      EXPCALLMETHOD:			; IDENTENTRY IN METHODIDENT,
+		EXPCALLMETHOD:			; IDENTENTRY IN METHODIDENT,
 	CMP.W	#42,(A3)+		; A3 JUST PAST "."
 	BNE	.ERR40
 	TST.L CASTSPEC
@@ -24820,7 +24820,7 @@ EXPFPCMP:
 	BEQ.S	.ERR54
 	JMP	ERROR42
 .ERR54
-  JMP ERROR54
+	JMP ERROR54
 .GOBJ:	MOVE.L	4(A4),A1
 .MEMBERASMETHOD:			;-membcall
 	MOVE.L	LASTMEMBER(PC),D1
@@ -24829,7 +24829,7 @@ EXPFPCMP:
 	MOVEA.L	D1,A1
 	BSR	FINDMEMBER
 	MOVEQ	#0,D1
-	CMPI.W  #4,OSIZE(A1)
+	CMPI.W	#4,OSIZE(A1)
 	BNE.S	.ERR
 	MOVE.L	A1,D1
 	LEA	.MEMBCALL(PC),A1
@@ -24843,7 +24843,7 @@ EXPFPCMP:
 	DC.L	0			;-end membcall
 
 
-      EXPVARASSIGN:			; VAR STILL IN A0
+		EXPVARASSIGN:			; VAR STILL IN A0
 	CMP.W	#-1,D5
 	BNE	EXPVARASSBACK
 	ADDQ.L	#2,A3
@@ -24860,7 +24860,7 @@ EXPFPCMP:
 	MOVE.B	4(A0),D2
 	BEQ.S	.DERROR22
 	CMP.B	#LAB,D2
-	BNE.S .nerr  
+	BNE.S .nerr	 
 	JMP	ERROR6
 .DERROR22
 	JMP	ERROR22
@@ -24880,10 +24880,10 @@ EXPFPCMP:
 
 
 
-      MAKEFLTOPER:			; TRASHES D0 !!!!
+		MAKEFLTOPER:			; TRASHES D0 !!!!
 
-    BTST    #5,CODEPREFS
-    BNE .MAKEFPOPER
+	BTST	#5,CODEPREFS
+	BNE .MAKEFPOPER
 
 	BSET	#3,CODEPREFS+1		; USE MATHIEEESINGBAS
 	MOVE.L	A1,D0
@@ -24900,70 +24900,70 @@ EXPFPCMP:
 	JSR	-78(A6)			; *
 	JSR	-84(A6)			; /
 .MAKEFPOPER:
-    CMP.W   #1,FINISHFPEXP
-    BEQ     .MAKEFP1
-    MOVE.L  A1,D0
-    SUB.L   #EXPCMP,D0
-    DIVU    #3,D0
-    MOVe.L  .3(PC,D0),(A4)+
-    RTS
+	CMP.W	#1,FINISHFPEXP
+	BEQ		.MAKEFP1
+	MOVE.L	A1,D0
+	SUB.L	#EXPCMP,D0
+	DIVU	#3,D0
+	MOVe.L	.3(PC,D0),(A4)+
+	RTS
 	CPU040
 .CHK:
-    FMOVE.L D0,FP0
-.3: FCMP.X  FP1,FP0
-    FADD.X  FP1,FP0
-    FSUB.X  FP1,FP0
-    FMUL.X  FP1,FP0
-    FDIV.X  FP1,FP0
+	FMOVE.L D0,FP0
+.3: FCMP.X	FP1,FP0
+	FADD.X	FP1,FP0
+	FSUB.X	FP1,FP0
+	FMUL.X	FP1,FP0
+	FDIV.X	FP1,FP0
 	CPU000
 .MAKEFP1:
-    addq.l  #2,d1
-    MOVE.W  #0,FINISHFPEXP      ; D1 = other reg
-    MOVE.L  A1,D0
-    SUB.L   #EXPCMP,D0
-    DIVU    #3,D0
-    MOVe.L  .4(PC,D0),(A4)+
-    lsl.w   #7,d1
-    or.w    d1,-2(a4)
-    tst.l   d0
-    beq .C
-    move.l  .5(PC),(a4)+
-    lsl.w   #3,d1
-    or.w    d1,-2(a4)
+	addq.l	#2,d1
+	MOVE.W	#0,FINISHFPEXP		; D1 = other reg
+	MOVE.L	A1,D0
+	SUB.L	#EXPCMP,D0
+	DIVU	#3,D0
+	MOVe.L	.4(PC,D0),(A4)+
+	lsl.w	#7,d1
+	or.w	d1,-2(a4)
+	tst.l	d0
+	beq .C
+	move.l	.5(PC),(a4)+
+	lsl.w	#3,d1
+	or.w	d1,-2(a4)
 .C:
-    TST.W   D0
-    SNE D0
-    EXT.W   D0
-    MOVE.W  D0,FLTFLAG
-    RTS
+	TST.W	D0
+	SNE D0
+	EXT.W	D0
+	MOVE.W	D0,FLTFLAG
+	RTS
 
 	CPU040
-.4: FCMP.X  FP0,FP0
-    FADD.X  FP0,FP0
-    FSUB.X  FP0,FP0
-    FMUL.X  FP0,FP0
-    FDIV.X  FP0,FP0
+.4: FCMP.X	FP0,FP0
+	FADD.X	FP0,FP0
+	FSUB.X	FP0,FP0
+	FMUL.X	FP0,FP0
+	FDIV.X	FP0,FP0
 .5: FMOVE.X FP0,FP0
 	CPU000
 
-      EXPCOMPARATOR:
+		EXPCOMPARATOR:
 	CMP.W	#17,D0
 	BPL	EXPBACK2
-    CMP.W   #11,D0
-    BNE.S   .00
-    CMP.W   #11,(A3)
-    BEQ     EXP_CHECK
+	CMP.W	#11,D0
+	BNE.S	.00
+	CMP.W	#11,(A3)
+	BEQ		EXP_CHECK
 .00:
 	CMP.W	#1,D5
 	BNE	.1
 	CMP.W	#12,D0
 	BEQ.S	.2
-.3:	TST.W   FLTFLAG
-    BEQ .3_0
-    BTST    #5,CODEPREFS
-    BNE .FLT
+.3:	TST.W	FLTFLAG
+	BEQ .3_0
+	BTST	#5,CODEPREFS
+	BNE .FLT
 .3_0:
-    MOVEQ	#0,D5
+	MOVEQ	#0,D5
 	LEA	EXPEQ(PC),A0
 	MOVE.L	D0,D1
 	SUB.W	#11,D1
@@ -24984,13 +24984,13 @@ EXPFPCMP:
 	BEQ	EXPCONSNIL
 	JMP	ERROR0
 .FLT:
-    MOVE.L  D0,D3
-    SUB.W   #11,D3
-    EXT.L   D3
-    MOVEQ   #2,D4
-    LEA EXPCMP(PC),A1
-    MOVEQ   #0,D5
-    BRA EXPLOOP
+	MOVE.L	D0,D3
+	SUB.W	#11,D3
+	EXT.L	D3
+	MOVEQ	#2,D4
+	LEA EXPCMP(PC),A1
+	MOVEQ	#0,D5
+	BRA EXPLOOP
 .2:	CMP.W	#2,EXPRECC		; ONLY IF EXP IN EXP
 	BMI.S	.3
 	MOVE.W	(A3),D1
@@ -25015,7 +25015,7 @@ EXPFPCMP:
 	BRA.W	.3
 .4:	BRA	EXPOUT
 
-      EXPLOG:
+		EXPLOG:
 	CMP.W	#IOFF+31,D0
 	BPL	ANDORNOTBACK
 	CMP.W	#1,D5
@@ -25032,7 +25032,7 @@ EXPFPCMP:
 	MOVE.L	D0,A1
 	BRA	EXPLOOP
 .lERROR0: JMP ERROR0
-      EXPLOG2:
+		EXPLOG2:
 	CMP.W	#IOFF+81,D0
 	BPL	ANDALSOORELSEBACK
 	CMP.W	#1,D5
@@ -25050,7 +25050,7 @@ EXPFPCMP:
 	JSR checkandalso1
 	BRA	EXPLOOP
 .lERROR0: JMP ERROR0
-      EXPEQ:
+		EXPEQ:
 	SEQ	D0			; =	11
 	SGT	D0			; >	12
 	SLT	D0			; <	13
@@ -25058,224 +25058,224 @@ EXPFPCMP:
 	SLE	D0			; <=	15
 	SNE	D0			; <>	16
 
-      EXPSTART:	MOVEQ	#0,D0
-      
-      EXPAND:
+		EXPSTART:	MOVEQ	#0,D0
+		
+		EXPAND:
 	AND.L	#0,D0
 	AND.L	2(A5),D0
 	AND.L	D1,D0
-      EXPOR:
+		EXPOR:
 	OR.L	#0,D0
 	OR.L	2(A5),D0
 	OR.L	D1,D0
-      EXPANDALSO:
-	AND.L	#0,D0     ;0
-	AND.L	2(A5),D0  ;6
-	AND.L	D1,D0     ;10
-      EXPORELSE:
+		EXPANDALSO:
+	AND.L	#0,D0		;0
+	AND.L	2(A5),D0	;6
+	AND.L	D1,D0		;10
+		EXPORELSE:
 	OR.L	#0,D0
 	OR.L	2(A5),D0
 	OR.L	D1,D0
-      EXPCMP:
+		EXPCMP:
 	CMP.L	#0,D0
 	CMP.L	2(A5),D0
 	CMP.L	D1,D0
-      EXPPLUS:				; NO CHANGES TO THESE 8 !
+		EXPPLUS:				; NO CHANGES TO THESE 8 !
 	ADD.L	#0,D0			; EACH 12
 	ADD.L	2(A5),D0
 	ADD.L	D1,D0
-      EXPMINUS:
+		EXPMINUS:
 	SUB.L	#0,D0
 	SUB.L	2(A5),D0
 	SUB.L	D1,D0
-      EXPMUL:
+		EXPMUL:
 	MULS	#0,D0
 	MULS	2(A5),D0
 	MULS	D1,D0
 	DC.W	0
-      EXPDIV:
+		EXPDIV:
 	DIVS	#0,D0
 	DIVS	2(A5),D0
 	DIVS	D1,D0
-      EXPMOVE:
+		EXPMOVE:
 	MOVE.L	#0,D0
 	MOVE.L	2(A5),D0
 	MOVE.L	D1,D0
 
 
-      EXPADDQ:	ADDQ.L	#8,D0
-      EXPSUBQ:	SUBQ.L	#8,D0
+		EXPADDQ:	ADDQ.L	#8,D0
+		EXPSUBQ:	SUBQ.L	#8,D0
 
-      EXPMUL2:
-	DC.W	$4C3C,$800     		; MULS.L #x,D0
-      	DC.W	$4C2D,$800		; MULS.L x(A5),D0
-      	DC.W	$4C01,$800		; MULS.L D1,D0
-      EXPDIV2:
-      	DC.W	$4C7C,$800		; DIVS.L #x,D0
-      	DC.W	$4C6D,$800		; DIVS.L x(A5),D0
-      	DC.W	$4C41,$800		; DIVS.L D1,D0
-      	
-lERROR4:  JMP ERROR4
+		EXPMUL2:
+	DC.W	$4C3C,$800			; MULS.L #x,D0
+		DC.W	$4C2D,$800		; MULS.L x(A5),D0
+		DC.W	$4C01,$800		; MULS.L D1,D0
+		EXPDIV2:
+		DC.W	$4C7C,$800		; DIVS.L #x,D0
+		DC.W	$4C6D,$800		; DIVS.L x(A5),D0
+		DC.W	$4C41,$800		; DIVS.L D1,D0
+		
+lERROR4:	JMP ERROR4
 lERROR23: JMP ERROR23
 lERROR25: JMP ERROR25
 
-	  EXPOWNFUNC:           ; A0=IDENTENTRY
-    CLR.L   LAST_CMD_ADR
-    BTST    #4,5(A0)
-    BNE.S lERROR4
-    CMP.B   #LAB,4(A0)
-    BNE EXPVARPROCCALL
-    MOVE.L  6(A0),A6        ; A6=PROC!!
-    MOVE.L  A6,D6
+		EXPOWNFUNC:			; A0=IDENTENTRY
+	CLR.L	LAST_CMD_ADR
+	BTST	#4,5(A0)
+	BNE.S lERROR4
+	CMP.B	#LAB,4(A0)
+	BNE EXPVARPROCCALL
+	MOVE.L	6(A0),A6		; A6=PROC!!
+	MOVE.L	A6,D6
 
-    MOVEQ   #0,D0
-    BTST    #5,2(A6)
-    BEQ     .skippars
-    MOVE.L  6(A6),A6
-    MOVE.W  (A6)+,D1
-    subq.l  #1,d1
+	MOVEQ	#0,D0
+	BTST	#5,2(A6)
+	BEQ		.skippars
+	MOVE.L	6(A6),A6
+	MOVE.W	(A6)+,D1
+	subq.l	#1,d1
 
 .check:
-    CMP.B   #4,(A6)
-    BNE     .chk1
-    CMP.B   #3,1(A6)
-    BMI     .chk1
-    MOVEQ   #15,d2
-    sub.b   1(a6),d2
-    bset    d2,d0
-    moveq   #16,d2
-    add.b   1(a6),d2
-    bset    d2,d0
+	CMP.B	#4,(A6)
+	BNE		.chk1
+	CMP.B	#3,1(A6)
+	BMI		.chk1
+	MOVEQ	#15,d2
+	sub.b	1(a6),d2
+	bset	d2,d0
+	moveq	#16,d2
+	add.b	1(a6),d2
+	bset	d2,d0
 .chk1:
-    addq.l  #2,a6
-    dbf     d1,.check
+	addq.l	#2,a6
+	dbf		d1,.check
 
-    tst.w   d0
-    beq     .skippars
-    move.w  #$48e7,(a4)+
-    move.w  d0,(a4)+
+	tst.w	d0
+	beq		.skippars
+	move.w	#$48e7,(a4)+
+	move.w	d0,(a4)+
 
 .skippars:
-    swap    d0
-    move.w  d0,-(a7)
-    MOVE.L  D6,A6
-    TST.L   D6
-    BEQ lERROR25
-    CMP.W   #17,(A3)+
-    BNE lERROR23
-    BSR SD0
-    MOVEQ   #0,D0           ; #OF ARGS
-    CMP.W   #18,(A3)
-    BEQ.S   .2
+	swap	d0
+	move.w	d0,-(a7)
+	MOVE.L	D6,A6
+	TST.L	D6
+	BEQ lERROR25
+	CMP.W	#17,(A3)+
+	BNE lERROR23
+	BSR SD0
+	MOVEQ	#0,D0			; #OF ARGS
+	CMP.W	#18,(A3)
+	BEQ.S	.2
 .3: MOVEM.L D0/A0/A6,-(A7)
-    MOVE.W  #16,EAREQUEST
-    BSR EAEXP
-    TST.L   D0
-    BNE   .OPT
-    MOVE.W  .4(PC),(A4)+
-.OPT:   MOVEM.L (A7)+,D0/A0/A6
-    ADDQ.L  #4,D0
-    CMP.W   #COM,(A3)+
-    BEQ.S   .3
-    SUBQ.L  #2,A3
-.2: CMP.W   #18,(A3)+       ; OUT
-    BNE lERROR23
-    BSR DODEFARGS
-    MOVEM.L D0/A0,-(A7)
+	MOVE.W	#16,EAREQUEST
+	BSR EAEXP
+	TST.L	D0
+	BNE		.OPT
+	MOVE.W	.4(PC),(A4)+
+.OPT:	MOVEM.L (A7)+,D0/A0/A6
+	ADDQ.L	#4,D0
+	CMP.W	#COM,(A3)+
+	BEQ.S	.3
+	SUBQ.L	#2,A3
+.2: CMP.W	#18,(A3)+		; OUT
+	BNE lERROR23
+	BSR DODEFARGS
+	MOVEM.L D0/A0,-(A7)
 
-    MOVE.W  10(A0),D0
-    BMI.S   .MINM
-    MOVE.L  .1(PC),(A4)+
-    MOVE.W  .1L(PC),NEWOP
-    JSR ADDBRANCH
-    BRA.S   .D
-.MINM:  MOVE.W  .1L(PC),(A4)+       ; ADR OF LABEL OF OTHER MODULE
-    MOVEM.L A1/A6,-(A7)
-    GETML    A6
-    MOVE.L  VARHEAVY(A0),A1     ; A1=PTR TO PROCCLASS
-    MOVE.L  PC_ACC(A1),D0
-    MOVE.L  A6,PC_ACC(A1)
-    MOVE.L  D0,(A6)+
-    MOVE.L  A4,(A6)+
-    DONEM   A6
-    MOVEM.L (A7)+,A1/A6
-    CLR.L   (A4)+
+	MOVE.W	10(A0),D0
+	BMI.S	.MINM
+	MOVE.L	.1(PC),(A4)+
+	MOVE.W	.1L(PC),NEWOP
+	JSR ADDBRANCH
+	BRA.S	.D
+.MINM:	MOVE.W	.1L(PC),(A4)+		; ADR OF LABEL OF OTHER MODULE
+	MOVEM.L A1/A6,-(A7)
+	GETML	 A6
+	MOVE.L	VARHEAVY(A0),A1		; A1=PTR TO PROCCLASS
+	MOVE.L	PC_ACC(A1),D0
+	MOVE.L	A6,PC_ACC(A1)
+	MOVE.L	D0,(A6)+
+	MOVE.L	A4,(A6)+
+	DONEM	A6
+	MOVEM.L (A7)+,A1/A6
+	CLR.L	(A4)+
 .D:
-    MOVEM.L (A7)+,D0/A0
-    MOVE.L  6(A0),A6
-    TST.W   (A6)
-    BEQ.S   .NOA
-    BTST    #0,2(A6)
-    BNE.S   .NOA
-    BTST    #5,2(A6)
-    BNE.S   .NOA
-    cmp.w   #8,d0
-    ble     .DOSTK
-    MOVE.W  .5(PC),(A4)+
-    MOVE.W  D0,(A4)+
-    bra     .NOA
+	MOVEM.L (A7)+,D0/A0
+	MOVE.L	6(A0),A6
+	TST.W	(A6)
+	BEQ.S	.NOA
+	BTST	#0,2(A6)
+	BNE.S	.NOA
+	BTST	#5,2(A6)
+	BNE.S	.NOA
+	cmp.w	#8,d0
+	ble		.DOSTK
+	MOVE.W	.5(PC),(A4)+
+	MOVE.W	D0,(A4)+
+	bra		.NOA
 .DOSTK:
-    and.l   #7,d0
-    lsl.w   #8,d0
-    lsl.w   #1,d0
-    or.w    .5o,d0
-    move.w  d0,(a4)+
-    bra     .NOA
+	and.l	#7,d0
+	lsl.w	#8,d0
+	lsl.w	#1,d0
+	or.w	.5o,d0
+	move.w	d0,(a4)+
+	bra		.NOA
 .NOA:
-    MOVED0FP0
-    BSR RD0
-    move.w  (a7)+,d0
-    tst.w   d0
-    beq     .exit
-    move.w  #$4cdf,(a4)+
-    move.w  d0,(a4)+
+	MOVED0FP0
+	BSR RD0
+	move.w	(a7)+,d0
+	tst.w	d0
+	beq		.exit
+	move.w	#$4cdf,(a4)+
+	move.w	d0,(a4)+
 .exit:
-    MOVEQ   #1,D5
-    BRA EXPLOOP
+	MOVEQ	#1,D5
+	BRA EXPLOOP
 .1: BSR .1
-.1L:    JSR .1
+.1L:	JSR .1
 	CPU020
-.1L2:   BSR.L .1
+.1L2:	BSR.L .1
 	CPU000
-.4: MOVE.L  D0,-(A7)
-.5: ADDa.w  #8,a7
-.5o:addq.l  #8,a7
+.4: MOVE.L	D0,-(A7)
+.5: ADDa.w	#8,a7
+.5o:addq.l	#8,a7
 DOREGARGS:
-    MOVE.L  D0,D6
-    LSR.L   #2,D6
-    CMP.W   (A6),D6
-    BNE     lERROR23
-    move.l  6(a6),a6
-    subq.l  #1,d6
+	MOVE.L	D0,D6
+	LSR.L	#2,D6
+	CMP.W	(A6),D6
+	BNE		lERROR23
+	move.l	6(a6),a6
+	subq.l	#1,d6
 
-    move.w  (a6)+,d0
-    lsl.w   #1,d0
-    add.w   d0,a6
-    lsr.w   #1,d0
+	move.w	(a6)+,d0
+	lsl.w	#1,d0
+	add.w	d0,a6
+	lsr.w	#1,d0
 .L1:
-    subq.l  #2,a6
-    cmp.b   #5,(a6)
-    seq     d0
-    and.l   #$40,d0
-    ror.l   #8,d0
-    move.b  1(a6),d0
-    and.w   #7,d0
-    lsl.w   #1,d0
-    rol.l   #8,d0
-    move.w  .C1(PC),(A4)
-    or.w    d0,(a4)+
+	subq.l	#2,a6
+	cmp.b	#5,(a6)
+	seq		d0
+	and.l	#$40,d0
+	ror.l	#8,d0
+	move.b	1(a6),d0
+	and.w	#7,d0
+	lsl.w	#1,d0
+	rol.l	#8,d0
+	move.w	.C1(PC),(A4)
+	or.w	d0,(a4)+
 
-    dbf     d6,.L1
+	dbf		d6,.L1
 
-    rts
+	rts
 .C1:
-    MOVe.L  (A7)+,D0
+	MOVe.L	(A7)+,D0
 
 
 
-      DODEFARGS:
-    BTST    #5,2(A6)        ;test for noregs
-    BNE     DOREGARGS
+		DODEFARGS:
+	BTST	#5,2(A6)		;test for noregs
+	BNE		DOREGARGS
 	MOVE.L	D0,D6			; DEAL WITH DEFARGS
 	LSR.L	#2,D6
 	CMP.W	(A6),D6
@@ -25326,7 +25326,7 @@ DOREGARGS:
 .lERR23 JMP ERROR23
 
 
-      OPTIMOVEMS:
+		OPTIMOVEMS:
 	MOVEM.L	D0-D3,-(A7)
 	MOVE.W	-2(A4),D0
 	MOVEQ	#1,D1
@@ -25367,7 +25367,7 @@ DOREGARGS:
 
 
 
-      OPTIMOVEMR:
+		OPTIMOVEMR:
 	MOVEM.L	D0-D3,-(A7)
 	MOVE.W	-2(A4),D0
 	MOVEQ	#1,D1
@@ -25408,8 +25408,8 @@ DOREGARGS:
 
 
 
-      EXPVARPROCCALL:			; A0=IDENTENTRY
-    CLR.L   LAST_CMD_ADR
+		EXPVARPROCCALL:			; A0=IDENTENTRY
+	CLR.L	LAST_CMD_ADR
 	TST.B	4(A0)
 	BEQ.S	.err22
 	CMP.W	#17,(A3)+
@@ -25457,7 +25457,7 @@ DOREGARGS:
 	MOVE.W	.5(PC),(A4)+
 	MOVE.W	D0,(A4)+
 .NOA:
-    MOVED0FP0
+	MOVED0FP0
 	BSR	RD0
 	MOVE.L (A7)+,LABLOG
 	MOVEQ	#1,D5
@@ -25471,8 +25471,8 @@ DOREGARGS:
 
 NUMRECSAVE = 8
 
-      EXPLIBCALL:
-  CMP.W	#1,D5
+		EXPLIBCALL:
+	CMP.W	#1,D5
 	BNE .NOERR
 	JMP ERROR0
 .NOERR:
@@ -25492,7 +25492,7 @@ NUMRECSAVE = 8
 	MOVEQ	#0,D0			; D0=# OF REGS
 	LEA	EXPLREGS(PC),A0
 	MOVE.W	D5,-(A7)		; SAVE D5
-      EXPLLOOP:
+		EXPLLOOP:
 	MOVEQ	#0,D1
 	MOVE.B	(A2)+,D1		; D1=REG#
 	CMP.W	#16,D1
@@ -25513,8 +25513,8 @@ NUMRECSAVE = 8
 .2:	DBRA	D6,.1
 .X:	MOVE.B	D7,(A0)+
 	BRA.S	EXPLLOOP
-      EXPLNEXT:
-  MOVE.W	(A7)+,D5		; RESTORE D5
+		EXPLNEXT:
+	MOVE.W	(A7)+,D5		; RESTORE D5
 	MOVE.B	#-1,(A0)+
 	MOVE.W	D0,EXPLNUM
 	CMP.W	#17,(A3)+		; CHECK INCOMING (
@@ -25524,12 +25524,12 @@ NUMRECSAVE = 8
 	MOVE.L LABLOG,-(A7)
 	BSR	SD0
 	TST.W	EXPLNUM
-        BEQ.S	EXPLNOARGS
-        BSR.S	EXPLIBARG
-        BRA.S	EXPLFIN
-      EXPLNOARGS:
+		BEQ.S	EXPLNOARGS
+		BSR.S	EXPLIBARG
+		BRA.S	EXPLFIN
+		EXPLNOARGS:
 	BSR.W	EXPLIBJSR
-      EXPLFIN:
+		EXPLFIN:
 
 	MOVE.W	EXPLEXCEPT(PC),D7	; USE D7/A6
 	BMI.S	.NR
@@ -25538,7 +25538,7 @@ NUMRECSAVE = 8
 	LEA	0(A6,D7.W),A6
 	BSR	EXPRAISE
 .NR:
-    MOVED0FP0
+	MOVED0FP0
 	BSR	RD0
 	MOVE.L (A7)+,LABLOG
 	ADDQ.L	#2,A3			; EAT )
@@ -25552,7 +25552,7 @@ NUMRECSAVE = 8
 	DBRA	D0,.2
 .3:	BRA	EXPLOOP
 
-      EXPLIBARG:			; IN CASE OF Func(arg,...)
+		EXPLIBARG:			; IN CASE OF Func(arg,...)
 	LSAVER	EXPLMASK(PC),D1
 	MOVE.W	D1,EXPLRSM
 	BEQ.S	.5
@@ -25625,12 +25625,12 @@ NUMRECSAVE = 8
 .3:
 	SUBQ.W	#1,D0
 	LEA	EXPLREGS(PC),A0
-      EXPLARGLOOP:
+		EXPLARGLOOP:
 	MOVEM.L	D0/A0/A6,-(A7)
 	MOVE.W	EXPLCHECK(PC),-(A7)
 	MOVE.W	#-1,EXPLCHECK
 	MOVE.L A4,EXPRLEN
-    bclr    #2,ICODEPREFS+3
+	bclr	#2,ICODEPREFS+3
 	BSR	EXP
 	MOVE.L A4,D0
 	SUB.L EXPRLEN(PC),D0
@@ -25641,7 +25641,7 @@ NUMRECSAVE = 8
 	EXT.W	D1
 	BNE.S	.1
 	CMP.L #2,EXPRLEN
-  	BNE.S .4
+	BNE.S .4
 	CMPI.W	#$7000,-2(A4)		; IF MOVEQ #0,D0
 	BNE.S	.4			; THEN OPTI TO
 	MOVE.W	#$4297,-2(A4)		; CLR.L	(A7)
@@ -25663,7 +25663,7 @@ NUMRECSAVE = 8
 	CMP.W	#COM,(A3)+
 	BNE	iiERROR5
 	DBRA	D0,EXPLARGLOOP
-      EXPLARGOUT:
+		EXPLARGOUT:
 	MOVE.W	EXPGETBASE(PC),(A4)+
 	MOVE.W	EXPLBASE(PC),D0
 	BSR	DOOFF
@@ -25685,7 +25685,7 @@ NUMRECSAVE = 8
 EXPRLEN: DC.L 0
 iiERROR5: JMP ERROR5
 
-      OPTIARGS:
+		OPTIARGS:
 	MOVE.W	EXPLNUM(PC),D0
 	SUBQ.W	#1,D0
 	MOVE.L	-10(A3),A0
@@ -25715,7 +25715,7 @@ iiERROR5: JMP ERROR5
 .3:	INTERN	100
 .iERROR5: JMP ERROR5
 
-      EXPLIBJSR:			; IN CASE OF Func()
+		EXPLIBJSR:			; IN CASE OF Func()
 	MOVE.W	EXPGETBASE(PC),(A4)+
 	MOVE.W	EXPLBASE(PC),D0
 	BSR	DOOFF
@@ -25724,45 +25724,45 @@ iiERROR5: JMP ERROR5
 	MOVE.W	EXPLOFF(PC),(A4)+
 	RTS
 
-      EXPJSR:		JSR	-30(A6)
-      EXPGETBASE:	MOVE.L	-40(A4),A6
-      EXPGETSTACK:	LEA	4(A7),A7
-      EXPMOVEM:		MOVEM.L	(A7)+,D0/A0
-      EXPTOSTACK:	MOVE.L	D0,4(A7)
-      SAVE45:		MOVEM.L	A4/A5,-(A7)
-      RETRIEVE45:	MOVEM.L	(A7)+,A4/A5
+		EXPJSR:		JSR	-30(A6)
+		EXPGETBASE:	MOVE.L	-40(A4),A6
+		EXPGETSTACK:	LEA	4(A7),A7
+		EXPMOVEM:		MOVEM.L	(A7)+,D0/A0
+		EXPTOSTACK:	MOVE.L	D0,4(A7)
+		SAVE45:		MOVEM.L	A4/A5,-(A7)
+		RETRIEVE45:	MOVEM.L	(A7)+,A4/A5
 
-      EXPLCHECK:	DC.W	0	; NOTE: THESE DATA=NUMRECSAVE LONGS!
-      EXPLBASE:		DC.W	0
-      EXPLOFF:		DC.W	0
-      EXPLMASK:		DC.W	0
-      EXPLNUM:		DC.W	0
-      EXPLEXCEPT:	DC.W	0
-      EXPLOPTI:		DC.W	0
-      EXPLRSM:		DC.W	0
-      EXPLREGS:		DC.L	0,0,0,0
+		EXPLCHECK:	DC.W	0	; NOTE: THESE DATA=NUMRECSAVE LONGS!
+		EXPLBASE:		DC.W	0
+		EXPLOFF:		DC.W	0
+		EXPLMASK:		DC.W	0
+		EXPLNUM:		DC.W	0
+		EXPLEXCEPT:	DC.W	0
+		EXPLOPTI:		DC.W	0
+		EXPLRSM:		DC.W	0
+		EXPLREGS:		DC.L	0,0,0,0
 
-      EXPEFUNC:
-    CLR.L   LAST_CMD_ADR
+		EXPEFUNC:
+	CLR.L	LAST_CMD_ADR
 	CMP.W	#1,D5
 	BEQ	.iERROR0
  
 	MOVE.L	(A3)+,A0		; A0=FUNCTABENTRY
-    
+	
 	TST.B DEBUGLINENOS
 	BEQ.S .done
 	MOVE.L	A0,D0
-	SUB.L   #EFUNCTAB,D0
-	LSR.L   #4,D0
+	SUB.L	#EFUNCTAB,D0
+	LSR.L	#4,D0
 
 	;functions that can throw "NIL" exception
-	CMP.L #85-1,D0       ;NEWR
+	CMP.L #85-1,D0		 ;NEWR
 	BEQ.S .m1
-	CMP.L #95-1,D0       ;NEWM
+	CMP.L #95-1,D0		 ;NEWM
 	BEQ.S .m1
-	CMP.L #115-1,D0       ;CONS
+	CMP.L #115-1,D0			;CONS
 	BEQ.S .m1 
-	CMP.L #111-1,D0       ;FASTNEW
+	CMP.L #111-1,D0			;FASTNEW
 	BEQ.S .m1
 	BRA.S .m2
 .m1
@@ -25770,33 +25770,33 @@ iiERROR5: JMP ERROR5
 
 .m2
 
-  ;e functions that can throw a "NIL" exception
-	BTST #1,CODEPREFS+3        ;NIL CHECK 
+	;e functions that can throw a "NIL" exception
+	BTST #1,CODEPREFS+3			 ;NIL CHECK 
 	BEQ.S .done
-  LEA NILPATCHLIST,A2
+	LEA NILPATCHLIST,A2
 .next
-	MOVE.L (A2)+,D2   ;function number
+	MOVE.L (A2)+,D2		;function number
 	BMI.S .done
 	ADD.L #8,A2
 	CMP.L D0,D2
 	BNE.S .next
-  
+	
 	JSR GENLINENO
 	BRA.S .next
 
 .done
 
- 	BTST #6,CODEPREFS       ;inline
+	BTST #6,CODEPREFS		;inline
 	BEQ .noinline
-    
+	
 	MOVE.L	A0,D0
-	SUB.L   #EFUNCTAB,D0
-	LSR.L   #4,D0
+	SUB.L	#EFUNCTAB,D0
+	LSR.L	#4,D0
 	LEA	EFUNCFLAGSTAB(PC),A6
 	MOVE.B	0(A6,D0.L),D2
 	BTST #6,D2
 	BNE EXPINLINE
-   
+	 
 .noinline
 	MOVEQ	#0,D0			; D0=COUNT ARGS
 	MOVEQ	#-100,D2
@@ -25882,12 +25882,12 @@ iiERROR5: JMP ERROR5
 	BSET	#4,CODEPREFS+1
 .F2 BTST	#2,D1
 	BEQ.S	.F3
-  BTST	#2,CODEPREFS
+	BTST	#2,CODEPREFS
 	BEQ .iERROR80
 .F3 BTST	#3,D1
 	BEQ.S	.F4
-  CMP.W #37,OSVERSION
-  BMI .iERROR77
+	CMP.W #37,OSVERSION
+	BMI .iERROR77
 .F4 BTST	#4,D1
 	BEQ.S	.F5
 	BSET	#3,CODEPREFS
@@ -25900,7 +25900,7 @@ iiERROR5: JMP ERROR5
 	TSTMOD
 	BNE.S	.MOD
 	MOVE.W	EFUNCJUMPL(PC),NEWOP
-	MOVE.W  EFUNCJUMPL020,NEWOP020
+	MOVE.W	EFUNCJUMPL020,NEWOP020
 	JSR	ADDBRANCH
 	BRA.S	.CC
 .MOD:	SUBQ.L	#4,A4
@@ -25930,9 +25930,9 @@ iiERROR5: JMP ERROR5
 	LSL.L	#2,D2
 	MOVE.W	D2,(A4)+
 .E:	
-    MOVED0FP0
-    BSR	RD0
- 	MOVE.L (A7)+,LABLOG
+	MOVED0FP0
+	BSR	RD0
+	MOVE.L (A7)+,LABLOG
 	CMP.W	#18,(A3)+		; EAT )
 	BNE	.iERROR23
 	MOVEQ	#1,D5
@@ -25948,9 +25948,9 @@ iiERROR5: JMP ERROR5
 CHECKNOT:
 	TST.W NOTEXP
 	BEQ .n2
-  
-  CMP.W #IOFF+71,-2(a3)
-  BEQ.S .n2
+	
+	CMP.W #IOFF+71,-2(a3)
+	BEQ.S .n2
 
 	BTST #0,NOTEXP+1
 	BEQ .n1
@@ -25958,7 +25958,7 @@ CHECKNOT:
 	MOVE.L A4,NOTEXPADDR
 	MOVE.W .N2,(A4)+
 .n1:
- 	CLR.W NOTEXP
+	CLR.W NOTEXP
 .n2
 	RTS
 .N2 NOT.L D0
@@ -25981,22 +25981,22 @@ EFUNDA:	ADDQ.L	#1,D0
 .P:	PEA	1.W
 
 .iERROR23: JMP ERROR23
-      UPSTACK:
+		UPSTACK:
 	MOVE.L	D0,-(A7)
-      EFUNCJUMP:
+		EFUNCJUMP:
 	BSR	EFUNCJUMP
-      EFUNCJUMPL:
+		EFUNCJUMPL:
 	JSR	EFUNCJUMP
-      EFUNCJUMPL020:
-  CPU020
+		EFUNCJUMPL020:
+	CPU020
 	BSR.L EFUNCJUMP
-  CPU000
-      WRITEFARG:
+	CPU000
+		WRITEFARG:
 	MOVE.L	D0,4(A7)
 	MOVE.L	D0,(A7)
 
 
-      EXPRAISE:				; GETS PTR TO RAISESTRUCT IN A6,
+		EXPRAISE:				; GETS PTR TO RAISESTRUCT IN A6,
 	MOVEM.L	D0/D1/A0,-(A7)		; TRHASHES ONLY A6
 	TST.L	6(A6)
 	BEQ.S	.Z
@@ -26072,32 +26072,32 @@ EFUNDA:	ADDQ.L	#1,D0
 ;*-*
 ;; EXPINLINE
 EXPINLINE:
-    CLR.L   LAST_CMD_ADR
-    tst.l   d5
-    bgt     .iERROR0
-    bmi     .n_d
-    BSR     SD0
+	CLR.L	LAST_CMD_ADR
+	tst.l	d5
+	bgt		.iERROR0
+	bmi		.n_d
+	BSR		SD0
 .n_d:
-    cmp.w   #17,(a3)+
-    bne     .iERROR0
-    MOVE.L  D0,-(A7)
-    LEA     INLINETAB,A0
-    LSL.L   #2,D0
-    MOVE.L  0(A0,D0),A0
-    JSR     (A0)
+	cmp.w	#17,(a3)+
+	bne		.iERROR0
+	MOVE.L	D0,-(A7)
+	LEA		INLINETAB,A0
+	LSL.L	#2,D0
+	MOVE.L	0(A0,D0),A0
+	JSR		(A0)
 
-    MOVED0FP0
-    tst.l   d5
-    bmi     .exit
-    bsr     RD0
+	MOVED0FP0
+	tst.l	d5
+	bmi		.exit
+	bsr		RD0
 .exit:
-    MOVe.L  (A7)+,D0
+	MOVe.L	(A7)+,D0
 
-    MOVE.L  A0,-(A7)
-    LEA     EFUNCFLAGSTAB,A0
-    MOVE.L  D0,D7
-    LSR.L   #2,D7
-    MOVE.B  0(A0,D7.L),D7
+	MOVE.L	A0,-(A7)
+	LEA		EFUNCFLAGSTAB,A0
+	MOVE.L	D0,D7
+	LSR.L	#2,D7
+	MOVE.B	0(A0,D7.L),D7
 	BEQ.S	.NOF
 	BTST	#0,D7
 	BEQ.S	.F1
@@ -26107,12 +26107,12 @@ EXPINLINE:
 	BSET	#4,CODEPREFS+1
 .F2 BTST	#2,D7
 	BEQ.S	.F3
-    BTST	#2,CODEPREFS
+	BTST	#2,CODEPREFS
 	BEQ .iERROR80
 .F3 BTST	#3,D7
 	BEQ.S	.F4
-    CMP.W #37,OSVERSION
-    BMI .iERROR77
+	CMP.W #37,OSVERSION
+	BMI .iERROR77
 .F4 BTST	#4,D7
 	BEQ.S	.F5
 	BSET	#3,CODEPREFS
@@ -26122,12 +26122,12 @@ EXPINLINE:
 	BNE .iERROR81
 .F6 
 .NOF:
-    MOVE.L  (A7)+,A0
+	MOVE.L	(A7)+,A0
 
-    moveq   #1,d5
-    cmp.w   #18,(a3)+
-    bne     .iERROR79
-    bra     EXPLOOP
+	moveq	#1,d5
+	cmp.w	#18,(a3)+
+	bne		.iERROR79
+	bra		EXPLOOP
 
 .iERROR0: JMP ERROR0
 .iERROR79: JMP ERROR79
@@ -26138,25 +26138,25 @@ EXPINLINE:
 ;; GetExp
 ; params: D0 -> final storage
 EA_GETEXP:
-    move.l  d0,-(a7)
+	move.l	d0,-(a7)
 
-    BSR.W   EXP
+	BSR.W	EXP
 
-    move.l  (a7)+,d0
-    TST.W   D0
-    BEQ     .x
-    move.w  .res(PC),(A4)
-    OR.W    D0,(A4)+
+	move.l	(a7)+,d0
+	TST.W	D0
+	BEQ		.x
+	move.w	.res(PC),(A4)
+	OR.W	D0,(A4)+
 .x:
-    RTS
+	RTS
 .res:
-    MOVE.L  D0,D0
+	MOVE.L	D0,D0
 ;*-*
 
 
 ; WARNING: AMAZING FEATURE AHEAD!
 
-      EXPUNIFY:
+		EXPUNIFY:
 	CMP.W	#1,D5
 	BNE	.iERROR0
 	MOVEQ	#-1,D7			; D7 = LEVEL/#OF_AX_USED
@@ -26193,7 +26193,7 @@ EA_GETEXP:
 	MOVE.W	.CMP2(PC),(A4)
 	OR.W	D7,(A4)+
 	BRA.S	.1C
-.1B:  MOVE.W	.CMP(PC),(A4)+
+.1B:	MOVE.W	.CMP(PC),(A4)+
 .1C:	MOVE.L	D0,(A4)+
 	MOVE.L	.BNE(PC),(A4)+
 	MOVE.L	D6,D0
@@ -26256,10 +26256,10 @@ EA_GETEXP:
 	BNE.S	.iERROR30
 	NEG.L	(A3)
 	BRA	.0
-.iERROR0:  JMP ERROR0
-.iERROR30:  JMP ERROR30
-.iERROR34:  JMP ERROR34
-.iERROR46:  JMP ERROR46
+.iERROR0:	JMP ERROR0
+.iERROR30:	JMP ERROR30
+.iERROR34:	JMP ERROR34
+.iERROR46:	JMP ERROR46
 
 .4:	CMP.W	#13,D0			; <CONS|CELL>
 	BNE.S	.5
@@ -26332,7 +26332,7 @@ EA_GETEXP:
 .NIL:	TST.L	(A0)
 
 FINISHFPEXP:
-    DC.W    0
+	DC.W	0
 
 
 
@@ -26342,33 +26342,33 @@ FINISHFPEXP:
 
 
 HunkList:
-    DC.L    0
+	DC.L	0
 NumHunks:
-    DC.L    1
+	DC.L	1
 
 SetupMod:
-    DC.L    0
+	DC.L	0
 CleanupMod:
-    DC.L    0
+	DC.L	0
 
-      MMODE:	DC.W	0		; =D1
-      SectionUsed:   DC.W 0
-      THISMOD:	DC.L	0
+		MMODE:	DC.W	0		; =D1
+		SectionUsed:	 DC.W 0
+		THISMOD:	DC.L	0
 
-      MINIMUMMODULE:
+		MINIMUMMODULE:
 	MOVEQ	#2,D1			; MODULE IN MAIN FROM OTHER MODULE
 	BRA.S	MODULESTART
-      MODULEJOBENTRY:
+		MODULEJOBENTRY:
 	MOVEQ	#0,D1			; NORMAL MODULE IN MAIN
 	TSTMOD
 	BEQ.S	MODULESTART
 	MOVEQ	#1,D1			; MODULE IN MODULE
-      MODULESTART:
+		MODULESTART:
 	MOVE.W	D1,MMODE
 	MOVE.W OBJCOUNT,MODOBJCOUNT
 	CLR.W	LOADEDVERSION
 	MOVE.L #globmapbuf,globmapptr
-      DOMODULEJOB:			; A0=PTR JOBCODE
+		DOMODULEJOB:			; A0=PTR JOBCODE
 	MOVE.W	MMODE(PC),D1
 	MOVE.W	(A0)+,D0		; CAN TRASH ANYTHING
 	BEQ.S	.1
@@ -26397,13 +26397,13 @@ CleanupMod:
 	CMP.W	#12,D0
 	BEQ.W	ADDIMPORTOBJS
 	JMP	ERROR36			; SUPPOSED TO BE OTHER JOBCODES
-.1:	  RTS
+.1:		RTS
 
-      ADDMACROS:
+		ADDMACROS:
 	JSR	PREPREADMACROS
 	BRA	DOMODULEJOB
 
-      ADDDEBUG:
+		ADDDEBUG:
 	MOVE.L	A0,A6			; A6=DEBUGHUNK
 	MOVE.L	4(A6),D0
 	ADDQ.L	#2,D0
@@ -26441,14 +26441,14 @@ CleanupMod:
 	BEQ DOMODULEJOB
 	JMP ERROR36
 
-      ADDIMPORTOBJS:
-	ADD.L #2,A0     ;skip oid
+		ADDIMPORTOBJS:
+	ADD.L #2,A0		;skip oid
 	MOVE.W (A0)+,D0 ;name length
-	ADD.W D0,A0     ;skip name
+	ADD.W D0,A0		;skip name
 	BRA	DOMODULEJOB
 
 
-      ADDMODULES:
+		ADDMODULES:
 	MOVE.L	(A0)+,D0
 	CMP.W	#1,D1
 	BNE.S	.L
@@ -26511,7 +26511,7 @@ CleanupMod:
 	BRA.W	.L
 .X:	BRA.W	DOMODULEJOB
 
-      ADDGLOBSENTRY:
+		ADDGLOBSENTRY:
 	MOVEQ	#0,D2
 	CMP.W	#SKIPMARK,(A0)
 	BNE.S	.1
@@ -26523,14 +26523,14 @@ CleanupMod:
 	TST.L	D2
 	BNE.W	DOMODULEJOB
 	INTERN	103
-      ADDGLOBS:
+		ADDGLOBS:
 	CLR.W OLDOFFS
 	CMP.W	#14,LOADEDVERSION
 	BMI.S .nooffs
 	MOVE.W	(A0)+,OLDOFFS		; D0=old offs
 	CMP.W #-1,OLDOFFS
 	BEQ	DOMODULEJOB
-.nooffs:      
+.nooffs:		
 	MOVE.W	(A0)+,D0		; D0=LEN
 	BMI.W	DOMODULEJOB
 	MOVE.L	A0,A1			; A1=NAME
@@ -26544,16 +26544,16 @@ CleanupMod:
 	GETML	A5
 
 	MOVE.L A5,IMPORTDATA
-	MOVE.L (A0)+,(A5)+   ;defvalue
-	MOVE.W (A0)+,(A5)+   ;flags/vartype
+	MOVE.L (A0)+,(A5)+	 ;defvalue
+	MOVE.W (A0)+,(A5)+	 ;flags/vartype
 
-	MOVE.W (A0)+,D2   
+	MOVE.W (A0)+,D2		
 	BEQ.S .noobj
 	ADD.W MODOBJCOUNT,D2
 .noobj
-	MOVE.W D2,(A5)+     ;varoid
+	MOVE.W D2,(A5)+		;varoid
 
-	MOVE.W (A0)+,(A5)+  ;varptrrep
+	MOVE.W (A0)+,(A5)+	;varptrrep
 	MOVEQ #0,D2
 	MOVE.W (A0)+,D2 ;vardims
 	MOVE.W D2,(A5)+
@@ -26580,9 +26580,9 @@ CleanupMod:
 .OUT:	TST.W	D0			; NOW FIND OFFSET
 	BNE.S	VREF
 
-  LEA .NAME(PC),A1
-  LEA IDENTHASH,A3
-  BRA.S NOTF
+	LEA .NAME(PC),A1
+	LEA IDENTHASH,A3
+	BRA.S NOTF
 	;GETML	A5			; NOT LINKED INTO HASH TABLE!
 	;MOVE.L	#.NAME,(A5)+		; ANONYMOUS VARIABLE
 	;MOVE.B	#GLOBV,(A5)+		; SET GLOBAL(=2)
@@ -26594,7 +26594,7 @@ CleanupMod:
 	;MOVE.W	D2,(A5)+		; SET OFFS
 	;EXT.L	D2
 	;MOVE.L	A5,D2
-	;MOVE.W  LINENUM,(A5)+ ;SET line num
+	;MOVE.W	 LINENUM,(A5)+ ;SET line num
 
 	;CLR.L (A5)+ ;VARHEAVY
 	;CLR.L (A5)+ ;VAR_NAME
@@ -26644,7 +26644,7 @@ NOTF:	GETML	A5			; LINKED INTO HASH TABLE!
 	BSR ADDGLOBMAP
 
 	MOVE.L	A5,D2
- 	MOVE.W  LINENUM,(A5)+ ;SET line num
+	MOVE.W	LINENUM,(A5)+ ;SET line num
 	CLR.L (A5)+ ;VARHEAVY
 	CLR.L (A5)+ ;VAR_NAME
 	CLR.L (A5)+ ;VAR_DEFVALUE
@@ -26674,25 +26674,25 @@ ODONE:	GETML	A3			; GOT VAR IN D2, NOW HANG IN CODEREM LIST
 	DONEM	A3
 	BRA	ADDGLOBS
 
-  OLDOFFS: DC.W 0
-  DEFVALUE: DC.L 0
-  IMPORTDATA: DC.L 0
-  MODOBJCOUNT: DC.W 0
+	OLDOFFS: DC.W 0
+	DEFVALUE: DC.L 0
+	IMPORTDATA: DC.L 0
+	MODOBJCOUNT: DC.W 0
 
 ADDGLOBMAP:
 	MOVE.L A5,-(A7)
 	MOVE.L globmapptr,A5
-	CMP.L   #globmapbuffend-2,A5
-	BPL.S   .ERR105
+	CMP.L	#globmapbuffend-2,A5
+	BPL.S	.ERR105
 
-  MOVE.W OLDOFFS,(A5)+
+	MOVE.W OLDOFFS,(A5)+
 	MOVE.W D2,(A5)+
 	MOVE.L A5,globmapptr
 	MOVE.L (a7)+,A5
 	RTS
-.ERR105  JMP ERROR105
+.ERR105	 JMP ERROR105
 
-      ADDCODE:
+		ADDCODE:
 	MOVE.L	(A0)+,D7
 	CMP.W	#1,D1
 	BEQ.S	.SKIP
@@ -26716,10 +26716,10 @@ ADDGLOBMAP:
 	ADD.L	D7,A0
 	BRA	DOMODULEJOB
 
-      CODELIST:		DC.L	0
-      CODETAIL:		DC.L	0
+		CODELIST:		DC.L	0
+		CODETAIL:		DC.L	0
 
-      ADDRELOC:
+		ADDRELOC:
 	MOVE.L	(A0)+,D7
 	CMP.W	#1,D1
 	BEQ.S	.SKIP
@@ -26744,7 +26744,7 @@ ADDGLOBMAP:
 	ADD.L	D7,A0
 	BRA	DOMODULEJOB
 
-      ADDSYSCONST:
+		ADDSYSCONST:
 	MOVEQ #0,D7
 	MOVE.L	(A0)+,D0
 	CMP.W	#1,D1
@@ -26754,8 +26754,8 @@ ADDGLOBMAP:
 	CMP.W	OSVERSION,D0		; HIGHEST OSVERSION
 	BLE.S	.1
 	MOVE.W	D0,OSVERSION
-	MAKEWARN 5      ;changed osversion
-  
+	MAKEWARN 5		;changed osversion
+	
 .1:	MOVE.L	(A0)+,D0
 	AND.L	#%110000000000000000000,D0	; ONLY INTERESTING BITS
 	OR.L	D0,CODEPREFS
@@ -26768,14 +26768,14 @@ ADDGLOBMAP:
 	CMP.W	EFPU,D0
 	BLE.S	.3
 	MOVE.W	D0,EFPU
-	MAKEWARN 13      ;changed fpu settings
+	MAKEWARN 13		 ;changed fpu settings
 .3:	MOVE.W	(A0)+,D0		; OR BITSET
 	MOVE.W	ASMCPU,D3
 	OR.W	D3,D0
 	CMP.W	D3,D0
 	BEQ.S	.4
 	MOVE.W	D0,ASMCPU
-  MOVEQ #-1,D7
+	MOVEQ #-1,D7
 .4:	MOVE.W	(A0)+,D0		; VERSION
 	BNE.S	.5
 	ADDQ.W	#1,D0			; 0 is version 1
@@ -26783,29 +26783,29 @@ ADDGLOBMAP:
 	CMP.W	#MAXVERSION,D0
 	BHI	.iERROR51
 	ADDQ.L	#4,A0			; RESERVED
-	CMP.W   #10,D0
-	BLE.S     .noicodeprefs
+	CMP.W	#10,D0
+	BLE.S		.noicodeprefs
 
 	MOVE.L (A0)+,D0
-	BTST #4,D0              ;estring constants
+	BTST #4,D0				;estring constants
 	BEQ.S .noestrconsts
-	BSET    #4,ICODEPREFS+3     ;estring constants
-	BNE.S .noestrconsts     ;was already set
-	MAKEWARN 14      ;changed estring constant settings
+	BSET	#4,ICODEPREFS+3		;estring constants
+	BNE.S .noestrconsts		;was already set
+	MAKEWARN 14		 ;changed estring constant settings
 
 .noestrconsts
-	BTST #6,D0              ;legacyint
+	BTST #6,D0				;legacyint
 	BEQ.S .nolegacyint
-	BSET    #6,ICODEPREFS+3     ;legacyint
-	BNE.S .nolegacyint     ;was already set
-	MAKEWARN 15      ;changed legacyint settings
+	BSET	#6,ICODEPREFS+3		;legacyint
+	BNE.S .nolegacyint		 ;was already set
+	MAKEWARN 15		 ;changed legacyint settings
 
 .nolegacyint
 .noicodeprefs
-  TST.W D7
-  BEQ DOMODULEJOB
+	TST.W D7
+	BEQ DOMODULEJOB
 
-	MAKEWARN 12      ;changed cpu settings 
+	MAKEWARN 12		 ;changed cpu settings 
 	BRA	DOMODULEJOB
 
 .iERROR51: JMP ERROR51
@@ -26825,7 +26825,7 @@ ADDGLOBMAP:
 	MOVE.L	A4,D6			; REMIND THIS IDENT=D6
 	MOVE.L	A0,(A4)+
 	MOVE.B	#LAB,(A4)+
-	MOVE.B	#1,(A4)+		; FLAGS: USED  (NEVER EXPORT!)
+	MOVE.B	#1,(A4)+		; FLAGS: USED	(NEVER EXPORT!)
 	ADD.L	D0,A0
 	MOVE.L	(A0)+,D7		; D7=OFFSET
 	CMP.W	#1,(A0)+
@@ -26840,12 +26840,12 @@ ADDGLOBMAP:
 	MOVE.W	(A0)+,(A4)+		; INIT PROC STRUCT
 	CLR.W	(A4)+			; FLAGS,REGVARS
 
-    MOVE.W  (A0)+,(A4)+     ; nr loc vars
-    CMP.W   #-1,(A0)
-    BEQ     .REGSONLY
-    CMP.W   #-2,(A0)
-    BEQ     .MORE_STUFF
-    MOVE.L  A0,(A4)+        ; DEFARGS
+	MOVE.W	(A0)+,(A4)+		; nr loc vars
+	CMP.W	#-1,(A0)
+	BEQ		.REGSONLY
+	CMP.W	#-2,(A0)
+	BEQ		.MORE_STUFF
+	MOVE.L	A0,(A4)+		; DEFARGS
 .REGSBACK:
 	CLR.L	(A4)+			; of_object
 	MOVE.L	D6,(A4)+		; IDENT
@@ -26857,38 +26857,38 @@ ADDGLOBMAP:
 	MOVE.W	(A0)+,D0
 	ADD.W	D0,A0
 	BRA.S	.CODE
-    
+	
 .REGSONLY:
-    ADDQ.L  #2,A0
-    moveq   #0,d0
-    MOVE.W  (A0),D0
-    ADD.L   D0,D0
-    BSET    #5,-4(a4)   ;set noregs in proc flags
-    move.l  a0,(a4)+
-    ADD.L   D0,A0
-    ADDQ.L  #2,A0
-    bra     .REGSBACK
+	ADDQ.L	#2,A0
+	moveq	#0,d0
+	MOVE.W	(A0),D0
+	ADD.L	D0,D0
+	BSET	#5,-4(a4)	;set noregs in proc flags
+	move.l	a0,(a4)+
+	ADD.L	D0,A0
+	ADDQ.L	#2,A0
+	bra		.REGSBACK
 
 .MORE_STUFF:
-    ADDQ.L  #2,A0
-    MOVEM.L D0-D7/A1-A6,-(A7)
-    MOVEQ   #8,D0
-    JSR NEW
-    MOVE.L  D0,A1
-    cmp.w   #32,(a0)+   ;test bit 6
-    BEQ     .M2
-    MOVE.L  CleanupMod(PC),(A1)+
-    MOVe.L  A1,CleanupMod
-    BSET    #6,-3(A4)     ;cleanup in flags2
-    BRA     .M1
-.M2:MOVE.L  SetupMod(PC),(A1)+
-    MOVe.L  A1,SetupMod
-    BSET    #5,-3(A4)     ;setup in flags2
-.M1:MOVE.L  A4,(A1)
-    SUB.L   #6,(A1)+
-    MOVEM.L (A7)+,D0-D7/A1-A6
-    CLR.L   (A4)+
-    BRA .REGSBACK
+	ADDQ.L	#2,A0
+	MOVEM.L D0-D7/A1-A6,-(A7)
+	MOVEQ	#8,D0
+	JSR NEW
+	MOVE.L	D0,A1
+	cmp.w	#32,(a0)+	;test bit 6
+	BEQ		.M2
+	MOVE.L	CleanupMod(PC),(A1)+
+	MOVe.L	A1,CleanupMod
+	BSET	#6,-3(A4)		;cleanup in flags2
+	BRA		.M1
+.M2:MOVE.L	SetupMod(PC),(A1)+
+	MOVe.L	A1,SetupMod
+	BSET	#5,-3(A4)		;setup in flags2
+.M1:MOVE.L	A4,(A1)
+	SUB.L	#6,(A1)+
+	MOVEM.L (A7)+,D0-D7/A1-A6
+	CLR.L	(A4)+
+	BRA .REGSBACK
 
 .LAB:	CLR.L	(A4)+			; LABEL
 	MOVE.W	#-1,(A4)+
@@ -26918,86 +26918,86 @@ ADDGLOBMAP:
 	CLR.L	(A4)+			; PC_ACC
 	BRA.S	.2
 
-      FIXUPREGVARS:
-  MOVEM.L A0-A6/D0-D7,-(A7)
+		FIXUPREGVARS:
+	MOVEM.L A0-A6/D0-D7,-(A7)
  
-  LEA 16(A0),A0
-  MOVE.L A0,A2
+	LEA 16(A0),A0
+	MOVE.L A0,A2
 .nextjob
-  MOVE.W (A0)+,D0 ;jobcode
-  BEQ .DONE
-  
-  CMP.W #3,D0
-  BNE.S .nglob
-;type 3  
-  ADD.L #2,A0
-  MOVE.W (A0)+,D1
+	MOVE.W (A0)+,D0 ;jobcode
+	BEQ .DONE
+	
+	CMP.W #3,D0
+	BNE.S .nglob
+;type 3	 
+	ADD.L #2,A0
+	MOVE.W (A0)+,D1
 .process
-  MOVE.W (A0),D0
+	MOVE.W (A0),D0
 
-  LEA globmapbuf,A1
+	LEA globmapbuf,A1
 .find1
-  CMP.L globmapptr,A1
-  BNE.S .find
-  ADDQ #2,A0
-  BRA.S .skip1
-  
+	CMP.L globmapptr,A1
+	BNE.S .find
+	ADDQ #2,A0
+	BRA.S .skip1
+	
 .find:
-  CMP.W (A1),D0
-  BEQ.S .found
-  
-  ADDQ #4,A1
-  BRA.S .find1
+	CMP.W (A1),D0
+	BEQ.S .found
+	
+	ADDQ #4,A1
+	BRA.S .find1
 
 .found:
-  MOVE.W 2(A1),(A0)+
+	MOVE.W 2(A1),(A0)+
 .skip1
-  SUBQ.W #1,D1
-  BNE.S .process
-  BRA.S .nextjob
+	SUBQ.W #1,D1
+	BNE.S .process
+	BRA.S .nextjob
 .nglob
-  CMP.W #6,D0
-  BNE.S .nvardet
+	CMP.W #6,D0
+	BNE.S .nvardet
 ;type 6 (var extra info)
-  ADD.L #2,A0
-  MOVE.W (A0)+,D1
+	ADD.L #2,A0
+	MOVE.W (A0)+,D1
 .skip
-  ADD.L #4,A0
-  MOVEQ #0,D2
-  MOVE.W (A0)+,D2
-  ADD.L D2,A0
-  ADD.L D2,A0
-  MOVE.W (A0)+,D2
-  ADD.L D2,A0
-  SUBQ.W #1,D1
-  BNE.S .skip
-  BRA.S .nextjob
+	ADD.L #4,A0
+	MOVEQ #0,D2
+	MOVE.W (A0)+,D2
+	ADD.L D2,A0
+	ADD.L D2,A0
+	MOVE.W (A0)+,D2
+	ADD.L D2,A0
+	SUBQ.W #1,D1
+	BNE.S .skip
+	BRA.S .nextjob
 .nvardet
-  CMP.W #8,D0
-  BNE.S .nobjdef
+	CMP.W #8,D0
+	BNE.S .nobjdef
 
 ;type 8 (object def)
-  ADD.L #6,A0
-  MOVEQ #0,D1
-  MOVE.W (A0)+,D1
-  ADD.L D1,A0
+	ADD.L #6,A0
+	MOVEQ #0,D1
+	MOVE.W (A0)+,D1
+	ADD.L D1,A0
 .memb
-  TST.W (A0)+
-  BEQ.S .nextjob
-  ADD.L #4,A0
-  MOVEQ #0,D2
-  MOVE.W (A0)+,D2
-  ADD.L D2,A0
-  ADD.L D2,A0
-  MOVE.W (A0)+,D2
-  ADD.L D2,A0
-  BRA.S .memb
+	TST.W (A0)+
+	BEQ.S .nextjob
+	ADD.L #4,A0
+	MOVEQ #0,D2
+	MOVE.W (A0)+,D2
+	ADD.L D2,A0
+	ADD.L D2,A0
+	MOVE.W (A0)+,D2
+	ADD.L D2,A0
+	BRA.S .memb
 .nobjdef
 .DONE:
-  MOVEM.L (A7)+,A0-A6/D0-D7
-  RTS
+	MOVEM.L (A7)+,A0-A6/D0-D7
+	RTS
 
-      FIXPROCCODE:			; RESOLVE ADDRESSES OF CODE IN MODULES
+		FIXPROCCODE:			; RESOLVE ADDRESSES OF CODE IN MODULES
 	MOVEM.L	A0-A3/D0-D4/A5,-(A7)	; EXPECTS CODE IN A4
 	LEA	CODELIST(PC),A0		; A0=CODEREM
 	MOVE.L	LABM+8,A2		; A2=LABELS
@@ -27152,7 +27152,7 @@ ADDGLOBMAP:
 .E:	MOVEM.L	(A7)+,A0-A3/D0-D4/A5
 	RTS
 
-      ADDCONST:
+		ADDCONST:
 	CMP.W	#6,LOADEDVERSION
 	BMI.S	.L
 	MOVE.L	(A0)+,D0
@@ -27160,8 +27160,8 @@ ADDGLOBMAP:
 	BNE.S	.L
 	ADD.L	D0,A0
 	BRA	DOMODULEJOB
-.L: cmp.b   #-1,(a0)
-	beq     .TYPED
+.L: cmp.b	#-1,(a0)
+	beq		.TYPED
 	MOVE.W	(A0)+,D0		; D0=LEN ASC
 	BEQ.S	.1
 	GETML	A5
@@ -27184,42 +27184,42 @@ ADDGLOBMAP:
 .1:	BRA	DOMODULEJOB
  
 .HH: HASH A1,D2,D3
-    RTS
-    
+	RTS
+	
 .TYPED:
-    addq.l  #2,a0
-    MOVE.W  (A0)+,D0        ; D0=LEN ASC
-    BEQ.S   .1
-    GETML    A5
-    MOVE.L  A0,A1
-    bsr     .HH
-    LSL.L   #2,D2
-    ADD.L   #CONSTHASH,D2
-    MOVE.L  D2,A1
-    MOVE.L  (A1),(A5)
-    MOVE.L  A5,(A1)
-    ADDQ.L  #4,A5
-    MOVE.L  A0,(A5)+
-    ext.l   d0
-    add.l   d0,a0
-    move.w  (a0),d0
-    addq.l  #3,d0
-    MOVE.L  a0,(A5)+
-    move.b  #2,(a5)+
-    CLR.B   (A5)+
-    ext.l   d0
-    ADD.L   D0,A0
-    move.l  a0,d0
-    btst    #0,d0
-    beq     .CC
-    addq.l  #1,a0
-.CC:DONEM   A5
-    BRA     .L
+	addq.l	#2,a0
+	MOVE.W	(A0)+,D0		; D0=LEN ASC
+	BEQ.S	.1
+	GETML	 A5
+	MOVE.L	A0,A1
+	bsr		.HH
+	LSL.L	#2,D2
+	ADD.L	#CONSTHASH,D2
+	MOVE.L	D2,A1
+	MOVE.L	(A1),(A5)
+	MOVE.L	A5,(A1)
+	ADDQ.L	#4,A5
+	MOVE.L	A0,(A5)+
+	ext.l	d0
+	add.l	d0,a0
+	move.w	(a0),d0
+	addq.l	#3,d0
+	MOVE.L	a0,(A5)+
+	move.b	#2,(a5)+
+	CLR.B	(A5)+
+	ext.l	d0
+	ADD.L	D0,A0
+	move.l	a0,d0
+	btst	#0,d0
+	beq		.CC
+	addq.l	#1,a0
+.CC:DONEM	A5
+	BRA		.L
 
 i2ERROR39:
-    JMP ERROR39
+	JMP ERROR39
 
-      ADDOBJECT:
+		ADDOBJECT:
 	CMP.W	#6,LOADEDVERSION
 	BMI.S	.1
 	MOVE.L	(A0)+,D0
@@ -27263,15 +27263,15 @@ i2ERROR39:
 	EXT.L	D0
 	ADD.L	D0,A0
 	DONEM	A5
-      ADDOBJECTLOOP:
+		ADDOBJECTLOOP:
 	MOVE.W	(A0)+,D0		; D0=LEN ASC
 	BEQ.W	.1
 	GETML	A5
 	MOVE.W	(A0)+,D1
 	CLR.L	(A5)+			; ONEXT
 	MOVE.L	A5,(A6)
-    MOVE.L  A5,TEMPSPACEDATABUF
-    CLR.W   TEMPSPACEDATABUF+4
+	MOVE.L	A5,TEMPSPACEDATABUF
+	CLR.W	TEMPSPACEDATABUF+4
 	LEA	ONEXT(A5),A6
 	MOVE.W	(A0)+,(A5)+		; OOFF
 	CLR.W	(A5)+			; OFLAGS
@@ -27285,7 +27285,7 @@ i2ERROR39:
 	BRA.S	.3
 .PRIV:	CLR.L	(A5)+			; OASCII
 .3:	MOVE.W #-1,(A5)+ ;PTRREPCOUNT
-    CLR.L (A5)+ ;DIMDATA
+	CLR.L (A5)+ ;DIMDATA
 	CMP.W	#12,LOADEDVERSION
 	BMI.S	.not12
 
@@ -27293,32 +27293,32 @@ i2ERROR39:
 	BMI.S	.not13
 
 	MOVE.W	(A0)+,D0
-	ROL.W   #3,D0         ; shift bits into positions 3 and 4 (forceunsigned and forcesigned flags)
-	OR.B    D0,-16(A5)    ; flags
+	ROL.W	#3,D0			; shift bits into positions 3 and 4 (forceunsigned and forcesigned flags)
+	OR.B	D0,-16(A5)		; flags
 .not13
 	MOVE.W	(A0)+,-6(A5)	; PTRREPCOUNT
-       
-    MOVE.L  A5,-(A7)
-    lea TEMPSPACEDATABUF+4,A5
- 	
-    MOVE.W  (A0)+,D0        ; DIMDATA COUNT
-    MOVE.W D0,(A5)+
-    TST.W   D0
-    BEQ.S   .nodims
+		 
+	MOVE.L	A5,-(A7)
+	lea TEMPSPACEDATABUF+4,A5
+	
+	MOVE.W	(A0)+,D0		; DIMDATA COUNT
+	MOVE.W D0,(A5)+
+	TST.W	D0
+	BEQ.S	.nodims
 
-.dimsloop:    
-    TST.W D0
-    BEQ .nodims
-    
-    MOVE.W (A0)+,(A5)+
-    SUBQ.W #1,D0
-    BRA .dimsloop
-    
+.dimsloop:		
+	TST.W D0
+	BEQ .nodims
+	
+	MOVE.W (A0)+,(A5)+
+	SUBQ.W #1,D0
+	BRA .dimsloop
+	
 .nodims:
-    MOVE.L  (A7)+,A5
+	MOVE.L	(A7)+,A5
 
 .not12
-    CMP.W	#6,LOADEDVERSION
+	CMP.W	#6,LOADEDVERSION
 	BMI.S	.4
 	MOVEQ	#0,D0
 	MOVE.W	(A0)+,D0
@@ -27333,30 +27333,30 @@ i2ERROR39:
 .5:	MOVE.L	D0,(A5)+
 	BSET	#1,OFLAGS+4(A6)
 .4: CLR.L	(A5)+ 
-    MOVE.L	#$deadf00d,(A5)+ 
-    bsr .updatetempdata2
+	MOVE.L	#$deadf00d,(A5)+ 
+	bsr .updatetempdata2
 	DONEM	A5
 	BRA.W	ADDOBJECTLOOP
-    
+	
 .updatetempdata2:
 	MOVEM.L D0/A0-A1,-(A7)
 	LEA TEMPSPACEDATABUF,A0
 .copydimall:
 	MOVE.L (A0)+,A1 ;MEMBER
 	MOVE.W (A0)+,D0 ;number of dimensions
-    TST.W D0
-    BEQ.S .nodata
+	TST.W D0
+	BEQ.S .nodata
 
 	MOVE.L A5,DIMDATA(A1)
 	MOVE.W D0,(A5)+
 	SUB.W #1,D0
 .copydim:
-	MOVE.W (A0)+,(A5)+  ;dimension offsets
+	MOVE.W (A0)+,(A5)+	;dimension offsets
 	DBF d0,.copydim
 .nodata:
 	MOVEM.L (A7)+,D0/A0-A1
 	RTS
-    
+	
 .1:	MOVE.W	(A0)+,D0
 	BTST	#0,D0
 	BEQ.S	.2
@@ -27454,9 +27454,9 @@ i2ERROR39:
 .AX:
 .NC:	BRA	DOMODULEJOB
 
-      OBJTYPELIST:	DC.L	0
+		OBJTYPELIST:	DC.L	0
 
-      FIXOBJTYPES:
+		FIXOBJTYPES:
 	LEA	OBJTYPELIST(PC),A6
 .L:	MOVE.L	(A6),D0
 	BEQ.S	.X
@@ -27474,7 +27474,7 @@ i2ERROR39:
 ;	MOVE.L	-4(A6),ERROROBJ
 ;	BRA	ERROR62
 
-      BINDOTHERLIB:
+		BINDOTHERLIB:
 	CMP.W	#2,D1			; JUST DONE IF LIBINFOS IN SECONDARY
 	BNE.S	.1
 	RTS
@@ -27512,12 +27512,12 @@ i2ERROR39:
 	SUBQ.W	#4,NRGLOB
 	MOVE.W	NRGLOB,(A5)+		; SET OFFS
 	MOVE.W	LINENUM,(A5)+		; SET line num
-	CLR.L (A5)+   ;varheavy
-	CLR.L (A5)+   ;var_name
-	CLR.L (A5)+   ;def_value
-	CLR.L (A5)+   ;import_data
-	CLR.W (A5)+   ;VAR_PTRREPCOUNT
-	CLR.L (A5)+   ;VAR_DIMDATA
+	CLR.L (A5)+		;varheavy
+	CLR.L (A5)+		;var_name
+	CLR.L (A5)+		;def_value
+	CLR.L (A5)+		;import_data
+	CLR.W (A5)+		;VAR_PTRREPCOUNT
+	CLR.L (A5)+		;VAR_DIMDATA
 	IFD IDENT_COOKIE
 	MOVE.W #$C0DE,(A5)+ ;VAR_IDCOOKIE
 	ENDIF
@@ -27525,10 +27525,10 @@ i2ERROR39:
 	;also fakeident
 
 	DONEM	A5
-    BLURP:
-  	IFD IDENT_COOKIE
+	BLURP:
+	IFD IDENT_COOKIE
 	LEA	-38(A5),A5
-  	ELSE
+	ELSE
 	LEA	-36(A5),A5
 	ENDIF
 	TSTMOD
@@ -27542,7 +27542,7 @@ i2ERROR39:
 .3:	GINFO	A0,A1,A5
 	MOVE.W	NRGLOB,D7		; BASE OF LIB
 
-      BLABLABLA:
+		BLABLABLA:
 .2:	TST.B	(A0)+
 	BNE.S	.2
 	MOVE.L	A0,A5
@@ -27551,9 +27551,9 @@ i2ERROR39:
 	MOVE.L	(A7)+,A0
 	RTS
 
-      OFFSLIST:	DC.L	0
+		OFFSLIST:	DC.L	0
 
-      DOOFF:				; GETS OFF IN D0, PRESERVES D0
+		DOOFF:				; GETS OFF IN D0, PRESERVES D0
 	TSTMOD
 	BEQ.S	.1
 	CMP.W	#GLOBOFF+8,D0
@@ -27571,18 +27571,18 @@ i2ERROR39:
 .1:	RTS
 .3:	INTERN	101
 
-      SETUPLIBS:
+		SETUPLIBS:
 	BSR	ADDLIBS
 	RTS
 
-      SETUPUTIL:
-    LEA UTIL,A5
-    MOVE.W  #-132,D7
-    BSR     ADDLIBS2
-    RTS
+		SETUPUTIL:
+	LEA UTIL,A5
+	MOVE.W	#-132,D7
+	BSR		ADDLIBS2
+	RTS
 
 
-      ADDLIBS:
+		ADDLIBS:
 	LEA	EXEC(PC),A5
 	MOVE.W	#-40,D7
 	BSR.S	ADDLIBS2
@@ -27600,7 +27600,7 @@ i2ERROR39:
 ;	BSR.S	ADDLIBS2
 	RTS
 
-      ADDLIBS2:				; PAR: A5=LIB DATA, D7=OFFSET OF CUR. LIB.
+		ADDLIBS2:				; PAR: A5=LIB DATA, D7=OFFSET OF CUR. LIB.
 	MOVE.W	#-30,D6			; D6=OFFSET OF CUR. CALL
 	MOVE.L	CURLIBASC,A4		; A4=LIBSTRUCTS
 	JSR	CHECK3
@@ -27634,14 +27634,14 @@ i2ERROR39:
 ; ************************************************************* ;
 
 
-      STACKPOKE:		DC.L	0,0
-      AFTERDELEGATESLEA:	DC.L	0
-      BEFORESECONDLEA:		DC.L	0
-      TOTALDELSIZE:		DC.L	0
-      A4SAVEPTR:		DC.L	0
-      
+		STACKPOKE:		DC.L	0,0
+		AFTERDELEGATESLEA:	DC.L	0
+		BEFORESECONDLEA:		DC.L	0
+		TOTALDELSIZE:		DC.L	0
+		A4SAVEPTR:		DC.L	0
+		
 
-      BUILDDELEGATECONSTRUCTORS:
+		BUILDDELEGATECONSTRUCTORS:
 	MOVE.L	CURACODE,A4		; A4=CODE
 	MOVEQ	#6,D0
 	JSR	ADDLABEL
@@ -27734,10 +27734,10 @@ i2ERROR39:
 .AN:	BRA.S	.AL
 .AX:	RTS
 .iERROR50:
-    JMP ERROR50
+	JMP ERROR50
 
 
-      MAKEEXITCODE:
+		MAKEEXITCODE:
 	MOVE.W	#11,CURSPOT
 	BTST	#3,CODEPREFS+3
 	BNE	.EX
@@ -27754,7 +27754,7 @@ i2ERROR39:
 .1:	NEG.L	D2
 	MOVE.L	AFTERDELEGATESLEA(PC),A0
 	MOVE.L	D2,-4(A0)
-  
+	
 	MOVE.L	MINSTACK,D0		; GLOBAL + ALL_LOCAL + DELEGATES
 	ADD.L	GLOBSTACK,D0
 	ADD.L	D1,D0
@@ -27783,21 +27783,21 @@ i2ERROR39:
 	MOVE.L	D0,(A1)
 .EX:	RTS
 
-      MAKEINITCODE:
+		MAKEINITCODE:
 .M1:	MOVE.W	#3,CURSPOT
 	MOVE.L	CURACODE,A4
 	
-    GETML    A0                  ; fill the 0-hunk structure!
-    clr.l   (a0)+               ; next
-    MOVE.L  A0,HunkList         ;
-    MOVE.L  A4,(A0)+            ; start
-    MOVE.L  #$3e9,(A0)+         ; type
-    clr.l   (a0)+               ; end
-    clr.l   (a0)+               ; prev
-    clr.l   (a0)+               ; reloc
-    clr.l   (a0)+               ; symbols
-    clr.l   (a0)+               ; symbols end
-    DONEM   A0                  ; We will use it for writing the stuff :)
+	GETML	 A0					 ; fill the 0-hunk structure!
+	clr.l	(a0)+				; next
+	MOVE.L	A0,HunkList			;
+	MOVE.L	A4,(A0)+			; start
+	MOVE.L	#$3e9,(A0)+			; type
+	clr.l	(a0)+				; end
+	clr.l	(a0)+				; prev
+	clr.l	(a0)+				; reloc
+	clr.l	(a0)+				; symbols
+	clr.l	(a0)+				; symbols end
+	DONEM	A0					; We will use it for writing the stuff :)
 	
 	BTST	#3,CODEPREFS+3
 	BNE	.EX
@@ -27805,8 +27805,8 @@ i2ERROR39:
 	BNE	.EX
 	TST.L	LIBINFO
 	BNE	LMAKEINITCODE
-    BTST    #4,CODEPREFS
-    BNE NSMAKEINITCODE
+	BTST	#4,CODEPREFS
+	BNE NSMAKEINITCODE
 
 	BTST	#1,CODEPREFS
 	BEQ.W	.NORM
@@ -27884,7 +27884,7 @@ i2ERROR39:
 .NOSWAPSTK1:
 	MOVE.L	#LINKC2,D0
 	BSR	COPYC
- 	MOVE.L	A4,AFTERDELEGATESLEA	; PATCH IN SIZE LATER
+	MOVE.L	A4,AFTERDELEGATESLEA	; PATCH IN SIZE LATER
 	MOVE.W	LINKC2(PC),(A4)+
 	MOVE.W	NRGLOB,D7
 	MOVE.W	D7,(A4)+
@@ -27938,7 +27938,7 @@ i2ERROR39:
 	MOVE.L	A4,CURACODE
 .EX:	RTS
 
-      MAINRTS:	RTS
+		MAINRTS:	RTS
 E70: JMP ERROR70
 E17: JMP ERROR17
 E37: JMP ERROR37
@@ -27961,9 +27961,9 @@ NT_MESSAGE = 5
 
 
 
-      RUNBG37:
-        MOVEA.L	A0,A5
-        MOVE.L	D0,D5
+		RUNBG37:
+		MOVEA.L	A0,A5
+		MOVE.L	D0,D5
 	MOVEQ	#20,D7
 	MOVE.L	4.W,A6
 	SUBA.L	A1,A1
@@ -27973,13 +27973,13 @@ NT_MESSAGE = 5
 	MOVE.L	172(A3),D2
 	BNE.S	OPENDOS37
 	LEA	92(A3),A0
-	JSR	-384(A6)  		; waitport
+	JSR	-384(A6)		; waitport
 	LEA	92(A3),A0
-	JSR	-372(A6)  		; getmsg
+	JSR	-372(A6)		; getmsg
 	MOVE.L	D0,D4
-     OPENDOS37:
+	 OPENDOS37:
 	LEA	DOSNAME37(PC),A1
-     OVERSION37:
+	 OVERSION37:
 	MOVEQ	#37,D0
 	JSR	-552(A6)
 	MOVE.L	D0,D3
@@ -27993,21 +27993,21 @@ NT_MESSAGE = 5
 	BSR.S	FIRSTTIME37
 	BRA.S	CLSDOS37
 .1:	BSR.W	RUNBG			; real : BSR ZEROSPOT
-     CLSDOS37:
+	 CLSDOS37:
 	MOVEA.L	D3,A1
 	JSR	-414(A6)
-     RBGEXIT37:
-      	TST.L	D4
-      	BEQ.S	NOWBMSG37
- 	JSR	-132(A6)		; no unloadseg until we are done
+	 RBGEXIT37:
+		TST.L	D4
+		BEQ.S	NOWBMSG37
+	JSR	-132(A6)		; no unloadseg until we are done
 	MOVE.L	D4,A1
 	JSR	-378(A6)		; reply WB message
-     NOWBMSG37:
+	 NOWBMSG37:
 	MOVE.L	D7,D0
 	RTS
-     FIRSTTIME37:
+	 FIRSTTIME37:
 	JSR	-132(A6)
-  	ASL.L	#2,D2
+	ASL.L	#2,D2
 	MOVEA.L	D2,A2
 	EXG	D3,A6
 	MOVEA.L	A7,A4
@@ -28024,7 +28024,7 @@ NT_MESSAGE = 5
 	LSL.L	#2,D1
 	ADDQ.L	#1,D1
 	JSR	-870(A6)		; FILEPART
-	MOVE.L  D0,-(A7)
+	MOVE.L	D0,-(A7)
 	PEA	$800003F4		; NP_NAME
 	MOVE.L	A7,D1
 	JSR	-498(A6)		; CREATENEWPROC
@@ -28037,18 +28037,18 @@ NT_MESSAGE = 5
 	MOVEQ	#-1,D0
 	MOVE.L	D0,TC_USERDATA(A0)
 	MOVEQ	#0,D7
-      BGQUIT37:
-      	JSR	-138(A6)
-      	RTS
-     DOSNAME37:
-     	DC.B	'dos.library',0
+		BGQUIT37:
+		JSR	-138(A6)
+		RTS
+	 DOSNAME37:
+		DC.B	'dos.library',0
 
 
 
 
-      RUNBG:
-        MOVE.L	A0,A2
-        MOVE.L	D0,D6
+		RUNBG:
+		MOVE.L	A0,A2
+		MOVE.L	D0,D6
 	MOVEQ	#20,D7
 	MOVE.L	4.W,A6
 	SUBA.L	A1,A1
@@ -28059,9 +28059,9 @@ NT_MESSAGE = 5
 	MOVE.L	172(A3),D2
 	BNE.S	OPENDOS1
 	LEA	92(A3),A0
-	JSR	-384(A6)  		; waitport
+	JSR	-384(A6)		; waitport
 	LEA	92(A3),A0
-	JSR	-372(A6)  		; getmsg
+	JSR	-372(A6)		; getmsg
 	MOVE.L	D0,D4
 	MOVEA.L	D0,A1
 	TST.L	MN_REPLYPORT(A1)	; our fake msg have no reply port
@@ -28072,9 +28072,9 @@ NT_MESSAGE = 5
 	MOVEQ	#MNFAKE_SIZEOF,D0	; FREE FAKEMSG
 	JSR	-210(A6)
 	MOVEQ	#0,D4
-     OPENDOS1:
+	 OPENDOS1:
 	LEA	DOSNAME(PC),A1
-     OVERSION1:
+	 OVERSION1:
 	MOVEQ	#33,D0
 	JSR	-552(A6)
 	MOVE.L	D0,D3
@@ -28100,22 +28100,22 @@ NT_MESSAGE = 5
 	MOVE.L	D0,D1
 	JSR	-90(A6)			; UNLOCK
 	EXG	D3,A6
-     CLSDOS:
+	 CLSDOS:
 	MOVEA.L	D3,A1
 	JSR	-414(A6)
-     RBGEXIT:
-      	TST.L	D4
-      	BEQ.S	NOWBMSG1
- 	JSR	-132(A6)		; no unloadseg until we are done
+	 RBGEXIT:
+		TST.L	D4
+		BEQ.S	NOWBMSG1
+	JSR	-132(A6)		; no unloadseg until we are done
 	MOVE.L	D4,A1
 	JSR	-378(A6)		; reply WB message
-     NOWBMSG1:
+	 NOWBMSG1:
 	MOVE.L	D7,D0
 	RTS
-     ZEROARG:	DC.W	0
-     FIRSTTIME:
+	 ZEROARG:	DC.W	0
+	 FIRSTTIME:
 	JSR	-132(A6)		; FORBID
-    	ASL.L	#2,D2
+		ASL.L	#2,D2
 	MOVEA.L	D2,A5
 	MOVEQ	#MNFAKE_SIZEOF,D0	; SIZEOF FAKEMSG
 	MOVEQ	#1,D1
@@ -28166,11 +28166,11 @@ NT_MESSAGE = 5
 	MOVE.L	A1,D1
 	MOVEA.L	D0,A1
 	MOVE.L	A2,A0
-      .COPY:
-        MOVE.B	(A0)+,(A1)+
-        BNE.S	.COPY
-        MOVEA.L	D1,A1
-        BRA.S	.3
+		.COPY:
+		MOVE.B	(A0)+,(A1)+
+		BNE.S	.COPY
+		MOVEA.L	D1,A1
+		BRA.S	.3
 .2:	LEA	ZEROARG(PC),A0
 	MOVE.L	A0,MN_ARGPTR(A1)
 	MOVEQ	#1,D6
@@ -28179,13 +28179,13 @@ NT_MESSAGE = 5
 	MOVE.L	D0,D6
 	JSR	-366(A6)		; PUTMSG
 	MOVEQ	#5,D7
-      MAKEMEMLIST:
+		MAKEMEMLIST:
 	MOVE.L	D3,D1			; CLI.MODULE
 	ASL.L	#2,D1
 	MOVE.L	D1,A5			; SEGLIST
 	MOVEQ	#16,D0			; MEMLIST
 	MOVEQ	#0,D2			; NUMARGS
-      TESTSEGLIST:
+		TESTSEGLIST:
 	MOVEA.L	D1,A1
 	ADDQ.L	#1,D2
 	ADDQ.L	#8,D0
@@ -28195,7 +28195,7 @@ NT_MESSAGE = 5
 	TST.L	D6
 	BEQ.S	ALLOCML
 	ADDQ.L	#8,D0
-      ALLOCML:
+		ALLOCML:
 	MOVEQ	#1,D1
 	SWAP	D1
 	JSR	-198(A6)		; ALLOCMEM
@@ -28214,11 +28214,11 @@ NT_MESSAGE = 5
 	MOVE.L	MN_ARGSIZE(A1),D1
 	ADDQ.L	#8,D1
 	MOVE.L	D1,(A2)+
-      NONEWARG:
+		NONEWARG:
 	MOVE.W	D0,14(A0)		; ML.NUMENTRIES
 	TST.W	D2
 	BEQ.S	NOENTRY
-      LOOPENTRY:
+		LOOPENTRY:
 	SUBQ.L	#4,A5
 	MOVE.L	A5,(A2)+		; segptr
 	MOVE.L	(A5)+,(A2)+		; segsize
@@ -28227,46 +28227,46 @@ NT_MESSAGE = 5
 	MOVEA.L	D0,A5
 	SUBQ.L	#1,D2
 	BNE.S	LOOPENTRY
-      NOENTRY:
+		NOENTRY:
 	MOVEA.L	D4,A0
 	LEA	74-92(A0),A0		; TC.MEMENTRY
 	MOVEA.L	A3,A1
 	JSR	-246(A6)		; ADDTAIL
-      EXITBG:
+		EXITBG:
 	MOVEQ	#0,D7
 	BRA.S	BGQUIT
-      FREEFAKE:
-      	MOVE.L	D5,A1
-      	MOVEQ	#MNFAKE_SIZEOF,D0
-      	JSR	-210(A6)		; FREEMEM
-      BGQUIT:
-      	JSR	-138(A6)		; PERMIT
-      	MOVEQ	#0,D4
-      	MOVE.L	A4,D3
-      	RTS
-     DOSNAME:
-     	DC.B	'dos.library',0
+		FREEFAKE:
+		MOVE.L	D5,A1
+		MOVEQ	#MNFAKE_SIZEOF,D0
+		JSR	-210(A6)		; FREEMEM
+		BGQUIT:
+		JSR	-138(A6)		; PERMIT
+		MOVEQ	#0,D4
+		MOVE.L	A4,D3
+		RTS
+	 DOSNAME:
+		DC.B	'dos.library',0
 
 
-      FIRSTSTART:			; CHANGES ALSO TO LFIRSTART!!!
+		FIRSTSTART:			; CHANGES ALSO TO LFIRSTART!!!
 	MOVE.L	A0,A5			; SAVE A0/D0 TO A5/D5
 	MOVE.L	D0,D5
 	MOVEQ	#20,D7
 	MOVE.L	4.W,A6
 	SUBA.L	A1,A1			; check for wbstartup
-	JSR	-294(A6)  		; findtasK
+	JSR	-294(A6)		; findtasK
 	MOVE.L	D0,A3
 	MOVEQ	#0,D4
 	TST.L	172(A3)
 	BNE.S	OPENDOS2
 	LEA	92(A3),A0
-	JSR	-384(A6)  		; waitport
+	JSR	-384(A6)		; waitport
 	LEA	92(A3),A0
-	JSR	-372(A6)  		; getmsg
+	JSR	-372(A6)		; getmsg
 	MOVE.L	D0,D4
-      OPENDOS2:
+		OPENDOS2:
 	LEA	INITDOS(PC),A1
-      OVERSION2:
+		OVERSION2:
 	MOVEQ	#33,D0
 	JSR	-552(A6)
 	MOVE.L	D0,D3
@@ -28274,38 +28274,38 @@ NT_MESSAGE = 5
 	BSR.S	ISZEROSPOT
 	MOVEA.L	D3,A1
 	JSR	-414(A6)
-      DOSFAIL:
-      	TST.L	D4
-      	BEQ.W	NOWBMSG2
- 	JSR	-132(A6)		; no unloadseg until we are done
+		DOSFAIL:
+		TST.L	D4
+		BEQ.W	NOWBMSG2
+	JSR	-132(A6)		; no unloadseg until we are done
 	MOVE.L	D4,A1
 	JSR	-378(A6)		; reply WB message
-      NOWBMSG2:
+		NOWBMSG2:
 	MOVE.L	D7,D0
-      QUITFIRST:
+		QUITFIRST:
 	RTS	
-      INITDOS:
-      	DC.B	'dos.library',0
-      ISZEROSPOT:
-      	TST.L	D4
-      	BEQ.S	NOWBST
-      SETZEROSPOT:
+		INITDOS:
+		DC.B	'dos.library',0
+		ISZEROSPOT:
+		TST.L	D4
+		BEQ.S	NOWBST
+		SETZEROSPOT:
 	LEA	ZEROSPOT(PC),A5
-      	BRA.S	MEMSIZE
-      NOWBST:
+		BRA.S	MEMSIZE
+		NOWBST:
 	MOVE.B	D4,-1(A5,D5.W)
-  ;    CPUTEST:	
+	;		 CPUTEST:	
 	;MOVE.W	#0,D1
 	;AND.W	296(A6),D1		; ATTNFLAGS
 	;BEQ.S	QUITFIRST
-      MEMSIZE:
+		MEMSIZE:
 	MOVE.L	#20000,D0		; THIS .L IS CHANGED!
 	MOVEQ	#1,D1
 	SWAP	D1
 	MOVE.L	D0,D2
 	JSR	-198(A6)
 	MOVE.L	D0,D6			; D6=BOTTOMSTACK
-      NOCPUQUIT:
+		NOCPUQUIT:
 	BEQ.S	QUITFIRST
 	ADD.L	D2,D0
 	MOVE.L	D0,D5
@@ -28317,14 +28317,14 @@ NT_MESSAGE = 5
 	PEA	1024(A0)		; stk lower ; 1000=Fmt buffer
 	MOVEA.L	A7,A0
 	MOVE.L	A7,D2
-      SWAPSTK1:
+		SWAPSTK1:
 	BSR.W	SWAPSTACK
 	MOVE.L	D2,-(A7)
 	ADD.L	#1,A7			; SIZE IS PATCHED IN
-      LINKC2:
+		LINKC2:
 	LINK	A4,#-4
-      GLOBVINIT:
-     	LEA	EXITC(PC),A0
+		GLOBVINIT:
+		LEA	EXITC(PC),A0
 	CLR.L -12(A4)
 	CLR.L -20(A4)
 	MOVE.L	A0,-24(A4)		; INIT VARS
@@ -28360,18 +28360,18 @@ NT_MESSAGE = 5
 	MOVE.L	A7,-4(A4)
 	LEA	A4PTR(PC),A0
 	MOVE.L	A4,(A0)
-      GLOBJUMP:
+		GLOBJUMP:
 	JSR	GLOBJUMP
-      EXITC:
+		EXITC:
 	JSR	EXITC
-      EXITC2:
+		EXITC2:
 	MOVE.L	-4(A4),A7
 .1:	MOVE.L	4.W,A6
 	MOVE.L	-20(A4),A2		; CLEANUP MEMORY
 	MOVE.L	A2,D0
 	BEQ.S	.3
 .4:	MOVE.L	A2,A1
-	MOVE.L	4(A2),D0    ;memsize
+	MOVE.L	4(A2),D0	;memsize
 	MOVE.L	(A2),A2
 	JSR	-210(A6)
 	MOVE.L	A2,D0
@@ -28387,24 +28387,24 @@ CLINT:	MOVE.L	-36(A4),D4
 	MOVE.L	-64(A4),A5		; allocated mem
 	MOVEA.L	-120(A4),A3
 	UNLK	A4
-      ENDC2:
+		ENDC2:
 	ADD.L	#1,A7
-      	MOVE.L	(A7)+,A0
-      SWAPSTK2:
-      	BSR.W	SWAPSTACK
+		MOVE.L	(A7)+,A0
+		SWAPSTK2:
+		BSR.W	SWAPSTACK
 	LEA	12(A7),A7
-      MEMSIZE2:
+		MEMSIZE2:
 	MOVE.L	#$20000,D0
 	MOVEA.L	A5,A1
 	JMP	-210(A6)
 STACKCHK:
-	ADD.L -64(A4),D0   ;stack bottom
+	ADD.L -64(A4),D0	 ;stack bottom
 	CMP.L D0,A7
 	BLE.S .1
-  RTS
+	RTS
 .1
 	MOVE.L #"STCK",-84(A4)
-	MOVE.L  -148(A4),-96(A4)
+	MOVE.L	-148(A4),-96(A4)
 ERRTHROW:
 	MOVE.L	-76(A4),D0
 	BEQ.S	ERRTHROW3
@@ -28417,18 +28417,18 @@ ERRTHROW:
 	JMP	(A0)
 ERRTHROW3:	MOVE.L	-24(A4),A0
 	JMP	(A0)
-      A4PTR:		DC.L	0
-      INITINTUI:	DC.B	"intuition.library",0
-      INITGFX:		DC.B	"graphics.library",0
-      ZEROSPOT:		DC.B	0
-      ENDC:
+		A4PTR:		DC.L	0
+		INITINTUI:	DC.B	"intuition.library",0
+		INITGFX:		DC.B	"graphics.library",0
+		ZEROSPOT:		DC.B	0
+		ENDC:
 
-      SWAPSTACK:
-      	CMP.W	#37,20(A6)
-      	BMI.S	.SWAP33
-      	JMP	-732(A6)	; SwapStack must be a JMP
-      .SWAP33:
-    IFD	FAKESTACK33
+		SWAPSTACK:
+		CMP.W	#37,20(A6)
+		BMI.S	.SWAP33
+		JMP	-732(A6)	; SwapStack must be a JMP
+		.SWAP33:
+	IFD	FAKESTACK33
 	LEA	58(A3),A1	; A3 = task
 	MOVE.L	(A0),D0		; 58=lower
 	MOVE.L	(A1),(A0)+
@@ -28438,15 +28438,15 @@ ERRTHROW3:	MOVE.L	-24(A4),A0
 	MOVE.L	D0,(A1)
 	SUBQ.L	#8,A1
 	MOVE.L	(A0),(A1)	; 54=ptr
-    ELSE
-    	ADDQ.L	#8,A0
-    ENDC
+	ELSE
+		ADDQ.L	#8,A0
+	ENDC
 	MOVE.L	(A0),A1
 	MOVE.L	(A7)+,-(A1)
 	MOVE.L	A7,(A0)
 	MOVEA.L	A1,A7
 	RTS
-      ENDSS:
+		ENDSS:
 
 
 ; sample.library
@@ -28471,30 +28471,30 @@ Remove			= -$FC
 FreeMem			= -$D2
 
 
-LLH_TASK   = 0
-LLH_COUNT  = 4
-LLH_NEXT   = 6
-LLH_A4PTR  = 10
+LLH_TASK	 = 0
+LLH_COUNT	= 4
+LLH_NEXT	 = 6
+LLH_A4PTR	= 10
 LLH_SIZEOF = 14
 
 
-Start:	MOVEQ   #-1,d0
+Start:	MOVEQ	#-1,d0
 	rts
 
 RomTag:	DC.W	$4AFC		; UWORD RT_MATCHWORD
-	DC.L	RomTag-Start	; APTR  RT_MATCHTAG [R]
-	DC.L	EndCode-Start	; APTR  RT_ENDSKIP [R]
+	DC.L	RomTag-Start	; APTR	RT_MATCHTAG [R]
+	DC.L	EndCode-Start	; APTR	RT_ENDSKIP [R]
 	DC.B	$80		; UBYTE RT_FLAGS
 	DC.B	VERSION		; UBYTE RT_VERSION
 	DC.B	9		; UBYTE RT_TYPE
-	DC.B	0		; BYTE  RT_PRI
-	DC.L	LibName-Start	; APTR  RT_NAME [R]
-	DC.L	IDString-Start	; APTR  RT_IDSTRING [R]
-	DC.L	InitTable-Start	; APTR  RT_INIT  table for InitResident()
+	DC.B	0		; BYTE	RT_PRI
+	DC.L	LibName-Start	; APTR	RT_NAME [R]
+	DC.L	IDString-Start	; APTR	RT_IDSTRING [R]
+	DC.L	InitTable-Start	; APTR	RT_INIT	 table for InitResident()
 
 InitTable:
 	DC.L	SampleBase_SIZEOF	; size of library base data space
-	DC.L	0         		; pointer to function initializers
+	DC.L	0				; pointer to function initializers
 	DC.L	dataTable-Start		; pointer to data initializers
 	DC.L	initRoutine-Start	; routine to run
 
@@ -28604,7 +28604,7 @@ Expung:	MOVEM.L	D2/A5/A6,-(SP)			; ( LIBPTR: A6 )
 	BEQ	.1
 	BSET	#LIBB_DELEXP,sb_Flags(A5)
 	MOVEQ	#0,D0
-	BRA.S   ExpEnd
+	BRA.S	ExpEnd
 .1:	MOVE.L	sb_SegList(A5),D2
 	MOVE.L	A5,A1
 	JSR	Remove(A6)
@@ -28614,7 +28614,7 @@ Expung:	MOVEM.L	D2/A5/A6,-(SP)			; ( LIBPTR: A6 )
 	SUB.L	D0,A1
 	ADD.W	LIB_POSSIZE(A5),D0
 	JSR	FreeMem(A6)
-	MOVE.L   D2,D0
+	MOVE.L	 D2,D0
 ExpEnd:	MOVEM.L	(SP)+,D2/A5/A6
 	RTS
 
@@ -28624,7 +28624,7 @@ EndCode:
 
 ; same thing, only now for libraries
 
-      LFIRSTSTART:			; a5 here = ptr to put a4 in
+		LFIRSTSTART:			; a5 here = ptr to put a4 in
 	MOVE.L	A7,A3			; A3 = ORIG STACK
 	MOVE.L	4.W,A6
 	SUBA.L	A1,A1
@@ -28645,9 +28645,9 @@ LCPUE:
 	ADD.L	D2,D0
 	MOVE.L	D0,A7
 	ADD.L	#1,A7			; SIZE IS PATCHED IN
-      LLINKC2:
+		LLINKC2:
 	LINK	A4,#-4
-      LREALSTART:
+		LREALSTART:
 	MOVE.L	A3,-4(A4)
 	MOVE.L	D6,-64(A4)
 	MOVE.L	A6,-40(A4)		; INIT VARS
@@ -28674,13 +28674,13 @@ LCPUE:
 	MOVE.L	A4,LLH_A4PTR(A5)	; PUT A4 IN TABLE
 	LEA	LRTS(PC),A0
 	MOVE.L	A0,-24(A4)
-      LGLOBJUMP:
+		LGLOBJUMP:
 	JMP	LGLOBJUMP
-      LEXITC:				; START OF CLOSE, A4=A4
+		LEXITC:				; START OF CLOSE, A4=A4
 	JSR	LEXITC
-      LEXITC3:
+		LEXITC3:
 	JSR	LRTS
-      LEXITC2:
+		LEXITC2:
 	MOVE.L	A7,-4(A4)
 	MOVE.L	4.W,A6
 	MOVE.L	-20(A4),A2		; CLEANUP MEMORY
@@ -28699,22 +28699,22 @@ LCLDOS:	MOVE.L	-52(A4),A1
 LCLGFX:	MOVE.L	-48(A4),A1
 	JSR	-414(A6)		; closeintui
 LCLINT:
-      LENDC2:
+		LENDC2:
 	MOVE.L	#$20000,D0
 	MOVE.L	-64(A4),A1
 	MOVE.L	-4(A4),A7
 	JSR	-210(A6)
-      LRTS:
+		LRTS:
 	MOVEQ	#0,D0
 	RTS
 LSTACKCHK:
-	ADD.L -64(A4),D0   ;stack bottom
+	ADD.L -64(A4),D0	 ;stack bottom
 	CMP.L D0,A7
 	BLE.S .1
 	RTS
 .1
 	MOVE.L #"STCK",-84(A4)
-	MOVE.L  -148(A4),-96(A4)
+	MOVE.L	-148(A4),-96(A4)
 LERRTHROW:
 	MOVE.L	-76(A4),D0
 	BEQ.S	.2
@@ -28727,39 +28727,39 @@ LERRTHROW:
 	JMP	(A0)
 .2:	MOVE.L	-24(A4),A0
 	JMP	(A0)
-      LINITDOS:		DC.B	"dos.library",0
-      LINITINTUI:	DC.B	"intuition.library",0
-      LINITGFX:		DC.B	"graphics.library",0
+		LINITDOS:		DC.B	"dos.library",0
+		LINITINTUI:	DC.B	"intuition.library",0
+		LINITGFX:		DC.B	"graphics.library",0
 	EVEN
-      LENDC:
+		LENDC:
 
 LibName:
 IDString:
 
 ENDFUNTAB:
 
-      COPYC:				; A0=START,D0=END,A4=DEST
+		COPYC:				; A0=START,D0=END,A4=DEST
 	SUB.L	A0,D0
 	LSR.L	#1,D0
 	SUBQ.L	#1,D0
 .1:	MOVE.W	(A0)+,(A4)+
- 	DBRA	D0,.1
- 	RTS
+	DBRA	D0,.1
+	RTS
 
-      COPYRELOC:
+		COPYRELOC:
 	MOVE.L	A4,D0
 	MOVE.L	(A0)+,(A4)+
 	BSR	ADDDIVRELOC
 	RTS
 	
-;      COPYRELOCCPU:
+;		 COPYRELOCCPU:
 ;	TST.W	ECPU
 ;	BNE.S	.1
 ; SUBI.L	#LCPUE-LCPUS,(A0)
 ;	BRA.S	COPYRELOC
 ;.1:	RTS
 	
-      LMAKEINITCODE:
+		LMAKEINITCODE:
 	MOVE.L	LIBINFO,A6		; A6=LIBINFO
 	MOVE.L	12(A6),D2
 	SUB.L	(A6),D2
@@ -28825,7 +28825,7 @@ ENDFUNTAB:
 	ADDQ.L	#4,A0
 	MOVE.L	#LLINKC2,D0
 	BSR.W	COPYC
- 	MOVE.L	A4,AFTERDELEGATESLEA	; PATCH IN SIZE LATER
+	MOVE.L	A4,AFTERDELEGATESLEA	; PATCH IN SIZE LATER
 	MOVE.W	LLINKC2(PC),(A4)+
 	MOVE.W	NRGLOB,D7
 	MOVE.W	D7,(A4)+
@@ -28895,19 +28895,19 @@ ENDFUNTAB:
 	MOVE.L	LIBINFO,A6
 	MOVE.L	(A6),A0
 .1:	MOVE.B	(A0)+,(A4)+
- 	BNE.S	.1
+	BNE.S	.1
 	MOVE.L	12(A6),A0
 .2:	MOVE.B	(A0)+,(A4)+
- 	BNE.S	.2
- 	MOVE.L	A4,D0
- 	BTST	#0,D0
- 	BEQ.S	.3
- 	CLR.B	(A4)+
+	BNE.S	.2
+	MOVE.L	A4,D0
+	BTST	#0,D0
+	BEQ.S	.3
+	CLR.B	(A4)+
 .3:	BSR	FIXPROCCODE
 	MOVE.L	A4,CURACODE
 	RTS
 
-      FUNTABADR:	DC.L	0
+		FUNTABADR:	DC.L	0
 
 funcTable:
 	dc.l	Open-Start
@@ -28933,7 +28933,7 @@ GETA4:	MOVE.L	4.W,A1			; COPY IN GETTC!!!
 LA4PTR:	DC.L	0
 ENDGETA4:
 
-      BUILDLIBFUNS:
+		BUILDLIBFUNS:
 	MOVE.L	LIBINFO,D6
 	BEQ.W	.X
 	MOVE.L	D6,A6			; A6 = LIBINFO
@@ -29058,7 +29058,7 @@ ENDGETA4:
 .TWOA:	MOVE.W	.ADD2(PC),(A4)+
 	BRA.S	.R2
 
-      WRITELIBMOD:
+		WRITELIBMOD:
 	MOVE.L	LIBINFO,D0
 	BEQ.W	.X
 	MOVE.L	D0,A5			; A5=LIBINFO
@@ -29158,130 +29158,130 @@ ENDGETA4:
 
 
 NSMAKEINITCODE:
-    MOVE.W  #3,CURSPOT
-    MOVE.L  CURACODE,A4
-    BTST    #3,CODEPREFS+3
-    BNE .EX
-    TSTMOD
-    BNE .EX
-    LEA NSFIRSTSTART(PC),A0   ; NEW STACK
-    MOVE.L  (A0)+,(A4)+
-    MOVE.L  (A0)+,(A4)+
-    MOVE.W  (A0)+,(A4)+
-    MOVE.L  A4,STACKPOKE
-    ADDQ.L  #4,A4
-    ADDQ.L  #4,A0
-    MOVE.L  #NSLINKC2,D0
-    BSR COPYC
-    MOVE.L  A4,AFTERDELEGATESLEA    ; PATCH IN SIZE LATER
-    MOVE.W  NSLINKC2(PC),(A4)+
-    MOVE.W  NRGLOB,D7
-    MOVE.W  D7,(A4)+
-    LEA NSREALSTART(PC),A0
-    MOVE.L  A4,A6           ; BACKUP
-    MOVE.L  #NSMIDC,D0
-    BSR COPYC
-    MOVE.W  NSGLOBJUMP(PC),(A4)+
-    MOVEQ   #5,D0
-    JSR ADDBRANCHRELOC
-    MOVE.W  NSEXITC(PC),(A4)+     ; DELEGATES
-    MOVEQ   #8,D0
-    JSR ADDBRANCHRELOC
-    LEA NSEXITC2(PC),A0
-    MOVE.L  #NSENDC2,D0
-    BSR COPYC
-    LEA NSENDC2(PC),A0
-    MOVE.L  A4,BEFORESECONDLEA
-    MOVE.L  (A0)+,(A4)+
-    MOVE.L  (A0)+,(A4)+
-    MOVE.L  A4,STACKPOKE+4
-    ADDQ.L  #4,A4
-    ADDQ.L  #4,A0
-    MOVE.L  #NSST2,D0
-    BSR COPYC
-    MOVE.L  NSST2,(A4)+
+	MOVE.W	#3,CURSPOT
+	MOVE.L	CURACODE,A4
+	BTST	#3,CODEPREFS+3
+	BNE .EX
+	TSTMOD
+	BNE .EX
+	LEA NSFIRSTSTART(PC),A0		; NEW STACK
+	MOVE.L	(A0)+,(A4)+
+	MOVE.L	(A0)+,(A4)+
+	MOVE.W	(A0)+,(A4)+
+	MOVE.L	A4,STACKPOKE
+	ADDQ.L	#4,A4
+	ADDQ.L	#4,A0
+	MOVE.L	#NSLINKC2,D0
+	BSR COPYC
+	MOVE.L	A4,AFTERDELEGATESLEA	; PATCH IN SIZE LATER
+	MOVE.W	NSLINKC2(PC),(A4)+
+	MOVE.W	NRGLOB,D7
+	MOVE.W	D7,(A4)+
+	LEA NSREALSTART(PC),A0
+	MOVE.L	A4,A6			; BACKUP
+	MOVE.L	#NSMIDC,D0
+	BSR COPYC
+	MOVE.W	NSGLOBJUMP(PC),(A4)+
+	MOVEQ	#5,D0
+	JSR ADDBRANCHRELOC
+	MOVE.W	NSEXITC(PC),(A4)+		; DELEGATES
+	MOVEQ	#8,D0
+	JSR ADDBRANCHRELOC
+	LEA NSEXITC2(PC),A0
+	MOVE.L	#NSENDC2,D0
+	BSR COPYC
+	LEA NSENDC2(PC),A0
+	MOVE.L	A4,BEFORESECONDLEA
+	MOVE.L	(A0)+,(A4)+
+	MOVE.L	(A0)+,(A4)+
+	MOVE.L	A4,STACKPOKE+4
+	ADDQ.L	#4,A4
+	ADDQ.L	#4,A0
+	MOVE.L	#NSST2,D0
+	BSR COPYC
+	MOVE.L	NSST2,(A4)+
 
-    LEA NOST_STACKCHK(PC),A0
-    MOVE.L  #NSENDC,D0
-    BSR COPYC
-    BSR FIXPROCCODE
-    MOVE.L  A4,CURACODE
-.EX:    RTS
+	LEA NOST_STACKCHK(PC),A0
+	MOVE.L	#NSENDC,D0
+	BSR COPYC
+	BSR FIXPROCCODE
+	MOVE.L	A4,CURACODE
+.EX:	RTS
 
-NSFIRSTSTART:         ; CHANGES ALSO TO LFIRSTART!!!
-    MOVE.L  4.W,A6
-    MOVE.L  A0,A5           ; SAVE A0/D0 TO A5/D7
-    MOVE.L  D0,D7
-    MOVE.L  #20000,D0       ; THIS .L IS CHANGED!
-    MOVE.L  #$10000,D1
-    MOVE.L  D0,D2
-    JSR     -198(A6)
-    TST.L   D0
-    BNE.S   NOST_1
-    MOVEQ   #20,D0          ; NO FUCKIN' MEM !
-    RTS
+NSFIRSTSTART:			; CHANGES ALSO TO LFIRSTART!!!
+	MOVE.L	4.W,A6
+	MOVE.L	A0,A5			; SAVE A0/D0 TO A5/D7
+	MOVE.L	D0,D7
+	MOVE.L	#20000,D0		; THIS .L IS CHANGED!
+	MOVE.L	#$10000,D1
+	MOVE.L	D0,D2
+	JSR		-198(A6)
+	TST.L	D0
+	BNE.S	NOST_1
+	MOVEQ	#20,D0			; NO FUCKIN' MEM !
+	RTS
 A4STORAGE_NOST:
-    DC.L    0
+	DC.L	0
 NOST_1:
-    MOVE.L  D0,D6           ; D6=BOTTOMSTACK
-    ADD.L   D2,D0
-    JSR -132(A6)        ; --> FORBID
-    EXG.L   D0,A7
-    MOVE.L  D0,-(A7)
-    ADD.L   #1,A7           ; SIZE IS PATCHED IN
+	MOVE.L	D0,D6			; D6=BOTTOMSTACK
+	ADD.L	D2,D0
+	JSR -132(A6)		; --> FORBID
+	EXG.L	D0,A7
+	MOVE.L	D0,-(A7)
+	ADD.L	#1,A7			; SIZE IS PATCHED IN
 NSLINKC2:
-    LINK    A4,#-4
+	LINK	A4,#-4
 NSREALSTART:
-    JSR -138(A6)        ; --> PERMIT
-    MOVE.L  D6,-64(A4)
+	JSR -138(A6)		; --> PERMIT
+	MOVE.L	D6,-64(A4)
 
-    MOVE.L  A6,-40(a4)
-    MOVE.L  A7,-4(A4)
-    LEA NOST_STACKCHK(PC),A1
-    MOVE.L A1,-144(A4)
-    LEA NOST_ERRTHROW(PC),A1
-    MOVE.L A1,-140(A4)
-    LEA     A4STORAGE_NOST(PC),A1
-    MOVE.L  A4,(A1)
+	MOVE.L	A6,-40(a4)
+	MOVE.L	A7,-4(A4)
+	LEA NOST_STACKCHK(PC),A1
+	MOVE.L A1,-144(A4)
+	LEA NOST_ERRTHROW(PC),A1
+	MOVE.L A1,-140(A4)
+	LEA		A4STORAGE_NOST(PC),A1
+	MOVE.L	A4,(A1)
 
 NSMIDC:
 NSGLOBJUMP:
-    JSR NSGLOBJUMP
+	JSR NSGLOBJUMP
 NSEXITC:
-    JSR NSEXITC
+	JSR NSEXITC
 NSEXITC2:
-    MOVE.L  -4(A4),A7
-    MOVE.L  4.W,A6
-    MOVE.L  -20(A4),A2      ; CLEANUP MEMORY
-    MOVE.L  A2,D0
-    BEQ.S   .3
-.4: MOVE.L  A2,A1
-    MOVE.L  4(A2),D0
-    MOVE.L  (A2),A2
-    JSR -210(A6)
-    MOVE.L  A2,D0
-    BNE.S   .4
+	MOVE.L	-4(A4),A7
+	MOVE.L	4.W,A6
+	MOVE.L	-20(A4),A2		; CLEANUP MEMORY
+	MOVE.L	A2,D0
+	BEQ.S	.3
+.4: MOVE.L	A2,A1
+	MOVE.L	4(A2),D0
+	MOVE.L	(A2),A2
+	JSR -210(A6)
+	MOVE.L	A2,D0
+	BNE.S	.4
 .3:
-    MOVE.L  -28(A4),D2      ; EXITCODE
-    UNLK    A4
+	MOVE.L	-28(A4),D2		; EXITCODE
+	UNLK	A4
 NSENDC2:
-    ADD.L   #1,A7
-    MOVE.L  #$20000,D0
-    MOVE.L  (A7)+,A1
-    EXG.L   A1,A7
-    SUBA.L  D0,A1
-    JSR -210(A6)
+	ADD.L	#1,A7
+	MOVE.L	#$20000,D0
+	MOVE.L	(A7)+,A1
+	EXG.L	A1,A7
+	SUBA.L	D0,A1
+	JSR -210(A6)
 NSST2:
-    MOVE.L  D2,D0
-    RTS
+	MOVE.L	D2,D0
+	RTS
 NOST_STACKCHK:
-	ADD.L -64(A4),D0   ;stack bottom
+	ADD.L -64(A4),D0	 ;stack bottom
 	CMP.L D0,A7
 	BLE.S .1
 	RTS
 .1
 	MOVE.L #"STCK",-84(A4)
-	MOVE.L  -148(A4),-96(A4)
+	MOVE.L	-148(A4),-96(A4)
 NOST_ERRTHROW:
 	MOVE.L	-76(A4),D0
 	BEQ.S	.2
@@ -29299,14 +29299,14 @@ NSENDC:
 ;; Other!
 
 
-      ADDGLOBVARS:
+		ADDGLOBVARS:
 	BTST	#3,CODEPREFS+3
 	BEQ.S	.C
 	RTS
 .C:	GETML	A5
 	LEA	GLOBVARTAB(PC),A4
 
-	BTST #5,ICODEPREFS+3        ;LEGACY MODE
+	BTST #5,ICODEPREFS+3		;LEGACY MODE
 	BEQ.S .1
 
 	CLR.L 96(A4) ;last entry is EXCEPTIONINFO in legacy mode
@@ -29332,23 +29332,23 @@ NSENDC:
 	CLR.L	(A5)+
 	MOVE.W	D6,(A5)+		; SET OFFS
 	MOVE.W	LINENUM,(A5)+		; set line num
-	CLR.L   (A5)+           ;varheavy
-	CLR.L   (A5)+           ;var_name
-	CLR.L   (A5)+           ;def_value
-	CLR.L   (A5)+           ;import_data
-	MOVE.W  #-1,(A5)+       ;var_ptrrepcount
-	CLR.L   (A5)+           ;var_dimdata
+	CLR.L	(A5)+			;varheavy
+	CLR.L	(A5)+			;var_name
+	CLR.L	(A5)+			;def_value
+	CLR.L	(A5)+			;import_data
+	MOVE.W	#-1,(A5)+		;var_ptrrepcount
+	CLR.L	(A5)+			;var_dimdata
 	IFD IDENT_COOKIE
-	MOVE.W #$C0DE,(A5)+     ;VAR_IDCOOKIE
+	MOVE.W #$C0DE,(A5)+		;VAR_IDCOOKIE
 	ENDIF
 
 	BRA.S	.1
 .2:	DONEH	A5
 BURP:	MOVEQ	#NRSYSCONST,D0
-    BTST #5,ICODEPREFS+3        ;LEGACY MODE
-    BEQ.S .notlegacy
-    
-    MOVEQ	#LEGACYNRSYSCONST,D0
+	BTST #5,ICODEPREFS+3		;LEGACY MODE
+	BEQ.S .notlegacy
+	
+	MOVEQ	#LEGACYNRSYSCONST,D0
 
 .notlegacy
 	SUBQ.W	#1,D0
@@ -29377,9 +29377,9 @@ NRSYSCONST	= 20
 LEGACYNRSYSCONST = 9
 STRLENADR:	DC.L	0
 
-      SYSCONST:
-    DC.L    .1,-1,.2,0,.3,0,.4,-1,.5,0,.6,120,.7,1005,.8,1006,.9,0,.10,0
-    DC.L    .11,0,.12,1,.13,2,.14,.3,.15,$80000000,.16,-1,.17,-1,.18,0,.19,1,.20,1004
+		SYSCONST:
+	DC.L	.1,-1,.2,0,.3,0,.4,-1,.5,0,.6,120,.7,1005,.8,1006,.9,0,.10,0
+	DC.L	.11,0,.12,1,.13,2,.14,.3,.15,$80000000,.16,-1,.17,-1,.18,0,.19,1,.20,1004
 
 .1:	DC.B	"TRUE",0
 .2:	DC.B	"FALSE",0
@@ -29390,23 +29390,23 @@ STRLENADR:	DC.L	0
 .7:	DC.B	"OLDFILE",0
 .8:	DC.B	"NEWFILE",0
 .9:	DC.B	"EMPTY",0
-.10:DC.B    "TAG_DONE",0
-.11:DC.B    "TAG_END",0
-.12:DC.B    "TAG_IGNORE",0
-.13:DC.B    "TAG_MORE",0
-.14:DC.B    "TAG_SKIP",0
-.15:DC.B    "TAG_USER",0
-.16:DC.B    "OFFSET_BEGINNING",0
-.17:DC.B    "OFFSET_BEGINING",0
-.18:DC.B    "OFFSET_CURRENT",0
-.19:DC.B    "OFFSET_END",0
-.20:DC.B    "READWRITE",0
+.10:DC.B	"TAG_DONE",0
+.11:DC.B	"TAG_END",0
+.12:DC.B	"TAG_IGNORE",0
+.13:DC.B	"TAG_MORE",0
+.14:DC.B	"TAG_SKIP",0
+.15:DC.B	"TAG_USER",0
+.16:DC.B	"OFFSET_BEGINNING",0
+.17:DC.B	"OFFSET_BEGINING",0
+.18:DC.B	"OFFSET_CURRENT",0
+.19:DC.B	"OFFSET_END",0
+.20:DC.B	"READWRITE",0
 
 	EVEN
 
-      ARGBYTE:	DC.L	0		; EXACT BYTE LOC OF "arg".FLAGS
+		ARGBYTE:	DC.L	0		; EXACT BYTE LOC OF "arg".FLAGS
 
-      GLOBVARTAB:
+		GLOBVARTAB:
 	DC.L	.1,-8
 	DC.L	.2,-12
 	DC.L	.3,-32			; must be 16..24 bytes offset
@@ -29420,9 +29420,9 @@ STRLENADR:	DC.L	0
 	DC.L	.11,-84
 	DC.L	.12,-92
 	DC.L	.13,-96
-	DC.L	.14,-120    ;excluded in legacy mode
-	DC.L	.15,-124    ;excluded in legacy mode
-	DC.L	.16,-132    ;excluded in legacy mode
+	DC.L	.14,-120	;excluded in legacy mode
+	DC.L	.15,-124	;excluded in legacy mode
+	DC.L	.16,-132	;excluded in legacy mode
 	DC.L	0,0
 
 .1:	DC.B	"stdout",0
@@ -29438,33 +29438,33 @@ STRLENADR:	DC.L	0
 .11:	DC.B	"exception",0
 .12:	DC.B	"stdin",0
 .13:	DC.B	"exceptioninfo",0
-.14:	DC.B	"thistask",0           ;excluded in legacy mode
-.15:    DC.B    "__pool",0         ;excluded in legacy mode
-.16:    DC.B    "utilitybase",0    ;excluded in legacy mode
+.14:	DC.B	"thistask",0			 ;excluded in legacy mode
+.15:	DC.B	"__pool",0			 ;excluded in legacy mode
+.16:	DC.B	"utilitybase",0		 ;excluded in legacy mode
 	EVEN
 
-      PATCHFUNCLIST:
-      ;bit 0 = 020
-      ;bit 1 = OS 37+
-      ;bit 2 = Legacy INT mode
-	DC.L  1,1,I_MUL,I_MUL020      ;replace I_MUL with I_MUL020 for 020+
-	DC.L  1,1,I_DIV,I_DIV020      ;replace I_DIV with I_DIV020 for 020+
-	DC.L  1,1,I_MOD,I_MOD020      ;replace I_MOD with I_MOD020 for 020+
-	DC.L  1,1,I_LONG,I_LONG020    ;replace I_LONG with I_LONG020 for 020+
-	DC.L  1,1,I_CHAR,I_CHAR020    ;replace I_CHAR with I_CHAR020 for 020+
-	DC.L  1,1,I_WORD,I_WORD020    ;replace I_WORD with I_WORD020 for 020+
-	DC.L  1,1,I_BYTE,I_BYTE020    ;replace I_BYTE with I_BYTE020 for 020+
-	DC.L  1,1,I_LISTITEM,I_LISTITEM020    ;replace I_LISTITEM with I_LISTITEM020 for 020+
-	DC.L  2,1,I_WRITEF,I_WRITEF37 ;replace I_WRITEF with I_WRITEF37 for V37+
-	DC.L  2,1,I_PRINTF,I_WRITEF37 ;replace I_PRINTF with I_WRITEF37 for V37+
-	DC.L  2,1,I_PUTF,I_PUTF37     ;replace I_PUTF with I_PUTF37 for V37+
+		PATCHFUNCLIST:
+		;bit 0 = 020
+		;bit 1 = OS 37+
+		;bit 2 = Legacy INT mode
+	DC.L	1,1,I_MUL,I_MUL020		;replace I_MUL with I_MUL020 for 020+
+	DC.L	1,1,I_DIV,I_DIV020		;replace I_DIV with I_DIV020 for 020+
+	DC.L	1,1,I_MOD,I_MOD020		;replace I_MOD with I_MOD020 for 020+
+	DC.L	1,1,I_LONG,I_LONG020		;replace I_LONG with I_LONG020 for 020+
+	DC.L	1,1,I_CHAR,I_CHAR020		;replace I_CHAR with I_CHAR020 for 020+
+	DC.L	1,1,I_WORD,I_WORD020		;replace I_WORD with I_WORD020 for 020+
+	DC.L	1,1,I_BYTE,I_BYTE020		;replace I_BYTE with I_BYTE020 for 020+
+	DC.L	1,1,I_LISTITEM,I_LISTITEM020		;replace I_LISTITEM with I_LISTITEM020 for 020+
+	DC.L	2,1,I_WRITEF,I_WRITEF37 ;replace I_WRITEF with I_WRITEF37 for V37+
+	DC.L	2,1,I_PRINTF,I_WRITEF37 ;replace I_PRINTF with I_WRITEF37 for V37+
+	DC.L	2,1,I_PUTF,I_PUTF37		;replace I_PUTF with I_PUTF37 for V37+
 
-	DC.L  5,1,I_INT,I_INT020      ;replace I_INT with I_INT020 for 020+
- 	DC.L  5,4,I_INT,I_WORD  ;replace I_INT with I_WORD for LEGACYINT 
-	DC.L  5,5,I_INT,I_WORD020;replace I_INT with I_WORD020 for LEGACYINT and 020+
-	DC.L  0,0,0
+	DC.L	5,1,I_INT,I_INT020		;replace I_INT with I_INT020 for 020+
+	DC.L	5,4,I_INT,I_WORD	;replace I_INT with I_WORD for LEGACYINT 
+	DC.L	5,5,I_INT,I_WORD020;replace I_INT with I_WORD020 for LEGACYINT and 020+
+	DC.L	0,0,0
 
-      INITFUNCS:			; init efuncs
+		INITFUNCS:			; init efuncs
 	MOVE.L	#EFUNCBYTE,A0
 	MOVE.L	#EFUNCRAISE,A1
 	MOVE.W	#NREFUNC,D0
@@ -29476,7 +29476,7 @@ STRLENADR:	DC.L	0
 	DBRA	D0,.1
 	RTS
 
-      LINKDELEGATECONSTRUCTORS:
+		LINKDELEGATECONSTRUCTORS:
 	LEA	OLIST+4,A0
 .L:	MOVE.L	-(A0),D0
 	BEQ.W	.X
@@ -29533,14 +29533,14 @@ STRLENADR:	DC.L	0
 .RTS:	RTS
 .GL:	MOVE.L	#1,(A0)
 
-      LINKFUNCS:
+		LINKFUNCS:
 	TSTMOD
 	BNE.W	.X
-  
-	BTST #1,CODEPREFS+3        ;NIL CHECK 
+	
+	BTST #1,CODEPREFS+3			 ;NIL CHECK 
 	BEQ.S .notnilcheck
 
-	BSR NILPATCHES    ;update to efunctab and efuncsizes to use NILCHECK versions
+	BSR NILPATCHES		;update to efunctab and efuncsizes to use NILCHECK versions
 
 .notnilcheck
 	MOVE.L	#EFUNCBYTE,A3
@@ -29560,7 +29560,7 @@ STRLENADR:	DC.L	0
 	ADD.L	D0,A2
 	MOVE.L	4(A2),A2		; BEG CODE
 	MOVE.L	(A1),D1
-	ADD.L   A2,D1       ; END CODE
+	ADD.L	A2,D1		; END CODE
 	MOVE.L	D3,D0
 	ADD.L	#10,D0
 	JSR	ADDLABEL
@@ -29615,100 +29615,100 @@ STRLENADR:	DC.L	0
 	
 
 NILPATCHES:
-  LEA EFUNCTAB,A0
-  LEA EFUNCSIZES,A1
-  LEA NILPATCHLIST,A2
+	LEA EFUNCTAB,A0
+	LEA EFUNCSIZES,A1
+	LEA NILPATCHLIST,A2
 .next
-  MOVE.L (A2)+,D0   ;function number
-  BMI.S .done
-  LSL.L #2,D0
-  LEA (A1,D0),A3
-  LSL.L #2,D0
-  LEA (A0,D0),A4
-  MOVE.L (A2)+,4(A4)  ;copy new function address
-  MOVE.L (A2)+,(A3)   ;copy new function size
-  BRA.S .next
+	MOVE.L (A2)+,D0	;function number
+	BMI.S .done
+	LSL.L #2,D0
+	LEA (A1,D0),A3
+	LSL.L #2,D0
+	LEA (A0,D0),A4
+	MOVE.L (A2)+,4(A4)	;copy new function address
+	MOVE.L (A2)+,(A3)		;copy new function size
+	BRA.S .next
 .done
-  RTS
+	RTS
 
 ; THESE ARE SHARED!
 
-      GVA0D0D5_0:
+		GVA0D0D5_0:
 	GENVARL	0,A0,D0,D5		; IIII
 	RTS
 
 
-      GVA0D0_0:
+		GVA0D0_0:
 	GENVARL	0,A0,10(A0),D0		; III
 	RTS
-      GVA1D0_0:
-    GENVARL  0,A1,10(A1),D0      ; III
-    RTS
-    
-      GVA0D1_0:
+		GVA1D0_0:
+	GENVARL	 0,A1,10(A1),D0		 ; III
+	RTS
+	
+		GVA0D1_0:
 	GENVARL	0,A0,10(A0),D1		; IIIII
 	RTS
-      GVA0D2_0:
+		GVA0D2_0:
 	MOVE.L	D1,-(A7)
 	MOVE.L	D2,D1
 	BSR.W	GVA0D1_0		; II
 	MOVE.L	(A7)+,D1
 	RTS
-      GVA0D3_0:
+		GVA0D3_0:
 	MOVE.L	D1,-(A7)
 	MOVE.L	D3,D1
 	BSR.W	GVA0D1_0		; I
 	MOVE.L	(A7)+,D1
 	RTS
-      GVA0D4_0:
+		GVA0D4_0:
 	MOVE.L	D1,-(A7)
 	MOVE.L	D4,D1
 	BSR.W	GVA0D1_0		; I
 	MOVE.L	(A7)+,D1
 	RTS
-      GVA1D2_0:
+		GVA1D2_0:
 	GENVARL	0,A1,10(A1),D2		; I
 	RTS
-      GVA6D3_0:
+		GVA6D3_0:
 	GENVARL	0,A6,10(A6),D3		; I
 	RTS
 
 
-      GVA0D0_9:
+		GVA0D0_9:
 	GENVARL	9,A0,10(A0),D0		; II
 	RTS
-      GVA0D2_9:
+		GVA0D2_9:
 	MOVE.L	D0,-(A7)
 	MOVE.L	D2,D0
 	BSR.W	GVA0D0_9		; I
 	MOVE.L	(A7)+,D0
 	RTS
-      GVA0D4_9:
+		GVA0D4_9:
 	MOVE.L	D0,-(A7)
 	MOVE.L	D4,D0
 	BSR.W	GVA0D0_9		; II
 	MOVE.L	(A7)+,D0
 	RTS
-      GVA0D5_9:
+		GVA0D5_9:
 	MOVE.L	D0,-(A7)
 	MOVE.L	D5,D0
 	BSR.W	GVA0D0_9		; I
 	MOVE.L	(A7)+,D0
 	RTS
-      GVA0D7_9:
+		GVA0D7_9:
 	MOVE.L	D0,-(A7)
 	MOVE.L	D7,D0
 	BSR.W	GVA0D0_9		; I
 	MOVE.L	(A7)+,D0
 	RTS
 
-      GVA1D2_9:
+		GVA1D2_9:
 	GENVARL	9,A1,10(A1),D2		; I
 	RTS
-      GVA6D0_9:
+		GVA6D0_9:
 	GENVARL	9,A6,10(A6),D0		; I
 	RTS
-      GVA6D3_9:
+		GVA6D3_9:
 	MOVE.L	D0,-(A7)
 	MOVE.L	D3,D0
 	BSR.W	GVA6D0_9		; II
@@ -29722,10 +29722,10 @@ NILPATCHES:
 ;; Data
 ;; internals
 ConstsList:
-    DC.L    0
+	DC.L	0
 ;*-*
 
-  
+	
 ; ************************************************************* ;
 ;	The Internal LIBRARYCALLS				;
 ; ************************************************************* ;
@@ -29912,8 +29912,8 @@ UTIL:
 ;	Instruction JobCode And Data Part			;
 ; ************************************************************* ;
 
-      DUM:
-      INSJOBTAB:
+		DUM:
+		INSJOBTAB:
 	DC.L	.PROC,.ENDPROC,.IF,.ENDIF,.VOID,.WHILE,.ENDWHILE	; 0-6
 	DC.L	.FOR,.ENDFOR,.SELECT,.CASE,.DEFAULT,.ENDSELECT		; 7-12
 	DC.L	.REPEAT,.UNTIL,.JUMP,.DEF,.LOCAL,.ELSE,.INCBIN		; 13-19
@@ -29925,14 +29925,14 @@ UTIL:
 	DC.L	.ERROR,.EXCEPT,.ERROR,.ERROR,.ERROR,.END,.ERROR		; 56-62
 	DC.L	.NEW,.ERROR,.ERROR,.SUPER,.ERROR,.ERROR,.ERROR		; 63-69
 	DC.L	.ERROR,.ERROR,.ERROR,.ERROR,.ERROR,.ERROR,.ERROR	; 70-76
-	DC.L	.ERROR,.JCONT,.ERROR,.ERROR,.ERROR,.ERROR,.FATAL    ; 77-83
-    DC.L    .WARN,.ERROR,.ERROR,.ERROR,.ERROR,.ERROR,.ERROR	    ; 84-90
-    DC.L    .ELSEWHILE,.ALWAYS,.SECTION,.ERROR,.ERROR,.ERROR    ; 91-96
-    DC.L    .ERROR,.ERROR,.TRY,.CATCH,.ENDTRY,.UNTIL     ; 97-102
-    DC.L    .WHILE,.ELSEWHILE,.IF,.ELSEIF,.EXIT,.JCONT			; 103 - 108
-    DC.L    .ERROR,.ERROR,.ERROR,.ERROR,.ERROR             ; 109 - 113
-    DC.L    .ERROR,.ERROR,.ERROR,.ERROR,.ERROR             ; 114-118
-    DC.L    .ERROR                                         ; 119-
+	DC.L	.ERROR,.JCONT,.ERROR,.ERROR,.ERROR,.ERROR,.FATAL	; 77-83
+	DC.L	.WARN,.ERROR,.ERROR,.ERROR,.ERROR,.ERROR,.ERROR		; 84-90
+	DC.L	.ELSEWHILE,.ALWAYS,.SECTION,.ERROR,.ERROR,.ERROR	; 91-96
+	DC.L	.ERROR,.ERROR,.TRY,.CATCH,.ENDTRY,.UNTIL	 ; 97-102
+	DC.L	.WHILE,.ELSEWHILE,.IF,.ELSEIF,.EXIT,.JCONT			; 103 - 108
+	DC.L	.ERROR,.ERROR,.ERROR,.ERROR,.ERROR				 ; 109 - 113
+	DC.L	.ERROR,.ERROR,.ERROR,.ERROR,.ERROR				 ; 114-118
+	DC.L	.ERROR											 ; 119-
 
 .PROC:		DC.W	50,19,17,36,33,1,37,88,10
 		LINK	A5,#-27*4
@@ -29948,12 +29948,12 @@ UTIL:
 .EXIT:		DC.W	86,IOFF+107,61,56
 		TST.L	D0
 		BEQ	DUM
-		DC.W    87
+		DC.W	87
 		DC.W	75,0
 .IF:		DC.W	86,IOFF+105,51,6,61,56
 		TST.L	D0
 		BEQ	DUM
-		DC.W    87
+		DC.W	87
 		DC.W	8,5,2,43,IOFF+25,60,45,IOFF+18,7,2,28,10
 		BRA	DUM
 		DC.W	57,29,27,15,26,5,2,60,77,46,0,7,2,15,54,0
@@ -29965,84 +29965,84 @@ UTIL:
 		DC.W	27,15,52,26,2,56	; was 12 now 56
 		TST.L	D0
 		BEQ	DUM
-		DC.W    87
+		DC.W	87
 		DC.W	29,5,2,0
 .ENDIF:		DC.W	7,2,15,53,0
 .VOID:		DC.W	2,0
-.WHILE: DC.W    86,IOFF+103,51,6,20,61,56
-        TST.L   D0
-        BEQ DUM
-        DC.W    87
-        DC.W    8,5,3
+.WHILE: DC.W	86,IOFF+103,51,6,20,61,56
+		TST.L	D0
+		BEQ DUM
+		DC.W	87
+		DC.W	8,5,3
 
-        DC.W 43,IOFF+28,42,7,3,21,10
-        BRA DUM
-        DC.W    8,15,53,0
+		DC.W 43,IOFF+28,42,7,3,21,10
+		BRA DUM
+		DC.W	8,15,53,0
 
 .ELSEWHILE:
-        DC.W    86,IOFF+104,7,3,27,10
-        BRA DUM
-        DC.W    15,52,21,8,25,20,26,61,56
-        TST.L   D0
-        BEQ DUM
-        DC.W    87
-        DC.W    27,21,8,25,26,5,3,0
+		DC.W	86,IOFF+104,7,3,27,10
+		BRA DUM
+		DC.W	15,52,21,8,25,20,26,61,56
+		TST.L	D0
+		BEQ DUM
+		DC.W	87
+		DC.W	27,21,8,25,26,5,3,0
 .ALWAYS:
-        DC.W    7,3,27
-        DC.W    21,53,20,25,26
-        DC.W    5,3,0
+		DC.W	7,3,27
+		DC.W	21,53,20,25,26
+		DC.W	5,3,0
 
 .ENDWHILE:
-        DC.W    7,3,21,27,53,26,10
-        BRA DUM
-        DC.W    8,15,0
+		DC.W	7,3,21,27,53,26,10
+		BRA DUM
+		DC.W	8,15,0
 .FOR:		DC.W	3,47,2,10
 		MOVE.L	D0,2(A5)
 		DC.W	35
 		DC.W	20,49,6,5,4,43,IOFF+28,42,7,4,15,62,10 ; dc added 6 & 15
 		BRA	DUM
 		DC.W	15,21,8,0
-.ENDFOR:	DC.W	7,4,15,62,10  ;dc added 15
+.ENDFOR:	DC.W	7,4,15,62,10	;dc added 15
 		BRA	DUM
 		DC.W	15,21,8,0
 
-.SELECT:DC.W    71,2,9
-        MOVE.L  D0,-(A7)
-        DC.W    6,28,32,5,5,0
+.SELECT:DC.W	71,2,9
+		MOVE.L	D0,-(A7)
+		DC.W	6,28,32,5,5,0
 
-.CASE:  DC.W    7,5,27,31,3,10
-        BRA DUM
-        DC.W    29,30,15,2,12
-        CMP.L   (A7),D0
-        BNE DUM
-        DC.W    6,8
-        DC.w    9
-        ADDQ.L  #4,a7
-        DC.W    26,5,5,0
+.CASE:	DC.W	7,5,27,31,3,10
+		BRA DUM
+		DC.W	29,30,15,2,12
+		CMP.L	(A7),D0
+		BNE DUM
+		DC.W	6,8
+		DC.w	9
+		ADDQ.L	#4,a7
+		DC.W	26,5,5,0
 
 .DEFAULT:
-        DC.W    7,5,27,10
-        BRA DUM
-        DC.W    29,15,6,26
-        DC.W    9
-        ADDQ.L  #4,A7
-        DC.W    5,5,0
+		DC.W	7,5,27,10
+		BRA DUM
+		DC.W	29,15,6,26
+		DC.W	9
+		ADDQ.L	#4,A7
+		DC.W	5,5,0
 
 .ENDSELECT:
-        DC.W    7,5
-        DC.W    9
-        BRA.B   *+4
-        DC.W    21,15,9
-        ADDQ.L  #4,A7
-        DC.W    25
-        DC.W    15
-        DC.W    0
+		DC.W	7,5
+		DC.W	9
+		BRA.B	*+4
+		DC.W	21,15,9
+		ADDQ.L	#4,A7
+		DC.W	25
+		DC.W	15
+		DC.W	0
 
 .REPEAT:	DC.W	6,20,5,6,0			; was 20,5,6,0
 .UNTIL:		DC.W	86,IOFF+102,7,6,21,61,56
 		TST.L	D0
 		BEQ	DUM
-		DC.W    87
+		DC.W	87
 		DC.W	8,15,0				; was 8,0
 .JUMP:		DC.W	1,10
 		BRA	DUM
@@ -30072,14 +30072,14 @@ UTIL:
 .NEW:		DC.W	69,0
 .END:		DC.W	74,0
 .SUPER:		DC.W	76,0
-.JCONT: 	DC.W	86,IOFF+108,61,56
+.JCONT:		DC.W	86,IOFF+108,61,56
 		TST.L	D0
 		BEQ	DUM
-		DC.W    87
+		DC.W	87
 		DC.W	82,0
 .FATAL:		DC.W 83,0
 .WARN:		DC.W 84,0
-.SECTION:   DC.W    85,0
+.SECTION:	DC.W	85,0
 
 
 .TRY:		DC.W 6,6
@@ -30094,10 +30094,10 @@ UTIL:
 
 	DC.W 11,3
 	MOVE.L	A0,-76(A4)
-	MOVE.L	A5,-88(A4)    
+	MOVE.L	A5,-88(A4)		
 	DC.W 5,9,0
 
-.CATCH:    
+.CATCH:		 
 	DC.W 7,9
 	DC.W 11,11
 	MOVE.L	-80(A4),A7		; STACK BACK
@@ -30105,17 +30105,17 @@ UTIL:
 	MOVE.L	(A7)+,-88(A4)		; (A5)
 	MOVE.L	(A7)+,-76(A4)		; PUT PREVIOUS HANDLER BACK (CODE)
 	MOVE.L	(A7)+,-80(A4)		; (STACK)
-	CLR.L	-84(A4)   
+	CLR.L	-84(A4)		
 
 	DC.W 45,IOFF+28,15,5,9,0
 	DC.W 10
 	BRA	DUM
 	DC.W	15,21,25,8,5,9,0
  
-.ENDTRY:  DC.W 7,9,15,0
+.ENDTRY:	DC.W 7,9,15,0
 
 ;;ADDRESS
-  INSTABLE:				; +IOFF
+	INSTABLE:				; +IOFF
 	DC.L	.0,0,.1,0,.2,0,.3,0,.4,0,.5,0,.6,0,.7,0,.8,0,.9,0,.10,0,.11,0
 	DC.L	.12,0,.13,0,.14,0,.15,0,.16,0,.17,0,.18,0,.19,0,.20,0,.21,0
 	DC.L	.22,0,.23,0,.24,0,.25,0,.26,0,.27,0,.28,0,.29,0,.30,0,.31,0
@@ -30124,19 +30124,19 @@ UTIL:
 	DC.L	.52,0,.53,0,.54,0,.55,0,.56,0,.57,0,.58,0,.59,0,.60,0,.61,0
 	DC.L	.62,0,.63,0,.64,0,.65,0,.66,0,.67,0,.68,0,.69,0,.70,0,.71,0
 	DC.L	.72,0,.73,0,.74,0,.75,0,.76,0,.77,0,.78,0,.79,0,.80,0,.81,0
-	DC.L  .82,0,.83,0,.84,0,.85,0,.86,0,.87,0,.88,0,.89,0,.90,0,.91,0
-	DC.L  .92,0,.93,0,.94,0,.95,0,.96,0,.97,0,.98,0,.99,0,.100,0,.101,0
-	DC.L  .102,0,.103,0,.104,0,.105,0,.106,0,.107,0,.108,0,.109,0,.110,0
+	DC.L	.82,0,.83,0,.84,0,.85,0,.86,0,.87,0,.88,0,.89,0,.90,0,.91,0
+	DC.L	.92,0,.93,0,.94,0,.95,0,.96,0,.97,0,.98,0,.99,0,.100,0,.101,0
+	DC.L	.102,0,.103,0,.104,0,.105,0,.106,0,.107,0,.108,0,.109,0,.110,0
 	DC.L	.111,0,.112,0,.113,0,.114,0,.115,0,.116,0,.117,0,.118,0,.119,0
-	DC.L   0,0
+	DC.L	 0,0
 
 .0:	DC.B	'PROC',0
 .1:	DC.B	'ENDPROC',0
 .2:	DC.B	'IF',0
 .3:	DC.B	'ENDIF',0
-.4: 	DC.B	'VOID',0
-.5: 	DC.B	'WHILE',0
-.6: 	DC.B	'ENDWHILE',0
+.4:		DC.B	'VOID',0
+.5:		DC.B	'WHILE',0
+.6:		DC.B	'ENDWHILE',0
 .7:	DC.B	'FOR',0
 .8:	DC.B	'ENDFOR',0
 .9:	DC.B	'SELECT',0
@@ -30221,33 +30221,33 @@ UTIL:
 .88:	DC.B	'NOSTARTUP',0
 .89:	DC.B	'UTILLIB',0
 .90:	DC.B	'INLINE',0
-.91:  DC.B  'ELSEWHILE',0
-.92:  DC.B  'ALWAYS',0
-.93:  DC.B  'SECTION',0
-.94:  DC.B  'CODE',0
-.95:  DC.B  'DATA',0
-.96:  DC.B  'CHIP',0
-.97:  DC.B  'FAST',0
-.98:  DC.B	'OFFSETOF',0
-.99:  DC.B  'TRY',0
-.100:  DC.B  'CATCH',0
-.101:  DC.B  'ENDTRY',0
-.102:  DC.B  'UNTILN',0
-.103:  DC.B  'WHILEN',0
-.104:  DC.B  'ELSEWHILEN',0
-.105:  DC.B  'IFN',0
-.106:  DC.B  'ELSEIFN',0
-.107:  DC.B  'EXITN',0
-.108:  DC.B  'CONTN',0
-.109:  DC.B  'BYTE',0
-.110:  DC.B  'WORD',0
-.111:  DC.B  'LEGACYINT',0
-.112:  DC.B	'PSIZEOF',0
-.113:  DC.B	'ARRAYSIZE',0
-.114:  DC.B 'STACKCHECK',0
-.115:  DC.B 'GETA4',0
-.116:  DC.B 'MODSETUP',0
-.117:  DC.B 'MODCLEANUP',0
+.91:	DC.B	'ELSEWHILE',0
+.92:	DC.B	'ALWAYS',0
+.93:	DC.B	'SECTION',0
+.94:	DC.B	'CODE',0
+.95:	DC.B	'DATA',0
+.96:	DC.B	'CHIP',0
+.97:	DC.B	'FAST',0
+.98:	DC.B	'OFFSETOF',0
+.99:	DC.B	'TRY',0
+.100:	DC.B	 'CATCH',0
+.101:	DC.B	 'ENDTRY',0
+.102:	DC.B	 'UNTILN',0
+.103:	DC.B	 'WHILEN',0
+.104:	DC.B	 'ELSEWHILEN',0
+.105:	DC.B	 'IFN',0
+.106:	DC.B	 'ELSEIFN',0
+.107:	DC.B	 'EXITN',0
+.108:	DC.B	 'CONTN',0
+.109:	DC.B	 'BYTE',0
+.110:	DC.B	 'WORD',0
+.111:	DC.B	 'LEGACYINT',0
+.112:	DC.B	'PSIZEOF',0
+.113:	DC.B	'ARRAYSIZE',0
+.114:	DC.B 'STACKCHECK',0
+.115:	DC.B 'GETA4',0
+.116:	DC.B 'MODSETUP',0
+.117:	DC.B 'MODCLEANUP',0
 .118:	DC.B	'CANPOOL',0
 .119: DC.B	'ESTRCONST',0
 
@@ -30256,737 +30256,737 @@ UTIL:
 ;; Inlines
 ;; Table
 INLINETAB:
-    DC.L    .E,.E,.E,.E,.E,.E,.E,.E,.E,.E   ; 1-10
-    DC.L    .E,.E,INL_LONG,INL_INT,INL_CHAR,INL_PLONG,INL_PINT,INL_PCHAR,.E,INL_CLEANUP   ; 11-20
-    DC.L    .E,.E,INL_AND,INL_OR,INL_NOT,.E,.E,.E,.E,.E   ; 21-30
-    DC.L    .E,.E,.E,.E,.E,.E,.E,.E,.E,.E   ; 31-40
-    DC.L    .E,.E,.E,.E,.E,.E,.E,INL_MOUSEX,INL_MOUSEY,.E   ; 41-50
-    DC.L    .E,.E,.E,.E,.E,.E,.E,INL_EVEN,INL_ODD,INL_EVAL   ; 51-60
-    DC.L    .E,.E,.E,INL_ABS,INL_SHL,INL_SHR,.E,.E,.E,.E   ; 61-70
-    DC.L    .E,.E,.E,.E,.E,INL_MSGCODE,INL_MSGQUAL,INL_MSGIADR,.E,INL_RNDQ   ; 71-80
-    DC.L    .E,INL_EOR,.E,.E,.E,.E,.E,.E,.E,.E   ; 81-90
-    DC.L    .E,.E,.E,.E,.E,.E,.E,.E,INL_FABS,INL_FFLOOR   ; 91-100
-    DC.L    INL_FCEIL,INL_FSIN,INL_FCOS,INL_FTAN,INL_FEXP,INL_FLOG,INL_FPOW,INL_FSQRT,INL_FLOG10,.E   ; 101-110
-    DC.L    .E,.E,.E,.E,.E,.E,.E,.E,INL_CAR,INL_CDR   ; 111-120
-    DC.L    .E,.E,INL_FATAN,INL_FSINCOS,INL_FSINH,INL_FCOSH,INL_FTANH,INL_FTIEEE,INL_FFIEEE,INL_FASIN   ; 121-130
-    DC.L    INL_FACOS,.E,.E,.E,.E,INL_GETA4,.E,.E,.E,.E   ; 131-140
-    DC.L    .E,.E,.E,.E,.E,.E,.E,.E,.E,.E   ; 141-150
-    DC.L    .E,.E,.E,.E,.E,.E,.E,.E,.E,.E   ; 151-160
-    DC.L    .E,.E,INL_LSL,INL_LSR,.E,.E,.E,.E,.E,.E   ; 161-170
-    DC.L    INL_MUL020,INL_DIV020,INL_LONG,INL_INT,INL_CHAR,INL_MOD020,.E,.E,.E,.E   ; 171-180
-    DC.L    .E,.E,.E,.E,.E,INL_BYTE,INL_WORD,INL_BYTE020,INL_WORD,INL_PCHAR   ; 181-190
-    DC.L    INL_PINT,.E,.E,INL_FCOMPARE,.E,.E,INL_ROL,INL_ROR,.E,.E   ; 191-200
-    DC.L    .E,.E                                                     ; 200-202
+	DC.L	.E,.E,.E,.E,.E,.E,.E,.E,.E,.E	; 1-10
+	DC.L	.E,.E,INL_LONG,INL_INT,INL_CHAR,INL_PLONG,INL_PINT,INL_PCHAR,.E,INL_CLEANUP		; 11-20
+	DC.L	.E,.E,INL_AND,INL_OR,INL_NOT,.E,.E,.E,.E,.E		; 21-30
+	DC.L	.E,.E,.E,.E,.E,.E,.E,.E,.E,.E	; 31-40
+	DC.L	.E,.E,.E,.E,.E,.E,.E,INL_MOUSEX,INL_MOUSEY,.E	; 41-50
+	DC.L	.E,.E,.E,.E,.E,.E,.E,INL_EVEN,INL_ODD,INL_EVAL	 ; 51-60
+	DC.L	.E,.E,.E,INL_ABS,INL_SHL,INL_SHR,.E,.E,.E,.E	 ; 61-70
+	DC.L	.E,.E,.E,.E,.E,INL_MSGCODE,INL_MSGQUAL,INL_MSGIADR,.E,INL_RNDQ	 ; 71-80
+	DC.L	.E,INL_EOR,.E,.E,.E,.E,.E,.E,.E,.E	 ; 81-90
+	DC.L	.E,.E,.E,.E,.E,.E,.E,.E,INL_FABS,INL_FFLOOR		; 91-100
+	DC.L	INL_FCEIL,INL_FSIN,INL_FCOS,INL_FTAN,INL_FEXP,INL_FLOG,INL_FPOW,INL_FSQRT,INL_FLOG10,.E		; 101-110
+	DC.L	.E,.E,.E,.E,.E,.E,.E,.E,INL_CAR,INL_CDR		; 111-120
+	DC.L	.E,.E,INL_FATAN,INL_FSINCOS,INL_FSINH,INL_FCOSH,INL_FTANH,INL_FTIEEE,INL_FFIEEE,INL_FASIN	; 121-130
+	DC.L	INL_FACOS,.E,.E,.E,.E,INL_GETA4,.E,.E,.E,.E		; 131-140
+	DC.L	.E,.E,.E,.E,.E,.E,.E,.E,.E,.E	; 141-150
+	DC.L	.E,.E,.E,.E,.E,.E,.E,.E,.E,.E	; 151-160
+	DC.L	.E,.E,INL_LSL,INL_LSR,.E,.E,.E,.E,.E,.E		; 161-170
+	DC.L	INL_MUL020,INL_DIV020,INL_LONG,INL_INT,INL_CHAR,INL_MOD020,.E,.E,.E,.E	 ; 171-180
+	DC.L	.E,.E,.E,.E,.E,INL_BYTE,INL_WORD,INL_BYTE020,INL_WORD,INL_PCHAR		; 181-190
+	DC.L	INL_PINT,.E,.E,INL_FCOMPARE,.E,.E,INL_ROL,INL_ROR,.E,.E		; 191-200
+	DC.L	.E,.E														; 200-202
 ;; ERROR
 .E:
-    JMP     ERROR0
+	JMP		ERROR0
 ;*-*
 ;; GetA4
 INL_GETA4:
 
-    MOVE.W  #$2879,(a4)+
-    MOVEM.L A4,-(A7)
-    MOVEA.L	A4SAVEPTR(PC),A4
-    JSR	NEWLABEL
-    MOVE.L	D0,-(A7)
-    JSR	ADDLABEL
-    MOVEM.L	(A7)+,D0/A4
-    JSR	ADDBRANCHRELOC
+	MOVE.W	#$2879,(a4)+
+	MOVEM.L A4,-(A7)
+	MOVEA.L	A4SAVEPTR(PC),A4
+	JSR	NEWLABEL
+	MOVE.L	D0,-(A7)
+	JSR	ADDLABEL
+	MOVEM.L	(A7)+,D0/A4
+	JSR	ADDBRANCHRELOC
 
-    ;tst.l   LIBINFO
-    ;BEQ .1
-    ;JMP ERROR86
+	;tst.l	 LIBINFO
+	;BEQ .1
+	;JMP ERROR86
 .1:
-    ;MOVE.W  #$2879,(a4)+
-    ;MOVE.L  A4STORAGEADR(PC),D0
-    ;BEq ERROR89
-    ;JSR     FORCEABSHERE
-    RTS
+	;MOVE.W	 #$2879,(a4)+
+	;MOVE.L	 A4STORAGEADR(PC),D0
+	;BEq ERROR89
+	;JSR	 FORCEABSHERE
+	RTS
 ;*-*
 ;; Long
 INL_LONG:
-    MOVE.L  A4,-(A7)
-    MOVE.W  #8,EAREQUEST
-    JSR     EAEXP
-    tst.l   d0
-    bne     .O
-    move.w  .C,(a4)+
+	MOVE.L	A4,-(A7)
+	MOVE.W	#8,EAREQUEST
+	JSR		EAEXP
+	tst.l	d0
+	bne		.O
+	move.w	.C,(a4)+
 .O:
-    MOVe.L  (A7)+,a0
-    move.l  a4,d0
-    sub.l   a0,d0
-    cmp.l   #2,d0
-    beq     .O2
-    cmp.l   #4,d0
-    beq     .O4
-    cmp.l   #6,d0
-    beq     .O6
-.NO:MOVE.W  #$2010,(a4)+
-    RTS
-.O2:cmp.w   #$91c8,(a0)
-    bne     .NO
-    move.l  #$20380000,(a0)+
-    bra     INL_OPTI
-.O4:cmp.w   #$307c,(a0)
-    bne     .O41
-    move.w  #$2038,(a0)+
-    addq.l  #2,a0
-    bra     INL_OPTI
+	MOVe.L	(A7)+,a0
+	move.l	a4,d0
+	sub.l	a0,d0
+	cmp.l	#2,d0
+	beq		.O2
+	cmp.l	#4,d0
+	beq		.O4
+	cmp.l	#6,d0
+	beq		.O6
+.NO:MOVE.W	#$2010,(a4)+
+	RTS
+.O2:cmp.w	#$91c8,(a0)
+	bne		.NO
+	move.l	#$20380000,(a0)+
+	bra		INL_OPTI
+.O4:cmp.w	#$307c,(a0)
+	bne		.O41
+	move.w	#$2038,(a0)+
+	addq.l	#2,a0
+	bra		INL_OPTI
 .O41:
-    move.w  (a0),d0
-    and.l   #$FFF8,d0
-    cmp.w   #$41e8,d0
-    bne     .O42
-    move.w  (a0),d0
-    and.l   #$7,d0
-    or.w    #$2028,d0
-    move.w  d0,(a0)+
-    addq.l  #2,a0
-    bra     INL_OPTI
+	move.w	(a0),d0
+	and.l	#$FFF8,d0
+	cmp.w	#$41e8,d0
+	bne		.O42
+	move.w	(a0),d0
+	and.l	#$7,d0
+	or.w	#$2028,d0
+	move.w	d0,(a0)+
+	addq.l	#2,a0
+	bra		INL_OPTI
 .O42:
-    cmp.w   #$41fa,(a0)
-    bne     .NO
-    move.w  #$203a,(a0)+
-    addq.l  #2,a0
-    bra     INL_OPTI
-.O6:cmp.w   #$207c,(a0)
-    bne     .O61
-    move.w  #$2039,(a0)+
-    addq.l  #4,a0
-    bra     INL_OPTI
+	cmp.w	#$41fa,(a0)
+	bne		.NO
+	move.w	#$203a,(a0)+
+	addq.l	#2,a0
+	bra		INL_OPTI
+.O6:cmp.w	#$207c,(a0)
+	bne		.O61
+	move.w	#$2039,(a0)+
+	addq.l	#4,a0
+	bra		INL_OPTI
 .O61:
-    cmp.w   #$41f9,(a0)
-    bne     .NO
-    move.w  #$2039,(a0)+
-    addq.l  #4,a0
-    bra     INL_OPTI
-.C: move.l  d0,a0
+	cmp.w	#$41f9,(a0)
+	bne		.NO
+	move.w	#$2039,(a0)+
+	addq.l	#4,a0
+	bra		INL_OPTI
+.C: move.l	d0,a0
 ;*-*
 ;; Int
 INL_INT:
-    MOVEQ   #$40,D0
-    BSR     EA_GETEXP
-    MOVE.W  #$3010,(a4)+
-    MOVE.W  #$48c0,(a4)+
-    RTS
+	MOVEQ	#$40,D0
+	BSR		EA_GETEXP
+	MOVE.W	#$3010,(a4)+
+	MOVE.W	#$48c0,(a4)+
+	RTS
 ;*-*
 ;; Char
 INL_CHAR:
-    MOVEQ   #$40,D0
-    BSR     EA_GETEXP
-    move.w  #$7000,(A4)+
-    MOVE.W  #$1010,(a4)+
-    RTS
+	MOVEQ	#$40,D0
+	BSR		EA_GETEXP
+	move.w	#$7000,(A4)+
+	MOVE.W	#$1010,(a4)+
+	RTS
 ;*-*
 ;; And
 INL_AND:
-    move.w  #16,EAREQUEST
-    jsr     EAEXP
-    tst.l   d0
-    bne     .O
-    move.w  .C,(a4)+
-.O: CMP.W   #COM,(A3)+
-    BEQ     .1
-    JMP     ERROR5
+	move.w	#16,EAREQUEST
+	jsr		EAEXP
+	tst.l	d0
+	bne		.O
+	move.w	.C,(a4)+
+.O: CMP.W	#COM,(A3)+
+	BEQ		.1
+	JMP		ERROR5
 .1:
-    jsr     EXP
-    MOVE.W  #$C09f,(A4)+        ; AND.L     D1,D0
-    RTS
-.C: move.l  d0,-(a7)
+	jsr		EXP
+	MOVE.W	#$C09f,(A4)+		; AND.L		D1,D0
+	RTS
+.C: move.l	d0,-(a7)
 ;*-*
 ;; Or
 INL_OR:
-    move.w  #16,EAREQUEST
-    JSR     EAEXP
-    tst.l   d0
-    bne     .O
-    move.w  .C,(a4)+
-.O: CMP.W   #COM,(A3)+
-    BEQ     .1
-    JMP     ERROR5
+	move.w	#16,EAREQUEST
+	JSR		EAEXP
+	tst.l	d0
+	bne		.O
+	move.w	.C,(a4)+
+.O: CMP.W	#COM,(A3)+
+	BEQ		.1
+	JMP		ERROR5
 .1:
-    JSR     EXP
-    MOVE.W  #$809f,(A4)+        ; OR.W      (a7)+,D0
-    RTS
-.C: move.l  d0,-(a7)
+	JSR		EXP
+	MOVE.W	#$809f,(A4)+		; OR.W		(a7)+,D0
+	RTS
+.C: move.l	d0,-(a7)
 ;*-*
 ;; Not
 INL_NOT:
-    JSR     EXP
-    MOVE.W  #$4680,(A4)+        ; NOT.L     D0
-    RTS
+	JSR		EXP
+	MOVE.W	#$4680,(A4)+		; NOT.L		D0
+	RTS
 ;*-*
 ;; PutLong
 INL_PLONG:
-    move.w  #16,EAREQUEST
-    JSR     EAEXP
-    tst.l   d0
-    bne     .O
-    move.w  .C,(a4)+
-.O: CMP.W   #COM,(A3)+
-    BEQ     .1
-    JMP     ERROR5
+	move.w	#16,EAREQUEST
+	JSR		EAEXP
+	tst.l	d0
+	bne		.O
+	move.w	.C,(a4)+
+.O: CMP.W	#COM,(A3)+
+	BEQ		.1
+	JMP		ERROR5
 .1:
-    jsr     EXP
-    MOVE.W  #$205f,(A4)+        ; move.l    (a7)+,a0
-    MOVE.W  #$2080,(A4)+        ; MOVE.L    D0,(A0)
-    RTS
-.C: move.l  d0,-(a7)
+	jsr		EXP
+	MOVE.W	#$205f,(A4)+		; move.l	(a7)+,a0
+	MOVE.W	#$2080,(A4)+		; MOVE.L	D0,(A0)
+	RTS
+.C: move.l	d0,-(a7)
 ;*-*
 ;; PutInt
 INL_PINT:
-    move.w  #16,EAREQUEST
-    JSR     EAEXP
-    tst.l   d0
-    bne     .O
-    move.w  .C,(a4)+
-.O: CMP.W   #COM,(A3)+
-    BEQ     .1
-    JMP     ERROR5
+	move.w	#16,EAREQUEST
+	JSR		EAEXP
+	tst.l	d0
+	bne		.O
+	move.w	.C,(a4)+
+.O: CMP.W	#COM,(A3)+
+	BEQ		.1
+	JMP		ERROR5
 .1:
-    jsr     EXP
-    MOVE.W  #$205f,(A4)+
-    MOVE.W  #$3080,(A4)+        ; MOVE.W    D0,(A0)
-    RTS
-.C: move.l  d0,-(a7)
+	jsr		EXP
+	MOVE.W	#$205f,(A4)+
+	MOVE.W	#$3080,(A4)+		; MOVE.W	D0,(A0)
+	RTS
+.C: move.l	d0,-(a7)
 ;*-*
 ;; PutChar
 INL_PCHAR:
-    move.w  #16,EAREQUEST
-    JSR     EAEXP           ; MOVE.L    D0,-(A7)
-    tst.l   d0
-    bne     .O
-    move.w  .C,(a4)+
-.O: CMP.W   #COM,(A3)+
-    BEQ     .1
-    JMP     ERROR5
+	move.w	#16,EAREQUEST
+	JSR		EAEXP			; MOVE.L	D0,-(A7)
+	tst.l	d0
+	bne		.O
+	move.w	.C,(a4)+
+.O: CMP.W	#COM,(A3)+
+	BEQ		.1
+	JMP		ERROR5
 .1:
-    jsr     EXP
-    MOVe.W  #$205F,(a4)+        ; MOVE.L    (A7)+,A0
-    MOVE.W  #$1080,(A4)+        ; MOVE.B    D0,(A0)
-    RTS
-.C: move.l  d0,-(a7)
+	jsr		EXP
+	MOVe.W	#$205F,(a4)+		; MOVE.L	(A7)+,A0
+	MOVE.W	#$1080,(A4)+		; MOVE.B	D0,(A0)
+	RTS
+.C: move.l	d0,-(a7)
 ;*-*
 ;; Eor
 INL_EOR:
-    move.w  #16,EAREQUEST
-    JSR     EAEXP
-    tst.l   d0
-    bne     .O
-    move.w  .C,(a4)+
-.O: CMP.W   #COM,(A3)+
-    BEQ     .1
-    JMP     ERROR5
+	move.w	#16,EAREQUEST
+	JSR		EAEXP
+	tst.l	d0
+	bne		.O
+	move.w	.C,(a4)+
+.O: CMP.W	#COM,(A3)+
+	BEQ		.1
+	JMP		ERROR5
 .1:
-    JSR     EXP
-    MOVE.l  #$221fB380,(A4)+        ; EOR.L     D1,D0
-    RTS
-.C: move.l  d0,-(a7)
+	JSR		EXP
+	MOVE.l	#$221fB380,(A4)+		; EOR.L		D1,D0
+	RTS
+.C: move.l	d0,-(a7)
 
 ;*-*
 ;; Eval
 INL_EVAL:
-    move.w  #8,EAREQUEST
-    JSR     EAEXP
-    tst.l   d0
-    bne     .O
-    move.w  .C,(a4)+
-.O: MOVE.W  #$4E90,(A4)+        ; JSR       (A0)
-    RTS
-.C: move.l  d0,a0
+	move.w	#8,EAREQUEST
+	JSR		EAEXP
+	tst.l	d0
+	bne		.O
+	move.w	.C,(a4)+
+.O: MOVE.W	#$4E90,(A4)+		; JSR		(A0)
+	RTS
+.C: move.l	d0,a0
 ;*-*
 ;; Even
 INL_EVEN:
-    JSR     EXP
-    move.l  #$02000001,(a4)+
-    move.w  #$57c0,(a4)+
-    jsr     DOEXTL
-    RTS
+	JSR		EXP
+	move.l	#$02000001,(a4)+
+	move.w	#$57c0,(a4)+
+	jsr		DOEXTL
+	RTS
 ;*-*
 ;; Odd
 INL_ODD:
-    JSR     EXP
-    move.l  #$02000001,(a4)+
-    move.w  #$56c0,(a4)+        ; SNE       D0
-    jsr     DOEXTL
-    RTS
+	JSR		EXP
+	move.l	#$02000001,(a4)+
+	move.w	#$56c0,(a4)+		; SNE		D0
+	jsr		DOEXTL
+	RTS
 ;*-*
 ;; Abs
 INL_ABS:
-    JSR     EXP
-    MOVE.L  #$4A806a02,(a4)+        ; TST.L D0/BPL *+2
-    MOVE.W  #$4480,(A4)+            ; NEG.L D0
-    RTS
+	JSR		EXP
+	MOVE.L	#$4A806a02,(a4)+		; TST.L D0/BPL *+2
+	MOVE.W	#$4480,(A4)+			; NEG.L D0
+	RTS
 ;*-*
 ;; Shl
 INL_SHL:
-    move.w  #16,EAREQUEST
-    jsr     EAEXP
-    tst.l   d0
-    bne     .O
-    move.w  .C,(a4)+
-.O: CMP.W   #COM,(A3)+
-    BEQ     .1
-    JMP     ERROR5
+	move.w	#16,EAREQUEST
+	jsr		EAEXP
+	tst.l	d0
+	bne		.O
+	move.w	.C,(a4)+
+.O: CMP.W	#COM,(A3)+
+	BEQ		.1
+	JMP		ERROR5
 .1:
-    move.w  #1,EAREQUEST
-    jsr     EAEXP
-    tst.l   d0
-    bne     .O2
-    move.w  .C2,(A4)+
-.O2:MOVE.W  #$201F,(A4)+        ; MOVE.L    (A7)+,D0
-    MOVE.W  #$E3A0,(A4)+        ; ASL.L     D1,D0
-    RTS
-.C: move.l  d0,-(a7)
-.C2:move.l  d0,d1
+	move.w	#1,EAREQUEST
+	jsr		EAEXP
+	tst.l	d0
+	bne		.O2
+	move.w	.C2,(A4)+
+.O2:MOVE.W	#$201F,(A4)+		; MOVE.L	(A7)+,D0
+	MOVE.W	#$E3A0,(A4)+		; ASL.L		D1,D0
+	RTS
+.C: move.l	d0,-(a7)
+.C2:move.l	d0,d1
 ;*-*
 ;; Shr
 INL_SHR:
-    move.w  #16,EAREQUEST
-    jsr     EAEXP
-    tst.l   d0
-    bne     .O
-    move.w  .C,(a4)+
-.O: CMP.W   #COM,(A3)+
-    BEQ     .1
-    JMP     ERROR5
+	move.w	#16,EAREQUEST
+	jsr		EAEXP
+	tst.l	d0
+	bne		.O
+	move.w	.C,(a4)+
+.O: CMP.W	#COM,(A3)+
+	BEQ		.1
+	JMP		ERROR5
 .1:
-    move.w  #1,EAREQUEST
-    jsr     EAEXP
-    tst.l   d0
-    bne     .O2
-    move.w  .C2,(A4)+
-.O2:MOVE.W  #$201F,(A4)+        ; MOVE.L    (A7)+,D0
-    MOVE.W  #$E2A0,(A4)+        ; ASR.L     D1,D0
-    RTS
-.C: move.l  d0,-(a7)
-.C2:move.l  d0,d1
+	move.w	#1,EAREQUEST
+	jsr		EAEXP
+	tst.l	d0
+	bne		.O2
+	move.w	.C2,(A4)+
+.O2:MOVE.W	#$201F,(A4)+		; MOVE.L	(A7)+,D0
+	MOVE.W	#$E2A0,(A4)+		; ASR.L		D1,D0
+	RTS
+.C: move.l	d0,-(a7)
+.C2:move.l	d0,d1
 ;*-*
 ;; CleanUp
 INL_CLEANUP:
-    jsr     EXP
-    move.l  #$2940ffe4,(a4)+
-    MOVE.L  #$206cFFE8,(A4)+
-    move.w  #$4ed0,(a4)+
-    RTS
+	jsr		EXP
+	move.l	#$2940ffe4,(a4)+
+	MOVE.L	#$206cFFE8,(A4)+
+	move.w	#$4ed0,(a4)+
+	RTS
 ;*-*
 ;; RndQ
 INL_RNDQ:
-    JSR     EXP
-    MOVE.L  #$D0806206,(A4)+        ; ADD.L D0,D0 / BHI.S *+8
-    MOVE.L  #$0A801d87,(A4)+        ; EORI.L    #$1d872b41,D0
-    MOVE.W  #$2b41,(A4)+
-    RTS
+	JSR		EXP
+	MOVE.L	#$D0806206,(A4)+		; ADD.L D0,D0 / BHI.S *+8
+	MOVE.L	#$0A801d87,(A4)+		; EORI.L	#$1d872b41,D0
+	MOVE.W	#$2b41,(A4)+
+	RTS
 ;*-*
 ;; MouseX
 INL_MOUSEX:
-    move.w  #8,EAREQUEST
-    jsr     EAEXP
-    tst.l   d0
-    bne     .O
-    move.w  .C,(a4)+
-.O: move.w  #$7000,(a4)+
-    MOVE.L  #$3028000E,(A4)+
-;    move.w  #$48c0,(a4)+
-    RTS
-.C: move.l  d0,a0
+	move.w	#8,EAREQUEST
+	jsr		EAEXP
+	tst.l	d0
+	bne		.O
+	move.w	.C,(a4)+
+.O: move.w	#$7000,(a4)+
+	MOVE.L	#$3028000E,(A4)+
+;	 move.w	 #$48c0,(a4)+
+	RTS
+.C: move.l	d0,a0
 ;*-*
 ;; MouseY
 INL_MOUSEY:
-    move.w  #8,EAREQUEST
-    jsr     EAEXP
-    tst.l   d0
-    bne     .O
-    move.w  .C,(a4)+
-.O: move.w  #$7000,(a4)+
-    MOVE.L  #$3028000C,(A4)+
-;    move.w  #$48c0,(a4)+
-    RTS
-.C: move.l  d0,a0
+	move.w	#8,EAREQUEST
+	jsr		EAEXP
+	tst.l	d0
+	bne		.O
+	move.w	.C,(a4)+
+.O: move.w	#$7000,(a4)+
+	MOVE.L	#$3028000C,(A4)+
+;	 move.w	 #$48c0,(a4)+
+	RTS
+.C: move.l	d0,a0
 ;*-*
 
 ;; Fabs
 INL_FABS:
-    MOVEQ   #0,D0
-    BSR EA_GETEXP
-    MOVE.L  #$2C6CFFC8,(A4)+
-    MOVE.L  #$4EAEFFCA,(A4)+
-    RTS
+	MOVEQ	#0,D0
+	BSR EA_GETEXP
+	MOVE.L	#$2C6CFFC8,(A4)+
+	MOVE.L	#$4EAEFFCA,(A4)+
+	RTS
 ;*-*
 ;; Floor
 INL_FFLOOR:
-    MOVEQ   #0,D0
-    BSR EA_GETEXP
-    MOVE.L  #$2C6CFFC8,(A4)+
-    MOVE.L  #$4EAEFFA6,(A4)+
-    RTS
+	MOVEQ	#0,D0
+	BSR EA_GETEXP
+	MOVE.L	#$2C6CFFC8,(A4)+
+	MOVE.L	#$4EAEFFA6,(A4)+
+	RTS
 ;*-*
 ;; Fceil
 INL_FCEIL:
-    MOVEQ   #0,D0
-    BSR EA_GETEXP
-    MOVE.L  #$2C6CFFC8,(A4)+
-    MOVE.L  #$4EAEFFA0,(A4)+
-    RTS
+	MOVEQ	#0,D0
+	BSR EA_GETEXP
+	MOVE.L	#$2C6CFFC8,(A4)+
+	MOVE.L	#$4EAEFFA0,(A4)+
+	RTS
 ;*-*
 ;; Fsin
 INL_FSIN:
-    MOVEQ   #0,D0
-    BSR EA_GETEXP
-    MOVE.L  #$2C6CFFC4,(A4)+
-    MOVE.L  #$4EAEFFDC,(A4)+
-    RTS
+	MOVEQ	#0,D0
+	BSR EA_GETEXP
+	MOVE.L	#$2C6CFFC4,(A4)+
+	MOVE.L	#$4EAEFFDC,(A4)+
+	RTS
 ;*-*
 ;; Fcos
 INL_FCOS:
-    MOVEQ   #0,D0
-    BSR EA_GETEXP
-    MOVE.L  #$2C6CFFC4,(A4)+
-    MOVE.L  #$4EAEFFD6,(A4)+
-    RTS
+	MOVEQ	#0,D0
+	BSR EA_GETEXP
+	MOVE.L	#$2C6CFFC4,(A4)+
+	MOVE.L	#$4EAEFFD6,(A4)+
+	RTS
 ;*-*
 ;; Ftan
 INL_FTAN:
-    MOVEQ   #0,D0
-    BSR EA_GETEXP
-    MOVE.L  #$2C6CFFC4,(A4)+
-    MOVE.L  #$4EAEFFD0,(A4)+
-    RTS
+	MOVEQ	#0,D0
+	BSR EA_GETEXP
+	MOVE.L	#$2C6CFFC4,(A4)+
+	MOVE.L	#$4EAEFFD0,(A4)+
+	RTS
 ;*-*
 ;; Fexp
 INL_FEXP:
-    MOVEQ   #0,D0
-    BSR EA_GETEXP
-    MOVE.L  #$2C6CFFC4,(A4)+
-    MOVE.L  #$4EAEFFB2,(A4)+
-    RTS
+	MOVEQ	#0,D0
+	BSR EA_GETEXP
+	MOVE.L	#$2C6CFFC4,(A4)+
+	MOVE.L	#$4EAEFFB2,(A4)+
+	RTS
 ;*-*
 ;; Flog
 INL_FLOG:
-    MOVEQ   #0,D0
-    BSR EA_GETEXP
-    MOVE.L  #$2C6CFFC4,(A4)+
-    MOVE.L  #$4EAEFFAC,(A4)+
-    RTS
+	MOVEQ	#0,D0
+	BSR EA_GETEXP
+	MOVE.L	#$2C6CFFC4,(A4)+
+	MOVE.L	#$4EAEFFAC,(A4)+
+	RTS
 ;*-*
 ;; Fpow
 INL_FPOW:
-    MOVE.L  #$F00,D0            ; move.l    d0,-(a7)
-    BSR EA_GETEXP
-    JSR ASM_COMMA
-    MOVEQ   #0,D0
-    BSR EA_GETEXP
-    MOVE.W  #$221F,(A4)+        ; move.l    (a7)+,d1
-    MOVE.L  #$2C6CFFC4,(A4)+
-    MOVE.L  #$4EAEFFA6,(A4)+
-    RTS
+	MOVE.L	#$F00,D0			; move.l	d0,-(a7)
+	BSR EA_GETEXP
+	JSR ASM_COMMA
+	MOVEQ	#0,D0
+	BSR EA_GETEXP
+	MOVE.W	#$221F,(A4)+		; move.l	(a7)+,d1
+	MOVE.L	#$2C6CFFC4,(A4)+
+	MOVE.L	#$4EAEFFA6,(A4)+
+	RTS
 ;*-*
 ;; Fsqrt
 INL_FSQRT:
-    MOVEQ   #0,D0
-    BSR EA_GETEXP
-    MOVE.L  #$2C6CFFC4,(A4)+
-    MOVE.L  #$4EAEFFA0,(A4)+
-    RTS
+	MOVEQ	#0,D0
+	BSR EA_GETEXP
+	MOVE.L	#$2C6CFFC4,(A4)+
+	MOVE.L	#$4EAEFFA0,(A4)+
+	RTS
 ;*-*
 ;; Flog10
 INL_FLOG10:
-    MOVEQ   #0,D0
-    BSR EA_GETEXP
-    MOVE.L  #$2C6CFFC4,(A4)+
-    MOVE.L  #$4EAEFF82,(A4)+
-    RTS
+	MOVEQ	#0,D0
+	BSR EA_GETEXP
+	MOVE.L	#$2C6CFFC4,(A4)+
+	MOVE.L	#$4EAEFF82,(A4)+
+	RTS
 ;*-*
 ;; Fatan
 INL_FATAN:
-    MOVEQ   #0,D0
-    BSR EA_GETEXP
-    MOVE.L  #$2C6CFFC4,(A4)+
-    MOVE.L  #$4EAEFFE2,(A4)+
-    RTS
+	MOVEQ	#0,D0
+	BSR EA_GETEXP
+	MOVE.L	#$2C6CFFC4,(A4)+
+	MOVE.L	#$4EAEFFE2,(A4)+
+	RTS
 ;*-*
 ;; FsinCos
 INL_FSINCOS:
-    MOVE.L  #$F00,D0            ; move.l    d0,-(a7)
-    BSR EA_GETEXP
-    JSR ASM_COMMA
-    MOVEQ   #0,D0
-    BSR EA_GETEXP
-    MOVE.W  #$205F,(A4)+        ; move.l    (a7)+,A0
-    MOVE.L  #$2C6CFFC4,(A4)+
-    MOVE.L  #$4EAEFFCA,(A4)+
-    RTS
+	MOVE.L	#$F00,D0			; move.l	d0,-(a7)
+	BSR EA_GETEXP
+	JSR ASM_COMMA
+	MOVEQ	#0,D0
+	BSR EA_GETEXP
+	MOVE.W	#$205F,(A4)+		; move.l	(a7)+,A0
+	MOVE.L	#$2C6CFFC4,(A4)+
+	MOVE.L	#$4EAEFFCA,(A4)+
+	RTS
 ;*-*
 ;; FsinH
 INL_FSINH:
-    MOVEQ   #0,D0
-    BSR EA_GETEXP
-    MOVE.L  #$2C6CFFC4,(A4)+
-    MOVE.L  #$4EAEFFC4,(A4)+
-    RTS
+	MOVEQ	#0,D0
+	BSR EA_GETEXP
+	MOVE.L	#$2C6CFFC4,(A4)+
+	MOVE.L	#$4EAEFFC4,(A4)+
+	RTS
 
 
-    MOVE.L  4(A7),D0
-    MOVE.L  -60(A4),A6
-    JSR 60(A6)
-    RTS
+	MOVE.L	4(A7),D0
+	MOVE.L	-60(A4),A6
+	JSR 60(A6)
+	RTS
 ;*-*
 ;; FcosH
 INL_FCOSH:
-    MOVEQ   #0,D0
-    BSR EA_GETEXP
-    MOVE.L  #$2C6CFFC4,(A4)+
-    MOVE.L  #$4EAEFFbe,(A4)+
-    RTS
+	MOVEQ	#0,D0
+	BSR EA_GETEXP
+	MOVE.L	#$2C6CFFC4,(A4)+
+	MOVE.L	#$4EAEFFbe,(A4)+
+	RTS
 ;*-*
 ;; FtanH
 INL_FTANH:
-    MOVEQ   #0,D0
-    BSR EA_GETEXP
-    MOVE.L  #$2C6CFFC4,(A4)+
-    MOVE.L  #$4EAEFFb8,(A4)+
-    RTS
+	MOVEQ	#0,D0
+	BSR EA_GETEXP
+	MOVE.L	#$2C6CFFC4,(A4)+
+	MOVE.L	#$4EAEFFb8,(A4)+
+	RTS
 ;*-*
 ;; Ftieee
 INL_FTIEEE:
-    MOVEQ   #0,D0
-    BSR EA_GETEXP
-    MOVE.L  #$2C6CFFC4,(A4)+
-    MOVE.L  #$4EAEFF9A,(A4)+
-    RTS
+	MOVEQ	#0,D0
+	BSR EA_GETEXP
+	MOVE.L	#$2C6CFFC4,(A4)+
+	MOVE.L	#$4EAEFF9A,(A4)+
+	RTS
 ;*-*
 ;; Fieee
 INL_FFIEEE:
-    MOVEQ   #0,D0
-    BSR EA_GETEXP
-    MOVE.L  #$2C6CFFC4,(A4)+
-    MOVE.L  #$4EAEFF94,(A4)+
-    RTS
+	MOVEQ	#0,D0
+	BSR EA_GETEXP
+	MOVE.L	#$2C6CFFC4,(A4)+
+	MOVE.L	#$4EAEFF94,(A4)+
+	RTS
 ;*-*
 ;; Fasin
 INL_FASIN:
-    MOVEQ   #0,D0
-    BSR EA_GETEXP
-    MOVE.L  #$2C6CFFC4,(A4)+
-    MOVE.L  #$4EAEFF8e,(A4)+
-    RTS
+	MOVEQ	#0,D0
+	BSR EA_GETEXP
+	MOVE.L	#$2C6CFFC4,(A4)+
+	MOVE.L	#$4EAEFF8e,(A4)+
+	RTS
 ;*-*
 ;; Facos
 INL_FACOS:
-    MOVEQ   #0,D0
-    BSR EA_GETEXP
-    MOVE.L  #$2C6CFFC4,(A4)+
-    MOVE.L  #$4EAEFF88,(A4)+
-    RTS
+	MOVEQ	#0,D0
+	BSR EA_GETEXP
+	MOVE.L	#$2C6CFFC4,(A4)+
+	MOVE.L	#$4EAEFF88,(A4)+
+	RTS
 ;*-*
 
 ;; MsgCode
 INL_MSGCODE:
-    MOVE.w  #$7000,(a4)+
-    move.l  #$302cffbc,(a4)+
-    RTS
+	MOVE.w	#$7000,(a4)+
+	move.l	#$302cffbc,(a4)+
+	RTS
 ;*-*
 ;; MsgQual
 INL_MSGQUAL:
-    move.w  #$7000,(a4)+
-    move.l  #$302cffbe,(a4)+
-    RTS
+	move.w	#$7000,(a4)+
+	move.l	#$302cffbe,(a4)+
+	RTS
 ;*-*
 ;; MsgIaddr
 INL_MSGIADR:
-    MOVE.L  #$202cffb8,(a4)+
-    RTS
+	MOVE.L	#$202cffb8,(a4)+
+	RTS
 ;*-*
 
 ;; Car
 INL_CAR:
-    MOVEQ   #$40,D0
-    BSR EA_GETEXP
-    MOVE.W  #$2010,(a4)+
-    RTS
+	MOVEQ	#$40,D0
+	BSR EA_GETEXP
+	MOVE.W	#$2010,(a4)+
+	RTS
 ;*-*
 ;; Cdr
 INL_CDR:
-    MOVEQ   #$40,D0
-    BSR EA_GETEXP
-    MOVE.L  #$20280004,(a4)+
-    RTS
+	MOVEQ	#$40,D0
+	BSR EA_GETEXP
+	MOVE.L	#$20280004,(a4)+
+	RTS
 ;; Mul
 INL_MUL020:
-    MOVE.W  #16,EAREQUEST
-    JSR     EAEXP
-    tst.l   d0
-    bne     .O
-    move.w  .C,(a4)+
-.O: CMP.W   #COM,(A3)+
-    BEQ     .1
-    JMP     ERROR5
+	MOVE.W	#16,EAREQUEST
+	JSR		EAEXP
+	tst.l	d0
+	bne		.O
+	move.w	.C,(a4)+
+.O: CMP.W	#COM,(A3)+
+	BEQ		.1
+	JMP		ERROR5
 .1:
-    JSR     EXP
-.O2:mOVE.L  #$4C1F0c00,(a4)+    ; MULS.L    (A7)+,D1:D0
-    RTS
-.C: move.l  d0,-(a7)
-.C2:move.l  d0,d1
+	JSR		EXP
+.O2:mOVE.L	#$4C1F0c00,(a4)+	; MULS.L	(A7)+,D1:D0
+	RTS
+.C: move.l	d0,-(a7)
+.C2:move.l	d0,d1
 ;*-*
 ;; Div
 INL_DIV020:
-    MOVE.W  #16,EAREQUEST
-    JSR     EAEXP
-    tst.l   d0
-    bne     .O
-    move.w  .C,(a4)+
-.O: CMP.W   #COM,(A3)+
-    BEQ     .1
-    JMP     ERROR5
+	MOVE.W	#16,EAREQUEST
+	JSR		EAEXP
+	tst.l	d0
+	bne		.O
+	move.w	.C,(a4)+
+.O: CMP.W	#COM,(A3)+
+	BEQ		.1
+	JMP		ERROR5
 .1:
-    move.w  #2,EAREQUEST
-    JSR     EAEXP
-    tst.l   d0
-    bne     .O2
-    move.w  .C2,(a4)+
-.O2:move.w  #$201f,(a4)+
-    MOVE.L  #$4C420801,(a4)+    ; DIVSL.L  D2,D1:D0
-    RTS
-.C: move.l  d0,-(a7)
-.C2:move.l  d0,d2
+	move.w	#2,EAREQUEST
+	JSR		EAEXP
+	tst.l	d0
+	bne		.O2
+	move.w	.C2,(a4)+
+.O2:move.w	#$201f,(a4)+
+	MOVE.L	#$4C420801,(a4)+	; DIVSL.L	D2,D1:D0
+	RTS
+.C: move.l	d0,-(a7)
+.C2:move.l	d0,d2
 ;*-*
 ;; Mod
 INL_MOD020:
-    move.w  #16,EAREQUEST
-    jsr     EAEXP
-    tst.l   d0
-    bne     .O
-    move.w  .C,(A4)+
-.O: CMP.W   #COM,(A3)+
-    BEQ     .1
-    JMP     ERROR5
+	move.w	#16,EAREQUEST
+	jsr		EAEXP
+	tst.l	d0
+	bne		.O
+	move.w	.C,(A4)+
+.O: CMP.W	#COM,(A3)+
+	BEQ		.1
+	JMP		ERROR5
 .1:
-    move.w  #2,EAREQUEST
-    jsr     EAEXP
-    tst.l   d0
-    bne     .O2
-    move.w  .C2,(A4)+
-.O2:mOVE.W  #$221F,(A4)+        ; MOVE.L    (A7)+,D1
-    MOVE.L  #$4C421800,(a4)+    ; DIVSL.L    D2,D0:D1
-    RTS                         ; D0=MODULO, D1=A/B
-.C: move.l  d0,-(a7)
-.C2:move.l  d0,d2
+	move.w	#2,EAREQUEST
+	jsr		EAEXP
+	tst.l	d0
+	bne		.O2
+	move.w	.C2,(A4)+
+.O2:mOVE.W	#$221F,(A4)+		; MOVE.L	(A7)+,D1
+	MOVE.L	#$4C421800,(a4)+	; DIVSL.L	 D2,D0:D1
+	RTS							; D0=MODULO, D1=A/B
+.C: move.l	d0,-(a7)
+.C2:move.l	d0,d2
 ;*-*
 
 
 ;; Lsl
 INL_LSL:
-    MOVE.L  #$F00,D0
-    BSR     EA_GETEXP
-    CMP.W   #COM,(A3)+
-    BEQ     .1
-    JMP     ERROR5
+	MOVE.L	#$F00,D0
+	BSR		EA_GETEXP
+	CMP.W	#COM,(A3)+
+	BEQ		.1
+	JMP		ERROR5
 .1:
-    MOVE.L  #$200,D0
-    BSR     EA_GETEXP
-    MOVE.W  #$201F,(A4)+        ; MOVE.L    (A7)+,D0
-    MOVE.W  #$E3A8,(A4)+        ; LSL.L     D1,D0
-    RTS
+	MOVE.L	#$200,D0
+	BSR		EA_GETEXP
+	MOVE.W	#$201F,(A4)+		; MOVE.L	(A7)+,D0
+	MOVE.W	#$E3A8,(A4)+		; LSL.L		D1,D0
+	RTS
 ;*-*
 ;; Lsr
 INL_LSR:
-    MOVE.L  #$F00,D0
-    BSR     EA_GETEXP
-    CMP.W   #COM,(A3)+
-    BEQ     .1
-    JMP     ERROR5
+	MOVE.L	#$F00,D0
+	BSR		EA_GETEXP
+	CMP.W	#COM,(A3)+
+	BEQ		.1
+	JMP		ERROR5
 .1:
-    MOVE.L  #$200,D0
-    BSR     EA_GETEXP
-    MOVE.W  #$201F,(A4)+        ; MOVE.L    (A7)+,D0
-    MOVE.W  #$E2A8,(A4)+        ; LSR.L     D1,D0
-    RTS
+	MOVE.L	#$200,D0
+	BSR		EA_GETEXP
+	MOVE.W	#$201F,(A4)+		; MOVE.L	(A7)+,D0
+	MOVE.W	#$E2A8,(A4)+		; LSR.L		D1,D0
+	RTS
 ;*-*
 ;; Byte
 INL_BYTE:
-    MOVEQ   #$40,D0
-    BSR     EA_GETEXP
-    MOVE.W  #$1010,(a4)+
-    MOVE.L  #$488048c0,(a4)+
-    RTS
+	MOVEQ	#$40,D0
+	BSR		EA_GETEXP
+	MOVE.W	#$1010,(a4)+
+	MOVE.L	#$488048c0,(a4)+
+	RTS
 ;*-*
 ;; WORD
 INL_WORD:
-    MOVEQ   #$40,D0
-    BSR     EA_GETEXP
-    move.w  #$7000,(A4)+
-    MOVE.W  #$3010,(a4)+
-    RTS
+	MOVEQ	#$40,D0
+	BSR		EA_GETEXP
+	move.w	#$7000,(A4)+
+	MOVE.W	#$3010,(a4)+
+	RTS
 ;*-*
 ;; Byte
 INL_BYTE020:
-    MOVEQ   #$40,D0
-    BSR     EA_GETEXP
-    MOVE.W  #$1010,(a4)+
-    MOVE.W	#$49C0,(A4)+
-    RTS
+	MOVEQ	#$40,D0
+	BSR		EA_GETEXP
+	MOVE.W	#$1010,(a4)+
+	MOVE.W	#$49C0,(A4)+
+	RTS
 ;*-*
 ;; Fcompare
 INL_FCOMPARE:
-    MOVE.L  #$F00,D0            ; move.l    d0,-(a7)
-    BSR EA_GETEXP
-    JSR ASM_COMMA
-    MOVEQ   #0,D0
-    BSR EA_GETEXP
-    MOVE.L  #$2200201F,(A4)+        ; move.l d0,d1  move.l    (a7)+,d0
-    
-    MOVE.L  #$2C6CFFC8,(A4)+
-    MOVE.L  #$4EAEFFD6,(A4)+
-    RTS
+	MOVE.L	#$F00,D0			; move.l	d0,-(a7)
+	BSR EA_GETEXP
+	JSR ASM_COMMA
+	MOVEQ	#0,D0
+	BSR EA_GETEXP
+	MOVE.L	#$2200201F,(A4)+		; move.l d0,d1	move.l		(a7)+,d0
+	
+	MOVE.L	#$2C6CFFC8,(A4)+
+	MOVE.L	#$4EAEFFD6,(A4)+
+	RTS
 ;*-*
 ;; Inline - optimized version end
 INL_OPTI:
-    move.l  a0,a4
-    rts
+	move.l	a0,a4
+	rts
 ;*-*
 ;; Rol
 INL_ROL:
-    move.w  #16,EAREQUEST
-    jsr     EAEXP
-    tst.l   d0
-    bne     .O
-    move.w  .C,(a4)+
-.O: CMP.W   #COM,(A3)+
-    BEQ     .1
-    JMP     ERROR5
+	move.w	#16,EAREQUEST
+	jsr		EAEXP
+	tst.l	d0
+	bne		.O
+	move.w	.C,(a4)+
+.O: CMP.W	#COM,(A3)+
+	BEQ		.1
+	JMP		ERROR5
 .1:
-    move.w  #1,EAREQUEST
-    jsr     EAEXP
-    tst.l   d0
-    bne     .O2
-    move.w  .C2,(A4)+
-.O2:MOVE.W  #$201F,(A4)+        ; MOVE.L    (A7)+,D0
-    MOVE.W  #$E3B8,(A4)+        ; ROL.L     D1,D0
-    RTS
-.C: move.l  d0,-(a7)
-.C2:move.l  d0,d1
+	move.w	#1,EAREQUEST
+	jsr		EAEXP
+	tst.l	d0
+	bne		.O2
+	move.w	.C2,(A4)+
+.O2:MOVE.W	#$201F,(A4)+		; MOVE.L	(A7)+,D0
+	MOVE.W	#$E3B8,(A4)+		; ROL.L		D1,D0
+	RTS
+.C: move.l	d0,-(a7)
+.C2:move.l	d0,d1
 ;*-*
 ;; Ror
 INL_ROR:
-    move.w  #16,EAREQUEST
-    jsr     EAEXP
-    tst.l   d0
-    bne     .O
-    move.w  .C,(a4)+
-.O: CMP.W   #COM,(A3)+
-    BEQ     .1
-    JMP     ERROR5
+	move.w	#16,EAREQUEST
+	jsr		EAEXP
+	tst.l	d0
+	bne		.O
+	move.w	.C,(a4)+
+.O: CMP.W	#COM,(A3)+
+	BEQ		.1
+	JMP		ERROR5
 .1:
-    move.w  #1,EAREQUEST
-    jsr     EAEXP
-    tst.l   d0
-    bne     .O2
-    move.w  .C2,(A4)+
-.O2:MOVE.W  #$201F,(A4)+        ; MOVE.L    (A7)+,D0
-    MOVE.W  #$E2B8,(A4)+        ; ROR.L     D1,D0
-    RTS
-.C: move.l  d0,-(a7)
-.C2:move.l  d0,d1
+	move.w	#1,EAREQUEST
+	jsr		EAEXP
+	tst.l	d0
+	bne		.O2
+	move.w	.C2,(A4)+
+.O2:MOVE.W	#$201F,(A4)+		; MOVE.L	(A7)+,D0
+	MOVE.W	#$E2B8,(A4)+		; ROR.L		D1,D0
+	RTS
+.C: move.l	d0,-(a7)
+.C2:move.l	d0,d1
 ;*-*
 
 
@@ -30996,8 +30996,8 @@ INL_ROR:
 ;	ALL BUILDIN E FUNCTIONS					;
 ; *************************************************************	;
 
-      EFUNCFLAGSTAB:
-	DC.B	0,0,0,32,32,0,0,0,0,0	;  1-10
+		EFUNCFLAGSTAB:
+	DC.B	0,0,0,32,32,0,0,0,0,0	;	1-10
 	DC.B	0,0,64,64,64,64,64,64,0,64	; 11-20
 	DC.B	0,0,64,64,64,32,32,0,0,0	; 21-30
 	DC.B	0,0,0,0,0,0,0,0,0,0	; 31-40
@@ -31006,7 +31006,7 @@ INL_ROR:
 	DC.B	0,0,0,64,64,64,0,0,0,0	; 61-70
 	DC.B	0,0,0,0,0,64,64,64,0,64	; 71-80
 	DC.B	0,64,0,0,0,0,0,0,0,0	; 81-90
-	DC.B	0,0,0,0,0,0,1,1,64+1,64+1   ; 91-100
+	DC.B	0,0,0,0,0,0,1,1,64+1,64+1	; 91-100
 	DC.B	64+1,64+2,64+2,64+2,64+2,64+2,64+2,64+2,64+2,0	; 101-110
 	DC.B	0,0,0,0,0,0,0,0,64,64	; 111-120
 	DC.B	0,0,64+2,64+2,64+2,64+2,64+2,64+2,64+2,64+2	; 121-130
@@ -31020,20 +31020,20 @@ INL_ROR:
 	DC.B	0,0,0,0,0,0,0,0,0,0	; 201-210
 
 ; BITS: 0 = USES MATHBAS
-;       1 = USES MATHTRANS
-;       2 = USES POOLS (AND V39)
-;       3 = NEEDS V37
-;       4 = autoclose files
-;       5 = not pure
-;       6 = inline
+;		1 = USES MATHTRANS
+;		2 = USES POOLS (AND V39)
+;		3 = NEEDS V37
+;		4 = autoclose files
+;		5 = not pure
+;		6 = inline
 ;
 
 FOFF		= $100
 NREFUNC		= 202
 NRLEGEFUNC = 131
-EFUNCENTRYSIZE=16   ;size of efunctab entry (eg 4 LONGWORD entries)
+EFUNCENTRYSIZE=16	;size of efunctab entry (eg 4 LONGWORD entries)
 
-      EFUNCTAB:
+		EFUNCTAB:
 	DC.L	.1,I_WRITEF,-1,0	; = WRITEF SPECIAL ARGS
 	DC.L	.2,I_MUL,2,0
 	DC.L	.3,I_DIV,2,0
@@ -31172,73 +31172,73 @@ EFUNCENTRYSIZE=16   ;size of efunctab entry (eg 4 LONGWORD entries)
 	DC.L	.136,I_GETA4,0,0
 	DC.L	.137,I_ASTRINGF,-2,0
 
-  DC.L  .138,   I_DOMETHOD,     -1,0
-  DC.L  .139,   I_DOMETHODA,    2,0
-  DC.L  .140,   I_CRCMETHOD,    -2,0
-  DC.L  .141,   I_CRCMETHODA,   3,0
-  DC.L  .142,   I_DOSMETHOD,    -2,0
-  DC.L  .143,   I_DOSMETHODA,   3,0
-  DC.L  .144,   I_SET,          -1,0
-  DC.L  .145,   I_SETS,         3,0
-  DC.L  .146,   I_GET,          3,0
-  DC.L  .147,   I_GETS,         2,0
-  DC.L  .148,   I_CTRLD,        0,0
-  Dc.L  .149,   I_CTRLE,        0,0
-  DC.L  .150,   I_CTRLF,        0,0
-  DC.L  .151,   I_CHK,          1,0
-  DC.L  .152,   I_EOF,          1,0
-  DC.L  .153,   I_FOPEN,        2,0
-  DC.L  .154,   I_FCLOSE,       1,0
-  DC.L  .155,   I_ALLOC,        1,0
-  DC.L  .156,   I_FREE,         1,0
-  DC.L  .157,   I_PUTF,         -2,0
-  DC.L  .158,   I_PUTF37,        -2,0
-  DC.L	.159,   I_WRITEF37,     -1,0
-  DC.L  .160,   I_READB,        4,0
-  DC.L  .161,   I_WRITEB,       4,0
-  DC.L  .162,   I_SIZE,         1,0
-  DC.L  .163,   I_LSL,          2,0
-  DC.L  .164,   I_LSR,          2,0  
-  DC.L  .165,   I_STRADDCHAR,   2,0  
-  DC.L  .166,   I_UPPERCHAR,   1,0  
-  DC.L  .167,   I_LOWERCHAR,   1,0  
-  DC.L  .168,   I_LISTADDITEM, 2,0  
-  DC.L  .169,   I_STRINS, 3,-1
-  DC.L  .170,   I_STRREM, 3,$FF
-  DC.L	.171,   I_MUL020,2,0
-  DC.L	.172,   I_DIV020,2,0
-  DC.L	.173,   I_LONG020,1,0
-  DC.L	.174,   I_INT020,1,0
-  DC.L	.175,   I_CHAR020,1,0
-  DC.L	.176,   I_MOD020,2,0   ;I_MOD020
-  DC.L	.177,   I_MEMFILL,3,0
-  DC.L	.178,   I_ASTRCLONE,2,$FF
-  DC.L	.179,   I_LISTINSITEM,3,0
-  DC.L	.180,   I_LISTREMITEM,2,0
-  DC.L	.181,   I_LISTSWAPITEM,3,0
-  DC.L	.182,   I_ENDSWITH,2,0
-  DC.L	.183,   I_ASTPCOPY,3,$FF
-  DC.L	.184,   I_USEDSTACK,0,0
-  DC.L	.185,   I_STACKSIZE,0,0
-  DC.L  .186,   I_BYTE,1,0
-  DC.L  .187,   I_WORD,1,0
-  DC.L  .188,   I_BYTE020,1,0
-  DC.L  .189,   I_WORD020,1,0
-  DC.L	.190,   I_PUTCHAR,2,0
-  DC.L	.191,   I_PUTINT,2,0
-  DC.L	.192,   I_COMPARE,2,0
-  DC.L	.193,   I_UCOMPARE,2,0
-  DC.L	.194,   I_FCOMPARE,2,0
-  DC.L	.195,   I_STRCOMPARE,3,$FF
-  DC.L	.196,   I_SELECTFIRST,3,0
-  DC.L	.197,   I_ROL,2,0
-  DC.L	.198,   I_ROR,2,0
-  DC.L	.199,   I_LISTITEM020,2,0
-  DC.L  .200,   I_CHARINSTR,3,-1
-  DC.L  .201,   I_CHARINSTRI,3,-1
-  DC.L	.202,   I_MEMCMP,3,0
+	DC.L	.138,	I_DOMETHOD,		-1,0
+	DC.L	.139,	I_DOMETHODA,	2,0
+	DC.L	.140,	I_CRCMETHOD,	-2,0
+	DC.L	.141,	I_CRCMETHODA,	3,0
+	DC.L	.142,	I_DOSMETHOD,	-2,0
+	DC.L	.143,	I_DOSMETHODA,	3,0
+	DC.L	.144,	I_SET,			-1,0
+	DC.L	.145,	I_SETS,			3,0
+	DC.L	.146,	I_GET,			3,0
+	DC.L	.147,	I_GETS,			2,0
+	DC.L	.148,	I_CTRLD,		0,0
+	Dc.L	.149,	I_CTRLE,		0,0
+	DC.L	.150,	I_CTRLF,		0,0
+	DC.L	.151,	I_CHK,			1,0
+	DC.L	.152,	I_EOF,			1,0
+	DC.L	.153,	I_FOPEN,		2,0
+	DC.L	.154,	I_FCLOSE,		1,0
+	DC.L	.155,	I_ALLOC,		1,0
+	DC.L	.156,	I_FREE,			1,0
+	DC.L	.157,	I_PUTF,			-2,0
+	DC.L	.158,	I_PUTF37,		 -2,0
+	DC.L	.159,	I_WRITEF37,		-1,0
+	DC.L	.160,	I_READB,		4,0
+	DC.L	.161,	I_WRITEB,		4,0
+	DC.L	.162,	I_SIZE,			1,0
+	DC.L	.163,	I_LSL,			2,0
+	DC.L	.164,	I_LSR,			2,0	 
+	DC.L	.165,	I_STRADDCHAR,	2,0	 
+	DC.L	.166,	I_UPPERCHAR,	 1,0	
+	DC.L	.167,	I_LOWERCHAR,	 1,0	
+	DC.L	.168,	I_LISTADDITEM, 2,0	
+	DC.L	.169,	I_STRINS, 3,-1
+	DC.L	.170,	I_STRREM, 3,$FF
+	DC.L	.171,	I_MUL020,2,0
+	DC.L	.172,	I_DIV020,2,0
+	DC.L	.173,	I_LONG020,1,0
+	DC.L	.174,	I_INT020,1,0
+	DC.L	.175,	I_CHAR020,1,0
+	DC.L	.176,	I_MOD020,2,0	 ;I_MOD020
+	DC.L	.177,	I_MEMFILL,3,0
+	DC.L	.178,	I_ASTRCLONE,2,$FF
+	DC.L	.179,	I_LISTINSITEM,3,0
+	DC.L	.180,	I_LISTREMITEM,2,0
+	DC.L	.181,	I_LISTSWAPITEM,3,0
+	DC.L	.182,	I_ENDSWITH,2,0
+	DC.L	.183,	I_ASTPCOPY,3,$FF
+	DC.L	.184,	I_USEDSTACK,0,0
+	DC.L	.185,	I_STACKSIZE,0,0
+	DC.L	.186,	I_BYTE,1,0
+	DC.L	.187,	I_WORD,1,0
+	DC.L	.188,	I_BYTE020,1,0
+	DC.L	.189,	I_WORD020,1,0
+	DC.L	.190,	I_PUTCHAR,2,0
+	DC.L	.191,	I_PUTINT,2,0
+	DC.L	.192,	I_COMPARE,2,0
+	DC.L	.193,	I_UCOMPARE,2,0
+	DC.L	.194,	I_FCOMPARE,2,0
+	DC.L	.195,	I_STRCOMPARE,3,$FF
+	DC.L	.196,	I_SELECTFIRST,3,0
+	DC.L	.197,	I_ROL,2,0
+	DC.L	.198,	I_ROR,2,0
+	DC.L	.199,	I_LISTITEM020,2,0
+	DC.L	.200,	I_CHARINSTR,3,-1
+	DC.L	.201,	I_CHARINSTRI,3,-1
+	DC.L	.202,	I_MEMCMP,3,0
 
-  DC.L	0,I_CODEEND,0,0
+	DC.L	0,I_CODEEND,0,0
 
 .1:	DC.B	'WriteF',0
 .2:	DC.B	'Mul',0
@@ -31377,74 +31377,74 @@ EFUNCENTRYSIZE=16   ;size of efunctab entry (eg 4 LONGWORD entries)
 .135:	DC.B	'ListClone',0
 .136:	DC.B	'GetA4',0
 .137:	DC.B	'AstringF',0
-.138: DC.B    'DoMethod',0
-.139: DC.B    'DoMethodA',0
-.140: DC.B    'CoerceMethod',0
-.141: DC.B    'CoerceMethodA',0
-.142: DC.B    'DoSuperMethod',0
-.143: DC.B    'DoSuperMethodA',0
-.144: dc.b    'Set',0
-.145: dc.b    'Sets',0
-.146: dc.b    'Get',0
-.147: dc.b    'Gets',0
-.148: DC.B    'CtrlD',0
-.149: DC.B    'CtrlE',0
-.150: DC.B    'CtrlF',0
-.151: DC.B    'Chk',0
-.152: DC.B    'Eof',0
-.153: DC.B    'Fopen',0
-.154: DC.B    'Fclose',0
-.155: DC.B    'Alloc',0
-.156: DC.B    'Free',0
-.157: DC.B    'PutF',0
-.158: DC.B    'PutF',0    ;V37 variant
-.159: DC.B    'WriteF',0  ;V37 variant
-.160: DC.B    'ReadB',0
-.161: DC.B    'WriteB',0
-.162: DC.B    'Size',0
-.163: DC.B    'Lsl',0
-.164: DC.B    'Lsr',0
-.165: DC.B    'StrAddChar',0
-.166: DC.B    'UpperChar',0
-.167: DC.B    'LowerChar',0
-.168: DC.B    'ListAddItem',0
-.169: DC.B    'StrIns',0
-.170: DC.B    'StrRem',0
-.171: DC.B    'Mul',0   ;020 variant
-.172: DC.B    'Div',0   ;020 variant
-.173: DC.B    'Long',0   ;020 variant
-.174: DC.B    'Int',0   ;020 variant
-.175: DC.B    'Char',0   ;020 variant
-.176: DC.B    'Mod',0   ;020 variant
-.177: DC.B    'MemFill',0
-.178: DC.B    'AstrClone',0
-.179: DC.B    'ListInsItem',0
-.180: DC.B    'ListRemItem',0
-.181: DC.B    'ListSwapItem',0
-.182: DC.B    'EndsWith',0
-.183: DC.B    'AstpCopy',0
-.184: DC.B    'UsedStack',0
-.185: DC.B    'TotalStack',0
-.186: DC.B    'Byte',0
-.187: DC.B    'Word',0
-.188: DC.B    'Byte',0   ;020 variant
-.189: DC.B    'Word',0   ;020 variant
-.190:	DC.B    'PutByte',0
-.191:	DC.B    'PutWord',0
-.192:	DC.B    'Compare',0
-.193:	DC.B    'Ucompare',0
-.194:	DC.B    'Fcompare',0
-.195:	DC.B    'StrCompare',0
-.196:	DC.B    'SelectFirst',0
-.197:	DC.B    'Rol',0
-.198:	DC.B    'Ror',0
-.199: DC.B    'ListItem',0   ;020 variant
-.200: DC.B    'CharInStr',0
-.201: DC.B    'CharInStri',0
-.202: DC.B    'MemCompare',0
+.138: DC.B		'DoMethod',0
+.139: DC.B		'DoMethodA',0
+.140: DC.B		'CoerceMethod',0
+.141: DC.B		'CoerceMethodA',0
+.142: DC.B		'DoSuperMethod',0
+.143: DC.B		'DoSuperMethodA',0
+.144: dc.b		'Set',0
+.145: dc.b		'Sets',0
+.146: dc.b		'Get',0
+.147: dc.b		'Gets',0
+.148: DC.B		'CtrlD',0
+.149: DC.B		'CtrlE',0
+.150: DC.B		'CtrlF',0
+.151: DC.B		'Chk',0
+.152: DC.B		'Eof',0
+.153: DC.B		'Fopen',0
+.154: DC.B		'Fclose',0
+.155: DC.B		'Alloc',0
+.156: DC.B		'Free',0
+.157: DC.B		'PutF',0
+.158: DC.B		'PutF',0		;V37 variant
+.159: DC.B		'WriteF',0	;V37 variant
+.160: DC.B		'ReadB',0
+.161: DC.B		'WriteB',0
+.162: DC.B		'Size',0
+.163: DC.B		'Lsl',0
+.164: DC.B		'Lsr',0
+.165: DC.B		'StrAddChar',0
+.166: DC.B		'UpperChar',0
+.167: DC.B		'LowerChar',0
+.168: DC.B		'ListAddItem',0
+.169: DC.B		'StrIns',0
+.170: DC.B		'StrRem',0
+.171: DC.B		'Mul',0	;020 variant
+.172: DC.B		'Div',0	;020 variant
+.173: DC.B		'Long',0	 ;020 variant
+.174: DC.B		'Int',0	;020 variant
+.175: DC.B		'Char',0	 ;020 variant
+.176: DC.B		'Mod',0	;020 variant
+.177: DC.B		'MemFill',0
+.178: DC.B		'AstrClone',0
+.179: DC.B		'ListInsItem',0
+.180: DC.B		'ListRemItem',0
+.181: DC.B		'ListSwapItem',0
+.182: DC.B		'EndsWith',0
+.183: DC.B		'AstpCopy',0
+.184: DC.B		'UsedStack',0
+.185: DC.B		'TotalStack',0
+.186: DC.B		'Byte',0
+.187: DC.B		'Word',0
+.188: DC.B		'Byte',0	 ;020 variant
+.189: DC.B		'Word',0	 ;020 variant
+.190:	DC.B	'PutByte',0
+.191:	DC.B	'PutWord',0
+.192:	DC.B	'Compare',0
+.193:	DC.B	'Ucompare',0
+.194:	DC.B	'Fcompare',0
+.195:	DC.B	'StrCompare',0
+.196:	DC.B	'SelectFirst',0
+.197:	DC.B	'Rol',0
+.198:	DC.B	'Ror',0
+.199: DC.B		'ListItem',0	 ;020 variant
+.200: DC.B		'CharInStr',0
+.201: DC.B		'CharInStri',0
+.202: DC.B		'MemCompare',0
 
-     EVEN
-      EFUNCSIZES:
+	 EVEN
+		EFUNCSIZES:
 	DC.L	E_WRITEF-I_WRITEF
 	DC.L	E_MUL-I_MUL
 	DC.L	E_DIV-I_DIV
@@ -31582,71 +31582,71 @@ EFUNCENTRYSIZE=16   ;size of efunctab entry (eg 4 LONGWORD entries)
 	DC.L	E_LISTCLONE-I_LISTCLONE
 	DC.L	E_GETA4-I_GETA4
 	DC.L	E_ASTRINGF-I_ASTRINGF
-  DC.L  E_DOMETHOD-I_DOMETHOD
-  DC.L  E_DOMETHODA-I_DOMETHODA
-  DC.L  E_CRCMETHOD-I_CRCMETHOD
-  DC.L  E_CRCMETHODA-I_CRCMETHODA
-  DC.L  E_DOSMETHOD-I_DOSMETHOD
-  DC.L  E_DOSMETHODA-I_DOSMETHODA
-  DC.L  E_SET-I_SET
-  DC.L  E_SETS-I_SETS
-  DC.L  E_GET-I_GET
-  DC.L  E_GETS-I_GETS
-  DC.L  E_CTRLD-I_CTRLD
-  Dc.L  E_CTRLE-I_CTRLE
-  DC.L  E_CTRLF-I_CTRLF
-  DC.L  E_CHK-I_CHK
-  DC.L  E_EOF-I_EOF
-  DC.L  E_FOPEN-I_FOPEN
-  DC.L  E_FCLOSE-I_FCLOSE
-  DC.L  E_ALLOC-I_ALLOC
-  DC.L  E_FREE-I_FREE
-  DC.L  E_PUTF-I_PUTF
-  DC.L  E_PUTF37-I_PUTF37
-  DC.L	E_WRITEF37-I_WRITEF37
-  DC.L  E_READB-I_READB
-  DC.L  E_WRITEB-I_WRITEB
-  DC.L  E_SIZE-I_SIZE
-  DC.L  E_LSL-I_LSL
-  DC.L  E_LSR-I_LSR
-  DC.L  E_STRADDCHAR-I_STRADDCHAR
-  DC.L  E_UPPERCHAR-I_UPPERCHAR
-  DC.L  E_LOWERCHAR-I_LOWERCHAR
-  DC.L  E_LISTADDITEM-I_LISTADDITEM
-  DC.L  E_STRINS-I_STRINS
-  DC.L  E_STRREM-I_STRREM
-  DC.L	E_MUL020-I_MUL020
-  DC.L	E_DIV020-I_DIV020
-  DC.L	E_LONG020-I_LONG020
-  DC.L	E_INT020-I_INT020
-  DC.L	E_CHAR020-I_CHAR020
-  DC.L	E_MOD020-I_MOD020
-  DC.L	E_MEMFILL-I_MEMFILL
-  DC.L	E_ASTRCLONE-I_ASTRCLONE
-  DC.L	E_LISTINSITEM-I_LISTINSITEM
-  DC.L	E_LISTREMITEM-I_LISTREMITEM
-  DC.L	E_LISTSWAPITEM-I_LISTSWAPITEM
-  DC.L	E_ENDSWITH-I_ENDSWITH
-  DC.L	E_ASTPCOPY-I_ASTPCOPY
-  DC.L	E_USEDSTACK-I_USEDSTACK
-  DC.L	E_STACKSIZE-I_STACKSIZE
-  DC.L  E_BYTE-I_BYTE
-  DC.L  E_WORD-I_WORD
-  DC.L  E_BYTE020-I_BYTE020
-  DC.L  E_WORD020-I_WORD020
-  DC.L	E_PUTCHAR-I_PUTCHAR
-  DC.L	E_PUTINT-I_PUTINT
-  DC.L	E_COMPARE-I_COMPARE
-  DC.L	E_UCOMPARE-I_UCOMPARE
-  DC.L	E_FCOMPARE-I_FCOMPARE
-  DC.L	E_STRCOMPARE-I_STRCOMPARE
-  DC.L	E_SELECTFIRST-I_SELECTFIRST
-  DC.L	E_ROL-I_ROL
-  DC.L	E_ROR-I_ROR
-  DC.L	E_LISTITEM020-I_LISTITEM020
-  DC.L  E_CHARINSTR-I_CHARINSTR
-  DC.L  E_CHARINSTRI-I_CHARINSTRI
-  DC.L  E_MEMCMP-I_MEMCMP
+	DC.L	E_DOMETHOD-I_DOMETHOD
+	DC.L	E_DOMETHODA-I_DOMETHODA
+	DC.L	E_CRCMETHOD-I_CRCMETHOD
+	DC.L	E_CRCMETHODA-I_CRCMETHODA
+	DC.L	E_DOSMETHOD-I_DOSMETHOD
+	DC.L	E_DOSMETHODA-I_DOSMETHODA
+	DC.L	E_SET-I_SET
+	DC.L	E_SETS-I_SETS
+	DC.L	E_GET-I_GET
+	DC.L	E_GETS-I_GETS
+	DC.L	E_CTRLD-I_CTRLD
+	Dc.L	E_CTRLE-I_CTRLE
+	DC.L	E_CTRLF-I_CTRLF
+	DC.L	E_CHK-I_CHK
+	DC.L	E_EOF-I_EOF
+	DC.L	E_FOPEN-I_FOPEN
+	DC.L	E_FCLOSE-I_FCLOSE
+	DC.L	E_ALLOC-I_ALLOC
+	DC.L	E_FREE-I_FREE
+	DC.L	E_PUTF-I_PUTF
+	DC.L	E_PUTF37-I_PUTF37
+	DC.L	E_WRITEF37-I_WRITEF37
+	DC.L	E_READB-I_READB
+	DC.L	E_WRITEB-I_WRITEB
+	DC.L	E_SIZE-I_SIZE
+	DC.L	E_LSL-I_LSL
+	DC.L	E_LSR-I_LSR
+	DC.L	E_STRADDCHAR-I_STRADDCHAR
+	DC.L	E_UPPERCHAR-I_UPPERCHAR
+	DC.L	E_LOWERCHAR-I_LOWERCHAR
+	DC.L	E_LISTADDITEM-I_LISTADDITEM
+	DC.L	E_STRINS-I_STRINS
+	DC.L	E_STRREM-I_STRREM
+	DC.L	E_MUL020-I_MUL020
+	DC.L	E_DIV020-I_DIV020
+	DC.L	E_LONG020-I_LONG020
+	DC.L	E_INT020-I_INT020
+	DC.L	E_CHAR020-I_CHAR020
+	DC.L	E_MOD020-I_MOD020
+	DC.L	E_MEMFILL-I_MEMFILL
+	DC.L	E_ASTRCLONE-I_ASTRCLONE
+	DC.L	E_LISTINSITEM-I_LISTINSITEM
+	DC.L	E_LISTREMITEM-I_LISTREMITEM
+	DC.L	E_LISTSWAPITEM-I_LISTSWAPITEM
+	DC.L	E_ENDSWITH-I_ENDSWITH
+	DC.L	E_ASTPCOPY-I_ASTPCOPY
+	DC.L	E_USEDSTACK-I_USEDSTACK
+	DC.L	E_STACKSIZE-I_STACKSIZE
+	DC.L	E_BYTE-I_BYTE
+	DC.L	E_WORD-I_WORD
+	DC.L	E_BYTE020-I_BYTE020
+	DC.L	E_WORD020-I_WORD020
+	DC.L	E_PUTCHAR-I_PUTCHAR
+	DC.L	E_PUTINT-I_PUTINT
+	DC.L	E_COMPARE-I_COMPARE
+	DC.L	E_UCOMPARE-I_UCOMPARE
+	DC.L	E_FCOMPARE-I_FCOMPARE
+	DC.L	E_STRCOMPARE-I_STRCOMPARE
+	DC.L	E_SELECTFIRST-I_SELECTFIRST
+	DC.L	E_ROL-I_ROL
+	DC.L	E_ROR-I_ROR
+	DC.L	E_LISTITEM020-I_LISTITEM020
+	DC.L	E_CHARINSTR-I_CHARINSTR
+	DC.L	E_CHARINSTRI-I_CHARINSTRI
+	DC.L	E_MEMCMP-I_MEMCMP
 
 GETA4NR = 136
 WRITEF = 1
@@ -31654,101 +31654,101 @@ PRINTF = 87
 
 
 NILPATCHLIST:
-  ;     function number, new code, new size
-  DC.L 0,I_WRITEFNIL,E_WRITEFNIL-I_WRITEFNIL      ;writef
-  DC.L 8,I_TEXTFNIL,E_TEXTFNIL-I_TEXTFNIL         ;textf
-  DC.L 12,I_LONGNIL,E_LONGNIL-I_LONGNIL			;long
-  DC.L 13,I_INTNIL,E_INTNIL-I_INTNIL					;int
-  DC.L 14,I_CHARNIL,E_CHARNIL-I_CHARNIL			;char
-  DC.L 15,I_PUTLONGNIL,E_PUTLONGNIL-I_PUTLONGNIL	;putlong
-  DC.L 16,I_PUTINTNIL,E_PUTINTNIL-I_PUTINTNIL		;putint
-  DC.L 17,I_PUTCHARNIL,E_PUTCHARNIL-I_PUTCHARNIL	;putchar
-  DC.L 25,I_BOOLGADNIL,E_BOOLGADNIL-I_BOOLGADNIL  ;gadget
-  DC.L 27,I_STRCMPNIL,E_STRCMPNIL-I_STRCMPNIL     ;strcmp
-  DC.L 28,I_STRCOPYNIL,E_STRCOPYNIL-I_STRCOPYNIL     ;strcopy
-  DC.L 29,I_STRADDNIL,E_STRADDNIL-I_STRADDNIL     ;stradd
-  DC.L 30,I_STRLENNIL,E_STRLENNIL-I_STRLENNIL     ;strlen
-  DC.L 31,I_ESTRLENNIL,E_ESTRLENNIL-I_ESTRLENNIL     ;estrlen
-  DC.L 32,I_STRMAXNIL,E_STRMAXNIL-I_STRMAXNIL     ;strmax
-  DC.L 34,I_RIGHTSTRNIL,E_RIGHTSTRNIL-I_RIGHTSTRNIL     ;rightstr
-  DC.L 35,I_MIDSTRNIL,E_MIDSTRNIL-I_MIDSTRNIL     ;midstr
-  DC.L 36,I_STRINGFNIL,E_STRINGFNIL-I_STRINGFNIL     ;stringf
-  DC.L 38,I_INSTRNIL,E_INSTRNIL-I_INSTRNIL     ;instr
-  DC.L 39,I_TRIMSTRNIL,E_TRIMSTRNIL-I_TRIMSTRNIL     ;trimstr
-  DC.L 40,I_UPPERSTRNIL,E_UPPERSTRNIL-I_UPPERSTRNIL     ;upperstr
-  DC.L 41,I_LOWERSTRNIL,E_LOWERSTRNIL-I_LOWERSTRNIL     ;lowerstr
-  DC.L 42,I_READSTRNIL,E_READSTRNIL-I_READSTRNIL     ;readstr
-  DC.L 47,I_MOUSEXNIL,E_MOUSEXNIL-I_MOUSEXNIL     ;mousex
-  DC.L 48,I_MOUSEYNIL,E_MOUSEYNIL-I_MOUSEYNIL     ;mousey
-  DC.L 52,I_LISTCOPYNIL,E_LISTCOPYNIL-I_LISTCOPYNIL         ;listcopy
-  DC.L 53,I_LISTADDNIL,E_LISTADDNIL-I_LISTADDNIL           ;listadd
-  DC.L 54,I_LISTCMPNIL,E_LISTCMPNIL-I_LISTCMPNIL           ;listcmp
-  DC.L 55,I_LISTLENNIL,E_LISTLENNIL-I_LISTLENNIL           ;listlen
-  DC.L 56,I_LISTMAXNIL,E_LISTMAXNIL-I_LISTMAXNIL          ;listmax
-  DC.L 59,I_EVALNIL,E_EVALNIL-I_EVALNIL     ;eval
-  DC.L 60,I_FORALLNIL,E_FORALLNIL-I_FORALLNIL     ;forall
-  DC.L 61,I_EXISTSNIL,E_EXISTSNIL-I_EXISTSNIL     ;exists
-  DC.L 62,I_MAPLISTNIL,E_MAPLISTNIL-I_MAPLISTNIL     ;maplist
-  DC.L 69,I_LINKNIL,E_LINKNIL-I_LINKNIL     ;link
-  DC.L 70,I_NEXTNIL,E_NEXTNIL-I_NEXTNIL     ;next
-  DC.L 71,I_FORWARDNIL,E_FORWARDNIL-I_FORWARDNIL     ;forward
-  DC.L 72,I_SETSTRNIL,E_SETSTRNIL-I_SETSTRNIL     ;setstr
-  DC.L 73,I_SETLISTNIL,E_SETLISTNIL-I_SETLISTNIL     ;setlist
-  DC.L 74,I_WAITMSGNIL,E_WAITMSGNIL-I_WAITMSGNIL    ;waitimessage
-  DC.L 83,I_LISTITEMNIL,E_LISTITEMNIL-I_LISTITEMNIL     ;listitem
-  DC.L 86,I_PRINTFNIL,E_PRINTFNIL-I_PRINTFNIL       ;printf
-  DC.L 87,I_WAITLEFTMOUSENIL,E_WAITLEFTMOUSE-I_WAITLEFTMOUSENIL   ;waitleftmouse
-  DC.L 88,I_LEFTMOUSE,E_LEFTMOUSE-I_LEFTMOUSE       ;leftmouse
-  DC.L 92,I_SELECTLISTNIL,E_SELECTLISTNIL-I_SELECTLISTNIL     ;selectlist
-  DC.L 96,I_REALFNIL,E_REALFNIL-I_REALFNIL				;realf
-  DC.L 97,I_REALVALNIL,E_REALVALNIL-I_REALVALNIL		;realval
-  DC.L 113,I_OSTRCMPNIL,E_OSTRCMPNIL-I_OSTRCMPNIL     ;ostrcmp
-  DC.L 114,I_ASTRCOPYNIL,E_ASTRCOPYNIL-I_ASTRCOPYNIL     ;astrcopy
-  DC.L 131,I_STRICMPNIL,E_STRICMPNIL-I_STRICMPNIL     ;stricmp
-  DC.L 132,I_INSTRINIL,E_INSTRINIL-I_INSTRINIL     ;instri
-  DC.L 133,I_STRCLONENIL,E_STRCLONENIL-I_STRCLONENIL     ;strclone
-  DC.L 134,I_LISTCLONENIL,E_LISTCLONENIL-I_LISTCLONENIL     ;listclone
-  DC.L 136,I_ASTRINGFNIL,E_ASTRINGFNIL-I_ASTRINGFNIL     ;astringf
-  DC.L 137,I_DOMETHODNIL,E_DOMETHODNIL-I_DOMETHODNIL	;domethod
-  DC.L 138,I_DOMETHODANIL,E_DOMETHODANIL-I_DOMETHODANIL ;domethoda
-  DC.L 139,I_CRCMETHODNIL,E_CRCMETHODNIL-I_CRCMETHODNIL ;coercemethod
-  DC.L 140,I_CRCMETHODANIL,E_CRCMETHODANIL-I_CRCMETHODANIL ;coercemethoda
-  DC.L 141,I_DOSMETHODNIL,E_DOSMETHODNIL-I_DOSMETHODNIL	;dosupermethod
-  DC.L 142,I_DOSMETHODANIL,E_DOSMETHODANIL-I_DOSMETHODANIL	;dosupermethoda
-  DC.L 143,I_SETNIL,E_SETNIL-I_SETNIL       ;set
-  DC.L 144,I_SETSNIL,E_SETSNIL-I_SETSNIL    ;sets
-  DC.L 145,I_GETNIL,E_GETNIL-I_GETNIL       ;get
-  DC.L 146,I_GETSNIL,E_GETSNIL-I_GETSNIL      ;gets
-  DC.L 156,I_PUTFNIL,E_PUTFNIL-I_PUTFNIL        ;putf
-  DC.L 157,I_PUTF37NIL,E_PUTF37NIL-I_PUTF37NIL    ;putf (37 variant)
-  DC.L 158,I_WRITEF37NIL,E_WRITEF37NIL-I_WRITEF37NIL  ;writef (37 variant)
-  DC.L 159,I_READBNIL,E_READBNIL-I_READBNIL   ;readb
-  DC.L 160,I_WRITEBNIL,E_WRITEBNIL-I_WRITEBNIL    ;writeb
-  DC.L 164,I_STRADDCHARNIL,E_STRADDCHARNIL-I_STRADDCHARNIL     ;straddchar
-  DC.L 167,I_LISTADDITEMNIL,E_LISTADDITEMNIL-I_LISTADDITEMNIL     ;listadditem  
-  DC.L 168,I_STRINSNIL,E_STRINSNIL-I_STRINSNIL     ;strins
-  DC.L 169,I_STRREMNIL,E_STRREMNIL-I_STRREMNIL     ;strrem
-  DC.L 172,I_LONG020NIL,E_LONG020NIL-I_LONG020NIL		;long (020 variant)
-  DC.L 173,I_INT020NIL,E_INT020NIL-I_INT020NIL		;int (020 variant)
-  DC.L 174,I_CHAR020NIL,E_CHAR020NIL-I_CHAR020NIL	;char (020 variant)
-  DC.L 176,I_MEMFILLNIL,E_MEMFILLNIL-I_MEMFILLNIL     ;memfill
-  DC.L 177,I_ASTRCLONENIL,E_ASTRCLONENIL-I_ASTRCLONENIL     ;astrclone
-  DC.L 178,I_LISTINSITEMNIL,E_LISTINSITEMNIL-I_LISTINSITEMNIL     ;listinsitem
-  DC.L 179,I_LISTREMITEMNIL,E_LISTREMITEMNIL-I_LISTREMITEMNIL     ;listremitem
-  DC.L 180,I_LISTSWAPITEMNIL,E_LISTSWAPITEMNIL-I_LISTSWAPITEMNIL     ;listswapitem
-  DC.L 181,I_ENDSWITHNIL,E_ENDSWITHNIL-I_ENDSWITHNIL     ;endswith
-  DC.L 182,I_ASTPCOPYNIL,E_ASTPCOPYNIL-I_ASTPCOPYNIL     ;astpcopy
-  DC.L 185,I_BYTENIL,E_BYTENIL-I_BYTENIL		;byte
-  DC.L 186,I_WORDNIL,E_WORDNIL-I_WORDNIL		;word
-  DC.L 187,I_BYTE020NIL,E_BYTE020NIL-I_BYTE020NIL	;byte (020 variant)
-  DC.L 188,I_WORD020NIL,E_WORD020NIL-I_WORD020NIL	;word (020 variant)
-  DC.L 194,I_STRCOMPARENIL,E_STRCOMPARENIL-I_STRCOMPARENIL     ;strcompare
-  DC.L 195,I_SELECTFIRSTNIL,E_SELECTFIRSTNIL-I_SELECTFIRSTNIL     ;selectfirst
-  DC.L 198,I_LISTITEM020NIL,E_LISTITEM020NIL-I_LISTITEM020NIL  ;listitem (020)
-  DC.L 199,I_CHARINSTRNIL,E_CHARINSTRNIL-I_CHARINSTRNIL     ;charinstr
-  DC.L 200,I_CHARINSTRINIL,E_CHARINSTRINIL-I_CHARINSTRINIL     ;charinstri
-  DC.L 201,I_MEMCMPNIL,E_MEMCMPNIL-I_MEMCMPNIL     ;memcmp
-  DC.L -1
+	;		function number, new code, new size
+	DC.L 0,I_WRITEFNIL,E_WRITEFNIL-I_WRITEFNIL		;writef
+	DC.L 8,I_TEXTFNIL,E_TEXTFNIL-I_TEXTFNIL			;textf
+	DC.L 12,I_LONGNIL,E_LONGNIL-I_LONGNIL			;long
+	DC.L 13,I_INTNIL,E_INTNIL-I_INTNIL					;int
+	DC.L 14,I_CHARNIL,E_CHARNIL-I_CHARNIL			;char
+	DC.L 15,I_PUTLONGNIL,E_PUTLONGNIL-I_PUTLONGNIL	;putlong
+	DC.L 16,I_PUTINTNIL,E_PUTINTNIL-I_PUTINTNIL		;putint
+	DC.L 17,I_PUTCHARNIL,E_PUTCHARNIL-I_PUTCHARNIL	;putchar
+	DC.L 25,I_BOOLGADNIL,E_BOOLGADNIL-I_BOOLGADNIL	;gadget
+	DC.L 27,I_STRCMPNIL,E_STRCMPNIL-I_STRCMPNIL		;strcmp
+	DC.L 28,I_STRCOPYNIL,E_STRCOPYNIL-I_STRCOPYNIL	 ;strcopy
+	DC.L 29,I_STRADDNIL,E_STRADDNIL-I_STRADDNIL		;stradd
+	DC.L 30,I_STRLENNIL,E_STRLENNIL-I_STRLENNIL		;strlen
+	DC.L 31,I_ESTRLENNIL,E_ESTRLENNIL-I_ESTRLENNIL	 ;estrlen
+	DC.L 32,I_STRMAXNIL,E_STRMAXNIL-I_STRMAXNIL		;strmax
+	DC.L 34,I_RIGHTSTRNIL,E_RIGHTSTRNIL-I_RIGHTSTRNIL		;rightstr
+	DC.L 35,I_MIDSTRNIL,E_MIDSTRNIL-I_MIDSTRNIL		;midstr
+	DC.L 36,I_STRINGFNIL,E_STRINGFNIL-I_STRINGFNIL	 ;stringf
+	DC.L 38,I_INSTRNIL,E_INSTRNIL-I_INSTRNIL		 ;instr
+	DC.L 39,I_TRIMSTRNIL,E_TRIMSTRNIL-I_TRIMSTRNIL	 ;trimstr
+	DC.L 40,I_UPPERSTRNIL,E_UPPERSTRNIL-I_UPPERSTRNIL		;upperstr
+	DC.L 41,I_LOWERSTRNIL,E_LOWERSTRNIL-I_LOWERSTRNIL		;lowerstr
+	DC.L 42,I_READSTRNIL,E_READSTRNIL-I_READSTRNIL	 ;readstr
+	DC.L 47,I_MOUSEXNIL,E_MOUSEXNIL-I_MOUSEXNIL		;mousex
+	DC.L 48,I_MOUSEYNIL,E_MOUSEYNIL-I_MOUSEYNIL		;mousey
+	DC.L 52,I_LISTCOPYNIL,E_LISTCOPYNIL-I_LISTCOPYNIL			;listcopy
+	DC.L 53,I_LISTADDNIL,E_LISTADDNIL-I_LISTADDNIL			 ;listadd
+	DC.L 54,I_LISTCMPNIL,E_LISTCMPNIL-I_LISTCMPNIL			 ;listcmp
+	DC.L 55,I_LISTLENNIL,E_LISTLENNIL-I_LISTLENNIL			 ;listlen
+	DC.L 56,I_LISTMAXNIL,E_LISTMAXNIL-I_LISTMAXNIL			;listmax
+	DC.L 59,I_EVALNIL,E_EVALNIL-I_EVALNIL		;eval
+	DC.L 60,I_FORALLNIL,E_FORALLNIL-I_FORALLNIL		;forall
+	DC.L 61,I_EXISTSNIL,E_EXISTSNIL-I_EXISTSNIL		;exists
+	DC.L 62,I_MAPLISTNIL,E_MAPLISTNIL-I_MAPLISTNIL	 ;maplist
+	DC.L 69,I_LINKNIL,E_LINKNIL-I_LINKNIL		;link
+	DC.L 70,I_NEXTNIL,E_NEXTNIL-I_NEXTNIL		;next
+	DC.L 71,I_FORWARDNIL,E_FORWARDNIL-I_FORWARDNIL	 ;forward
+	DC.L 72,I_SETSTRNIL,E_SETSTRNIL-I_SETSTRNIL		;setstr
+	DC.L 73,I_SETLISTNIL,E_SETLISTNIL-I_SETLISTNIL	 ;setlist
+	DC.L 74,I_WAITMSGNIL,E_WAITMSGNIL-I_WAITMSGNIL	;waitimessage
+	DC.L 83,I_LISTITEMNIL,E_LISTITEMNIL-I_LISTITEMNIL		;listitem
+	DC.L 86,I_PRINTFNIL,E_PRINTFNIL-I_PRINTFNIL		;printf
+	DC.L 87,I_WAITLEFTMOUSENIL,E_WAITLEFTMOUSE-I_WAITLEFTMOUSENIL		;waitleftmouse
+	DC.L 88,I_LEFTMOUSE,E_LEFTMOUSE-I_LEFTMOUSE		;leftmouse
+	DC.L 92,I_SELECTLISTNIL,E_SELECTLISTNIL-I_SELECTLISTNIL		;selectlist
+	DC.L 96,I_REALFNIL,E_REALFNIL-I_REALFNIL				;realf
+	DC.L 97,I_REALVALNIL,E_REALVALNIL-I_REALVALNIL		;realval
+	DC.L 113,I_OSTRCMPNIL,E_OSTRCMPNIL-I_OSTRCMPNIL		;ostrcmp
+	DC.L 114,I_ASTRCOPYNIL,E_ASTRCOPYNIL-I_ASTRCOPYNIL	 ;astrcopy
+	DC.L 131,I_STRICMPNIL,E_STRICMPNIL-I_STRICMPNIL		;stricmp
+	DC.L 132,I_INSTRINIL,E_INSTRINIL-I_INSTRINIL		 ;instri
+	DC.L 133,I_STRCLONENIL,E_STRCLONENIL-I_STRCLONENIL	 ;strclone
+	DC.L 134,I_LISTCLONENIL,E_LISTCLONENIL-I_LISTCLONENIL		;listclone
+	DC.L 136,I_ASTRINGFNIL,E_ASTRINGFNIL-I_ASTRINGFNIL	 ;astringf
+	DC.L 137,I_DOMETHODNIL,E_DOMETHODNIL-I_DOMETHODNIL	;domethod
+	DC.L 138,I_DOMETHODANIL,E_DOMETHODANIL-I_DOMETHODANIL ;domethoda
+	DC.L 139,I_CRCMETHODNIL,E_CRCMETHODNIL-I_CRCMETHODNIL ;coercemethod
+	DC.L 140,I_CRCMETHODANIL,E_CRCMETHODANIL-I_CRCMETHODANIL ;coercemethoda
+	DC.L 141,I_DOSMETHODNIL,E_DOSMETHODNIL-I_DOSMETHODNIL	;dosupermethod
+	DC.L 142,I_DOSMETHODANIL,E_DOSMETHODANIL-I_DOSMETHODANIL	;dosupermethoda
+	DC.L 143,I_SETNIL,E_SETNIL-I_SETNIL		;set
+	DC.L 144,I_SETSNIL,E_SETSNIL-I_SETSNIL	;sets
+	DC.L 145,I_GETNIL,E_GETNIL-I_GETNIL		;get
+	DC.L 146,I_GETSNIL,E_GETSNIL-I_GETSNIL		;gets
+	DC.L 156,I_PUTFNIL,E_PUTFNIL-I_PUTFNIL		;putf
+	DC.L 157,I_PUTF37NIL,E_PUTF37NIL-I_PUTF37NIL		;putf (37 variant)
+	DC.L 158,I_WRITEF37NIL,E_WRITEF37NIL-I_WRITEF37NIL	;writef (37 variant)
+	DC.L 159,I_READBNIL,E_READBNIL-I_READBNIL		;readb
+	DC.L 160,I_WRITEBNIL,E_WRITEBNIL-I_WRITEBNIL		;writeb
+	DC.L 164,I_STRADDCHARNIL,E_STRADDCHARNIL-I_STRADDCHARNIL		 ;straddchar
+	DC.L 167,I_LISTADDITEMNIL,E_LISTADDITEMNIL-I_LISTADDITEMNIL		;listadditem	
+	DC.L 168,I_STRINSNIL,E_STRINSNIL-I_STRINSNIL		 ;strins
+	DC.L 169,I_STRREMNIL,E_STRREMNIL-I_STRREMNIL		 ;strrem
+	DC.L 172,I_LONG020NIL,E_LONG020NIL-I_LONG020NIL		;long (020 variant)
+	DC.L 173,I_INT020NIL,E_INT020NIL-I_INT020NIL		;int (020 variant)
+	DC.L 174,I_CHAR020NIL,E_CHAR020NIL-I_CHAR020NIL	;char (020 variant)
+	DC.L 176,I_MEMFILLNIL,E_MEMFILLNIL-I_MEMFILLNIL		;memfill
+	DC.L 177,I_ASTRCLONENIL,E_ASTRCLONENIL-I_ASTRCLONENIL		;astrclone
+	DC.L 178,I_LISTINSITEMNIL,E_LISTINSITEMNIL-I_LISTINSITEMNIL		;listinsitem
+	DC.L 179,I_LISTREMITEMNIL,E_LISTREMITEMNIL-I_LISTREMITEMNIL		;listremitem
+	DC.L 180,I_LISTSWAPITEMNIL,E_LISTSWAPITEMNIL-I_LISTSWAPITEMNIL	 ;listswapitem
+	DC.L 181,I_ENDSWITHNIL,E_ENDSWITHNIL-I_ENDSWITHNIL	 ;endswith
+	DC.L 182,I_ASTPCOPYNIL,E_ASTPCOPYNIL-I_ASTPCOPYNIL	 ;astpcopy
+	DC.L 185,I_BYTENIL,E_BYTENIL-I_BYTENIL		;byte
+	DC.L 186,I_WORDNIL,E_WORDNIL-I_WORDNIL		;word
+	DC.L 187,I_BYTE020NIL,E_BYTE020NIL-I_BYTE020NIL	;byte (020 variant)
+	DC.L 188,I_WORD020NIL,E_WORD020NIL-I_WORD020NIL	;word (020 variant)
+	DC.L 194,I_STRCOMPARENIL,E_STRCOMPARENIL-I_STRCOMPARENIL		 ;strcompare
+	DC.L 195,I_SELECTFIRSTNIL,E_SELECTFIRSTNIL-I_SELECTFIRSTNIL		;selectfirst
+	DC.L 198,I_LISTITEM020NIL,E_LISTITEM020NIL-I_LISTITEM020NIL	;listitem (020)
+	DC.L 199,I_CHARINSTRNIL,E_CHARINSTRNIL-I_CHARINSTRNIL		;charinstr
+	DC.L 200,I_CHARINSTRINIL,E_CHARINSTRINIL-I_CHARINSTRINIL		 ;charinstri
+	DC.L 201,I_MEMCMPNIL,E_MEMCMPNIL-I_MEMCMPNIL		 ;memcmp
+	DC.L -1
 
 
 ;;ERROR
@@ -31756,7 +31756,7 @@ NILPATCHLIST:
 
 fatalerr: DC.L 0
 
-      ERRORTAB:
+		ERRORTAB:
 	DC.L	.0,.1,.2,.3,.4,.5,.6,.7,.8
 	DC.L	.9,.10,.11,.12,.13,.14,.15,.16
 	DC.L	.17,.18,.19,.20,.21,.22,.23,.24
@@ -31852,1091 +31852,1091 @@ fatalerr: DC.L 0
 .77:	DC.B	'this instruction needs a newer OS version',0
 .78:	DC.B	'value expected',0
 .79:	DC.B	'")" expected',0
-.80:	DC.B    'this instruction works only in pool mode',0
+.80:	DC.B	'this instruction works only in pool mode',0
 .81:	DC.B	'non-pure code not allowed',0
 .82:	DC.B	'Too many user warnings',0
 .83:	DC.B	'"[" expected',0
 .84:	DC.B	'dim workspace full',0
-.85:    DC.B    'array too large',0
-.86:    DC.B    'only RTR and RTE allowed',0
-.87:    DC.B    'unknown HEX value after \x',0
-.88:    DC.B    'illegal section definition',0
-.89:    DC.B    'not enough memory for reloc buffer',0
-.90     DC.B    'not allowed in legacy mode',0
-.91:    DC.B    'illegal scale factor',0
-.92:    DC.B    'address/pc register expected',0
-.93:    DC.B    'value does not fit in 16 bit',0
-.94:    DC.B    'value does not fit in 8 bit',0
-.95:    DC.B    'address/data register expected',0
-.96:    DC.B    'illegal size',0
-.97:    DC.B    '":" expected',0
-.98:   DC.B    'fpu register expected',0
-.99:   DC.B    'mmu register expected',0
-.100:   DC.B    'control register expected',0
-.101:   DC.B    'cpu register expected',0
-.102:   DC.B    'sorry, feature is not available yet',0
-.103:   DC.B    'object too large',0
-.104:   DC.B    'invalid array dimension',0
-.105:   DC.B    'global map workspace full',0
-.106:   DC.B    'array index out of range',0
-.107:   DC.B    'cant export private object',0
-.108:   DC.B 0
+.85:	DC.B	'array too large',0
+.86:	DC.B	'only RTR and RTE allowed',0
+.87:	DC.B	'unknown HEX value after \x',0
+.88:	DC.B	'illegal section definition',0
+.89:	DC.B	'not enough memory for reloc buffer',0
+.90		DC.B	'not allowed in legacy mode',0
+.91:	DC.B	'illegal scale factor',0
+.92:	DC.B	'address/pc register expected',0
+.93:	DC.B	'value does not fit in 16 bit',0
+.94:	DC.B	'value does not fit in 8 bit',0
+.95:	DC.B	'address/data register expected',0
+.96:	DC.B	'illegal size',0
+.97:	DC.B	'":" expected',0
+.98:	 DC.B		 'fpu register expected',0
+.99:	 DC.B		 'mmu register expected',0
+.100:	DC.B	'control register expected',0
+.101:	DC.B	'cpu register expected',0
+.102:	DC.B	'sorry, feature is not available yet',0
+.103:	DC.B	'object too large',0
+.104:	DC.B	'invalid array dimension',0
+.105:	DC.B	'global map workspace full',0
+.106:	DC.B	'array index out of range',0
+.107:	DC.B	'cant export private object',0
+.108:	DC.B 0
 
 	EVEN
 
 
 ;; AssemblerInstructions
 ASM_INSTAB:
-    DC.L    .1,0,.2,0,.3,0,.4,0,.5,0,.6,0,.7,0,.8,0,.9,0,.10,0,.11,0,.12,0,.13,0,.14,0,.15,0,.16,0,.17,0
-    DC.L    .18,0,.19,0,.20,0,.21,0,.22,0,.23,0,.24,0,.25,0,.26,0,.27,0,.28,0,.29,0,.30,0,.31,0,.32,0
-    DC.L    .33,0,.34,0,.35,0,.36,0,.37,0,.38,0,.39,0,.40,0,.41,0,.42,0,.43,0,.44,0,.45,0,.46,0
-    DC.L    .47,0,.48,0,.49,0,.50,0,.51,0,.52,0,.53,0,.54,0,.55,0,.56,0,.57,0,.58,0,.59,0,.60,0
-    DC.L    .61,0,.62,0,.63,0,.64,0,.65,0,.66,0,.67,0,.68,0,.69,0,.70,0,.71,0,.72,0,.73,0,.74,0
-    DC.L    .75,0,.76,0,.77,0,.78,0,.79,0,.80,0,.81,0,.82,0,.83,0,.84,0,.85,0,.86,0,.87,0,.88,0
-    DC.L    .89,0,.90,0,.91,0,.92,0,.93,0,.94,0,.95,0,.96,0,.97,0,.98,0,.99,0,.100,0,.101,0,.102,0
-    DC.L    .103,0,.104,0,.105,0,.106,0,.107,0,.108,0,.109,0,.110,0,.111,0,.112,0
-    DC.L    .113,0,.114,0,.115,0,.116,0,.117,0,.118,0,.119,0,.120,0,.121,0,.122,0
-    DC.L    .123,0,.124,0,.125,0,.126,0,.127,0,.128,0,.129,0,.130,0,.131,0,.132,0
-    DC.L    .133,0,.134,0,.135,0,.136,0,.137,0,.138,0,.139,0,.140,0,.141,0,.142,0
-    DC.L    .143,0,.144,0,.145,0,.146,0,.147,0,.148,0,.149,0,.150,0,.151,0,.152,0
-    DC.L    .153,0,.154,0,.155,0,.156,0,.157,0,.158,0,.159,0,.160,0,.161,0,.162,0
-    DC.L    .163,0,.164,0,.165,0,.166,0,.167,0,.168,0,.169,0,.170,0,.171,0,.172,0
-    DC.L    .173,0,.174,0,.175,0,.176,0,.177,0,.178,0,.179,0,.180,0,.181,0,.182,0
-    DC.L    .183,0,.184,0,.185,0,.186,0,.187,0,.188,0,.189,0,.190,0,.191,0,.192,0
-    DC.L    .193,0,.194,0,.195,0,.196,0,.197,0,.198,0,.199,0,.200,0,.201,0,.202,0
-    DC.L    .203,0,.204,0,.205,0,.206,0,.207,0,.208,0,.209,0,.210,0,.211,0,.212,0
-    DC.L    .213,0,.214,0,.215,0,.216,0,.217,0,.218,0,.219,0,.220,0,.221,0,.222,0
-    DC.L    .223,0,.224,0,.225,0,.226,0,.227,0,.228,0,.229,0,.230,0,.231,0,.232,0
-    DC.L    .233,0,.234,0,.235,0,.236,0,.237,0,.238,0,.239,0,.240,0,.241,0,.242,0
-    DC.L    .243,0,.244,0,.245,0,.246,0,.247,0,.248,0,.249,0,.250,0,.251,0,.252,0
-    DC.L    .253,0,.254,0,.255,0,.256,0,.257,0,.258,0,.259,0,.260,0,.261,0,.262,0
-    DC.L    .263,0,.264,0,.265,0,.266,0,.267,0,.268,0,.269,0,.270,0,.271,0,.272,0
-    DC.L    .273,0,.274,0,.275,0,.276,0,.277,0,.278,0,.279,0,.280,0,.281,0,.282,0
-    DC.L    .283,0,.284,0,.285,0,.286,0,.287,0,.288,0,.289,0,.290,0,.291,0,.292,0
-    DC.L    .293,0,.294,0,.295,0,.296,0,.297,0,.298,0,.299,0,.300,0,.301,0,.302,0
-    DC.L    .303,0,.304,0,.305,0,.306,0,.307,0,.308,0,.309,0,.310,0,.311,0,.312,0
-    DC.L    .313,0,.314,0,.315,0,.316,0,.317,0,.318,0,.319,0,.320,0,.321,0,.322,0
-    DC.L    .323,0,.324,0,.325,0,.326,0,.327,0,.328,0,.329,0,.330,0,.331,0,.332,0
-    DC.L    .333,0,.334,0,.335,0,.336,0,.337,0,.338,0,.339,0,.340,0,.341,0,.342,0
-    DC.L    .343,0,.344,0,.345,0,.346,0,.347,0,.348,0,.349,0,.350,0,.351,0,.352,0
-    DC.L    .353,0,.354,0,.355,0,.356,0,.357,0,.358,0,.359,0,.360,0,.361,0,.362,0
-    DC.L    .363,0,.364,0,.365,0,.366,0,.367,0,.368,0,.369,0,.370,0,.371,0,.372,0
-    DC.L    .373,0,.374,0,.375,0,.376,0,.377,0,.378,0,.379,0,.380,0,.381,0,.382,0
-    DC.L    .383,0,.384,0,.385,0,.386,0,.387,0,.388,0,.389,0,.390,0,.391,0,.392,0
-    DC.L    .393,0,.394,0,.395,0,.396,0,.397,0,.398,0,.399,0,.400,0,.401,0,.402,0
-    DC.L    .403,0,.404,0,.405,0,.406,0,.407,0,.408,0,.409,0,.410,0,.411,0,.412,0
-    DC.L    .413,0,.414,0,.415,0,.416,0,.417,0,.418,0,.419,0,.420,0,.421,0,.422,0
+	DC.L	.1,0,.2,0,.3,0,.4,0,.5,0,.6,0,.7,0,.8,0,.9,0,.10,0,.11,0,.12,0,.13,0,.14,0,.15,0,.16,0,.17,0
+	DC.L	.18,0,.19,0,.20,0,.21,0,.22,0,.23,0,.24,0,.25,0,.26,0,.27,0,.28,0,.29,0,.30,0,.31,0,.32,0
+	DC.L	.33,0,.34,0,.35,0,.36,0,.37,0,.38,0,.39,0,.40,0,.41,0,.42,0,.43,0,.44,0,.45,0,.46,0
+	DC.L	.47,0,.48,0,.49,0,.50,0,.51,0,.52,0,.53,0,.54,0,.55,0,.56,0,.57,0,.58,0,.59,0,.60,0
+	DC.L	.61,0,.62,0,.63,0,.64,0,.65,0,.66,0,.67,0,.68,0,.69,0,.70,0,.71,0,.72,0,.73,0,.74,0
+	DC.L	.75,0,.76,0,.77,0,.78,0,.79,0,.80,0,.81,0,.82,0,.83,0,.84,0,.85,0,.86,0,.87,0,.88,0
+	DC.L	.89,0,.90,0,.91,0,.92,0,.93,0,.94,0,.95,0,.96,0,.97,0,.98,0,.99,0,.100,0,.101,0,.102,0
+	DC.L	.103,0,.104,0,.105,0,.106,0,.107,0,.108,0,.109,0,.110,0,.111,0,.112,0
+	DC.L	.113,0,.114,0,.115,0,.116,0,.117,0,.118,0,.119,0,.120,0,.121,0,.122,0
+	DC.L	.123,0,.124,0,.125,0,.126,0,.127,0,.128,0,.129,0,.130,0,.131,0,.132,0
+	DC.L	.133,0,.134,0,.135,0,.136,0,.137,0,.138,0,.139,0,.140,0,.141,0,.142,0
+	DC.L	.143,0,.144,0,.145,0,.146,0,.147,0,.148,0,.149,0,.150,0,.151,0,.152,0
+	DC.L	.153,0,.154,0,.155,0,.156,0,.157,0,.158,0,.159,0,.160,0,.161,0,.162,0
+	DC.L	.163,0,.164,0,.165,0,.166,0,.167,0,.168,0,.169,0,.170,0,.171,0,.172,0
+	DC.L	.173,0,.174,0,.175,0,.176,0,.177,0,.178,0,.179,0,.180,0,.181,0,.182,0
+	DC.L	.183,0,.184,0,.185,0,.186,0,.187,0,.188,0,.189,0,.190,0,.191,0,.192,0
+	DC.L	.193,0,.194,0,.195,0,.196,0,.197,0,.198,0,.199,0,.200,0,.201,0,.202,0
+	DC.L	.203,0,.204,0,.205,0,.206,0,.207,0,.208,0,.209,0,.210,0,.211,0,.212,0
+	DC.L	.213,0,.214,0,.215,0,.216,0,.217,0,.218,0,.219,0,.220,0,.221,0,.222,0
+	DC.L	.223,0,.224,0,.225,0,.226,0,.227,0,.228,0,.229,0,.230,0,.231,0,.232,0
+	DC.L	.233,0,.234,0,.235,0,.236,0,.237,0,.238,0,.239,0,.240,0,.241,0,.242,0
+	DC.L	.243,0,.244,0,.245,0,.246,0,.247,0,.248,0,.249,0,.250,0,.251,0,.252,0
+	DC.L	.253,0,.254,0,.255,0,.256,0,.257,0,.258,0,.259,0,.260,0,.261,0,.262,0
+	DC.L	.263,0,.264,0,.265,0,.266,0,.267,0,.268,0,.269,0,.270,0,.271,0,.272,0
+	DC.L	.273,0,.274,0,.275,0,.276,0,.277,0,.278,0,.279,0,.280,0,.281,0,.282,0
+	DC.L	.283,0,.284,0,.285,0,.286,0,.287,0,.288,0,.289,0,.290,0,.291,0,.292,0
+	DC.L	.293,0,.294,0,.295,0,.296,0,.297,0,.298,0,.299,0,.300,0,.301,0,.302,0
+	DC.L	.303,0,.304,0,.305,0,.306,0,.307,0,.308,0,.309,0,.310,0,.311,0,.312,0
+	DC.L	.313,0,.314,0,.315,0,.316,0,.317,0,.318,0,.319,0,.320,0,.321,0,.322,0
+	DC.L	.323,0,.324,0,.325,0,.326,0,.327,0,.328,0,.329,0,.330,0,.331,0,.332,0
+	DC.L	.333,0,.334,0,.335,0,.336,0,.337,0,.338,0,.339,0,.340,0,.341,0,.342,0
+	DC.L	.343,0,.344,0,.345,0,.346,0,.347,0,.348,0,.349,0,.350,0,.351,0,.352,0
+	DC.L	.353,0,.354,0,.355,0,.356,0,.357,0,.358,0,.359,0,.360,0,.361,0,.362,0
+	DC.L	.363,0,.364,0,.365,0,.366,0,.367,0,.368,0,.369,0,.370,0,.371,0,.372,0
+	DC.L	.373,0,.374,0,.375,0,.376,0,.377,0,.378,0,.379,0,.380,0,.381,0,.382,0
+	DC.L	.383,0,.384,0,.385,0,.386,0,.387,0,.388,0,.389,0,.390,0,.391,0,.392,0
+	DC.L	.393,0,.394,0,.395,0,.396,0,.397,0,.398,0,.399,0,.400,0,.401,0,.402,0
+	DC.L	.403,0,.404,0,.405,0,.406,0,.407,0,.408,0,.409,0,.410,0,.411,0,.412,0
+	DC.L	.413,0,.414,0,.415,0,.416,0,.417,0,.418,0,.419,0,.420,0,.421,0,.422,0
 
-    DC.L    0,0
+	DC.L	0,0
 
-.1: DC.B    "MOVE",0
-.2: DC.B    "RTS",0
-.3: DC.B    "ADD",0
-.4: DC.B    "SUB",0
-.5: DC.B    "MOVEQ",0
-.6: DC.B    "ASR",0
-.7: DC.B    "BSR",0
-.8: DC.B    "CLR",0
-.9: DC.B    "CMP",0
-.10:    DC.B    "EOR",0
-.11:    DC.B    "JMP",0
-.12:    DC.B    "JSR",0
-.13:    DC.B    "LSL",0
-.14:    DC.B    "LSR",0
-.15:    DC.B    "SUBQ",0
-.16:    DC.B    "ADDQ",0
-.17:    DC.B    "OR",0
-.18:    DC.B    "ROL",0
-.19:    DC.B    "ROR",0
-.20:    DC.B    "AND",0
-.21:    DC.B    "ASL",0
-.22:    DC.B    "BTST",0
-.23:    DC.B    "MOVEM",0
-.24:    DC.B    "ADDA",0
-.25:    DC.B    "ADDI",0
-.26:    DC.B    "ADDX",0
-.27:    DC.B    "CMPA",0
-.28:    DC.B    "CMPM",0
-.29:    DC.B    "CMPI",0
-.30:    DC.B    "MOVEA",0
-.31:    DC.B    "BRA",0
-.32:    DC.B    "NEGX",0
-.33:    DC.B    "ORI",0
-.34:    DC.B    "SUBA",0
-.35:    DC.B    "SUBI",0
-.36:    DC.B    "SUBX",0
-.37:    DC.B    "NOT",0
-.38:    DC.B    "MULS",0
-.39:    DC.B    "MULU",0
-.40:    DC.B    "NEG",0
-.41:    DC.B    "TST",0
-.42:    DC.B    "SWAP",0
-.43:    DC.B    "LEA",0
-.44:    DC.B    "DIVS",0
-.45:    DC.B    "DIVU",0
-.46:    DC.B    "EXG",0
-.47:    DC.B    "STOP",0
-.48:    DC.B    "RTR",0
-.49:    DC.B    "RTE",0
-.50:    DC.B    "ABCD",0
-.51:    DC.B    "SBCD",0
-.52:    DC.B    "MOVEP",0
-.53:    DC.B    "NOP",0
-.54:    DC.B    "ROXL",0
-.55:    DC.B    "ROXR",0
-.56:    DC.B    "BCHG",0
-.57:    DC.B    "BCLR",0
-.58:    DC.B    "BSET",0
-.59:    DC.B    "CHK",0
-.60:    DC.B    "EXT",0
-.61:    DC.B    "LINK",0
-.62:    DC.B    "UNLK",0
-.63:    DC.B    "NBCD",0
-.64:    DC.B    "PEA",0
-.65:    DC.B    "RESET",0
-.66:    DC.B    "TRAP",0
-.67:    DC.B    "TRAPV",0
-.68:    DC.B    "BHI",0
-.69:    DC.B    "BLS",0
-.70:    DC.B    "BCC",0
-.71:    DC.B    "BCS",0
-.72:    DC.B    "BNE",0
-.73:    DC.B    "BEQ",0
-.74:    DC.B    "BVC",0
-.75:    DC.B    "BVS",0
-.76:    DC.B    "BPL",0
-.77:    DC.B    "BMI",0
-.78:    DC.B    "BGE",0
-.79:    DC.B    "BLT",0
-.80:    DC.B    "BGT",0
-.81:    DC.B    "BLE",0
-.82:    DC.B    "DBRA",0
-.83:    DC.B    "DBF",0
-.84:    DC.B    "DBT",0
-.85:    DC.B    "DBHI",0
-.86:    DC.B    "DBLS",0
-.87:    DC.B    "DBCC",0
-.88:    DC.B    "DBCS",0
-.89:    DC.B    "DBNE",0
-.90:    DC.B    "DBEQ",0
-.91:    DC.B    "DBVC",0
-.92:    DC.B    "DBVS",0
-.93:    DC.B    "DBPL",0
-.94:    DC.B    "DBMI",0
-.95:    DC.B    "DBGE",0
-.96:    DC.B    "DBLT",0
-.97:    DC.B    "DBGT",0
-.98:    DC.B    "DBLE",0
-.99:    DC.B    "SHI",0
-.100:   DC.B    "SLS",0
-.101:   DC.B    "SCC",0
-.102:   DC.B    "SCS",0
-.103:   DC.B    "SNE",0
-.104:   DC.B    "SEQ",0
-.105:   DC.B    "SVC",0
-.106:   DC.B    "SVS",0
-.107:   DC.B    "SPL",0
-.108:   DC.B    "SMI",0
-.109:   DC.B    "SGE",0
-.110:   DC.B    "SLT",0
-.111:   DC.B    "SGT",0
-.112:   DC.B    "SLE",0
-.113:   DC.B    "ST",0
-.114:   DC.B    "SF",0
-.115:   DC.B    "ANDI",0
-.116:   DC.B    "EORI",0
-.117:   DC.B    "ILLEGAL",0
-.118:   DC.B    "RTD",0
-.119:   DC.B    "FABS",0
-.120:   DC.B    "FACOS",0
-.121:   DC.B    "FASIN",0
-.122:   DC.B    "FATAN",0
-.123:   DC.B    "FATANH",0
-.124:   DC.B    "FCOS",0
-.125:   DC.B    "FCOSH",0
-.126:   DC.B    "FETOX",0
-.127:   DC.B    "FETOXM1",0
-.128:   DC.B    "FGETEXP",0
-.129:   DC.B    "FGETMAN",0
-.130:   DC.B    "FINT",0
-.131:   DC.B    "FINRZ",0
-.132:   DC.B    "FLOG10",0
-.133:   DC.B    "FLOG2",0
-.134:   DC.B    "FLOGN",0
-.135:   DC.B    "FLOGNP1",0
-.136:   DC.B    "FNEG",0
-.137:   DC.B    "FSIN",0
-.138:   DC.B    "FSINH",0
-.139:   DC.B    "FSQRT",0
-.140:   DC.B    "FTAN",0
-.141:   DC.B    "FTANH",0
-.142:   DC.B    "FTENTOX",0
-.143:   DC.B    "FTWOTOX",0
-.144:   DC.B    "FADD",0
-.145:   DC.B    "FCMP",0
-.146:   DC.B    "FDIV",0
-.147:   DC.B    "FMOD",0
-.148:   DC.B    "FMUL",0
-.149:   DC.B    "FREM",0
-.150:   DC.B    "FSCALE",0
-.151:   DC.B    "FSGLDIV",0
-.152:   DC.B    "FSGLMUL",0
-.153:   DC.B    "FSUB",0
-.154:   DC.B    "FBF",0
-.155:   DC.B    "FBEQ",0
-.156:   DC.B    "FBOGT",0
-.157:   DC.B    "FBOGE",0
-.158:   DC.B    "FBOLT",0
-.159:   DC.B    "FBOLE",0
-.160:   DC.B    "FBOGL",0
-.161:   DC.B    "FBOR",0
-.162:   DC.B    "FBUN",0
-.163:   DC.B    "FBUNE",0
-.164:   DC.B    "FBUGT",0
-.165:   DC.B    "FBUGE",0
-.166:   DC.B    "FBULT",0
-.167:   DC.B    "FBULE",0
-.168:   DC.B    "FBNE",0
-.169:   DC.B    "FBT",0
-.170:   DC.B    "FBSF",0
-.171:   DC.B    "FBSEQ",0
-.172:   DC.B    "FBGT",0
-.173:   DC.B    "FBGE",0
-.174:   DC.B    "FBLT",0
-.175:   DC.B    "FBLE",0
-.176:   DC.B    "FBGL",0
-.177:   DC.B    "FBGLE",0
-.178:   DC.B    "FBNGLE",0
-.179:   DC.B    "FBNGL",0
-.180:   DC.B    "FBNLE",0
-.181:   DC.B    "FBNLT",0
-.182:   DC.B    "FBNGE",0
-.183:   DC.B    "FBNGT",0
-.184:   DC.B    "FBSNE",0
-.185:   DC.B    "FBST",0
-.186:   DC.B    "PBBS",0
-.187:   DC.B    "PBBC",0
-.188:   DC.B    "PBLS",0
-.189:   DC.B    "PBLC",0
-.190:   DC.B    "PBSS",0
-.191:   DC.B    "PBSC",0
-.192:   DC.B    "PBAS",0
-.193:   DC.B    "PBAC",0
-.194:   DC.B    "PBWS",0
-.195:   DC.B    "PBWC",0
-.196:   DC.B    "PBIS",0
-.197:   DC.B    "PBIC",0
-.198:   DC.B    "PBGS",0
-.199:   DC.B    "PBGC",0
-.200:   DC.B    "PBCS",0
-.201:   DC.B    "PBCC",0
-.202:   DC.B    "FSADD",0
-.203:   DC.B    "FDADD",0
-.204:   DC.B    "FSDIV",0
-.205:   DC.B    "FDDIV",0
-.206:   DC.B    "FSMOVE",0
-.207:   DC.B    "FDMOVE",0
-.208:   DC.B    "FSMUL",0
-.209:   DC.B    "FDMUL",0
-.210:   DC.B    "FSNEG",0
-.211:   DC.B    "FDNEG",0
-.212:   DC.B    "FSSQRT",0
-.213:   DC.B    "FDSQRT",0
-.214:   DC.B    "FSSUB",0
-.215:   DC.B    "FDSUB",0
-.216:   DC.B    "FDBF",0
-.217:   DC.B    "FDBEQ",0
-.218:   DC.B    "FDBOGT",0
-.219:   DC.B    "FDBOGE",0
-.220:   DC.B    "FDBOLT",0
-.221:   DC.B    "FDBOLE",0
-.222:   DC.B    "FDBOGL",0
-.223:   DC.B    "FDBOR",0
-.224:   DC.B    "FDBUN",0
-.225:   DC.B    "FDBUNE",0
-.226:   DC.B    "FDBUGT",0
-.227:   DC.B    "FDBUGE",0
-.228:   DC.B    "FDBULT",0
-.229:   DC.B    "FDBULE",0
-.230:   DC.B    "FDBNE",0
-.231:   DC.B    "FDBT",0
-.232:   DC.B    "FDBSF",0
-.233:   DC.B    "FDBSEQ",0
-.234:   DC.B    "FDBGT",0
-.235:   DC.B    "FDBGE",0
-.236:   DC.B    "FDBLT",0
-.237:   DC.B    "FDBLE",0
-.238:   DC.B    "FDBGL",0
-.239:   DC.B    "FDBGLE",0
-.240:   DC.B    "FDBNGLE",0
-.241:   DC.B    "FDBNGL",0
-.242:   DC.B    "FDBNLE",0
-.243:   DC.B    "FDBNLT",0
-.244:   DC.B    "FDBNGE",0
-.245:   DC.B    "FDBNGT",0
-.246:   DC.B    "FDBSNE",0
-.247:   DC.B    "FDBST",0
-.248:   DC.B    "PDBBS",0
-.249:   DC.B    "PDBBC",0
-.250:   DC.B    "PDBLS",0
-.251:   DC.B    "PDBLC",0
-.252:   DC.B    "PDBSS",0
-.253:   DC.B    "PDBSC",0
-.254:   DC.B    "PDBAS",0
-.255:   DC.B    "PDBAC",0
-.256:   DC.B    "PDBWS",0
-.257:   DC.B    "PDBWC",0
-.258:   DC.B    "PDBIS",0
-.259:   DC.B    "PDBIC",0
-.260:   DC.B    "PDBGS",0
-.261:   DC.B    "PDBGC",0
-.262:   DC.B    "PDBCS",0
-.263:   DC.B    "PDBCC",0
-.264:   DC.B    "FSF",0
-.265:   DC.B    "FSEQ",0
-.266:   DC.B    "FSOGT",0
-.267:   DC.B    "FSOGE",0
-.268:   DC.B    "FSOLT",0
-.269:   DC.B    "FSOLE",0
-.270:   DC.B    "FSOGL",0
-.271:   DC.B    "FSOR",0
-.272:   DC.B    "FSUN",0
-.273:   DC.B    "FSUNE",0
-.274:   DC.B    "FSUGT",0
-.275:   DC.B    "FSUGE",0
-.276:   DC.B    "FSULT",0
-.277:   DC.B    "FSULE",0
-.278:   DC.B    "FSNE",0
-.279:   DC.B    "FST",0
-.280:   DC.B    "FSSF",0
-.281:   DC.B    "FSSEQ",0
-.282:   DC.B    "FSGT",0
-.283:   DC.B    "FSGE",0
-.284:   DC.B    "FSLT",0
-.285:   DC.B    "FSLE",0
-.286:   DC.B    "FSGL",0
-.287:   DC.B    "FSGLE",0
-.288:   DC.B    "FSNGLE",0
-.289:   DC.B    "FSNGL",0
-.290:   DC.B    "FSNLE",0
-.291:   DC.B    "FSNLT",0
-.292:   DC.B    "FSNGE",0
-.293:   DC.B    "FSNGT",0
-.294:   DC.B    "FSSNE",0
-.295:   DC.B    "FSST",0
-.296:   DC.B    "PSBS",0
-.297:   DC.B    "PSBC",0
-.298:   DC.B    "PSLS",0
-.299:   DC.B    "PSLC",0
-.300:   DC.B    "PDSS",0
-.301:   DC.B    "PSSC",0
-.302:   DC.B    "PSAS",0
-.303:   DC.B    "PSAC",0
-.304:   DC.B    "PSWS",0
-.305:   DC.B    "PSWC",0
-.306:   DC.B    "PSIS",0
-.307:   DC.B    "PSIC",0
-.308:   DC.B    "PSGS",0
-.309:   DC.B    "PSGC",0
-.310:   DC.B    "PSCS",0
-.311:   DC.B    "PSCC",0
-.312:   DC.B    "FMOVE",0
-.313:   DC.B    "FNOP",0
-.314:   DC.B    "FMOVECR",0
-.315:   DC.B    "FMOVEM",0
-.316:   DC.B    "FRESTORE",0
-.317:   DC.B    "FSAVE",0
-.318:   DC.B    "FSINCOS",0
-.319:   DC.B    "FTRAPF",0
-.320:   DC.B    "FTRAPEQ",0
-.321:   DC.B    "FTRAPOGT",0
-.322:   DC.B    "FTRAPOGE",0
-.323:   DC.B    "FTRAPOLT",0
-.324:   DC.B    "FTRAPOLE",0
-.325:   DC.B    "FTRAPOGL",0
-.326:   DC.B    "FTRAPOR",0
-.327:   DC.B    "FTRAPUN",0
-.328:   DC.B    "FTRAPUNE",0
-.329:   DC.B    "FTRAPUGT",0
-.330:   DC.B    "FTRAPUGE",0
-.331:   DC.B    "FTRAPULT",0
-.332:   DC.B    "FTRAPULE",0
-.333:   DC.B    "FTRAPNE",0
-.334:   DC.B    "FTRAPT",0
-.335:   DC.B    "FTRAPSF",0
-.336:   DC.B    "FTRAPSEQ",0
-.337:   DC.B    "FTRAPGT",0
-.338:   DC.B    "FTRAPGE",0
-.339:   DC.B    "FTRAPLT",0
-.340:   DC.B    "FTRAPLE",0
-.341:   DC.B    "FTRAPGL",0
-.342:   DC.B    "FTRAPGLE",0
-.343:   DC.B    "FTRAPNGLE",0
-.344:   DC.B    "FTRAPNGL",0
-.345:   DC.B    "FTRAPNLE",0
-.346:   DC.B    "FTRAPNLT",0
-.347:   DC.B    "FTRAPNGE",0
-.348:   DC.B    "FTRAPNGT",0
-.349:   DC.B    "FTRAPSNE",0
-.350:   DC.B    "FTRAPST",0
-.351:   DC.B    "PTRAPBS",0
-.352:   DC.B    "PTRAPBC",0
-.353:   DC.B    "PTRAPLS",0
-.354:   DC.B    "PTRAPLC",0
-.355:   DC.B    "PTRAPSS",0
-.356:   DC.B    "PTRAPSC",0
-.357:   DC.B    "PTRAPAS",0
-.358:   DC.B    "PTRAPAC",0
-.359:   DC.B    "PTRAPWS",0
-.360:   DC.B    "PTRAPWC",0
-.361:   DC.B    "PTRAPIS",0
-.362:   DC.B    "PTRAPIC",0
-.363:   DC.B    "PTRAPGS",0
-.364:   DC.B    "PTRAPGC",0
-.365:   DC.B    "PTRAPCS",0
-.366:   DC.B    "PTRAPCC",0
-.367:   DC.B    "FTST",0
-.368:   DC.B    "PSAVE",0
-.369:   DC.B    "PRESTORE",0
-.370:   DC.B    "PFLUSHA",0
-.371:   DC.B    "PFLUSH",0
-.372:   DC.B    "PFLUSHS",0
-.373:   DC.B    "PFLUSHR",0
-.374:   DC.B    "PLOADR",0
-.375:   DC.B    "PLOADW",0
-.376:   DC.B    "PTESTR",0
-.377:   DC.B    "PTESTW",0
-.378:   DC.B    "PMOVE",0
-.379:   DC.B    "PFLUSHAN",0
-.380:   DC.B    "PFLUSHN",0
-.381:   DC.B    "PLPAR",0
-.382:   DC.B    "PLPAW",0
-.383:   DC.B    "BKPT",0
-.384:   DC.B    "MOVEC",0
-.385:   DC.B    "MOVES",0
-.386:   DC.B    "BFCHG",0
-.387:   DC.B    "BFCLR",0
-.388:   DC.B    "BFEXTS",0
-.389:   DC.B    "BFEXTU",0
-.390:   DC.B    "BFFFO",0
-.391:   DC.B    "BFSET",0
-.392:   DC.B    "BFTST",0
-.393:   DC.B    "BFINS",0
-.394:   DC.B    "DIVSL",0
-.395:   DC.B    "DIVUL",0
-.396:   DC.B    "EXTB",0
-.397:   DC.B    "TRAPCC",0
-.398:   DC.B    "TRAPCS",0
-.399:   DC.B    "TRAPEQ",0
-.400:   DC.B    "TRAPF",0
-.401:   DC.B    "TRAPGE",0
-.402:   DC.B    "TRAPGT",0
-.403:   DC.B    "TRAPHI",0
-.404:   DC.B    "TRAPLE",0
-.405:   DC.B    "TRAPLS",0
-.406:   DC.B    "TRAPLT",0
-.407:   DC.B    "TRAPMI",0
-.408:   DC.B    "TRAPNE",0
-.409:   DC.B    "TRAPPL",0
-.410:   DC.B    "TRAPT",0
-.411:   DC.B    "TRAPVC",0
-.412:   DC.B    "TRAPVS",0
-.413:   DC.B    "CINVL",0
-.414:   DC.B    "CINVP",0
-.415:   DC.B    "CINVA",0
-.416:   DC.B    "CPUSHL",0
-.417:   DC.B    "CPUSHP",0
-.418:   DC.B    "CPUSHA",0
-.419:   DC.B    "MOVE16",0
-.420:   DC.B    "LPSTOP",0
-.421:   DC.B    "HALT",0
-.422:   DC.B    "PULSE",0
-    EVEN
+.1: DC.B	"MOVE",0
+.2: DC.B	"RTS",0
+.3: DC.B	"ADD",0
+.4: DC.B	"SUB",0
+.5: DC.B	"MOVEQ",0
+.6: DC.B	"ASR",0
+.7: DC.B	"BSR",0
+.8: DC.B	"CLR",0
+.9: DC.B	"CMP",0
+.10:	DC.B	"EOR",0
+.11:	DC.B	"JMP",0
+.12:	DC.B	"JSR",0
+.13:	DC.B	"LSL",0
+.14:	DC.B	"LSR",0
+.15:	DC.B	"SUBQ",0
+.16:	DC.B	"ADDQ",0
+.17:	DC.B	"OR",0
+.18:	DC.B	"ROL",0
+.19:	DC.B	"ROR",0
+.20:	DC.B	"AND",0
+.21:	DC.B	"ASL",0
+.22:	DC.B	"BTST",0
+.23:	DC.B	"MOVEM",0
+.24:	DC.B	"ADDA",0
+.25:	DC.B	"ADDI",0
+.26:	DC.B	"ADDX",0
+.27:	DC.B	"CMPA",0
+.28:	DC.B	"CMPM",0
+.29:	DC.B	"CMPI",0
+.30:	DC.B	"MOVEA",0
+.31:	DC.B	"BRA",0
+.32:	DC.B	"NEGX",0
+.33:	DC.B	"ORI",0
+.34:	DC.B	"SUBA",0
+.35:	DC.B	"SUBI",0
+.36:	DC.B	"SUBX",0
+.37:	DC.B	"NOT",0
+.38:	DC.B	"MULS",0
+.39:	DC.B	"MULU",0
+.40:	DC.B	"NEG",0
+.41:	DC.B	"TST",0
+.42:	DC.B	"SWAP",0
+.43:	DC.B	"LEA",0
+.44:	DC.B	"DIVS",0
+.45:	DC.B	"DIVU",0
+.46:	DC.B	"EXG",0
+.47:	DC.B	"STOP",0
+.48:	DC.B	"RTR",0
+.49:	DC.B	"RTE",0
+.50:	DC.B	"ABCD",0
+.51:	DC.B	"SBCD",0
+.52:	DC.B	"MOVEP",0
+.53:	DC.B	"NOP",0
+.54:	DC.B	"ROXL",0
+.55:	DC.B	"ROXR",0
+.56:	DC.B	"BCHG",0
+.57:	DC.B	"BCLR",0
+.58:	DC.B	"BSET",0
+.59:	DC.B	"CHK",0
+.60:	DC.B	"EXT",0
+.61:	DC.B	"LINK",0
+.62:	DC.B	"UNLK",0
+.63:	DC.B	"NBCD",0
+.64:	DC.B	"PEA",0
+.65:	DC.B	"RESET",0
+.66:	DC.B	"TRAP",0
+.67:	DC.B	"TRAPV",0
+.68:	DC.B	"BHI",0
+.69:	DC.B	"BLS",0
+.70:	DC.B	"BCC",0
+.71:	DC.B	"BCS",0
+.72:	DC.B	"BNE",0
+.73:	DC.B	"BEQ",0
+.74:	DC.B	"BVC",0
+.75:	DC.B	"BVS",0
+.76:	DC.B	"BPL",0
+.77:	DC.B	"BMI",0
+.78:	DC.B	"BGE",0
+.79:	DC.B	"BLT",0
+.80:	DC.B	"BGT",0
+.81:	DC.B	"BLE",0
+.82:	DC.B	"DBRA",0
+.83:	DC.B	"DBF",0
+.84:	DC.B	"DBT",0
+.85:	DC.B	"DBHI",0
+.86:	DC.B	"DBLS",0
+.87:	DC.B	"DBCC",0
+.88:	DC.B	"DBCS",0
+.89:	DC.B	"DBNE",0
+.90:	DC.B	"DBEQ",0
+.91:	DC.B	"DBVC",0
+.92:	DC.B	"DBVS",0
+.93:	DC.B	"DBPL",0
+.94:	DC.B	"DBMI",0
+.95:	DC.B	"DBGE",0
+.96:	DC.B	"DBLT",0
+.97:	DC.B	"DBGT",0
+.98:	DC.B	"DBLE",0
+.99:	DC.B	"SHI",0
+.100:	DC.B	"SLS",0
+.101:	DC.B	"SCC",0
+.102:	DC.B	"SCS",0
+.103:	DC.B	"SNE",0
+.104:	DC.B	"SEQ",0
+.105:	DC.B	"SVC",0
+.106:	DC.B	"SVS",0
+.107:	DC.B	"SPL",0
+.108:	DC.B	"SMI",0
+.109:	DC.B	"SGE",0
+.110:	DC.B	"SLT",0
+.111:	DC.B	"SGT",0
+.112:	DC.B	"SLE",0
+.113:	DC.B	"ST",0
+.114:	DC.B	"SF",0
+.115:	DC.B	"ANDI",0
+.116:	DC.B	"EORI",0
+.117:	DC.B	"ILLEGAL",0
+.118:	DC.B	"RTD",0
+.119:	DC.B	"FABS",0
+.120:	DC.B	"FACOS",0
+.121:	DC.B	"FASIN",0
+.122:	DC.B	"FATAN",0
+.123:	DC.B	"FATANH",0
+.124:	DC.B	"FCOS",0
+.125:	DC.B	"FCOSH",0
+.126:	DC.B	"FETOX",0
+.127:	DC.B	"FETOXM1",0
+.128:	DC.B	"FGETEXP",0
+.129:	DC.B	"FGETMAN",0
+.130:	DC.B	"FINT",0
+.131:	DC.B	"FINRZ",0
+.132:	DC.B	"FLOG10",0
+.133:	DC.B	"FLOG2",0
+.134:	DC.B	"FLOGN",0
+.135:	DC.B	"FLOGNP1",0
+.136:	DC.B	"FNEG",0
+.137:	DC.B	"FSIN",0
+.138:	DC.B	"FSINH",0
+.139:	DC.B	"FSQRT",0
+.140:	DC.B	"FTAN",0
+.141:	DC.B	"FTANH",0
+.142:	DC.B	"FTENTOX",0
+.143:	DC.B	"FTWOTOX",0
+.144:	DC.B	"FADD",0
+.145:	DC.B	"FCMP",0
+.146:	DC.B	"FDIV",0
+.147:	DC.B	"FMOD",0
+.148:	DC.B	"FMUL",0
+.149:	DC.B	"FREM",0
+.150:	DC.B	"FSCALE",0
+.151:	DC.B	"FSGLDIV",0
+.152:	DC.B	"FSGLMUL",0
+.153:	DC.B	"FSUB",0
+.154:	DC.B	"FBF",0
+.155:	DC.B	"FBEQ",0
+.156:	DC.B	"FBOGT",0
+.157:	DC.B	"FBOGE",0
+.158:	DC.B	"FBOLT",0
+.159:	DC.B	"FBOLE",0
+.160:	DC.B	"FBOGL",0
+.161:	DC.B	"FBOR",0
+.162:	DC.B	"FBUN",0
+.163:	DC.B	"FBUNE",0
+.164:	DC.B	"FBUGT",0
+.165:	DC.B	"FBUGE",0
+.166:	DC.B	"FBULT",0
+.167:	DC.B	"FBULE",0
+.168:	DC.B	"FBNE",0
+.169:	DC.B	"FBT",0
+.170:	DC.B	"FBSF",0
+.171:	DC.B	"FBSEQ",0
+.172:	DC.B	"FBGT",0
+.173:	DC.B	"FBGE",0
+.174:	DC.B	"FBLT",0
+.175:	DC.B	"FBLE",0
+.176:	DC.B	"FBGL",0
+.177:	DC.B	"FBGLE",0
+.178:	DC.B	"FBNGLE",0
+.179:	DC.B	"FBNGL",0
+.180:	DC.B	"FBNLE",0
+.181:	DC.B	"FBNLT",0
+.182:	DC.B	"FBNGE",0
+.183:	DC.B	"FBNGT",0
+.184:	DC.B	"FBSNE",0
+.185:	DC.B	"FBST",0
+.186:	DC.B	"PBBS",0
+.187:	DC.B	"PBBC",0
+.188:	DC.B	"PBLS",0
+.189:	DC.B	"PBLC",0
+.190:	DC.B	"PBSS",0
+.191:	DC.B	"PBSC",0
+.192:	DC.B	"PBAS",0
+.193:	DC.B	"PBAC",0
+.194:	DC.B	"PBWS",0
+.195:	DC.B	"PBWC",0
+.196:	DC.B	"PBIS",0
+.197:	DC.B	"PBIC",0
+.198:	DC.B	"PBGS",0
+.199:	DC.B	"PBGC",0
+.200:	DC.B	"PBCS",0
+.201:	DC.B	"PBCC",0
+.202:	DC.B	"FSADD",0
+.203:	DC.B	"FDADD",0
+.204:	DC.B	"FSDIV",0
+.205:	DC.B	"FDDIV",0
+.206:	DC.B	"FSMOVE",0
+.207:	DC.B	"FDMOVE",0
+.208:	DC.B	"FSMUL",0
+.209:	DC.B	"FDMUL",0
+.210:	DC.B	"FSNEG",0
+.211:	DC.B	"FDNEG",0
+.212:	DC.B	"FSSQRT",0
+.213:	DC.B	"FDSQRT",0
+.214:	DC.B	"FSSUB",0
+.215:	DC.B	"FDSUB",0
+.216:	DC.B	"FDBF",0
+.217:	DC.B	"FDBEQ",0
+.218:	DC.B	"FDBOGT",0
+.219:	DC.B	"FDBOGE",0
+.220:	DC.B	"FDBOLT",0
+.221:	DC.B	"FDBOLE",0
+.222:	DC.B	"FDBOGL",0
+.223:	DC.B	"FDBOR",0
+.224:	DC.B	"FDBUN",0
+.225:	DC.B	"FDBUNE",0
+.226:	DC.B	"FDBUGT",0
+.227:	DC.B	"FDBUGE",0
+.228:	DC.B	"FDBULT",0
+.229:	DC.B	"FDBULE",0
+.230:	DC.B	"FDBNE",0
+.231:	DC.B	"FDBT",0
+.232:	DC.B	"FDBSF",0
+.233:	DC.B	"FDBSEQ",0
+.234:	DC.B	"FDBGT",0
+.235:	DC.B	"FDBGE",0
+.236:	DC.B	"FDBLT",0
+.237:	DC.B	"FDBLE",0
+.238:	DC.B	"FDBGL",0
+.239:	DC.B	"FDBGLE",0
+.240:	DC.B	"FDBNGLE",0
+.241:	DC.B	"FDBNGL",0
+.242:	DC.B	"FDBNLE",0
+.243:	DC.B	"FDBNLT",0
+.244:	DC.B	"FDBNGE",0
+.245:	DC.B	"FDBNGT",0
+.246:	DC.B	"FDBSNE",0
+.247:	DC.B	"FDBST",0
+.248:	DC.B	"PDBBS",0
+.249:	DC.B	"PDBBC",0
+.250:	DC.B	"PDBLS",0
+.251:	DC.B	"PDBLC",0
+.252:	DC.B	"PDBSS",0
+.253:	DC.B	"PDBSC",0
+.254:	DC.B	"PDBAS",0
+.255:	DC.B	"PDBAC",0
+.256:	DC.B	"PDBWS",0
+.257:	DC.B	"PDBWC",0
+.258:	DC.B	"PDBIS",0
+.259:	DC.B	"PDBIC",0
+.260:	DC.B	"PDBGS",0
+.261:	DC.B	"PDBGC",0
+.262:	DC.B	"PDBCS",0
+.263:	DC.B	"PDBCC",0
+.264:	DC.B	"FSF",0
+.265:	DC.B	"FSEQ",0
+.266:	DC.B	"FSOGT",0
+.267:	DC.B	"FSOGE",0
+.268:	DC.B	"FSOLT",0
+.269:	DC.B	"FSOLE",0
+.270:	DC.B	"FSOGL",0
+.271:	DC.B	"FSOR",0
+.272:	DC.B	"FSUN",0
+.273:	DC.B	"FSUNE",0
+.274:	DC.B	"FSUGT",0
+.275:	DC.B	"FSUGE",0
+.276:	DC.B	"FSULT",0
+.277:	DC.B	"FSULE",0
+.278:	DC.B	"FSNE",0
+.279:	DC.B	"FST",0
+.280:	DC.B	"FSSF",0
+.281:	DC.B	"FSSEQ",0
+.282:	DC.B	"FSGT",0
+.283:	DC.B	"FSGE",0
+.284:	DC.B	"FSLT",0
+.285:	DC.B	"FSLE",0
+.286:	DC.B	"FSGL",0
+.287:	DC.B	"FSGLE",0
+.288:	DC.B	"FSNGLE",0
+.289:	DC.B	"FSNGL",0
+.290:	DC.B	"FSNLE",0
+.291:	DC.B	"FSNLT",0
+.292:	DC.B	"FSNGE",0
+.293:	DC.B	"FSNGT",0
+.294:	DC.B	"FSSNE",0
+.295:	DC.B	"FSST",0
+.296:	DC.B	"PSBS",0
+.297:	DC.B	"PSBC",0
+.298:	DC.B	"PSLS",0
+.299:	DC.B	"PSLC",0
+.300:	DC.B	"PDSS",0
+.301:	DC.B	"PSSC",0
+.302:	DC.B	"PSAS",0
+.303:	DC.B	"PSAC",0
+.304:	DC.B	"PSWS",0
+.305:	DC.B	"PSWC",0
+.306:	DC.B	"PSIS",0
+.307:	DC.B	"PSIC",0
+.308:	DC.B	"PSGS",0
+.309:	DC.B	"PSGC",0
+.310:	DC.B	"PSCS",0
+.311:	DC.B	"PSCC",0
+.312:	DC.B	"FMOVE",0
+.313:	DC.B	"FNOP",0
+.314:	DC.B	"FMOVECR",0
+.315:	DC.B	"FMOVEM",0
+.316:	DC.B	"FRESTORE",0
+.317:	DC.B	"FSAVE",0
+.318:	DC.B	"FSINCOS",0
+.319:	DC.B	"FTRAPF",0
+.320:	DC.B	"FTRAPEQ",0
+.321:	DC.B	"FTRAPOGT",0
+.322:	DC.B	"FTRAPOGE",0
+.323:	DC.B	"FTRAPOLT",0
+.324:	DC.B	"FTRAPOLE",0
+.325:	DC.B	"FTRAPOGL",0
+.326:	DC.B	"FTRAPOR",0
+.327:	DC.B	"FTRAPUN",0
+.328:	DC.B	"FTRAPUNE",0
+.329:	DC.B	"FTRAPUGT",0
+.330:	DC.B	"FTRAPUGE",0
+.331:	DC.B	"FTRAPULT",0
+.332:	DC.B	"FTRAPULE",0
+.333:	DC.B	"FTRAPNE",0
+.334:	DC.B	"FTRAPT",0
+.335:	DC.B	"FTRAPSF",0
+.336:	DC.B	"FTRAPSEQ",0
+.337:	DC.B	"FTRAPGT",0
+.338:	DC.B	"FTRAPGE",0
+.339:	DC.B	"FTRAPLT",0
+.340:	DC.B	"FTRAPLE",0
+.341:	DC.B	"FTRAPGL",0
+.342:	DC.B	"FTRAPGLE",0
+.343:	DC.B	"FTRAPNGLE",0
+.344:	DC.B	"FTRAPNGL",0
+.345:	DC.B	"FTRAPNLE",0
+.346:	DC.B	"FTRAPNLT",0
+.347:	DC.B	"FTRAPNGE",0
+.348:	DC.B	"FTRAPNGT",0
+.349:	DC.B	"FTRAPSNE",0
+.350:	DC.B	"FTRAPST",0
+.351:	DC.B	"PTRAPBS",0
+.352:	DC.B	"PTRAPBC",0
+.353:	DC.B	"PTRAPLS",0
+.354:	DC.B	"PTRAPLC",0
+.355:	DC.B	"PTRAPSS",0
+.356:	DC.B	"PTRAPSC",0
+.357:	DC.B	"PTRAPAS",0
+.358:	DC.B	"PTRAPAC",0
+.359:	DC.B	"PTRAPWS",0
+.360:	DC.B	"PTRAPWC",0
+.361:	DC.B	"PTRAPIS",0
+.362:	DC.B	"PTRAPIC",0
+.363:	DC.B	"PTRAPGS",0
+.364:	DC.B	"PTRAPGC",0
+.365:	DC.B	"PTRAPCS",0
+.366:	DC.B	"PTRAPCC",0
+.367:	DC.B	"FTST",0
+.368:	DC.B	"PSAVE",0
+.369:	DC.B	"PRESTORE",0
+.370:	DC.B	"PFLUSHA",0
+.371:	DC.B	"PFLUSH",0
+.372:	DC.B	"PFLUSHS",0
+.373:	DC.B	"PFLUSHR",0
+.374:	DC.B	"PLOADR",0
+.375:	DC.B	"PLOADW",0
+.376:	DC.B	"PTESTR",0
+.377:	DC.B	"PTESTW",0
+.378:	DC.B	"PMOVE",0
+.379:	DC.B	"PFLUSHAN",0
+.380:	DC.B	"PFLUSHN",0
+.381:	DC.B	"PLPAR",0
+.382:	DC.B	"PLPAW",0
+.383:	DC.B	"BKPT",0
+.384:	DC.B	"MOVEC",0
+.385:	DC.B	"MOVES",0
+.386:	DC.B	"BFCHG",0
+.387:	DC.B	"BFCLR",0
+.388:	DC.B	"BFEXTS",0
+.389:	DC.B	"BFEXTU",0
+.390:	DC.B	"BFFFO",0
+.391:	DC.B	"BFSET",0
+.392:	DC.B	"BFTST",0
+.393:	DC.B	"BFINS",0
+.394:	DC.B	"DIVSL",0
+.395:	DC.B	"DIVUL",0
+.396:	DC.B	"EXTB",0
+.397:	DC.B	"TRAPCC",0
+.398:	DC.B	"TRAPCS",0
+.399:	DC.B	"TRAPEQ",0
+.400:	DC.B	"TRAPF",0
+.401:	DC.B	"TRAPGE",0
+.402:	DC.B	"TRAPGT",0
+.403:	DC.B	"TRAPHI",0
+.404:	DC.B	"TRAPLE",0
+.405:	DC.B	"TRAPLS",0
+.406:	DC.B	"TRAPLT",0
+.407:	DC.B	"TRAPMI",0
+.408:	DC.B	"TRAPNE",0
+.409:	DC.B	"TRAPPL",0
+.410:	DC.B	"TRAPT",0
+.411:	DC.B	"TRAPVC",0
+.412:	DC.B	"TRAPVS",0
+.413:	DC.B	"CINVL",0
+.414:	DC.B	"CINVP",0
+.415:	DC.B	"CINVA",0
+.416:	DC.B	"CPUSHL",0
+.417:	DC.B	"CPUSHP",0
+.418:	DC.B	"CPUSHA",0
+.419:	DC.B	"MOVE16",0
+.420:	DC.B	"LPSTOP",0
+.421:	DC.B	"HALT",0
+.422:	DC.B	"PULSE",0
+	EVEN
 ;*-*
 ;; AssemblerJobs
 ; ADDR. MODE MASKS
 
 ; TODO:
-;  - MOVE -> Condition register support
-;  - Implement: CALLM, CAS, CAS2, CHK2, CMP2, PACK, UNPK, RTM
-;  -
+;	- MOVE -> Condition register support
+;	- Implement: CALLM, CAS, CAS2, CHK2, CMP2, PACK, UNPK, RTM
+;	-
 
 ;; Sizes
 ;----------------QDPXSLWB---
 
-SIZE_BWL=       %00000111
-SIZE_SBWL=      %00001111
-SIZE_BL=        %00000101
-SIZE_WL=        %00000110
-SIZE_L=         %00000100
-SIZE_B=         %00000001
-SIZE_BWLSXPD=   %01111111
-SIZE_S=         %00001000
-SIZE_D=         %01000000
-SIZE_W=         %00000010
-SIZE_BWLSXD=    %01011111
-SIZE_X=         %00010000
-SIZE_LX=        %00010100
-SIZE_WLQ=       %10000110
+SIZE_BWL=		%00000111
+SIZE_SBWL=		%00001111
+SIZE_BL=		%00000101
+SIZE_WL=		%00000110
+SIZE_L=			%00000100
+SIZE_B=			%00000001
+SIZE_BWLSXPD=	%01111111
+SIZE_S=			%00001000
+SIZE_D=			%01000000
+SIZE_W=			%00000010
+SIZE_BWLSXD=	%01011111
+SIZE_X=			%00010000
+SIZE_LX=		%00010100
+SIZE_WLQ=		%10000110
 ;*-*
 ;; Adressing modes
-ASRC    = %111111111111
-NASRC   = %111111111101
-MMSRC   = %011111101100
-PSRC    = %011111100000
+ASRC	= %111111111111
+NASRC	= %111111111101
+MMSRC	= %011111101100
+PSRC	= %011111100000
 
-DEST    = %000111111101
-MDEST   = %000111111100
-QDEST   = %000111111111
-BTDEST  = %011111111101
-MMDEST  = %011111110100
-PMDEST  = %011111111100
+DEST	= %000111111101
+MDEST	= %000111111100
+QDEST	= %000111111111
+BTDEST	= %011111111101
+MMDEST	= %011111110100
+PMDEST	= %011111111100
 
-JLEA    = %011111100100
-FSAVEM  = %000111110100
-FRESTM  = %000111101100
+JLEA	= %011111100100
+FSAVEM	= %000111110100
+FRESTM	= %000111101100
 ;*-*
 ;; Jobs
 ;---------------------------------------
 
-SIZE    = 2
-SIZEM   = 3
-SIZEA   = 16
-SIZEE   = 17
-SIZEF   = 26    ; FIXED SIZE
+SIZE	= 2
+SIZEM	= 3
+SIZEA	= 16
+SIZEE	= 17
+SIZEF	= 26	; FIXED SIZE
 
-EA  = 4
+EA	= 4
 EAM = 5
 
-COMMA   = 6
+COMMA	= 6
 
-ADDSUB  = 7
-IMMMQ   = 8
-IMMQ    = 9
+ADDSUB	= 7
+IMMMQ	= 8
+IMMQ	= 9
 
 BCC = 10
-DBCC    = 11
-DOEXG   = 19
-CMPM    = 20
-MOVEM   = 21
-TRAP    = 22
-MOVEP   = 23
-CMP_I   = 24
+DBCC	= 11
+DOEXG	= 19
+CMPM	= 20
+MOVEM	= 21
+TRAP	= 22
+MOVEP	= 23
+CMP_I	= 24
 
-ADRREG  = 12
+ADRREG	= 12
 DATAREG = 14
 
-SHIFT   = 13
+SHIFT	= 13
 BIT = 15
-XREG    = 18
+XREG	= 18
 
-CPUSUP  = 25
-SIZE0   = 27
-SIZEO   = 28
-FPM     = 29
-FPUSUP  = 30
-WARN46  = 31
-FPD     = 32
-MMUSUP  = 33
-COPY    = 34
-FPMOVE  = 35
+CPUSUP	= 25
+SIZE0	= 27
+SIZEO	= 28
+FPM		= 29
+FPUSUP	= 30
+WARN46	= 31
+FPD		= 32
+MMUSUP	= 33
+COPY	= 34
+FPMOVE	= 35
 FMOVECR = 36
-FMOVEM  = 37
+FMOVEM	= 37
 FSINCOS = 38
-TRAPCC  = 39
-FTST    = 40
-PMMSTD  = 41
-PMMLDX  = 42
-PMMTST  = 43
+TRAPCC	= 39
+FTST	= 40
+PMMSTD	= 41
+PMMLDX	= 42
+PMMTST	= 43
 PMMMOVE = 44
-PMMEA   = 45
-IMMBK   = 46
-MOVEC   = 47
-MOVES   = 48
+PMMEA	= 45
+IMMBK	= 46
+MOVEC	= 47
+MOVES	= 48
 BITFLD1 = 49
 BITFLD2 = 50
 BITFLD3 = 51
-MULDIV  = 52
-LINK    = 53
+MULDIV	= 52
+LINK	= 53
 CPCACHE = 54
-MOVE16  = 55
-LPSTOP  = 56
-DOMOVE  = 57
-DOANDI  = 58
-DOEORI  = 59
-DOORI   = 60
+MOVE16	= 55
+LPSTOP	= 56
+DOMOVE	= 57
+DOANDI	= 58
+DOEORI	= 59
+DOORI	= 60
 ;*-*
 ASM_INSJOB:
-    DC.L    .1,.2,.3,.4,.5,.6,.7,.8,.9,.10,.11,.12,.13,.14,.15,.16,.17
-    DC.L    .18,.19,.20,.21,.22,.23,.24,.25,.26,.27,.28,.29,.30,.31,.32
-    DC.L    .33,.34,.35,.36,.37,.38,.39,.40,.41,.42,.43,.44,.45,.46
-    DC.L    .47,.48,.49,.50,.51,.52,.53,.54,.55,.56,.57,.58,.59,.60
-    DC.L    .61,.62,.63,.64,.65,.66,.67,.68,.69,.70,.71,.72,.73,.74
-    DC.L    .75,.76,.77,.78,.79,.80,.81,.82,.83,.84,.85,.86,.87,.88
-    DC.L    .89,.90,.91,.92,.93,.94,.95,.96,.97,.98,.99,.100,.101,.102
-    DC.L    .103,.104,.105,.106,.107,.108,.109,.110,.111,.112
-    DC.L    .113,.114,.115,.116,.117,.118,.119,.120,.121,.122
-    DC.L    .123,.124,.125,.126,.127,.128,.129,.130,.131,.132
-    DC.L    .133,.134,.135,.136,.137,.138,.139,.140,.141,.142
-    DC.L    .143,.144,.145,.146,.147,.148,.149,.150,.151,.152
-    DC.L    .153,.154,.155,.156,.157,.158,.159,.160,.161,.162
-    DC.L    .163,.164,.165,.166,.167,.168,.169,.170,.171,.172
-    DC.L    .173,.174,.175,.176,.177,.178,.179,.180,.181,.182
-    DC.L    .183,.184,.185,.186,.187,.188,.189,.190,.191,.192
-    DC.L    .193,.194,.195,.196,.197,.198,.199,.200,.201,.202
-    DC.L    .203,.204,.205,.206,.207,.208,.209,.210,.211,.212
-    DC.L    .213,.214,.215,.216,.217,.218,.219,.220,.221,.222
-    DC.L    .223,.224,.225,.226,.227,.228,.229,.230,.231,.232
-    DC.L    .233,.234,.235,.236,.237,.238,.239,.240,.241,.242
-    DC.L    .243,.244,.245,.246,.247,.248,.249,.250,.251,.252
-    DC.L    .253,.254,.255,.256,.257,.258,.259,.260,.261,.262
-    DC.L    .263,.264,.265,.266,.267,.268,.269,.270,.271,.272
-    DC.L    .273,.274,.275,.276,.277,.278,.279,.280,.281,.282
-    DC.L    .283,.284,.285,.286,.287,.288,.289,.290,.291,.292
-    DC.L    .293,.294,.295,.296,.297,.298,.299,.300,.301,.302
-    DC.L    .303,.304,.305,.306,.307,.308,.309,.310,.311,.312
-    DC.L    .313,.314,.315,.316,.317,.318,.319,.320,.321,.322
-    DC.L    .323,.324,.325,.326,.327,.328,.329,.330,.331,.332
-    DC.L    .333,.334,.335,.336,.337,.338,.339,.340,.341,.342
-    DC.L    .343,.344,.345,.346,.347,.348,.349,.350,.351,.352
-    DC.L    .353,.354,.355,.356,.357,.358,.359,.360,.361,.362
-    DC.L    .363,.364,.365,.366,.367,.368,.369,.370,.371,.372
-    DC.L    .373,.374,.375,.376,.377,.378,.379,.380,.381,.382
-    DC.L    .383,.384,.385,.386,.387,.388,.389,.390,.391,.392
-    DC.L    .393,.394,.395,.396,.397,.398,.399,.400,.401,.402
-    DC.L    .403,.404,.405,.406,.407,.408,.409,.410,.411,.412
-    DC.L    .413,.414,.415,.416,.417,.418,.419,.420,.421,.422
+	DC.L	.1,.2,.3,.4,.5,.6,.7,.8,.9,.10,.11,.12,.13,.14,.15,.16,.17
+	DC.L	.18,.19,.20,.21,.22,.23,.24,.25,.26,.27,.28,.29,.30,.31,.32
+	DC.L	.33,.34,.35,.36,.37,.38,.39,.40,.41,.42,.43,.44,.45,.46
+	DC.L	.47,.48,.49,.50,.51,.52,.53,.54,.55,.56,.57,.58,.59,.60
+	DC.L	.61,.62,.63,.64,.65,.66,.67,.68,.69,.70,.71,.72,.73,.74
+	DC.L	.75,.76,.77,.78,.79,.80,.81,.82,.83,.84,.85,.86,.87,.88
+	DC.L	.89,.90,.91,.92,.93,.94,.95,.96,.97,.98,.99,.100,.101,.102
+	DC.L	.103,.104,.105,.106,.107,.108,.109,.110,.111,.112
+	DC.L	.113,.114,.115,.116,.117,.118,.119,.120,.121,.122
+	DC.L	.123,.124,.125,.126,.127,.128,.129,.130,.131,.132
+	DC.L	.133,.134,.135,.136,.137,.138,.139,.140,.141,.142
+	DC.L	.143,.144,.145,.146,.147,.148,.149,.150,.151,.152
+	DC.L	.153,.154,.155,.156,.157,.158,.159,.160,.161,.162
+	DC.L	.163,.164,.165,.166,.167,.168,.169,.170,.171,.172
+	DC.L	.173,.174,.175,.176,.177,.178,.179,.180,.181,.182
+	DC.L	.183,.184,.185,.186,.187,.188,.189,.190,.191,.192
+	DC.L	.193,.194,.195,.196,.197,.198,.199,.200,.201,.202
+	DC.L	.203,.204,.205,.206,.207,.208,.209,.210,.211,.212
+	DC.L	.213,.214,.215,.216,.217,.218,.219,.220,.221,.222
+	DC.L	.223,.224,.225,.226,.227,.228,.229,.230,.231,.232
+	DC.L	.233,.234,.235,.236,.237,.238,.239,.240,.241,.242
+	DC.L	.243,.244,.245,.246,.247,.248,.249,.250,.251,.252
+	DC.L	.253,.254,.255,.256,.257,.258,.259,.260,.261,.262
+	DC.L	.263,.264,.265,.266,.267,.268,.269,.270,.271,.272
+	DC.L	.273,.274,.275,.276,.277,.278,.279,.280,.281,.282
+	DC.L	.283,.284,.285,.286,.287,.288,.289,.290,.291,.292
+	DC.L	.293,.294,.295,.296,.297,.298,.299,.300,.301,.302
+	DC.L	.303,.304,.305,.306,.307,.308,.309,.310,.311,.312
+	DC.L	.313,.314,.315,.316,.317,.318,.319,.320,.321,.322
+	DC.L	.323,.324,.325,.326,.327,.328,.329,.330,.331,.332
+	DC.L	.333,.334,.335,.336,.337,.338,.339,.340,.341,.342
+	DC.L	.343,.344,.345,.346,.347,.348,.349,.350,.351,.352
+	DC.L	.353,.354,.355,.356,.357,.358,.359,.360,.361,.362
+	DC.L	.363,.364,.365,.366,.367,.368,.369,.370,.371,.372
+	DC.L	.373,.374,.375,.376,.377,.378,.379,.380,.381,.382
+	DC.L	.383,.384,.385,.386,.387,.388,.389,.390,.391,.392
+	DC.L	.393,.394,.395,.396,.397,.398,.399,.400,.401,.402
+	DC.L	.403,.404,.405,.406,.407,.408,.409,.410,.411,.412
+	DC.L	.413,.414,.415,.416,.417,.418,.419,.420,.421,.422
 
-    DC.L    0
+	DC.L	0
 
-.1:     DC.W    $0000,SIZEM,2,SIZE_BWL,12,DOMOVE,0                                      ; MOVE
-.2:     DC.W    $4E75,SIZE0,0                                                           ; RTS
-.3:     DC.W    $D000,SIZE,2,SIZE_BWL,6,ADDSUB,$0600,0                                  ; ADD
-.4:     DC.W    $9000,SIZE,2,SIZE_BWL,6,ADDSUB,$0400,0                                  ; SUB
-.5:     DC.W    $7000,SIZEO,3,SIZE_L,IMMMQ,0                                            ; MOVEQ
-.6:     DC.W    $E000,SIZEO,2,SIZE_BWL,SHIFT,$E0C0,0                                    ; ASR
-.7:     DC.W    $6100,SIZEO,2,SIZE_SBWL,BCC,$61FF,0                                     ; BSR
-.8:     DC.W    $4200,SIZE,2,SIZE_BWL,6,EA,DEST,0,0                                     ; CLR
-.9:     DC.W    $B000,SIZE,2,SIZE_BWL,6,CMP_I,EA,ASRC,0,COMMA,DATAREG,9,0               ; CMP
-.10:    DC.W    $B100,SIZE,2,SIZE_BWL,6,DATAREG,9,COMMA,EA,DEST,0,0                     ; EOR
-.11:    DC.W    $4EC0,SIZE0,EA,JLEA,0,0                                                 ; JMP
-.12:    DC.W    $4E80,SIZE0,EA,JLEA,0,0                                                 ; JSR
-.13:    DC.W    $E108,SIZEO,2,SIZE_BWL,SHIFT,$E3C0,0                                    ; LSL
-.14:    DC.W    $E008,SIZEO,2,SIZE_BWL,SHIFT,$E2C0,0                                    ; LSR
-.15:    DC.W    $5100,SIZE,2,SIZE_BWL,6,IMMQ,COMMA,EA,QDEST,0,0                         ; SUBQ
-.16:    DC.W    $5000,SIZE,2,SIZE_BWL,6,IMMQ,COMMA,EA,QDEST,0,0                         ; ADDQ
-.17:    DC.W    $8000,SIZE,2,SIZE_BWL,6,ADDSUB,0,0                                      ; OR
-.18:    DC.W    $E118,SIZEO,2,SIZE_BWL,SHIFT,$E7C0,0                                    ; ROL
-.19:    DC.W    $E018,SIZEO,2,SIZE_BWL,SHIFT,$E6C0,0                                    ; ROR
-.20:    DC.W    $C000,SIZE,2,SIZE_BWL,6,ADDSUB,$0200,0                                  ; AND
-.21:    DC.W    $E100,SIZEO,2,SIZE_BWL,SHIFT,$E1C0,0                                    ; ASL
-.22:    DC.W    $0100,SIZEO,2,SIZE_BL,BIT,$0800,0                                       ; BTST
-.23:    DC.W    $4880,SIZEE,2,SIZE_WL,MOVEM,0                                           ; MOVEM
-.24:    DC.W    $D0C0,SIZEA,2,SIZE_WL,EA,ASRC,0,COMMA,ADRREG,9,0                        ; ADDA
-.25:    DC.W    $0600,SIZE,2,SIZE_BWL,6,EA,$800,-1,COMMA,EA,DEST,0,0                    ; ADDI
-.26:    DC.W    $D100,SIZE,2,SIZE_BWL,6,XREG,0                                          ; ADDX
-.27:    DC.W    $B0C0,SIZEA,2,SIZE_WL,EA,ASRC,0,COMMA,ADRREG,9,0                        ; CMPA
-.28:    DC.W    $B108,SIZE,2,SIZE_BWL,6,CMPM,0                                          ; CMPM
-.29:    DC.W    $0C00,SIZE,2,SIZE_BWL,6,EA,$800,-1,COMMA,EA,DEST,0,0                    ; CMPI
-.30:    DC.W    $0040,SIZEM,2,SIZE_WL,12,EA,ASRC,0,COMMA,ADRREG,9,0                     ; MOVEA
-.31:    DC.W    $6000,SIZEO,2,SIZE_SBWL,BCC,$60FF,0                                     ; BRA
-.32:    DC.W    $4000,SIZE,2,SIZE_BWL,6,EA,DEST,0,0                                     ; NEGX
-.33:    DC.W    $0000,SIZE,2,SIZE_BWL,6,DOORI,0                                         ; ORI
-.34:    DC.W    $90C0,SIZEA,2,SIZE_WL,EA,ASRC,0,COMMA,ADRREG,9,0                        ; SUBA
-.35:    DC.W    $0400,SIZE,2,SIZE_BWL,6,EA,$800,-1,COMMA,EA,DEST,0,0                    ; SUBI
-.36:    DC.W    $9100,SIZE,2,SIZE_BWL,6,XREG,0                                          ; SUBX
-.37:    DC.W    $4600,SIZE,2,SIZE_BWL,6,EA,DEST,0,0                                     ; NOT
-.38:    DC.W    $C1C0,SIZEO,2,SIZE_WL,MULDIV,$4c00,$0c00,0                              ; MULS
-.39:    DC.W    $C0C0,SIZEO,2,SIZE_WL,MULDIV,$4c00,$0400,0                              ; MULU
-.40:    DC.W    $4400,SIZE,2,SIZE_BWL,6,EA,DEST,0,0                                     ; NEG
-.41:    DC.W    $4A00,SIZE,2,SIZE_BWL,6,EA,DEST,0,0                                     ; TST
-.42:    DC.W    $4840,SIZE0,DATAREG,0,0                                                 ; SWAP
-.43:    DC.W    $41C0,SIZEO,3,SIZE_L,EA,JLEA,0,COMMA,ADRREG,9,0                         ; LEA
-.44:    DC.W    $81C0,SIZEO,2,SIZE_WL,MULDIV,$4c40,$0c00,0                              ; DIVS
-.45:    DC.W    $80C0,SIZEO,2,SIZE_WL,MULDIV,$4c40,$0400,0                              ; DIVU
-.46:    DC.W    $C100,SIZE0,DOEXG,0                                                     ; EXG
-.47:    DC.W    $4E72,SIZE0,EA,$800,-1,0                                                ; STOP
-.48:    DC.W    $4E77,SIZE0,0                                                           ; RTR
-.49:    DC.W    $4E73,SIZE0,0                                                           ; RTE
-.50:    DC.W    $C100,SIZEO,1,SIZE_B,XREG,0                                             ; ABCD
-.51:    DC.W    $8100,SIZEO,1,SIZE_B,XREG,0                                             ; SBCD
-.52:    DC.W    $0108,SIZEE,2,SIZE_WL,MOVEP,0                                           ; MOVEP
-.53:    DC.W    $4E71,SIZE0,0                                                           ; NOP
-.54:    DC.W    $E110,SIZEO,2,SIZE_BWL,SHIFT,$E5C0,0                                    ; ROXL
-.55:    DC.W    $E010,SIZEO,2,SIZE_BWL,SHIFT,$E4C0,0                                    ; ROXR
-.56:    DC.W    $0140,SIZEO,3,SIZE_BL,BIT,$0840,0                                       ; BCHG
-.57:    DC.W    $0180,SIZEO,3,SIZE_BL,BIT,$0880,0                                       ; BCLR
-.58:    DC.W    $01C0,SIZEO,3,SIZE_BL,BIT,$08C0,0                                       ; BSET
-.59:    DC.W    $4180,SIZEO,2,SIZE_WL,EA,NASRC,0,COMMA,DATAREG,9,0                      ; CHK
-.60:    DC.W    $4880,SIZEE,2,SIZE_WL,DATAREG,0,0                                       ; EXT
-.61:    DC.W    $4E50,SIZEO,2,SIZE_WL,LINK,0                                            ; LINK
-.62:    DC.W    $4E58,SIZE0,ADRREG,0,0                                                  ; UNLK
-.63:    DC.W    $4800,SIZEO,1,SIZE_B,EA,DEST,0,0                                        ; NBCD
-.64:    DC.W    $4840,SIZEO,3,SIZE_L,EA,PSRC,0,0                                        ; PEA
-.65:    DC.W    $4E70,SIZE0,0                                                           ; RESET
-.66:    DC.W    $4E40,SIZE0,TRAP,0                                                      ; TRAP
-.67:    DC.W    $4E76,SIZE0,0                                                           ; TRAPV
-.68:    DC.W    $6200,SIZEO,2,SIZE_SBWL,BCC,$62FF,0                                     ; Bcc
-.69:    DC.W    $6300,SIZEO,2,SIZE_SBWL,BCC,$63FF,0
-.70:    DC.W    $6400,SIZEO,2,SIZE_SBWL,BCC,$64FF,0
-.71:    DC.W    $6500,SIZEO,2,SIZE_SBWL,BCC,$65FF,0
-.72:    DC.W    $6600,SIZEO,2,SIZE_SBWL,BCC,$66FF,0
-.73:    DC.W    $6700,SIZEO,2,SIZE_SBWL,BCC,$67FF,0
-.74:    DC.W    $6800,SIZEO,2,SIZE_SBWL,BCC,$68FF,0
-.75:    DC.W    $6900,SIZEO,2,SIZE_SBWL,BCC,$69FF,0
-.76:    DC.W    $6A00,SIZEO,2,SIZE_SBWL,BCC,$6AFF,0
-.77:    DC.W    $6B00,SIZEO,2,SIZE_SBWL,BCC,$6BFF,0
-.78:    DC.W    $6C00,SIZEO,2,SIZE_SBWL,BCC,$6CFF,0
-.79:    DC.W    $6D00,SIZEO,2,SIZE_SBWL,BCC,$6DFF,0
-.80:    DC.W    $6E00,SIZEO,2,SIZE_SBWL,BCC,$6EFF,0
-.81:    DC.W    $6F00,SIZEO,2,SIZE_SBWL,BCC,$6FFF,0
-.82:    DC.W    $51C8,SIZE0,DBCC,0                                                      ; DBRA
-.83:    DC.W    $51C8,SIZE0,DBCC,0                                                      ; DBF
-.84:    DC.W    $50C8,SIZE0,DBCC,0                                                      ; DBT
-.85:    DC.W    $52C8,SIZE0,DBCC,0                                                      ; DBcc
-.86:    DC.W    $53C8,SIZE0,DBCC,0
-.87:    DC.W    $54C8,SIZE0,DBCC,0
-.88:    DC.W    $55C8,SIZE0,DBCC,0
-.89:    DC.W    $56C8,SIZE0,DBCC,0
-.90:    DC.W    $57C8,SIZE0,DBCC,0
-.91:    DC.W    $58C8,SIZE0,DBCC,0
-.92:    DC.W    $59C8,SIZE0,DBCC,0
-.93:    DC.W    $5AC8,SIZE0,DBCC,0
-.94:    DC.W    $5BC8,SIZE0,DBCC,0
-.95:    DC.W    $5CC8,SIZE0,DBCC,0
-.96:    DC.W    $5DC8,SIZE0,DBCC,0
-.97:    DC.W    $5EC8,SIZE0,DBCC,0
-.98:    DC.W    $5FC8,SIZE0,DBCC,0
-.99:    DC.W    $52C0,SIZEO,1,SIZE_B,EA,DEST,0,0                                        ; Scc
-.100:   DC.W    $53C0,SIZEO,1,SIZE_B,EA,DEST,0,0
-.101:   DC.W    $54C0,SIZEO,1,SIZE_B,EA,DEST,0,0
-.102:   DC.W    $55C0,SIZEO,1,SIZE_B,EA,DEST,0,0
-.103:   DC.W    $56C0,SIZEO,1,SIZE_B,EA,DEST,0,0
-.104:   DC.W    $57C0,SIZEO,1,SIZE_B,EA,DEST,0,0
-.105:   DC.W    $58C0,SIZEO,1,SIZE_B,EA,DEST,0,0
-.106:   DC.W    $59C0,SIZEO,1,SIZE_B,EA,DEST,0,0
-.107:   DC.W    $5AC0,SIZEO,1,SIZE_B,EA,DEST,0,0
-.108:   DC.W    $5BC0,SIZEO,1,SIZE_B,EA,DEST,0,0
-.109:   DC.W    $5CC0,SIZEO,1,SIZE_B,EA,DEST,0,0
-.110:   DC.W    $5DC0,SIZEO,1,SIZE_B,EA,DEST,0,0
-.111:   DC.W    $5EC0,SIZEO,1,SIZE_B,EA,DEST,0,0
-.112:   DC.W    $5FC0,SIZEO,1,SIZE_B,EA,DEST,0,0
-.113:   DC.W    $50C0,SIZEO,1,SIZE_B,EA,DEST,0,0                                        ; ST
-.114:   DC.W    $51C0,SIZEO,1,SIZE_B,EA,DEST,0,0                                        ; SF
-.115:   DC.W    $0200,SIZE,2,SIZE_BWL,6,DOANDI,0                                        ; ANDI
-.116:   DC.W    $0A00,SIZE,2,SIZE_BWL,6,DOEORI,0                                        ; EORI
-.117:   DC.W    $4AFC,SIZE0,0                                                           ; ILLEGAL
-.118:   DC.W    $4E74,SIZE0,CPUSUP,%11111110,EA,$800,-1,0                               ; RTD=118!!!
-.119:   DC.W    $F200,SIZEO,5,SIZE_BWLSXD,FPM,$0018,0,FPUSUP,3,WARN46,0                 ; FABS
-.120:   DC.W    $F200,SIZEO,5,SIZE_BWLSXD,FPM,$001C,0,FPUSUP,3,WARN46,0                 ; FACOS
-.121:   DC.W    $F200,SIZEO,5,SIZE_BWLSXD,FPM,$000C,0,FPUSUP,3,WARN46,0                 ; FASIN
-.122:   DC.W    $F200,SIZEO,5,SIZE_BWLSXD,FPM,$000A,0,FPUSUP,3,WARN46,0                 ; FATAN
-.123:   DC.W    $F200,SIZEO,5,SIZE_BWLSXD,FPM,$000D,0,FPUSUP,3,WARN46,0                 ; FATANH
-.124:   DC.W    $F200,SIZEO,5,SIZE_BWLSXD,FPM,$001D,0,FPUSUP,3,WARN46,0                 ; FCOS
-.125:   DC.W    $F200,SIZEO,5,SIZE_BWLSXD,FPM,$0019,0,FPUSUP,3,WARN46,0                 ; FCOSH
-.126:   DC.W    $F200,SIZEO,5,SIZE_BWLSXD,FPM,$0010,0,FPUSUP,3,WARN46,0                 ; FETOX
-.127:   DC.W    $F200,SIZEO,5,SIZE_BWLSXD,FPM,$0008,0,FPUSUP,3,WARN46,0                 ; FETOXM1
-.128:   DC.W    $F200,SIZEO,5,SIZE_BWLSXD,FPM,$001E,0,FPUSUP,3,WARN46,0                 ; FGETEXP
-.129:   DC.W    $F200,SIZEO,5,SIZE_BWLSXD,FPM,$001F,0,FPUSUP,3,WARN46,0                 ; FGETMAN
-.130:   DC.W    $F200,SIZEO,5,SIZE_BWLSXD,FPM,$0001,0,FPUSUP,3,WARN46,0                 ; FINT
-.131:   DC.W    $F200,SIZEO,5,SIZE_BWLSXD,FPM,$0003,0,FPUSUP,3,WARN46,0                 ; FINTRZ
-.132:   DC.W    $F200,SIZEO,5,SIZE_BWLSXD,FPM,$0015,0,FPUSUP,3,WARN46,0                 ; FLOG10
-.133:   DC.W    $F200,SIZEO,5,SIZE_BWLSXD,FPM,$0016,0,FPUSUP,3,WARN46,0                 ; FLOG2
-.134:   DC.W    $F200,SIZEO,5,SIZE_BWLSXD,FPM,$0014,0,FPUSUP,3,WARN46,0                 ; FLOGN
-.135:   DC.W    $F200,SIZEO,5,SIZE_BWLSXD,FPM,$0006,0,FPUSUP,3,WARN46,0                 ; FLOGNP1
-.136:   DC.W    $F200,SIZEO,5,SIZE_BWLSXD,FPM,$001A,0,FPUSUP,3,0                        ; FNEG
-.137:   DC.W    $F200,SIZEO,5,SIZE_BWLSXD,FPM,$000E,0,FPUSUP,3,WARN46,0                 ; FSIN
-.138:   DC.W    $F200,SIZEO,5,SIZE_BWLSXD,FPM,$0002,0,FPUSUP,3,WARN46,0                 ; FSINH
-.139:   DC.W    $F200,SIZEO,5,SIZE_BWLSXD,FPM,$0004,0,FPUSUP,3,0                        ; FSQRT
-.140:   DC.W    $F200,SIZEO,5,SIZE_BWLSXD,FPM,$000F,0,FPUSUP,3,WARN46,0                 ; FTAN
-.141:   DC.W    $F200,SIZEO,5,SIZE_BWLSXD,FPM,$0009,0,FPUSUP,3,WARN46,0                 ; FTANH
-.142:   DC.W    $F200,SIZEO,5,SIZE_BWLSXD,FPM,$0012,0,FPUSUP,3,WARN46,0                 ; FTWOTOX
-.143:   DC.W    $F200,SIZEO,5,SIZE_BWLSXD,FPM,$0011,0,FPUSUP,3,WARN46,0                 ; FTWOTOX
-.144:   DC.W    $F200,SIZEO,5,SIZE_BWLSXD,FPD,$0022,0,FPUSUP,3,0                        ; FADD
-.145:   DC.W    $F200,SIZEO,5,SIZE_BWLSXD,FPD,$0038,0,FPUSUP,3,0                        ; FCMP
-.146:   DC.W    $F200,SIZEO,5,SIZE_BWLSXD,FPD,$0020,0,FPUSUP,3,0                        ; FDIV
-.147:   DC.W    $F200,SIZEO,5,SIZE_BWLSXD,FPD,$0021,0,FPUSUP,3,WARN46,0                 ; FMOD
-.148:   DC.W    $F200,SIZEO,5,SIZE_BWLSXD,FPD,$0023,0,FPUSUP,3,0                        ; FMUL
-.149:   DC.W    $F200,SIZEO,5,SIZE_BWLSXD,FPD,$0025,0,FPUSUP,3,WARN46,0                 ; FREM
-.150:   DC.W    $F200,SIZEO,5,SIZE_BWLSXD,FPD,$0026,0,FPUSUP,3,WARN46,0                 ; FSCALE
-.151:   DC.W    $F200,SIZEO,5,SIZE_BWLSXD,FPD,$0024,0,FPUSUP,3,WARN46,0                 ; FSGLDIV
-.152:   DC.W    $F200,SIZEO,5,SIZE_BWLSXD,FPD,$0027,0,FPUSUP,3,WARN46,0                 ; FSGLMUL
-.153:   DC.W    $F200,SIZEO,5,SIZE_BWLSXD,FPD,$0028,0,FPUSUP,3,0                        ; FSUB
-.154:   DC.W    $F280,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2C0,0                              ; FBF
-.155:   DC.W    $F281,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2C1,0
-.156:   DC.W    $F282,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$f2C2,0
-.157:   DC.W    $F283,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2C3,0
-.158:   DC.W    $F284,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2C4,0
-.159:   DC.W    $F285,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2C5,0
-.160:   DC.W    $F286,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2C6,0
-.161:   DC.W    $F287,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2C7,0
-.162:   DC.W    $F288,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2C8,0
-.163:   DC.W    $F289,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2C9,0
-.164:   DC.W    $F28A,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2CA,0
-.165:   DC.W    $F28B,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2CB,0
-.166:   DC.W    $F28C,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2CC,0
-.167:   DC.W    $F28D,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2CD,0
-.168:   DC.W    $F28E,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2CE,0
-.169:   DC.W    $F28F,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2CF,0
-.170:   DC.W    $F290,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2D0,0
-.171:   DC.W    $F291,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2D1,0
-.172:   DC.W    $F292,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2D2,0
-.173:   DC.W    $F293,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2D3,0
-.174:   DC.W    $F294,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2D4,0
-.175:   DC.W    $F295,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2D5,0
-.176:   DC.W    $F296,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2D6,0
-.177:   DC.W    $F297,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2D7,0
-.178:   DC.W    $F298,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2D8,0
-.179:   DC.W    $F299,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2D9,0
-.180:   DC.W    $F29A,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2DA,0
-.181:   DC.W    $F29B,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2DB,0
-.182:   DC.W    $F29C,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2DC,0
-.183:   DC.W    $F29D,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2DD,0
-.184:   DC.W    $F29E,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2DE,0
-.185:   DC.W    $F29F,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2DF,0
-.186:   DC.W    $F2A0,SIZEO,2,SIZE_WL,MMUSUP,3,BCC,$F2E0,0
-.187:   DC.W    $F2A1,SIZEO,2,SIZE_WL,MMUSUP,3,BCC,$F2E1,0
-.188:   DC.W    $F2A2,SIZEO,2,SIZE_WL,MMUSUP,3,BCC,$F2E2,0
-.189:   DC.W    $F2A3,SIZEO,2,SIZE_WL,MMUSUP,3,BCC,$F2E3,0
-.190:   DC.W    $F2A4,SIZEO,2,SIZE_WL,MMUSUP,3,BCC,$F2E4,0
-.191:   DC.W    $F2A5,SIZEO,2,SIZE_WL,MMUSUP,3,BCC,$F2E5,0
-.192:   DC.W    $F2A6,SIZEO,2,SIZE_WL,MMUSUP,3,BCC,$F2E6,0
-.193:   DC.W    $F2A7,SIZEO,2,SIZE_WL,MMUSUP,3,BCC,$F2E7,0
-.194:   DC.W    $F2A8,SIZEO,2,SIZE_WL,MMUSUP,3,BCC,$F2E8,0
-.195:   DC.W    $F2A9,SIZEO,2,SIZE_WL,MMUSUP,3,BCC,$F2E9,0
-.196:   DC.W    $F2AA,SIZEO,2,SIZE_WL,MMUSUP,3,BCC,$F2EA,0
-.197:   DC.W    $F2AB,SIZEO,2,SIZE_WL,MMUSUP,3,BCC,$F2EB,0
-.198:   DC.W    $F2AC,SIZEO,2,SIZE_WL,MMUSUP,3,BCC,$F2EC,0
-.199:   DC.W    $F2AD,SIZEO,2,SIZE_WL,MMUSUP,3,BCC,$F2ED,0
-.200:   DC.W    $F2AE,SIZEO,2,SIZE_WL,MMUSUP,3,BCC,$F2EE,0
-.201:   DC.W    $F2AF,SIZEO,2,SIZE_WL,MMUSUP,3,BCC,$F2EF,0
-.202:   DC.W    $F200,SIZEO,4,SIZE_S,FPD,$0062,0,FPUSUP,2,0                             ; FSADD
-.203:   DC.W    $F200,SIZEO,7,SIZE_D,FPD,$0066,0,FPUSUP,2,0                             ; FDADD
-.204:   DC.W    $F200,SIZEO,4,SIZE_S,FPD,$0060,0,FPUSUP,2,0                             ; FSDIV
-.205:   DC.W    $F200,SIZEO,7,SIZE_D,FPD,$0064,0,FPUSUP,2,0                             ; FDDIV
-.206:   DC.W    $F200,SIZEO,4,SIZE_S,FPD,$0040,1,FPUSUP,2,0                             ; FSMOVE
-.207:   DC.W    $F200,SIZEO,7,SIZE_D,FPD,$0044,1,FPUSUP,2,0                             ; FDMOVE
-.208:   DC.W    $F200,SIZEO,4,SIZE_S,FPD,$0063,0,FPUSUP,2,0                             ; FSMUL
-.209:   DC.W    $F200,SIZEO,7,SIZE_D,FPD,$0067,0,FPUSUP,2,0                             ; FDMUL
-.210:   DC.W    $F200,SIZEO,4,SIZE_S,FPM,$005A,0,FPUSUP,2,0                             ; FSNEG
-.211:   DC.W    $F200,SIZEO,7,SIZE_D,FPM,$005E,0,FPUSUP,2,0                             ; FDNEG
-.212:   DC.W    $F200,SIZEO,4,SIZE_S,FPM,$0041,0,FPUSUP,2,0                             ; FSSQRT
-.213:   DC.W    $F200,SIZEO,7,SIZE_D,FPM,$0045,0,FPUSUP,2,0                             ; FDSQRT
-.214:   DC.W    $F200,SIZEO,4,SIZE_S,FPD,$0068,0,FPUSUP,2,0                             ; FSSUB
-.215:   DC.W    $F200,SIZEO,7,SIZE_D,FPD,$006C,0,FPUSUP,2,0                             ; FDSUB
-.216:   DC.W    $F24F,COPY,$0000,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0                  ; FDBF
-.217:   DC.W    $F24F,COPY,$0001,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
-.218:   DC.W    $F24F,COPY,$0002,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
-.219:   DC.W    $F24F,COPY,$0003,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
-.220:   DC.W    $F24F,COPY,$0004,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
-.221:   DC.W    $F24F,COPY,$0005,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
-.222:   DC.W    $F24F,COPY,$0006,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
-.223:   DC.W    $F24F,COPY,$0007,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
-.224:   DC.W    $F24F,COPY,$0008,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
-.225:   DC.W    $F24F,COPY,$0009,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
-.226:   DC.W    $F24F,COPY,$000a,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
-.227:   DC.W    $F24F,COPY,$000b,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
-.228:   DC.W    $F24F,COPY,$000c,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
-.229:   DC.W    $F24F,COPY,$000d,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
-.230:   DC.W    $F24F,COPY,$000e,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
-.231:   DC.W    $F24F,COPY,$000f,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
-.232:   DC.W    $F24F,COPY,$0010,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
-.233:   DC.W    $F24F,COPY,$0011,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
-.234:   DC.W    $F24F,COPY,$0012,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
-.235:   DC.W    $F24F,COPY,$0013,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
-.236:   DC.W    $F24F,COPY,$0014,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
-.237:   DC.W    $F24F,COPY,$0015,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
-.238:   DC.W    $F24F,COPY,$0016,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
-.239:   DC.W    $F24F,COPY,$0017,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
-.240:   DC.W    $F24F,COPY,$0018,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
-.241:   DC.W    $F24F,COPY,$0019,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
-.242:   DC.W    $F24F,COPY,$001a,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
-.243:   DC.W    $F24F,COPY,$001b,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
-.244:   DC.W    $F24F,COPY,$001c,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
-.245:   DC.W    $F24F,COPY,$001d,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
-.246:   DC.W    $F24F,COPY,$001e,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
-.247:   DC.W    $F24F,COPY,$001f,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
-.248:   DC.W    $F24F,COPY,$0020,SIZEO,2,SIZE_W,MMUSUP,3,DBCC,0
-.249:   DC.W    $F24F,COPY,$0021,SIZEO,2,SIZE_W,MMUSUP,3,DBCC,0
-.250:   DC.W    $F24F,COPY,$0022,SIZEO,2,SIZE_W,MMUSUP,3,DBCC,0
-.251:   DC.W    $F24F,COPY,$0023,SIZEO,2,SIZE_W,MMUSUP,3,DBCC,0
-.252:   DC.W    $F24F,COPY,$0024,SIZEO,2,SIZE_W,MMUSUP,3,DBCC,0
-.253:   DC.W    $F24F,COPY,$0025,SIZEO,2,SIZE_W,MMUSUP,3,DBCC,0
-.254:   DC.W    $F24F,COPY,$0026,SIZEO,2,SIZE_W,MMUSUP,3,DBCC,0
-.255:   DC.W    $F24F,COPY,$0027,SIZEO,2,SIZE_W,MMUSUP,3,DBCC,0
-.256:   DC.W    $F24F,COPY,$0028,SIZEO,2,SIZE_W,MMUSUP,3,DBCC,0
-.257:   DC.W    $F24F,COPY,$0029,SIZEO,2,SIZE_W,MMUSUP,3,DBCC,0
-.258:   DC.W    $F24F,COPY,$002a,SIZEO,2,SIZE_W,MMUSUP,3,DBCC,0
-.259:   DC.W    $F24F,COPY,$002b,SIZEO,2,SIZE_W,MMUSUP,3,DBCC,0
-.260:   DC.W    $F24F,COPY,$002c,SIZEO,2,SIZE_W,MMUSUP,3,DBCC,0
-.261:   DC.W    $F24F,COPY,$002d,SIZEO,2,SIZE_W,MMUSUP,3,DBCC,0
-.262:   DC.W    $F24F,COPY,$002e,SIZEO,2,SIZE_W,MMUSUP,3,DBCC,0
-.263:   DC.W    $F24F,COPY,$002f,SIZEO,2,SIZE_W,MMUSUP,3,DBCC,0
-.264:   DC.W    $F240,COPY,$0000,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0             ; FSF
-.265:   DC.W    $F240,COPY,$0001,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
-.266:   DC.W    $F240,COPY,$0002,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
-.267:   DC.W    $F240,COPY,$0003,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
-.268:   DC.W    $F240,COPY,$0004,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
-.269:   DC.W    $F240,COPY,$0005,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
-.270:   DC.W    $F240,COPY,$0006,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
-.271:   DC.W    $F240,COPY,$0007,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
-.272:   DC.W    $F240,COPY,$0008,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
-.273:   DC.W    $F240,COPY,$0009,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
-.274:   DC.W    $F240,COPY,$000a,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
-.275:   DC.W    $F240,COPY,$000b,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
-.276:   DC.W    $F240,COPY,$000c,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
-.277:   DC.W    $F240,COPY,$000d,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
-.278:   DC.W    $F240,COPY,$000e,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
-.279:   DC.W    $F240,COPY,$000f,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
-.280:   DC.W    $F240,COPY,$0010,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
-.281:   DC.W    $F240,COPY,$0011,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
-.282:   DC.W    $F240,COPY,$0012,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
-.283:   DC.W    $F240,COPY,$0013,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
-.284:   DC.W    $F240,COPY,$0014,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
-.285:   DC.W    $F240,COPY,$0015,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
-.286:   DC.W    $F240,COPY,$0016,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
-.287:   DC.W    $F240,COPY,$0017,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
-.288:   DC.W    $F240,COPY,$0018,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
-.289:   DC.W    $F240,COPY,$0019,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
-.290:   DC.W    $F240,COPY,$001a,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
-.291:   DC.W    $F240,COPY,$001b,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
-.292:   DC.W    $F240,COPY,$001c,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
-.293:   DC.W    $F240,COPY,$001d,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
-.294:   DC.W    $F240,COPY,$001e,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
-.295:   DC.W    $F240,COPY,$001f,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
-.296:   DC.W    $F240,COPY,$0020,SIZEO,1,SIZE_B,EA,DEST,0,MMUSUP,3,0
-.297:   DC.W    $F240,COPY,$0021,SIZEO,1,SIZE_B,EA,DEST,0,MMUSUP,3,0
-.298:   DC.W    $F240,COPY,$0022,SIZEO,1,SIZE_B,EA,DEST,0,MMUSUP,3,0
-.299:   DC.W    $F240,COPY,$0023,SIZEO,1,SIZE_B,EA,DEST,0,MMUSUP,3,0
-.300:   DC.W    $F240,COPY,$0024,SIZEO,1,SIZE_B,EA,DEST,0,MMUSUP,3,0
-.301:   DC.W    $F240,COPY,$0025,SIZEO,1,SIZE_B,EA,DEST,0,MMUSUP,3,0
-.302:   DC.W    $F240,COPY,$0026,SIZEO,1,SIZE_B,EA,DEST,0,MMUSUP,3,0
-.303:   DC.W    $F240,COPY,$0027,SIZEO,1,SIZE_B,EA,DEST,0,MMUSUP,3,0
-.304:   DC.W    $F240,COPY,$0028,SIZEO,1,SIZE_B,EA,DEST,0,MMUSUP,3,0
-.305:   DC.W    $F240,COPY,$0029,SIZEO,1,SIZE_B,EA,DEST,0,MMUSUP,3,0
-.306:   DC.W    $F240,COPY,$002a,SIZEO,1,SIZE_B,EA,DEST,0,MMUSUP,3,0
-.307:   DC.W    $F240,COPY,$002b,SIZEO,1,SIZE_B,EA,DEST,0,MMUSUP,3,0
-.308:   DC.W    $F240,COPY,$002c,SIZEO,1,SIZE_B,EA,DEST,0,MMUSUP,3,0
-.309:   DC.W    $F240,COPY,$002d,SIZEO,1,SIZE_B,EA,DEST,0,MMUSUP,3,0
-.310:   DC.W    $F240,COPY,$002e,SIZEO,1,SIZE_B,EA,DEST,0,MMUSUP,3,0
-.311:   DC.W    $F240,COPY,$002f,SIZEO,1,SIZE_B,EA,DEST,0,MMUSUP,3,0
-.312:   DC.W    $f200,COPY,$0000,SIZEO,5,SIZE_BWLSXPD,FPUSUP,3,FPMOVE,0                 ; FMOVE
-.313:   DC.W    $f280,COPY,$0000,SIZE0,FPUSUP,3,0                                       ; FNOP
-.314:   DC.W    $F200,COPY,$5C00,SIZEO,5,SIZE_X,FPUSUP,3,FMOVECR,WARN46,0               ; FMOVECR
-.315:   DC.W    $F200,COPY,$0000,SIZEO,5,SIZE_LX,FPUSUP,3,FMOVEM,0                      ; FMOVEM
-.316:   DC.W    $F340,SIZE0,EA,FRESTM,0,FPUSUP,3,0                                      ; FRESTORE
-.317:   DC.W    $F300,SIZE0,EA,FSAVEM,0,FPUSUP,3,0                                      ; FSAVE
-.318:   DC.W    $F200,COPY,$0030,SIZEO,5,SIZE_BWLSXD,FPUSUP,3,WARN46,FSINCOS,0          ; FSINCOS
-.319:   DC.W    $F27a,COPY,$0000,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0                      ; FSF
-.320:   DC.W    $F27a,COPY,$0001,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
-.321:   DC.W    $F27a,COPY,$0002,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
-.322:   DC.W    $F27a,COPY,$0003,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
-.323:   DC.W    $F27a,COPY,$0004,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
-.324:   DC.W    $F27a,COPY,$0005,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
-.325:   DC.W    $F27a,COPY,$0006,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
-.326:   DC.W    $F27a,COPY,$0007,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
-.327:   DC.W    $F27a,COPY,$0008,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
-.328:   DC.W    $F27a,COPY,$0009,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
-.329:   DC.W    $F27a,COPY,$000a,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
-.330:   DC.W    $F27a,COPY,$000b,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
-.331:   DC.W    $F27a,COPY,$000c,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
-.332:   DC.W    $F27a,COPY,$000d,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
-.333:   DC.W    $F27a,COPY,$000e,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
-.334:   DC.W    $F27a,COPY,$000f,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
-.335:   DC.W    $F27a,COPY,$0010,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
-.336:   DC.W    $F27a,COPY,$0011,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
-.337:   DC.W    $F27a,COPY,$0012,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
-.338:   DC.W    $F27a,COPY,$0013,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
-.339:   DC.W    $F27a,COPY,$0014,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
-.340:   DC.W    $F27a,COPY,$0015,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
-.341:   DC.W    $F27a,COPY,$0016,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
-.342:   DC.W    $F27a,COPY,$0017,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
-.343:   DC.W    $F27a,COPY,$0018,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
-.344:   DC.W    $F27a,COPY,$0019,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
-.345:   DC.W    $F27a,COPY,$001a,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
-.346:   DC.W    $F27a,COPY,$001b,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
-.347:   DC.W    $F27a,COPY,$001c,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
-.348:   DC.W    $F27a,COPY,$001d,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
-.349:   DC.W    $F27a,COPY,$001e,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
-.350:   DC.W    $F27a,COPY,$001f,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
-.351:   DC.W    $F27a,COPY,$0020,SIZEO,2,SIZE_WL,TRAPCC,MMUSUP,3,0
-.352:   DC.W    $F27a,COPY,$0021,SIZEO,2,SIZE_WL,TRAPCC,MMUSUP,3,0
-.353:   DC.W    $F27a,COPY,$0022,SIZEO,2,SIZE_WL,TRAPCC,MMUSUP,3,0
-.354:   DC.W    $F27a,COPY,$0023,SIZEO,2,SIZE_WL,TRAPCC,MMUSUP,3,0
-.355:   DC.W    $F27a,COPY,$0024,SIZEO,2,SIZE_WL,TRAPCC,MMUSUP,3,0
-.356:   DC.W    $F27a,COPY,$0025,SIZEO,2,SIZE_WL,TRAPCC,MMUSUP,3,0
-.357:   DC.W    $F27a,COPY,$0026,SIZEO,2,SIZE_WL,TRAPCC,MMUSUP,3,0
-.358:   DC.W    $F27a,COPY,$0027,SIZEO,2,SIZE_WL,TRAPCC,MMUSUP,3,0
-.359:   DC.W    $F27a,COPY,$0028,SIZEO,2,SIZE_WL,TRAPCC,MMUSUP,3,0
-.360:   DC.W    $F27a,COPY,$0029,SIZEO,2,SIZE_WL,TRAPCC,MMUSUP,3,0
-.361:   DC.W    $F27a,COPY,$002a,SIZEO,2,SIZE_WL,TRAPCC,MMUSUP,3,0
-.362:   DC.W    $F27a,COPY,$002b,SIZEO,2,SIZE_WL,TRAPCC,MMUSUP,3,0
-.363:   DC.W    $F27a,COPY,$002c,SIZEO,2,SIZE_WL,TRAPCC,MMUSUP,3,0
-.364:   DC.W    $F27a,COPY,$002d,SIZEO,2,SIZE_WL,TRAPCC,MMUSUP,3,0
-.365:   DC.W    $F27a,COPY,$002e,SIZEO,2,SIZE_WL,TRAPCC,MMUSUP,3,0
-.366:   DC.W    $F27a,COPY,$002f,SIZEO,2,SIZE_WL,TRAPCC,MMUSUP,3,0
-.367:   DC.W    $f200,COPY,$003a,SIZEO,5,SIZE_BWLSXD,FPUSUP,3,FTST,0                    ; FTST
-.368:   DC.W    $F100,SIZE0,EA,FSAVEM,0,MMUSUP,3,0                                      ; PSAVE
-.369:   DC.W    $F140,SIZE0,EA,FRESTM,0,MMUSUP,3,0                                      ; PRESTORE
-.370:   DC.W    $F000,COPY,$2400,SIZE0,MMUSUP,3,0                                       ; PFLUSHA
-.371:   DC.W    $F000,COPY,$3000,SIZE0,MMUSUP,3,PMMSTD,1,$f508,0                        ; PFLUSH
-.372:   DC.W    $F000,COPY,$3400,SIZE0,MMUSUP,3,PMMSTD,0,0                              ; PFLUSHS
-.373:   DC.W    $F000,COPY,$A000,SIZE0,MMUSUP,3,EA,PMDEST,0,0                           ; PFLUSHR
-.374:   DC.W    $f000,COPY,$2200,SIZE0,MMUSUP,3,PMMLDX,0                                ; PLOADR
-.375:   DC.W    $F000,COPY,$2000,SIZE0,MMUSUP,3,PMMLDX,0                                ; PLOADW
-.376:   DC.W    $F000,COPY,$8200,SIZE0,MMUSUP,3,PMMTST,1,$f568,0                        ; PTESTR
-.377:   DC.W    $F000,COPY,$8000,SIZE0,MMUSUP,3,PMMTST,1,$f548,0                        ; PTESTW
-.378:   DC.W    $F000,COPY,$0000,SIZEO,8,SIZE_WLQ,PMMMOVE,0                             ; PMOVE
-.379:   DC.W    $F510,SIZE0,MMUSUP,2,CPUSUP,%11000,0                                    ; PFLUSHAN
-.380:   DC.W    $F500,SIZE0,MMUSUP,2,CPUSUP,%11000,EA,4,0,0                             ; PFLUSHN
-.381:   DC.W    $F5C8,SIZE0,MMUSUP,2,CPUSUP,%10000,PMMEA,4,0,0                          ; PLPAR
-.382:   DC.W    $F588,SIZE0,MMUSUP,2,CPUSUP,%10000,PMMEA,4,0,0                          ; PLPAW
-.383:   DC.W    $4848,SIZE0,IMMBK,CPUSUP,%111111,0                                      ; BKPT
-.384:   DC.W    $4E7A,COPY,0,SIZEO,3,SIZE_L,CPUSUP,%111111,MOVEC,0                      ; MOVEC
-.385:   DC.W    $0E00,COPY,0,SIZEO,2,SIZE_BWL,CPUSUP,%111111,MOVES,0                    ; MOVES
-.386:   DC.W    $EAC0,COPY,0,SIZE0,CPUSUP,%111110,BITFLD1,0                             ; BFCHG
-.387:   DC.W    $ECC0,COPY,0,SIZE0,CPUSUP,%111110,BITFLD1,0                             ; BFCLR
-.388:   DC.W    $EBC0,COPY,0,SIZE0,CPUSUP,%111110,BITFLD2,0                             ; BFEXTS
-.389:   DC.W    $E9C0,COPY,0,SIZE0,CPUSUP,%111110,BITFLD2,0                             ; BFEXTU
-.390:   DC.W    $EDC0,COPY,0,SIZE0,CPUSUP,%111110,BITFLD2,0                             ; BFFFO
-.391:   DC.W    $EEC0,COPY,0,SIZE0,CPUSUP,%111110,BITFLD1,0                             ; BFSET
-.392:   DC.W    $E8C0,COPY,0,SIZE0,CPUSUP,%111110,BITFLD1,0                             ; BFTST
-.393:   DC.W    $EFC0,COPY,0,SIZE0,CPUSUP,%111110,BITFLD3,0                             ; BFINS
-.394:   DC.W    $4C40,SIZEO,3,SIZE_L,CPUSUP,%111110,WARN46,MULDIV,$4C40,$0800,0         ; DIVSL
-.395:   DC.W    $4C40,SIZEO,3,SIZE_L,CPUSUP,%111110,WARN46,MULDIV,$4C40,$0000,0         ; DIVUL
-.396:   DC.W    $49C0,SIZEO,3,SIZE_L,CPUSUP,%111110,DATAREG,0,0                         ; EXTB
-.397:   DC.W    $54FA,SIZEO,2,SIZE_WL,CPUSUP,%111110,TRAPCC,0                           ; TRAPCC
-.398:   DC.W    $55FA,SIZEO,2,SIZE_WL,CPUSUP,%111110,TRAPCC,0
-.399:   DC.W    $57FA,SIZEO,2,SIZE_WL,CPUSUP,%111110,TRAPCC,0
-.400:   DC.W    $51FA,SIZEO,2,SIZE_WL,CPUSUP,%111110,TRAPCC,0
-.401:   DC.W    $5CFA,SIZEO,2,SIZE_WL,CPUSUP,%111110,TRAPCC,0
-.402:   DC.W    $5EFA,SIZEO,2,SIZE_WL,CPUSUP,%111110,TRAPCC,0
-.403:   DC.W    $52FA,SIZEO,2,SIZE_WL,CPUSUP,%111110,TRAPCC,0
-.404:   DC.W    $5FFA,SIZEO,2,SIZE_WL,CPUSUP,%111110,TRAPCC,0
-.405:   DC.W    $53FA,SIZEO,2,SIZE_WL,CPUSUP,%111110,TRAPCC,0
-.406:   DC.W    $5DFA,SIZEO,2,SIZE_WL,CPUSUP,%111110,TRAPCC,0
-.407:   DC.W    $5BFA,SIZEO,2,SIZE_WL,CPUSUP,%111110,TRAPCC,0
-.408:   DC.W    $56FA,SIZEO,2,SIZE_WL,CPUSUP,%111110,TRAPCC,0
-.409:   DC.W    $5AFA,SIZEO,2,SIZE_WL,CPUSUP,%111110,TRAPCC,0
-.410:   DC.W    $50FA,SIZEO,2,SIZE_WL,CPUSUP,%111110,TRAPCC,0
-.411:   DC.W    $58FA,SIZEO,2,SIZE_WL,CPUSUP,%111110,TRAPCC,0
-.412:   DC.W    $59FA,SIZEO,2,SIZE_WL,CPUSUP,%111110,TRAPCC,0
-.413:   DC.W    $F448,SIZE0,CPUSUP,%111000,CPCACHE,1,0                                  ; CINVL
-.414:   DC.W    $F450,SIZE0,CPUSUP,%111000,CPCACHE,1,0                                  ; CINVP
-.415:   DC.W    $F458,SIZE0,CPUSUP,%111000,CPCACHE,0,0                                  ; CINVA
-.416:   DC.W    $F468,SIZE0,CPUSUP,%111000,CPCACHE,1,0                                  ; CPUSHL
-.417:   DC.W    $F470,SIZE0,CPUSUP,%111000,CPCACHE,1,0                                  ; CPUSHP
-.418:   DC.W    $F478,SIZE0,CPUSUP,%111000,CPCACHE,0,0                                  ; CPUSHA
-.419:   DC.W    $f610,SIZE0,CPUSUP,%111000,MOVE16,0                                     ; MOVE16
-.420:   DC.W    $F800,COPY,$01C0,SIZE0,CPUSUP,%110000,LPSTOP,0                          ; LPSTOP
-.421:   DC.W    $4ACB,SIZE0,CPUSUP,%110000,0                                            ; HALT
-.422:   DC.W    $4ACC,SIZE0,CPUSUP,%110000,0                                            ; PULSE
+.1:		DC.W	$0000,SIZEM,2,SIZE_BWL,12,DOMOVE,0										; MOVE
+.2:		DC.W	$4E75,SIZE0,0															; RTS
+.3:		DC.W	$D000,SIZE,2,SIZE_BWL,6,ADDSUB,$0600,0									; ADD
+.4:		DC.W	$9000,SIZE,2,SIZE_BWL,6,ADDSUB,$0400,0									; SUB
+.5:		DC.W	$7000,SIZEO,3,SIZE_L,IMMMQ,0											; MOVEQ
+.6:		DC.W	$E000,SIZEO,2,SIZE_BWL,SHIFT,$E0C0,0									; ASR
+.7:		DC.W	$6100,SIZEO,2,SIZE_SBWL,BCC,$61FF,0										; BSR
+.8:		DC.W	$4200,SIZE,2,SIZE_BWL,6,EA,DEST,0,0										; CLR
+.9:		DC.W	$B000,SIZE,2,SIZE_BWL,6,CMP_I,EA,ASRC,0,COMMA,DATAREG,9,0				; CMP
+.10:	DC.W	$B100,SIZE,2,SIZE_BWL,6,DATAREG,9,COMMA,EA,DEST,0,0						; EOR
+.11:	DC.W	$4EC0,SIZE0,EA,JLEA,0,0													; JMP
+.12:	DC.W	$4E80,SIZE0,EA,JLEA,0,0													; JSR
+.13:	DC.W	$E108,SIZEO,2,SIZE_BWL,SHIFT,$E3C0,0									; LSL
+.14:	DC.W	$E008,SIZEO,2,SIZE_BWL,SHIFT,$E2C0,0									; LSR
+.15:	DC.W	$5100,SIZE,2,SIZE_BWL,6,IMMQ,COMMA,EA,QDEST,0,0							; SUBQ
+.16:	DC.W	$5000,SIZE,2,SIZE_BWL,6,IMMQ,COMMA,EA,QDEST,0,0							; ADDQ
+.17:	DC.W	$8000,SIZE,2,SIZE_BWL,6,ADDSUB,0,0										; OR
+.18:	DC.W	$E118,SIZEO,2,SIZE_BWL,SHIFT,$E7C0,0									; ROL
+.19:	DC.W	$E018,SIZEO,2,SIZE_BWL,SHIFT,$E6C0,0									; ROR
+.20:	DC.W	$C000,SIZE,2,SIZE_BWL,6,ADDSUB,$0200,0									; AND
+.21:	DC.W	$E100,SIZEO,2,SIZE_BWL,SHIFT,$E1C0,0									; ASL
+.22:	DC.W	$0100,SIZEO,2,SIZE_BL,BIT,$0800,0										; BTST
+.23:	DC.W	$4880,SIZEE,2,SIZE_WL,MOVEM,0											; MOVEM
+.24:	DC.W	$D0C0,SIZEA,2,SIZE_WL,EA,ASRC,0,COMMA,ADRREG,9,0						; ADDA
+.25:	DC.W	$0600,SIZE,2,SIZE_BWL,6,EA,$800,-1,COMMA,EA,DEST,0,0					; ADDI
+.26:	DC.W	$D100,SIZE,2,SIZE_BWL,6,XREG,0											; ADDX
+.27:	DC.W	$B0C0,SIZEA,2,SIZE_WL,EA,ASRC,0,COMMA,ADRREG,9,0						; CMPA
+.28:	DC.W	$B108,SIZE,2,SIZE_BWL,6,CMPM,0											; CMPM
+.29:	DC.W	$0C00,SIZE,2,SIZE_BWL,6,EA,$800,-1,COMMA,EA,DEST,0,0					; CMPI
+.30:	DC.W	$0040,SIZEM,2,SIZE_WL,12,EA,ASRC,0,COMMA,ADRREG,9,0						; MOVEA
+.31:	DC.W	$6000,SIZEO,2,SIZE_SBWL,BCC,$60FF,0										; BRA
+.32:	DC.W	$4000,SIZE,2,SIZE_BWL,6,EA,DEST,0,0										; NEGX
+.33:	DC.W	$0000,SIZE,2,SIZE_BWL,6,DOORI,0											; ORI
+.34:	DC.W	$90C0,SIZEA,2,SIZE_WL,EA,ASRC,0,COMMA,ADRREG,9,0						; SUBA
+.35:	DC.W	$0400,SIZE,2,SIZE_BWL,6,EA,$800,-1,COMMA,EA,DEST,0,0					; SUBI
+.36:	DC.W	$9100,SIZE,2,SIZE_BWL,6,XREG,0											; SUBX
+.37:	DC.W	$4600,SIZE,2,SIZE_BWL,6,EA,DEST,0,0										; NOT
+.38:	DC.W	$C1C0,SIZEO,2,SIZE_WL,MULDIV,$4c00,$0c00,0								; MULS
+.39:	DC.W	$C0C0,SIZEO,2,SIZE_WL,MULDIV,$4c00,$0400,0								; MULU
+.40:	DC.W	$4400,SIZE,2,SIZE_BWL,6,EA,DEST,0,0										; NEG
+.41:	DC.W	$4A00,SIZE,2,SIZE_BWL,6,EA,DEST,0,0										; TST
+.42:	DC.W	$4840,SIZE0,DATAREG,0,0													; SWAP
+.43:	DC.W	$41C0,SIZEO,3,SIZE_L,EA,JLEA,0,COMMA,ADRREG,9,0							; LEA
+.44:	DC.W	$81C0,SIZEO,2,SIZE_WL,MULDIV,$4c40,$0c00,0								; DIVS
+.45:	DC.W	$80C0,SIZEO,2,SIZE_WL,MULDIV,$4c40,$0400,0								; DIVU
+.46:	DC.W	$C100,SIZE0,DOEXG,0														; EXG
+.47:	DC.W	$4E72,SIZE0,EA,$800,-1,0												; STOP
+.48:	DC.W	$4E77,SIZE0,0															; RTR
+.49:	DC.W	$4E73,SIZE0,0															; RTE
+.50:	DC.W	$C100,SIZEO,1,SIZE_B,XREG,0												; ABCD
+.51:	DC.W	$8100,SIZEO,1,SIZE_B,XREG,0												; SBCD
+.52:	DC.W	$0108,SIZEE,2,SIZE_WL,MOVEP,0											; MOVEP
+.53:	DC.W	$4E71,SIZE0,0															; NOP
+.54:	DC.W	$E110,SIZEO,2,SIZE_BWL,SHIFT,$E5C0,0									; ROXL
+.55:	DC.W	$E010,SIZEO,2,SIZE_BWL,SHIFT,$E4C0,0									; ROXR
+.56:	DC.W	$0140,SIZEO,3,SIZE_BL,BIT,$0840,0										; BCHG
+.57:	DC.W	$0180,SIZEO,3,SIZE_BL,BIT,$0880,0										; BCLR
+.58:	DC.W	$01C0,SIZEO,3,SIZE_BL,BIT,$08C0,0										; BSET
+.59:	DC.W	$4180,SIZEO,2,SIZE_WL,EA,NASRC,0,COMMA,DATAREG,9,0						; CHK
+.60:	DC.W	$4880,SIZEE,2,SIZE_WL,DATAREG,0,0										; EXT
+.61:	DC.W	$4E50,SIZEO,2,SIZE_WL,LINK,0											; LINK
+.62:	DC.W	$4E58,SIZE0,ADRREG,0,0													; UNLK
+.63:	DC.W	$4800,SIZEO,1,SIZE_B,EA,DEST,0,0										; NBCD
+.64:	DC.W	$4840,SIZEO,3,SIZE_L,EA,PSRC,0,0										; PEA
+.65:	DC.W	$4E70,SIZE0,0															; RESET
+.66:	DC.W	$4E40,SIZE0,TRAP,0														; TRAP
+.67:	DC.W	$4E76,SIZE0,0															; TRAPV
+.68:	DC.W	$6200,SIZEO,2,SIZE_SBWL,BCC,$62FF,0										; Bcc
+.69:	DC.W	$6300,SIZEO,2,SIZE_SBWL,BCC,$63FF,0
+.70:	DC.W	$6400,SIZEO,2,SIZE_SBWL,BCC,$64FF,0
+.71:	DC.W	$6500,SIZEO,2,SIZE_SBWL,BCC,$65FF,0
+.72:	DC.W	$6600,SIZEO,2,SIZE_SBWL,BCC,$66FF,0
+.73:	DC.W	$6700,SIZEO,2,SIZE_SBWL,BCC,$67FF,0
+.74:	DC.W	$6800,SIZEO,2,SIZE_SBWL,BCC,$68FF,0
+.75:	DC.W	$6900,SIZEO,2,SIZE_SBWL,BCC,$69FF,0
+.76:	DC.W	$6A00,SIZEO,2,SIZE_SBWL,BCC,$6AFF,0
+.77:	DC.W	$6B00,SIZEO,2,SIZE_SBWL,BCC,$6BFF,0
+.78:	DC.W	$6C00,SIZEO,2,SIZE_SBWL,BCC,$6CFF,0
+.79:	DC.W	$6D00,SIZEO,2,SIZE_SBWL,BCC,$6DFF,0
+.80:	DC.W	$6E00,SIZEO,2,SIZE_SBWL,BCC,$6EFF,0
+.81:	DC.W	$6F00,SIZEO,2,SIZE_SBWL,BCC,$6FFF,0
+.82:	DC.W	$51C8,SIZE0,DBCC,0														; DBRA
+.83:	DC.W	$51C8,SIZE0,DBCC,0														; DBF
+.84:	DC.W	$50C8,SIZE0,DBCC,0														; DBT
+.85:	DC.W	$52C8,SIZE0,DBCC,0														; DBcc
+.86:	DC.W	$53C8,SIZE0,DBCC,0
+.87:	DC.W	$54C8,SIZE0,DBCC,0
+.88:	DC.W	$55C8,SIZE0,DBCC,0
+.89:	DC.W	$56C8,SIZE0,DBCC,0
+.90:	DC.W	$57C8,SIZE0,DBCC,0
+.91:	DC.W	$58C8,SIZE0,DBCC,0
+.92:	DC.W	$59C8,SIZE0,DBCC,0
+.93:	DC.W	$5AC8,SIZE0,DBCC,0
+.94:	DC.W	$5BC8,SIZE0,DBCC,0
+.95:	DC.W	$5CC8,SIZE0,DBCC,0
+.96:	DC.W	$5DC8,SIZE0,DBCC,0
+.97:	DC.W	$5EC8,SIZE0,DBCC,0
+.98:	DC.W	$5FC8,SIZE0,DBCC,0
+.99:	DC.W	$52C0,SIZEO,1,SIZE_B,EA,DEST,0,0										; Scc
+.100:	DC.W	$53C0,SIZEO,1,SIZE_B,EA,DEST,0,0
+.101:	DC.W	$54C0,SIZEO,1,SIZE_B,EA,DEST,0,0
+.102:	DC.W	$55C0,SIZEO,1,SIZE_B,EA,DEST,0,0
+.103:	DC.W	$56C0,SIZEO,1,SIZE_B,EA,DEST,0,0
+.104:	DC.W	$57C0,SIZEO,1,SIZE_B,EA,DEST,0,0
+.105:	DC.W	$58C0,SIZEO,1,SIZE_B,EA,DEST,0,0
+.106:	DC.W	$59C0,SIZEO,1,SIZE_B,EA,DEST,0,0
+.107:	DC.W	$5AC0,SIZEO,1,SIZE_B,EA,DEST,0,0
+.108:	DC.W	$5BC0,SIZEO,1,SIZE_B,EA,DEST,0,0
+.109:	DC.W	$5CC0,SIZEO,1,SIZE_B,EA,DEST,0,0
+.110:	DC.W	$5DC0,SIZEO,1,SIZE_B,EA,DEST,0,0
+.111:	DC.W	$5EC0,SIZEO,1,SIZE_B,EA,DEST,0,0
+.112:	DC.W	$5FC0,SIZEO,1,SIZE_B,EA,DEST,0,0
+.113:	DC.W	$50C0,SIZEO,1,SIZE_B,EA,DEST,0,0										; ST
+.114:	DC.W	$51C0,SIZEO,1,SIZE_B,EA,DEST,0,0										; SF
+.115:	DC.W	$0200,SIZE,2,SIZE_BWL,6,DOANDI,0										; ANDI
+.116:	DC.W	$0A00,SIZE,2,SIZE_BWL,6,DOEORI,0										; EORI
+.117:	DC.W	$4AFC,SIZE0,0															; ILLEGAL
+.118:	DC.W	$4E74,SIZE0,CPUSUP,%11111110,EA,$800,-1,0								; RTD=118!!!
+.119:	DC.W	$F200,SIZEO,5,SIZE_BWLSXD,FPM,$0018,0,FPUSUP,3,WARN46,0					; FABS
+.120:	DC.W	$F200,SIZEO,5,SIZE_BWLSXD,FPM,$001C,0,FPUSUP,3,WARN46,0					; FACOS
+.121:	DC.W	$F200,SIZEO,5,SIZE_BWLSXD,FPM,$000C,0,FPUSUP,3,WARN46,0					; FASIN
+.122:	DC.W	$F200,SIZEO,5,SIZE_BWLSXD,FPM,$000A,0,FPUSUP,3,WARN46,0					; FATAN
+.123:	DC.W	$F200,SIZEO,5,SIZE_BWLSXD,FPM,$000D,0,FPUSUP,3,WARN46,0					; FATANH
+.124:	DC.W	$F200,SIZEO,5,SIZE_BWLSXD,FPM,$001D,0,FPUSUP,3,WARN46,0					; FCOS
+.125:	DC.W	$F200,SIZEO,5,SIZE_BWLSXD,FPM,$0019,0,FPUSUP,3,WARN46,0					; FCOSH
+.126:	DC.W	$F200,SIZEO,5,SIZE_BWLSXD,FPM,$0010,0,FPUSUP,3,WARN46,0					; FETOX
+.127:	DC.W	$F200,SIZEO,5,SIZE_BWLSXD,FPM,$0008,0,FPUSUP,3,WARN46,0					; FETOXM1
+.128:	DC.W	$F200,SIZEO,5,SIZE_BWLSXD,FPM,$001E,0,FPUSUP,3,WARN46,0					; FGETEXP
+.129:	DC.W	$F200,SIZEO,5,SIZE_BWLSXD,FPM,$001F,0,FPUSUP,3,WARN46,0					; FGETMAN
+.130:	DC.W	$F200,SIZEO,5,SIZE_BWLSXD,FPM,$0001,0,FPUSUP,3,WARN46,0					; FINT
+.131:	DC.W	$F200,SIZEO,5,SIZE_BWLSXD,FPM,$0003,0,FPUSUP,3,WARN46,0					; FINTRZ
+.132:	DC.W	$F200,SIZEO,5,SIZE_BWLSXD,FPM,$0015,0,FPUSUP,3,WARN46,0					; FLOG10
+.133:	DC.W	$F200,SIZEO,5,SIZE_BWLSXD,FPM,$0016,0,FPUSUP,3,WARN46,0					; FLOG2
+.134:	DC.W	$F200,SIZEO,5,SIZE_BWLSXD,FPM,$0014,0,FPUSUP,3,WARN46,0					; FLOGN
+.135:	DC.W	$F200,SIZEO,5,SIZE_BWLSXD,FPM,$0006,0,FPUSUP,3,WARN46,0					; FLOGNP1
+.136:	DC.W	$F200,SIZEO,5,SIZE_BWLSXD,FPM,$001A,0,FPUSUP,3,0						; FNEG
+.137:	DC.W	$F200,SIZEO,5,SIZE_BWLSXD,FPM,$000E,0,FPUSUP,3,WARN46,0					; FSIN
+.138:	DC.W	$F200,SIZEO,5,SIZE_BWLSXD,FPM,$0002,0,FPUSUP,3,WARN46,0					; FSINH
+.139:	DC.W	$F200,SIZEO,5,SIZE_BWLSXD,FPM,$0004,0,FPUSUP,3,0						; FSQRT
+.140:	DC.W	$F200,SIZEO,5,SIZE_BWLSXD,FPM,$000F,0,FPUSUP,3,WARN46,0					; FTAN
+.141:	DC.W	$F200,SIZEO,5,SIZE_BWLSXD,FPM,$0009,0,FPUSUP,3,WARN46,0					; FTANH
+.142:	DC.W	$F200,SIZEO,5,SIZE_BWLSXD,FPM,$0012,0,FPUSUP,3,WARN46,0					; FTWOTOX
+.143:	DC.W	$F200,SIZEO,5,SIZE_BWLSXD,FPM,$0011,0,FPUSUP,3,WARN46,0					; FTWOTOX
+.144:	DC.W	$F200,SIZEO,5,SIZE_BWLSXD,FPD,$0022,0,FPUSUP,3,0						; FADD
+.145:	DC.W	$F200,SIZEO,5,SIZE_BWLSXD,FPD,$0038,0,FPUSUP,3,0						; FCMP
+.146:	DC.W	$F200,SIZEO,5,SIZE_BWLSXD,FPD,$0020,0,FPUSUP,3,0						; FDIV
+.147:	DC.W	$F200,SIZEO,5,SIZE_BWLSXD,FPD,$0021,0,FPUSUP,3,WARN46,0					; FMOD
+.148:	DC.W	$F200,SIZEO,5,SIZE_BWLSXD,FPD,$0023,0,FPUSUP,3,0						; FMUL
+.149:	DC.W	$F200,SIZEO,5,SIZE_BWLSXD,FPD,$0025,0,FPUSUP,3,WARN46,0					; FREM
+.150:	DC.W	$F200,SIZEO,5,SIZE_BWLSXD,FPD,$0026,0,FPUSUP,3,WARN46,0					; FSCALE
+.151:	DC.W	$F200,SIZEO,5,SIZE_BWLSXD,FPD,$0024,0,FPUSUP,3,WARN46,0					; FSGLDIV
+.152:	DC.W	$F200,SIZEO,5,SIZE_BWLSXD,FPD,$0027,0,FPUSUP,3,WARN46,0					; FSGLMUL
+.153:	DC.W	$F200,SIZEO,5,SIZE_BWLSXD,FPD,$0028,0,FPUSUP,3,0						; FSUB
+.154:	DC.W	$F280,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2C0,0								; FBF
+.155:	DC.W	$F281,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2C1,0
+.156:	DC.W	$F282,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$f2C2,0
+.157:	DC.W	$F283,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2C3,0
+.158:	DC.W	$F284,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2C4,0
+.159:	DC.W	$F285,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2C5,0
+.160:	DC.W	$F286,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2C6,0
+.161:	DC.W	$F287,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2C7,0
+.162:	DC.W	$F288,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2C8,0
+.163:	DC.W	$F289,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2C9,0
+.164:	DC.W	$F28A,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2CA,0
+.165:	DC.W	$F28B,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2CB,0
+.166:	DC.W	$F28C,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2CC,0
+.167:	DC.W	$F28D,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2CD,0
+.168:	DC.W	$F28E,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2CE,0
+.169:	DC.W	$F28F,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2CF,0
+.170:	DC.W	$F290,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2D0,0
+.171:	DC.W	$F291,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2D1,0
+.172:	DC.W	$F292,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2D2,0
+.173:	DC.W	$F293,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2D3,0
+.174:	DC.W	$F294,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2D4,0
+.175:	DC.W	$F295,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2D5,0
+.176:	DC.W	$F296,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2D6,0
+.177:	DC.W	$F297,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2D7,0
+.178:	DC.W	$F298,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2D8,0
+.179:	DC.W	$F299,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2D9,0
+.180:	DC.W	$F29A,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2DA,0
+.181:	DC.W	$F29B,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2DB,0
+.182:	DC.W	$F29C,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2DC,0
+.183:	DC.W	$F29D,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2DD,0
+.184:	DC.W	$F29E,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2DE,0
+.185:	DC.W	$F29F,SIZEO,2,SIZE_WL,FPUSUP,3,BCC,$F2DF,0
+.186:	DC.W	$F2A0,SIZEO,2,SIZE_WL,MMUSUP,3,BCC,$F2E0,0
+.187:	DC.W	$F2A1,SIZEO,2,SIZE_WL,MMUSUP,3,BCC,$F2E1,0
+.188:	DC.W	$F2A2,SIZEO,2,SIZE_WL,MMUSUP,3,BCC,$F2E2,0
+.189:	DC.W	$F2A3,SIZEO,2,SIZE_WL,MMUSUP,3,BCC,$F2E3,0
+.190:	DC.W	$F2A4,SIZEO,2,SIZE_WL,MMUSUP,3,BCC,$F2E4,0
+.191:	DC.W	$F2A5,SIZEO,2,SIZE_WL,MMUSUP,3,BCC,$F2E5,0
+.192:	DC.W	$F2A6,SIZEO,2,SIZE_WL,MMUSUP,3,BCC,$F2E6,0
+.193:	DC.W	$F2A7,SIZEO,2,SIZE_WL,MMUSUP,3,BCC,$F2E7,0
+.194:	DC.W	$F2A8,SIZEO,2,SIZE_WL,MMUSUP,3,BCC,$F2E8,0
+.195:	DC.W	$F2A9,SIZEO,2,SIZE_WL,MMUSUP,3,BCC,$F2E9,0
+.196:	DC.W	$F2AA,SIZEO,2,SIZE_WL,MMUSUP,3,BCC,$F2EA,0
+.197:	DC.W	$F2AB,SIZEO,2,SIZE_WL,MMUSUP,3,BCC,$F2EB,0
+.198:	DC.W	$F2AC,SIZEO,2,SIZE_WL,MMUSUP,3,BCC,$F2EC,0
+.199:	DC.W	$F2AD,SIZEO,2,SIZE_WL,MMUSUP,3,BCC,$F2ED,0
+.200:	DC.W	$F2AE,SIZEO,2,SIZE_WL,MMUSUP,3,BCC,$F2EE,0
+.201:	DC.W	$F2AF,SIZEO,2,SIZE_WL,MMUSUP,3,BCC,$F2EF,0
+.202:	DC.W	$F200,SIZEO,4,SIZE_S,FPD,$0062,0,FPUSUP,2,0								; FSADD
+.203:	DC.W	$F200,SIZEO,7,SIZE_D,FPD,$0066,0,FPUSUP,2,0								; FDADD
+.204:	DC.W	$F200,SIZEO,4,SIZE_S,FPD,$0060,0,FPUSUP,2,0								; FSDIV
+.205:	DC.W	$F200,SIZEO,7,SIZE_D,FPD,$0064,0,FPUSUP,2,0								; FDDIV
+.206:	DC.W	$F200,SIZEO,4,SIZE_S,FPD,$0040,1,FPUSUP,2,0								; FSMOVE
+.207:	DC.W	$F200,SIZEO,7,SIZE_D,FPD,$0044,1,FPUSUP,2,0								; FDMOVE
+.208:	DC.W	$F200,SIZEO,4,SIZE_S,FPD,$0063,0,FPUSUP,2,0								; FSMUL
+.209:	DC.W	$F200,SIZEO,7,SIZE_D,FPD,$0067,0,FPUSUP,2,0								; FDMUL
+.210:	DC.W	$F200,SIZEO,4,SIZE_S,FPM,$005A,0,FPUSUP,2,0								; FSNEG
+.211:	DC.W	$F200,SIZEO,7,SIZE_D,FPM,$005E,0,FPUSUP,2,0								; FDNEG
+.212:	DC.W	$F200,SIZEO,4,SIZE_S,FPM,$0041,0,FPUSUP,2,0								; FSSQRT
+.213:	DC.W	$F200,SIZEO,7,SIZE_D,FPM,$0045,0,FPUSUP,2,0								; FDSQRT
+.214:	DC.W	$F200,SIZEO,4,SIZE_S,FPD,$0068,0,FPUSUP,2,0								; FSSUB
+.215:	DC.W	$F200,SIZEO,7,SIZE_D,FPD,$006C,0,FPUSUP,2,0								; FDSUB
+.216:	DC.W	$F24F,COPY,$0000,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0					; FDBF
+.217:	DC.W	$F24F,COPY,$0001,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
+.218:	DC.W	$F24F,COPY,$0002,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
+.219:	DC.W	$F24F,COPY,$0003,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
+.220:	DC.W	$F24F,COPY,$0004,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
+.221:	DC.W	$F24F,COPY,$0005,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
+.222:	DC.W	$F24F,COPY,$0006,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
+.223:	DC.W	$F24F,COPY,$0007,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
+.224:	DC.W	$F24F,COPY,$0008,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
+.225:	DC.W	$F24F,COPY,$0009,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
+.226:	DC.W	$F24F,COPY,$000a,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
+.227:	DC.W	$F24F,COPY,$000b,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
+.228:	DC.W	$F24F,COPY,$000c,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
+.229:	DC.W	$F24F,COPY,$000d,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
+.230:	DC.W	$F24F,COPY,$000e,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
+.231:	DC.W	$F24F,COPY,$000f,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
+.232:	DC.W	$F24F,COPY,$0010,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
+.233:	DC.W	$F24F,COPY,$0011,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
+.234:	DC.W	$F24F,COPY,$0012,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
+.235:	DC.W	$F24F,COPY,$0013,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
+.236:	DC.W	$F24F,COPY,$0014,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
+.237:	DC.W	$F24F,COPY,$0015,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
+.238:	DC.W	$F24F,COPY,$0016,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
+.239:	DC.W	$F24F,COPY,$0017,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
+.240:	DC.W	$F24F,COPY,$0018,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
+.241:	DC.W	$F24F,COPY,$0019,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
+.242:	DC.W	$F24F,COPY,$001a,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
+.243:	DC.W	$F24F,COPY,$001b,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
+.244:	DC.W	$F24F,COPY,$001c,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
+.245:	DC.W	$F24F,COPY,$001d,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
+.246:	DC.W	$F24F,COPY,$001e,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
+.247:	DC.W	$F24F,COPY,$001f,SIZEO,2,SIZE_W,FPUSUP,3,WARN46,DBCC,0
+.248:	DC.W	$F24F,COPY,$0020,SIZEO,2,SIZE_W,MMUSUP,3,DBCC,0
+.249:	DC.W	$F24F,COPY,$0021,SIZEO,2,SIZE_W,MMUSUP,3,DBCC,0
+.250:	DC.W	$F24F,COPY,$0022,SIZEO,2,SIZE_W,MMUSUP,3,DBCC,0
+.251:	DC.W	$F24F,COPY,$0023,SIZEO,2,SIZE_W,MMUSUP,3,DBCC,0
+.252:	DC.W	$F24F,COPY,$0024,SIZEO,2,SIZE_W,MMUSUP,3,DBCC,0
+.253:	DC.W	$F24F,COPY,$0025,SIZEO,2,SIZE_W,MMUSUP,3,DBCC,0
+.254:	DC.W	$F24F,COPY,$0026,SIZEO,2,SIZE_W,MMUSUP,3,DBCC,0
+.255:	DC.W	$F24F,COPY,$0027,SIZEO,2,SIZE_W,MMUSUP,3,DBCC,0
+.256:	DC.W	$F24F,COPY,$0028,SIZEO,2,SIZE_W,MMUSUP,3,DBCC,0
+.257:	DC.W	$F24F,COPY,$0029,SIZEO,2,SIZE_W,MMUSUP,3,DBCC,0
+.258:	DC.W	$F24F,COPY,$002a,SIZEO,2,SIZE_W,MMUSUP,3,DBCC,0
+.259:	DC.W	$F24F,COPY,$002b,SIZEO,2,SIZE_W,MMUSUP,3,DBCC,0
+.260:	DC.W	$F24F,COPY,$002c,SIZEO,2,SIZE_W,MMUSUP,3,DBCC,0
+.261:	DC.W	$F24F,COPY,$002d,SIZEO,2,SIZE_W,MMUSUP,3,DBCC,0
+.262:	DC.W	$F24F,COPY,$002e,SIZEO,2,SIZE_W,MMUSUP,3,DBCC,0
+.263:	DC.W	$F24F,COPY,$002f,SIZEO,2,SIZE_W,MMUSUP,3,DBCC,0
+.264:	DC.W	$F240,COPY,$0000,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0				; FSF
+.265:	DC.W	$F240,COPY,$0001,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
+.266:	DC.W	$F240,COPY,$0002,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
+.267:	DC.W	$F240,COPY,$0003,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
+.268:	DC.W	$F240,COPY,$0004,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
+.269:	DC.W	$F240,COPY,$0005,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
+.270:	DC.W	$F240,COPY,$0006,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
+.271:	DC.W	$F240,COPY,$0007,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
+.272:	DC.W	$F240,COPY,$0008,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
+.273:	DC.W	$F240,COPY,$0009,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
+.274:	DC.W	$F240,COPY,$000a,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
+.275:	DC.W	$F240,COPY,$000b,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
+.276:	DC.W	$F240,COPY,$000c,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
+.277:	DC.W	$F240,COPY,$000d,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
+.278:	DC.W	$F240,COPY,$000e,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
+.279:	DC.W	$F240,COPY,$000f,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
+.280:	DC.W	$F240,COPY,$0010,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
+.281:	DC.W	$F240,COPY,$0011,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
+.282:	DC.W	$F240,COPY,$0012,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
+.283:	DC.W	$F240,COPY,$0013,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
+.284:	DC.W	$F240,COPY,$0014,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
+.285:	DC.W	$F240,COPY,$0015,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
+.286:	DC.W	$F240,COPY,$0016,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
+.287:	DC.W	$F240,COPY,$0017,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
+.288:	DC.W	$F240,COPY,$0018,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
+.289:	DC.W	$F240,COPY,$0019,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
+.290:	DC.W	$F240,COPY,$001a,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
+.291:	DC.W	$F240,COPY,$001b,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
+.292:	DC.W	$F240,COPY,$001c,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
+.293:	DC.W	$F240,COPY,$001d,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
+.294:	DC.W	$F240,COPY,$001e,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
+.295:	DC.W	$F240,COPY,$001f,SIZEO,1,SIZE_B,EA,DEST,0,FPUSUP,3,WARN46,0
+.296:	DC.W	$F240,COPY,$0020,SIZEO,1,SIZE_B,EA,DEST,0,MMUSUP,3,0
+.297:	DC.W	$F240,COPY,$0021,SIZEO,1,SIZE_B,EA,DEST,0,MMUSUP,3,0
+.298:	DC.W	$F240,COPY,$0022,SIZEO,1,SIZE_B,EA,DEST,0,MMUSUP,3,0
+.299:	DC.W	$F240,COPY,$0023,SIZEO,1,SIZE_B,EA,DEST,0,MMUSUP,3,0
+.300:	DC.W	$F240,COPY,$0024,SIZEO,1,SIZE_B,EA,DEST,0,MMUSUP,3,0
+.301:	DC.W	$F240,COPY,$0025,SIZEO,1,SIZE_B,EA,DEST,0,MMUSUP,3,0
+.302:	DC.W	$F240,COPY,$0026,SIZEO,1,SIZE_B,EA,DEST,0,MMUSUP,3,0
+.303:	DC.W	$F240,COPY,$0027,SIZEO,1,SIZE_B,EA,DEST,0,MMUSUP,3,0
+.304:	DC.W	$F240,COPY,$0028,SIZEO,1,SIZE_B,EA,DEST,0,MMUSUP,3,0
+.305:	DC.W	$F240,COPY,$0029,SIZEO,1,SIZE_B,EA,DEST,0,MMUSUP,3,0
+.306:	DC.W	$F240,COPY,$002a,SIZEO,1,SIZE_B,EA,DEST,0,MMUSUP,3,0
+.307:	DC.W	$F240,COPY,$002b,SIZEO,1,SIZE_B,EA,DEST,0,MMUSUP,3,0
+.308:	DC.W	$F240,COPY,$002c,SIZEO,1,SIZE_B,EA,DEST,0,MMUSUP,3,0
+.309:	DC.W	$F240,COPY,$002d,SIZEO,1,SIZE_B,EA,DEST,0,MMUSUP,3,0
+.310:	DC.W	$F240,COPY,$002e,SIZEO,1,SIZE_B,EA,DEST,0,MMUSUP,3,0
+.311:	DC.W	$F240,COPY,$002f,SIZEO,1,SIZE_B,EA,DEST,0,MMUSUP,3,0
+.312:	DC.W	$f200,COPY,$0000,SIZEO,5,SIZE_BWLSXPD,FPUSUP,3,FPMOVE,0					; FMOVE
+.313:	DC.W	$f280,COPY,$0000,SIZE0,FPUSUP,3,0										; FNOP
+.314:	DC.W	$F200,COPY,$5C00,SIZEO,5,SIZE_X,FPUSUP,3,FMOVECR,WARN46,0				; FMOVECR
+.315:	DC.W	$F200,COPY,$0000,SIZEO,5,SIZE_LX,FPUSUP,3,FMOVEM,0						; FMOVEM
+.316:	DC.W	$F340,SIZE0,EA,FRESTM,0,FPUSUP,3,0										; FRESTORE
+.317:	DC.W	$F300,SIZE0,EA,FSAVEM,0,FPUSUP,3,0										; FSAVE
+.318:	DC.W	$F200,COPY,$0030,SIZEO,5,SIZE_BWLSXD,FPUSUP,3,WARN46,FSINCOS,0			; FSINCOS
+.319:	DC.W	$F27a,COPY,$0000,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0						; FSF
+.320:	DC.W	$F27a,COPY,$0001,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
+.321:	DC.W	$F27a,COPY,$0002,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
+.322:	DC.W	$F27a,COPY,$0003,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
+.323:	DC.W	$F27a,COPY,$0004,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
+.324:	DC.W	$F27a,COPY,$0005,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
+.325:	DC.W	$F27a,COPY,$0006,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
+.326:	DC.W	$F27a,COPY,$0007,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
+.327:	DC.W	$F27a,COPY,$0008,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
+.328:	DC.W	$F27a,COPY,$0009,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
+.329:	DC.W	$F27a,COPY,$000a,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
+.330:	DC.W	$F27a,COPY,$000b,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
+.331:	DC.W	$F27a,COPY,$000c,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
+.332:	DC.W	$F27a,COPY,$000d,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
+.333:	DC.W	$F27a,COPY,$000e,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
+.334:	DC.W	$F27a,COPY,$000f,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
+.335:	DC.W	$F27a,COPY,$0010,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
+.336:	DC.W	$F27a,COPY,$0011,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
+.337:	DC.W	$F27a,COPY,$0012,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
+.338:	DC.W	$F27a,COPY,$0013,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
+.339:	DC.W	$F27a,COPY,$0014,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
+.340:	DC.W	$F27a,COPY,$0015,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
+.341:	DC.W	$F27a,COPY,$0016,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
+.342:	DC.W	$F27a,COPY,$0017,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
+.343:	DC.W	$F27a,COPY,$0018,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
+.344:	DC.W	$F27a,COPY,$0019,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
+.345:	DC.W	$F27a,COPY,$001a,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
+.346:	DC.W	$F27a,COPY,$001b,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
+.347:	DC.W	$F27a,COPY,$001c,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
+.348:	DC.W	$F27a,COPY,$001d,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
+.349:	DC.W	$F27a,COPY,$001e,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
+.350:	DC.W	$F27a,COPY,$001f,SIZEO,2,SIZE_WL,TRAPCC,FPUSUP,3,0
+.351:	DC.W	$F27a,COPY,$0020,SIZEO,2,SIZE_WL,TRAPCC,MMUSUP,3,0
+.352:	DC.W	$F27a,COPY,$0021,SIZEO,2,SIZE_WL,TRAPCC,MMUSUP,3,0
+.353:	DC.W	$F27a,COPY,$0022,SIZEO,2,SIZE_WL,TRAPCC,MMUSUP,3,0
+.354:	DC.W	$F27a,COPY,$0023,SIZEO,2,SIZE_WL,TRAPCC,MMUSUP,3,0
+.355:	DC.W	$F27a,COPY,$0024,SIZEO,2,SIZE_WL,TRAPCC,MMUSUP,3,0
+.356:	DC.W	$F27a,COPY,$0025,SIZEO,2,SIZE_WL,TRAPCC,MMUSUP,3,0
+.357:	DC.W	$F27a,COPY,$0026,SIZEO,2,SIZE_WL,TRAPCC,MMUSUP,3,0
+.358:	DC.W	$F27a,COPY,$0027,SIZEO,2,SIZE_WL,TRAPCC,MMUSUP,3,0
+.359:	DC.W	$F27a,COPY,$0028,SIZEO,2,SIZE_WL,TRAPCC,MMUSUP,3,0
+.360:	DC.W	$F27a,COPY,$0029,SIZEO,2,SIZE_WL,TRAPCC,MMUSUP,3,0
+.361:	DC.W	$F27a,COPY,$002a,SIZEO,2,SIZE_WL,TRAPCC,MMUSUP,3,0
+.362:	DC.W	$F27a,COPY,$002b,SIZEO,2,SIZE_WL,TRAPCC,MMUSUP,3,0
+.363:	DC.W	$F27a,COPY,$002c,SIZEO,2,SIZE_WL,TRAPCC,MMUSUP,3,0
+.364:	DC.W	$F27a,COPY,$002d,SIZEO,2,SIZE_WL,TRAPCC,MMUSUP,3,0
+.365:	DC.W	$F27a,COPY,$002e,SIZEO,2,SIZE_WL,TRAPCC,MMUSUP,3,0
+.366:	DC.W	$F27a,COPY,$002f,SIZEO,2,SIZE_WL,TRAPCC,MMUSUP,3,0
+.367:	DC.W	$f200,COPY,$003a,SIZEO,5,SIZE_BWLSXD,FPUSUP,3,FTST,0					; FTST
+.368:	DC.W	$F100,SIZE0,EA,FSAVEM,0,MMUSUP,3,0										; PSAVE
+.369:	DC.W	$F140,SIZE0,EA,FRESTM,0,MMUSUP,3,0										; PRESTORE
+.370:	DC.W	$F000,COPY,$2400,SIZE0,MMUSUP,3,0										; PFLUSHA
+.371:	DC.W	$F000,COPY,$3000,SIZE0,MMUSUP,3,PMMSTD,1,$f508,0						; PFLUSH
+.372:	DC.W	$F000,COPY,$3400,SIZE0,MMUSUP,3,PMMSTD,0,0								; PFLUSHS
+.373:	DC.W	$F000,COPY,$A000,SIZE0,MMUSUP,3,EA,PMDEST,0,0							; PFLUSHR
+.374:	DC.W	$f000,COPY,$2200,SIZE0,MMUSUP,3,PMMLDX,0								; PLOADR
+.375:	DC.W	$F000,COPY,$2000,SIZE0,MMUSUP,3,PMMLDX,0								; PLOADW
+.376:	DC.W	$F000,COPY,$8200,SIZE0,MMUSUP,3,PMMTST,1,$f568,0						; PTESTR
+.377:	DC.W	$F000,COPY,$8000,SIZE0,MMUSUP,3,PMMTST,1,$f548,0						; PTESTW
+.378:	DC.W	$F000,COPY,$0000,SIZEO,8,SIZE_WLQ,PMMMOVE,0								; PMOVE
+.379:	DC.W	$F510,SIZE0,MMUSUP,2,CPUSUP,%11000,0									; PFLUSHAN
+.380:	DC.W	$F500,SIZE0,MMUSUP,2,CPUSUP,%11000,EA,4,0,0								; PFLUSHN
+.381:	DC.W	$F5C8,SIZE0,MMUSUP,2,CPUSUP,%10000,PMMEA,4,0,0							; PLPAR
+.382:	DC.W	$F588,SIZE0,MMUSUP,2,CPUSUP,%10000,PMMEA,4,0,0							; PLPAW
+.383:	DC.W	$4848,SIZE0,IMMBK,CPUSUP,%111111,0										; BKPT
+.384:	DC.W	$4E7A,COPY,0,SIZEO,3,SIZE_L,CPUSUP,%111111,MOVEC,0						; MOVEC
+.385:	DC.W	$0E00,COPY,0,SIZEO,2,SIZE_BWL,CPUSUP,%111111,MOVES,0					; MOVES
+.386:	DC.W	$EAC0,COPY,0,SIZE0,CPUSUP,%111110,BITFLD1,0								; BFCHG
+.387:	DC.W	$ECC0,COPY,0,SIZE0,CPUSUP,%111110,BITFLD1,0								; BFCLR
+.388:	DC.W	$EBC0,COPY,0,SIZE0,CPUSUP,%111110,BITFLD2,0								; BFEXTS
+.389:	DC.W	$E9C0,COPY,0,SIZE0,CPUSUP,%111110,BITFLD2,0								; BFEXTU
+.390:	DC.W	$EDC0,COPY,0,SIZE0,CPUSUP,%111110,BITFLD2,0								; BFFFO
+.391:	DC.W	$EEC0,COPY,0,SIZE0,CPUSUP,%111110,BITFLD1,0								; BFSET
+.392:	DC.W	$E8C0,COPY,0,SIZE0,CPUSUP,%111110,BITFLD1,0								; BFTST
+.393:	DC.W	$EFC0,COPY,0,SIZE0,CPUSUP,%111110,BITFLD3,0								; BFINS
+.394:	DC.W	$4C40,SIZEO,3,SIZE_L,CPUSUP,%111110,WARN46,MULDIV,$4C40,$0800,0			; DIVSL
+.395:	DC.W	$4C40,SIZEO,3,SIZE_L,CPUSUP,%111110,WARN46,MULDIV,$4C40,$0000,0			; DIVUL
+.396:	DC.W	$49C0,SIZEO,3,SIZE_L,CPUSUP,%111110,DATAREG,0,0							; EXTB
+.397:	DC.W	$54FA,SIZEO,2,SIZE_WL,CPUSUP,%111110,TRAPCC,0							; TRAPCC
+.398:	DC.W	$55FA,SIZEO,2,SIZE_WL,CPUSUP,%111110,TRAPCC,0
+.399:	DC.W	$57FA,SIZEO,2,SIZE_WL,CPUSUP,%111110,TRAPCC,0
+.400:	DC.W	$51FA,SIZEO,2,SIZE_WL,CPUSUP,%111110,TRAPCC,0
+.401:	DC.W	$5CFA,SIZEO,2,SIZE_WL,CPUSUP,%111110,TRAPCC,0
+.402:	DC.W	$5EFA,SIZEO,2,SIZE_WL,CPUSUP,%111110,TRAPCC,0
+.403:	DC.W	$52FA,SIZEO,2,SIZE_WL,CPUSUP,%111110,TRAPCC,0
+.404:	DC.W	$5FFA,SIZEO,2,SIZE_WL,CPUSUP,%111110,TRAPCC,0
+.405:	DC.W	$53FA,SIZEO,2,SIZE_WL,CPUSUP,%111110,TRAPCC,0
+.406:	DC.W	$5DFA,SIZEO,2,SIZE_WL,CPUSUP,%111110,TRAPCC,0
+.407:	DC.W	$5BFA,SIZEO,2,SIZE_WL,CPUSUP,%111110,TRAPCC,0
+.408:	DC.W	$56FA,SIZEO,2,SIZE_WL,CPUSUP,%111110,TRAPCC,0
+.409:	DC.W	$5AFA,SIZEO,2,SIZE_WL,CPUSUP,%111110,TRAPCC,0
+.410:	DC.W	$50FA,SIZEO,2,SIZE_WL,CPUSUP,%111110,TRAPCC,0
+.411:	DC.W	$58FA,SIZEO,2,SIZE_WL,CPUSUP,%111110,TRAPCC,0
+.412:	DC.W	$59FA,SIZEO,2,SIZE_WL,CPUSUP,%111110,TRAPCC,0
+.413:	DC.W	$F448,SIZE0,CPUSUP,%111000,CPCACHE,1,0									; CINVL
+.414:	DC.W	$F450,SIZE0,CPUSUP,%111000,CPCACHE,1,0									; CINVP
+.415:	DC.W	$F458,SIZE0,CPUSUP,%111000,CPCACHE,0,0									; CINVA
+.416:	DC.W	$F468,SIZE0,CPUSUP,%111000,CPCACHE,1,0									; CPUSHL
+.417:	DC.W	$F470,SIZE0,CPUSUP,%111000,CPCACHE,1,0									; CPUSHP
+.418:	DC.W	$F478,SIZE0,CPUSUP,%111000,CPCACHE,0,0									; CPUSHA
+.419:	DC.W	$f610,SIZE0,CPUSUP,%111000,MOVE16,0										; MOVE16
+.420:	DC.W	$F800,COPY,$01C0,SIZE0,CPUSUP,%110000,LPSTOP,0							; LPSTOP
+.421:	DC.W	$4ACB,SIZE0,CPUSUP,%110000,0											; HALT
+.422:	DC.W	$4ACC,SIZE0,CPUSUP,%110000,0											; PULSE
 ;*-*
-    EVEN
+	EVEN
 ;*-*
 
 ; NOTE: ALL THIS CODE SAVES D3-D7/A4/A5/A7 BEFORE THRASHING
-      I_WRITEF:
+		I_WRITEF:
 	TST.L	-8(A4)			;STDIO
 	BEQ.S	.2
 .3:	MOVE.L	4(A7),D0
@@ -32947,25 +32947,25 @@ ASM_INSJOB:
 	BEQ.S .5
 
 	LEA	8(A7),A1
-	LEA     .1(PC),A2
-	MOVE.L  4.W,A6
-	MOVE.L  -64(A4),A3
-	MOVE.L  A3,D2
-	JSR     -522(A6)    ;rawdofmt
-	MOVE.L  D2,A0
+	LEA		.1(PC),A2
+	MOVE.L	4.W,A6
+	MOVE.L	-64(A4),A3
+	MOVE.L	A3,D2
+	JSR		-522(A6)	;rawdofmt
+	MOVE.L	D2,A0
 .5:	TST.B	(A0)+
 	BNE.S	.5
 	SUB.L	D2,A0
-	MOVE.L  -8(A4),D1
+	MOVE.L	-8(A4),D1
 	MOVE.L	D3,A3			; BACKUP
 	MOVE.L	A0,D3
 	SUBQ.L	#1,D3
-	MOVE.L  -44(A4),A6
-	JSR     -48(A6)   ;write
+	MOVE.L	-44(A4),A6
+	JSR		-48(A6)		;write
 	MOVE.L	D3,D0
 	MOVE.L	A3,D3
 	RTS
-.1:	MOVE.B  D0,(A3)+		; RDF DUMP
+.1:	MOVE.B	D0,(A3)+		; RDF DUMP
 	RTS
 .2:	LEA	.4(PC),A0
 	MOVE.L	A0,D1			;OPEN CON
@@ -32982,100 +32982,100 @@ ASM_INSJOB:
 	JMP	(A0)
 .4:	DC.B	"CON:0/11/640/80/Output",0
 	EVEN
-      E_WRITEF:
+		E_WRITEF:
 
-      I_MUL:
+		I_MUL:
 	MOVE.L	D3,-(A7)
 	MOVE.L	8(A7),D1
 	MOVE.L	12(A7),D0
-	MOVE.L  D0,D2
-	MOVE.L  D0,D3
-	MULU    D1,D0
-	SWAP    D3
-	MULU    D1,D3
-	SWAP    D3
-	EOR.W   D3,D3   ;CLR.W   D3
-	ADD.L   D3,D0
-	SWAP    D1
-	MULU    D1,D2
-	SWAP    D2
-	EOR.W   D2,D2 ;CLR.W   D2
-	ADD.L   D2,D0
+	MOVE.L	D0,D2
+	MOVE.L	D0,D3
+	MULU	D1,D0
+	SWAP	D3
+	MULU	D1,D3
+	SWAP	D3
+	EOR.W	D3,D3	;CLR.W	 D3
+	ADD.L	D3,D0
+	SWAP	D1
+	MULU	D1,D2
+	SWAP	D2
+	EOR.W	D2,D2 ;CLR.W	 D2
+	ADD.L	D2,D0
 	MOVE.L	(A7)+,D3
 	RTS
-      E_MUL:
+		E_MUL:
 
-;      I_DIV:
+;		 I_DIV:
 ;	MOVE.L	D3,A3
 ;	MOVE.L	8(A7),D1
 ;	MOVE.L	4(A7),D0
-;	MOVEQ   #32,D3
-;	MOVEQ   #0,D2
-;.1:	SUB.L   D0,D2
-;	BCC.B   .2
-;	ADD.L   D0,D2
-;.2:	ROXL.L  #1,D1
-;	ROXL.L  #1,D2
-;	DBF     D3,.1
-;	NOT.L   D1
+;	MOVEQ	#32,D3
+;	MOVEQ	#0,D2
+;.1:	SUB.L	D0,D2
+;	BCC.B	.2
+;	ADD.L	D0,D2
+;.2:	ROXL.L	#1,D1
+;	ROXL.L	#1,D2
+;	DBF		D3,.1
+;	NOT.L	D1
 ;	MOVE.L	D1,D0
 ;	MOVE.L	A3,D3
 ;	RTS
-      I_DIV:			; FROM MAXON
+		I_DIV:			; FROM MAXON
 	MOVE.L	8(A7),D0
 	MOVE.L	4(A7),D1
-	TST.L    D0
-	BMI.S    .2
-	TST.L    D1
-	BPL.S    .3
-	NEG.L    D1
-.1:	BSR.S    .3
-	NEG.L    D0
-	RTS      
-.2:	NEG.L    D0
-	TST.L    D1
-	BPL.S    .1
-	NEG.L    D1
-.3:	SWAP     D1
-	TST.W    D1
-	BNE.S    .4
-	MOVE.L   D3,-(A7)
-	SWAP     D1
-	MOVE.W   D1,D3
-	MOVE.W   D0,D2
-	EOR.W    D0,D0   ;CLR.W    D0
-	SWAP     D0
-	DIVU     D3,D0
-	MOVE.L   D0,D1
-	SWAP     D0
-	MOVE.W   D2,D1
-	DIVU     D3,D1
-	MOVE.W   D1,D0
-	EOR.W    D1,D1  ;CLR.W    D1
-	SWAP     D1
-	MOVE.L   (A7)+,D3
-	RTS      
-.4:	SWAP     D1
-	MOVEM.L  D3-D4,-(A7)
-	MOVEQ    #31,D2
-	MOVEQ    #0,D3
-	MOVEQ    #0,D4
-.5:	ASL.L    #1,D3
-	ASL.L    #1,D0
-	ROXL.L   #1,D4
-	CMP.L    D1,D4
-	BCS.S    .6
-	SUB.L    D1,D4
-	ADDQ.L   #1,D3
-.6:	DBF      D2,.5
-	MOVE.L   D4,D1
-	MOVE.L   D3,D0
-	MOVEM.L  (A7)+,D3-D4
+	TST.L	 D0
+	BMI.S	 .2
+	TST.L	 D1
+	BPL.S	 .3
+	NEG.L	 D1
+.1:	BSR.S	 .3
+	NEG.L	 D0
+	RTS		 
+.2:	NEG.L	 D0
+	TST.L	 D1
+	BPL.S	 .1
+	NEG.L	 D1
+.3:	SWAP	 D1
+	TST.W	 D1
+	BNE.S	 .4
+	MOVE.L	 D3,-(A7)
+	SWAP	 D1
+	MOVE.W	 D1,D3
+	MOVE.W	 D0,D2
+	EOR.W	 D0,D0	 ;CLR.W		 D0
+	SWAP	 D0
+	DIVU	 D3,D0
+	MOVE.L	 D0,D1
+	SWAP	 D0
+	MOVE.W	 D2,D1
+	DIVU	 D3,D1
+	MOVE.W	 D1,D0
+	EOR.W	 D1,D1	;CLR.W		D1
+	SWAP	 D1
+	MOVE.L	 (A7)+,D3
+	RTS		 
+.4:	SWAP	 D1
+	MOVEM.L	 D3-D4,-(A7)
+	MOVEQ	 #31,D2
+	MOVEQ	 #0,D3
+	MOVEQ	 #0,D4
+.5:	ASL.L	 #1,D3
+	ASL.L	 #1,D0
+	ROXL.L	 #1,D4
+	CMP.L	 D1,D4
+	BCS.S	 .6
+	SUB.L	 D1,D4
+	ADDQ.L	 #1,D3
+.6:	DBF		 D2,.5
+	MOVE.L	 D4,D1
+	MOVE.L	 D3,D0
+	MOVEM.L	 (A7)+,D3-D4
 	RTS 
-      E_DIV:			; FROM MAXON
-     
+		E_DIV:			; FROM MAXON
+	 
 
-      I_OPENW:
+		I_OPENW:
 	LEA	.1(PC),A0
 	MOVE.L	4(A7),48(A0)
 	MOVE.L	8(A7),18(A0)
@@ -33102,9 +33102,9 @@ ASM_INSJOB:
 .1:	DC.W	0,0,0,0,-1
 	DC.L	0,0,0,0,0,0,0
 	DC.W	80,25,-1,-1,0,0,0
-      E_OPENW:
+		E_OPENW:
 
-      I_OPENS:
+		I_OPENS:
 	LEA	.1(PC),A0
 	MOVE.L	4(A7),32(A0)
 	MOVE.L	8(A7),20(A0)
@@ -33121,25 +33121,25 @@ ASM_INSJOB:
 .2:	RTS
 .1:	DC.W	0,0,640,256,1,$0001,$8000,$100F
 	DC.L	0,0,0,0,0
-      E_OPENS:
+		E_OPENS:
 
-      I_MOUSE:
-    MOVEQ   #0,D0
-    BTST    #6,$BFE001
-    BNE.S   .1
-    MOVEQ   #1,D0
-.1: LEA     $DFF016,A0
-    MOVE.W  (A0),D1
-    BTST    #10,D1
-    BNE.S   .2
-    BSET    #1,D0
-.2: BTST    #8,D1
-    BNE.S   .3
-    BSET    #2,D0
+		I_MOUSE:
+	MOVEQ	#0,D0
+	BTST	#6,$BFE001
+	BNE.S	.1
+	MOVEQ	#1,D0
+.1: LEA		$DFF016,A0
+	MOVE.W	(A0),D1
+	BTST	#10,D1
+	BNE.S	.2
+	BSET	#1,D0
+.2: BTST	#8,D1
+	BNE.S	.3
+	BSET	#2,D0
 .3: RTS
-      E_MOUSE:
+		E_MOUSE:
 
-      I_PLOT:
+		I_PLOT:
 	MOVE.L	-16(A4),A1
 	MOVE.L	A1,D0
 	BEQ.S	.1
@@ -33151,9 +33151,9 @@ ASM_INSJOB:
 	MOVE.L	8(A7),D1
 	JSR	-324(A6)	
 .1:	RTS
-      E_PLOT:
+		E_PLOT:
 
-      I_LINE:
+		I_LINE:
 	MOVE.L	-16(A4),A1
 	MOVE.L	A1,D0
 	BEQ.S	.1
@@ -33169,20 +33169,20 @@ ASM_INSJOB:
 	MOVE.L	16(A7),D1
 	JSR	-246(A6)	
 .1:	RTS
-      E_LINE:
+		E_LINE:
 
-      I_TEXTF:
+		I_TEXTF:
 	MOVE.L	4(A7),D0
 	MOVE.L	8(A7,D0.L),D2
 	BEQ.S .4
 
 	MOVE.L D2,A0
 	LEA	8(A7),A1
-	LEA     .3(PC),A2
-	MOVE.L  4.W,A6
-	MOVE.L  -64(A4),A3		;stack bottom
-	MOVE.L  A3,D2
-	JSR     -522(A6)      ;rawdofmt
+	LEA		.3(PC),A2
+	MOVE.L	4.W,A6
+	MOVE.L	-64(A4),A3		;stack bottom
+	MOVE.L	A3,D2
+	JSR		-522(A6)		;rawdofmt
 .4:
 	MOVE.L	-16(A4),A1
 	MOVE.L	A1,D0
@@ -33195,7 +33195,7 @@ ASM_INSJOB:
 	JSR	-240(A6)	
 	MOVE.L	-16(A4),A1
 	MOVE.L	D2,A0
-    MOVE.L	A0,A2
+	MOVE.L	A0,A2
 .2:	TST.B	(A2)+
 	BNE.S	.2
 	MOVE.L	A2,D0
@@ -33205,11 +33205,11 @@ ASM_INSJOB:
 	JSR	-60(A6)
 	MOVE.L	D2,D0
 .1:	RTS
-.3:	MOVE.B  D0,(A3)+		;RDF DUMP
+.3:	MOVE.B	D0,(A3)+		;RDF DUMP
 	RTS
-      E_TEXTF:
+		E_TEXTF:
 
-      I_COLOR:
+		I_COLOR:
 	MOVE.L	-16(A4),A1
 	MOVE.L	A1,D2
 	BEQ.S	.1
@@ -33220,64 +33220,64 @@ ASM_INSJOB:
 	MOVE.L	4(A7),D0
 	JSR	-348(A6)
 .1:	RTS
-      E_COLOR:
+		E_COLOR:
 
 
-      I_SETRAST:
+		I_SETRAST:
 	MOVE.L	-16(A4),D0
 	MOVE.L	4(A7),D1
 	BEQ.S	.1
 	MOVE.L	D1,-16(A4)
 .1:	RTS
-      E_SETRAST:
+		E_SETRAST:
 
-      I_SETOUT:
+		I_SETOUT:
 	MOVE.L	-8(A4),D0
 	MOVE.L	4(A7),D1
 	BEQ.S	.1
 	MOVE.L	D1,-8(A4)
 .1:	RTS
-      E_SETOUT:
+		E_SETOUT:
 
-      I_LONG:
+		I_LONG:
 	MOVE.L	4(A7),A0
 	MOVE.L	(A0),D0
 	RTS
-      E_LONG:
+		E_LONG:
 
-      I_INT:
+		I_INT:
 	MOVE.L	4(A7),A0
 	MOVE.W	(A0),D0
-  EXT.L D0
+	EXT.L D0
 	RTS
-      E_INT:
+		E_INT:
 
-      I_CHAR:
+		I_CHAR:
 	MOVE.L	4(A7),A0
 	MOVEQ	#0,D0
 	MOVE.B	(A0),D0
 	RTS
-      E_CHAR:
+		E_CHAR:
 
-      I_PUTLONG:
+		I_PUTLONG:
 	MOVE.L	8(A7),A0
 	MOVE.L	4(A7),(A0)
 	RTS
-      E_PUTLONG:
+		E_PUTLONG:
 
-      I_PUTINT:
+		I_PUTINT:
 	MOVE.L	8(A7),A0
 	MOVE.W	6(A7),(A0)
 	RTS
-      E_PUTINT:
+		E_PUTINT:
 
-      I_PUTCHAR:
+		I_PUTCHAR:
 	MOVE.L	8(A7),A0
 	MOVE.B	7(A7),(A0)
 	RTS
-      E_PUTCHAR:
+		E_PUTCHAR:
 
-      I_NEW:
+		I_NEW:
 	MOVE.L	4(A7),D0
 	MOVEQ	#1,D1
 	SWAP	D1
@@ -33286,8 +33286,8 @@ ASM_INSJOB:
 	MOVE.L	4.W,A6
 	TST.L -124(a4)
 	BEQ.S .NP
-	MOVE.L  -124(A4),A0
-	JSR     -708(A6)  ;allocPooled
+	MOVE.L	-124(A4),A0
+	JSR		-708(A6)	;allocPooled
 	TST.L	D0
 	BEQ.S	.1
 	MOVE.L	D0,A0
@@ -33306,15 +33306,15 @@ ASM_INSJOB:
 	MOVE.L	D2,(A0)
 	ADDQ.L	#8,D0
 .1:	RTS
-      E_NEW:
+		E_NEW:
 
-      I_EXIT:
+		I_EXIT:
 	MOVE.L	4(A7),-28(A4)
 	MOVE.L	-24(A4),A0
 	JMP	(A0)
-      E_EXIT:
+		E_EXIT:
 
-      I_CLOSEW:
+		I_CLOSEW:
 	MOVE.L	4(A7),A0
 	MOVE.L	A0,D0
 	BEQ.S	.1
@@ -33322,9 +33322,9 @@ ASM_INSJOB:
 	MOVE.L	-48(A4),A6
 	JSR	-72(A6)
 .1:	RTS
-      E_CLOSEW:
+		E_CLOSEW:
 
-      I_CLOSES:
+		I_CLOSES:
 	MOVE.L	4(A7),A0
 	MOVE.L	A0,D0
 	BEQ.S	.1
@@ -33332,36 +33332,36 @@ ASM_INSJOB:
 	MOVE.L	-48(A4),A6
 	JSR	-66(A6)
 .1:	RTS
-      E_CLOSES:
+		E_CLOSES:
 
-      I_AND:
+		I_AND:
 	MOVE.L	8(A7),D0
 	AND.L	4(A7),D0
 	RTS
-      E_AND:
+		E_AND:
 
-      I_OR:
+		I_OR:
 	MOVE.L	8(A7),D0
 	OR.L	4(A7),D0
 	RTS
-      E_OR:
+		E_OR:
 
-      I_NOT:
+		I_NOT:
 	MOVE.L	4(A7),D0
 	NOT.L	D0
 	RTS
-      E_NOT:
+		E_NOT:
 
-      I_BOOLGAD:
+		I_BOOLGAD:
 	MOVE.L	32(A7),D2
 	MOVE.L	D2,A1			; A1,D2=GADGET
 	MOVE.L	A1,A2
 	MOVEQ	#28,D0
 .L:	CLR.L	(A2)+
 	DBRA	D0,.L
-	LEA	44(A1),A0		; A0   =BORDER1
-	LEA	16(A0),A2		; A2   =INTUITEXT
-	LEA	20(A2),A3		; A3   =20 empty bytes
+	LEA	44(A1),A0		; A0	 =BORDER1
+	LEA	16(A0),A2		; A2	 =INTUITEXT
+	LEA	20(A2),A3		; A3	 =20 empty bytes
 	MOVE.L	24(A7),40(A1)		; --> INIT GADGET
 	MOVE.W	18(A7),4(A1)
 	MOVE.W	14(A7),6(A1)
@@ -33419,10 +33419,10 @@ ASM_INSJOB:
 	RTS
 .3:	DC.L	0,$80060
 .4:	DC.B	"topaz.font",0
-    EVEN
-      E_BOOLGAD:
+	EVEN
+		E_BOOLGAD:
 
-      I_SETTOPAZ:
+		I_SETTOPAZ:
 	MOVE.L	-52(A4),A6
 	LEA	.2(PC),A0
 	LEA	.3(PC),A1
@@ -33439,10 +33439,10 @@ ASM_INSJOB:
 .1:	RTS
 .2:	DC.L	0,$80060
 .3:	DC.B	"topaz.font",0
-    EVEN
-      E_SETTOPAZ:
+	EVEN
+		E_SETTOPAZ:
 
-      I_STRCMP:
+		I_STRCMP:
 	MOVE.W	6(A7),D1		; LEN
 	MOVE.L	8(A7),A1		; STR1
 	MOVE.L	12(A7),A0		; STR2
@@ -33457,9 +33457,9 @@ ASM_INSJOB:
 	BNE.S	.1
 .3:	MOVEQ	#-1,D0
 .2:	RTS
-      E_STRCMP:
+		E_STRCMP:
 
-      I_STRCOPY:
+		I_STRCOPY:
 	MOVE.W	6(A7),D1		; LEN
 	MOVEA.L 8(A7),A0		; STR
 	MOVEA.L 12(A7),A1		; ESTR
@@ -33478,12 +33478,12 @@ ASM_INSJOB:
 	MOVE.W	D1,-2(A2)
 .3:	MOVE.L	A2,D0
 	RTS
-      E_STRCOPY:
+		E_STRCOPY:
 
-      I_STRADD:
-     	MOVE.W	6(A7),D1		; LEN
-     	MOVEA.L	8(A7),A0		; STR
-     	MOVEA.L	12(A7),A1		; ESTR
+		I_STRADD:
+		MOVE.W	6(A7),D1		; LEN
+		MOVEA.L	8(A7),A0		; STR
+		MOVEA.L	12(A7),A1		; ESTR
 	LEA	-4(A1),A2
 	MOVE.W	(A2)+,D0
 	MOVE.W	(A2)+,D2
@@ -33503,9 +33503,9 @@ ASM_INSJOB:
 	MOVE.W	D1,-2(A2)
 .3:	MOVE.L	A2,D0
 	RTS
-      E_STRADD:
+		E_STRADD:
 
-      I_STRLEN:
+		I_STRLEN:
 	MOVE.L	4(A7),A0
 	MOVE.L	A0,D1
 .1:	TST.B	(A0)+
@@ -33514,26 +33514,26 @@ ASM_INSJOB:
 	MOVE.L	A0,D0
 	SUB.L	D1,D0
 	RTS
-      E_STRLEN:
+		E_STRLEN:
 
-      I_ESTRLEN:
+		I_ESTRLEN:
 	MOVE.L	4(A7),A0
 	MOVEQ	#0,D0
 	MOVE.W	-2(A0),D0
 	RTS
-      E_ESTRLEN:
+		E_ESTRLEN:
 
-      I_ESTRMAX:
+		I_ESTRMAX:
 	MOVE.L	4(A7),A0
 	MOVEQ	#0,D0
 	MOVE.W	-4(A0),D0
 	RTS
-      E_ESTRMAX:
+		E_ESTRMAX:
 
-      I_STRING:
-      	MOVEQ	#0,D0
-	MOVE.L	4(A7),D1  ;
-	;BEQ.S	.1        ;removed as E v3.3 allows 0 length strings to be allocated
+		I_STRING:
+		MOVEQ	#0,D0
+	MOVE.L	4(A7),D1	;
+	;BEQ.S	.1			;removed as E v3.3 allows 0 length strings to be allocated
 	MOVEA.L	D1,A2
 	CMPA.W	#$7FF0,A2
 	BHS.S	.1
@@ -33544,8 +33544,8 @@ ASM_INSJOB:
 	MOVE.L	4.W,A6
 	TST.L -124(a4)
 	BEQ.S .NP
-	MOVE.L  -124(A4),A0
-	JSR     -708(A6)  ;allocPooled
+	MOVE.L	-124(A4),A0
+	JSR		-708(A6)	;allocPooled
 	TST.L	D0
 	BEQ.S	.1
 	MOVE.L	D0,A0
@@ -33568,9 +33568,9 @@ ASM_INSJOB:
 	CLR.B (A0)	;terminator
 	MOVE.L	A0,D0
 .1:	RTS
-      E_STRING:
+		E_STRING:
 
-      I_RIGHTSTR:
+		I_RIGHTSTR:
 	MOVE.W	6(A7),D1		; LEN
 	MOVEA.L	8(A7),A0		; ESTR1
 	MOVEA.L	12(A7),A1		; ESTR2
@@ -33591,9 +33591,9 @@ ASM_INSJOB:
 	MOVE.W	D1,-2(A2)
 .3:	MOVE.L	A2,D0
 	RTS
-      E_RIGHTSTR:
+		E_RIGHTSTR:
 
-      I_MIDSTR:
+		I_MIDSTR:
 	MOVE.W	6(A7),D1		; LEN
 	MOVEA.L	12(A7),A0		; STR
 	ADDA.L	8(A7),A0		; OFFSET
@@ -33616,19 +33616,19 @@ ASM_INSJOB:
 	MOVE.W	D1,-2(A2)
 	MOVE.L	A2,D0
 	RTS
-      E_MIDSTR:
+		E_MIDSTR:
 
-      I_STRINGF:
+		I_STRINGF:
 	MOVE.L	4(A7),D0
 	MOVE.L	8(A7,D0.L),A0		; formatstr
 	LEA	8(A7),A1		; argarray
-	LEA     .1(PC),A2		; putfun
-	MOVE.L  4.W,A6
-	;MOVE.L  276(A6),A3
-	;MOVE.L  58(A3),A3
-	MOVE.L  -64(A4),A3		; BETTER!
-	MOVE.L  A3,D2			; both bottom OWN stack
-	JSR     -522(A6)
+	LEA		.1(PC),A2		; putfun
+	MOVE.L	4.W,A6
+	;MOVE.L	 276(A6),A3
+	;MOVE.L	 58(A3),A3
+	MOVE.L	-64(A4),A3		; BETTER!
+	MOVE.L	A3,D2			; both bottom OWN stack
+	JSR		-522(A6)
 	MOVE.L	D2,A1
 	MOVE.L	4(A7),D0
 	MOVE.L	12(A7,D0.L),A0		; ESTR
@@ -33646,11 +33646,11 @@ ASM_INSJOB:
 	EXT.L	D1
 	MOVE.L	A2,D0
 	RTS
-.1:	MOVE.B  D0,(A3)+		;RDF DUMP
+.1:	MOVE.B	D0,(A3)+		;RDF DUMP
 	RTS
-      E_STRINGF:
+		E_STRINGF:
 
-      I_VAL:
+		I_VAL:
 	MOVEM.L	D3-D6,-(A7)		; 16 OFF STACK
 	MOVE.L	24(A7),A2
 	MOVE.L	20(A7),D5		; D5=READLENADR
@@ -33792,9 +33792,9 @@ BIN:	ADDQ.L	#1,A2
 	BRA.S	.3
 .5:	MOVE.L	D1,D0
 	BRA.W	ISIND0
-      E_VAL:
+		E_VAL:
 
-      I_INSTR:
+		I_INSTR:
 	MOVE.L	8(A7),A1		; STRING TO FIND
 	MOVE.L	12(A7),A0		; THE STRING
 	MOVE.L	A0,D2
@@ -33817,9 +33817,9 @@ BIN:	ADDQ.L	#1,A2
 	RTS
 .2:	MOVEQ	#-1,D0
 	RTS
-      E_INSTR:
+		E_INSTR:
 
-      I_TRIMSTR:
+		I_TRIMSTR:
 	MOVE.L	4(A7),A0
 	MOVEQ	#0,D0
 .1:	MOVE.B	(A0)+,D0
@@ -33829,9 +33829,9 @@ BIN:	ADDQ.L	#1,A2
 .2:	SUBQ.L	#1,A0
 	MOVE.L	A0,D0
 	RTS
-      E_TRIMSTR:
+		E_TRIMSTR:
 
-      I_UPPERSTR:
+		I_UPPERSTR:
 	MOVE.L	4(A7),A0
 	MOVE.L	A0,A1
 .1:	MOVE.B	(A0)+,D0
@@ -33845,9 +33845,9 @@ BIN:	ADDQ.L	#1,A2
 	BRA.S	.1
 .2:	MOVE.L	A1,D0
 	RTS
-      E_UPPERSTR:
+		E_UPPERSTR:
 
-      I_LOWERSTR:
+		I_LOWERSTR:
 	MOVE.L	4(A7),A0
 	MOVE.L	A0,A1
 .1:	MOVE.B	(A0)+,D0
@@ -33861,9 +33861,9 @@ BIN:	ADDQ.L	#1,A2
 	BRA.S	.1
 .2:	MOVE.L	A1,D0
 	RTS
-      E_LOWERSTR:
+		E_LOWERSTR:
 
-      I_READSTR:
+		I_READSTR:
 	MOVEM.L	D3/D4,-(A7)
 	MOVEA.L	12(A7),A2		; ESTR
 	MOVE.L	A2,D2
@@ -33900,10 +33900,10 @@ BIN:	ADDQ.L	#1,A2
 	MOVE.W	D4,-2(A2)		; CURRENT LEN
 	MOVEM.L	(A7)+,D3/D4
 	RTS
-      E_READSTR:
+		E_READSTR:
 
 
-      I_OUT:
+		I_OUT:
 	MOVE.L	D3,A3
 	MOVE.L	8(A7),D1
 	LEA	7(A7),A0
@@ -33913,9 +33913,9 @@ BIN:	ADDQ.L	#1,A2
 	JSR	-48(A6)
 	MOVE.L	A3,D3
 	RTS
-      E_OUT:
+		E_OUT:
 
-      I_INP:
+		I_INP:
 	MOVE.L	D3,A3
 	MOVE.L	4(A7),D1
 	MOVEQ	#1,D3
@@ -33931,20 +33931,20 @@ BIN:	ADDQ.L	#1,A2
 	RTS
 .1:	MOVEQ	#-1,D0
 	RTS
-      E_INP:
+		E_INP:
 
-      I_VERSION:
-      	MOVEQ	#0,D0			; FALSE
+		I_VERSION:
+		MOVEQ	#0,D0			; FALSE
 	MOVE.L	4(A7),D1		; V. REQUESTED
 	MOVE.L	4.W,A6
 	CMP.W	20(A6),D1		; V. CURRENTLY RUNNING
 	BGT.S	.1
 	MOVEQ	#-1,D0			; TRUE=RIGHT KICK
 .1:	RTS
-      E_VERSION:
+		E_VERSION:
 
 
-      I_FILELENGTH:
+		I_FILELENGTH:
 	MOVE.L	4(A7),D1
 	PEA	(-1).W
 	MOVEQ	#-2,D2
@@ -33969,34 +33969,34 @@ BIN:	ADDQ.L	#1,A2
 	JSR	-90(A6)			; UNLOCK
 .1:	MOVE.L	(A7)+,D0
 	RTS
-      E_FILELENGTH:
+		E_FILELENGTH:
 	
 		
-      I_MOUSEX:
+		I_MOUSEX:
 	MOVEQ	#0,D0
 	MOVE.L	4(A7),A0
 	MOVE.W	14(A0),D0
 	RTS
-      E_MOUSEX:
+		E_MOUSEX:
 
-      I_MOUSEY:
+		I_MOUSEY:
 	MOVEQ	#0,D0
 	MOVE.L	4(A7),A0
 	MOVE.W	12(A0),D0
 	RTS
-      E_MOUSEY:
+		E_MOUSEY:
 
-      I_FREESTACK:
+		I_FREESTACK:
 	MOVE.L	4.W,A6
 	SUBA.L	A1,A1
-	JSR	-294(A6)  		; findtask
-  MOVE.L D0,A1
-  MOVE.L A7,D0
-  SUB.L 58(A1),D0   ;stack bottom
-  RTS  
-      E_FREESTACK:
+	JSR	-294(A6)		; findtask
+	MOVE.L D0,A1
+	MOVE.L A7,D0
+	SUB.L 58(A1),D0	;stack bottom
+	RTS	
+		E_FREESTACK:
 
-      I_CTRLC:
+		I_CTRLC:
 	MOVEQ	#0,D0
 	MOVEQ	#0,D1
 	MOVE.L	4.W,A6
@@ -34011,9 +34011,9 @@ BIN:	ADDQ.L	#1,A2
 	RTS
 .1:	MOVEQ	#0,D0			; D0<--TRUE/FALSE
 	RTS
-      E_CTRLC:
+		E_CTRLC:
 
-      I_LIST:
+		I_LIST:
 	MOVE.L	4(A7),D1
 	MOVEA.L	D1,A2			; LEN
 	CMPA.W	#$FFF0,A2
@@ -34027,8 +34027,8 @@ BIN:	ADDQ.L	#1,A2
 	MOVE.L	4.W,A6
 	TST.L -124(a4)
 	BEQ.S .NP
-	MOVE.L  -124(A4),A0
-	JSR     -708(A6)  ;allocPooled
+	MOVE.L	-124(A4),A0
+	JSR		-708(A6)	;allocPooled
 	TST.L	D0
 	BEQ.S	.1
 	MOVE.L	D0,A0
@@ -34050,9 +34050,9 @@ BIN:	ADDQ.L	#1,A2
 	CLR.W	(A0)+
 	MOVE.L	A0,D0
 .1:	RTS
-      E_LIST:
+		E_LIST:
 
-      I_LISTCOPY:
+		I_LISTCOPY:
 	MOVE.L	8(A7),A0		; SRC
 	MOVE.L	12(A7),A1		; DEST
 	MOVE.L	A1,A2
@@ -34063,14 +34063,14 @@ BIN:	ADDQ.L	#1,A2
 	BMI.S	.2
 	MOVE.W	-4(A1),D0
 .2:	MOVE.W	D0,-2(A1)
-	BRA.S   .4
+	BRA.S	.4
 .L:	MOVE.L	(A0)+,(A1)+
 .4:	DBRA	D0,.L
 .3:	MOVE.L	A2,D0
 	RTS
-      E_LISTCOPY:
+		E_LISTCOPY:
 
-      I_LISTADD:
+		I_LISTADD:
 	MOVE.L	8(A7),A0		; SRC
 	MOVE.L	12(A7),A1		; DEST
 	MOVE.L	A1,A2
@@ -34092,9 +34092,9 @@ BIN:	ADDQ.L	#1,A2
 .4:	DBRA	D0,.L
 .3:	MOVE.L	A2,D0
 	RTS
-      E_LISTADD:
+		E_LISTADD:
 
-      I_LISTCMP:
+		I_LISTCMP:
 	MOVE.L	8(A7),A0		; SRC
 	MOVE.L	12(A7),A1		; DEST
 	MOVEQ	#0,D0
@@ -34104,8 +34104,8 @@ BIN:	ADDQ.L	#1,A2
 	MOVE.W	-2(A0),D1
 	CMP.W	-2(A1),D1
 	BEQ.S	.2			; LENDEST=LENSRC
-	RTS  
-  
+	RTS	 
+	
 .1:	
 	CMP.W	-2(A0),D1
 	BGT.S .3
@@ -34119,49 +34119,49 @@ BIN:	ADDQ.L	#1,A2
 	BNE.S	.3
 	MOVEQ	#-1,D0
 .3:	RTS
-      E_LISTCMP:
+		E_LISTCMP:
 
-      I_LISTLEN:
+		I_LISTLEN:
 	MOVE.L	4(A7),A0
 	MOVEQ	#0,D0
 	MOVE.W	-2(A0),D0
 	RTS
-      E_LISTLEN:
+		E_LISTLEN:
 
-      I_LISTMAX:
+		I_LISTMAX:
 	MOVE.L	4(A7),A0
 	MOVEQ	#0,D0
 	MOVE.W	-4(A0),D0
 	RTS
-      E_LISTMAX:
+		E_LISTMAX:
 
-      I_EVEN:
+		I_EVEN:
 	BTST	#0,7(A7)
 	BEQ.S	.1
 	MOVEQ	#0,D0
 	RTS
 .1:	MOVEQ	#-1,D0
 	RTS
-      E_EVEN:
+		E_EVEN:
 
-      I_ODD:
+		I_ODD:
 	BTST	#0,7(A7)
 	BNE.S	.1
 	MOVEQ	#0,D0
 	RTS
 .1:	MOVEQ	#-1,D0
 	RTS
-      E_ODD:
+		E_ODD:
 
-      I_EVAL:
-      	MOVE.L	4(A7),D0
-      	BNE.S	.1
-      	RTS
-.1:    	MOVEA.L	D0,A0
+		I_EVAL:
+		MOVE.L	4(A7),D0
+		BNE.S	.1
+		RTS
+.1:		MOVEA.L	D0,A0
 	JMP	(A0)			; ACTIONNES DANGEREUSES !!!
-      E_EVAL:
+		E_EVAL:
 
-      I_FORALL:
+		I_FORALL:
 	MOVE.L	4(A7),A0		; code
 	MOVE.L	8(A7),A1		; list
 	MOVE.L	12(A7),A2		; VAR
@@ -34180,10 +34180,10 @@ BIN:	ADDQ.L	#1,A2
 .2:	DBRA	D2,.L
 	MOVE.L	D1,D0
 .1:	RTS
-      E_FORALL:
+		E_FORALL:
 
 
-      I_EXISTS:
+		I_EXISTS:
 	MOVE.L	4(A7),A0		; code
 	MOVE.L	8(A7),A1		; list
 	MOVE.L	12(A7),A2		; VAR
@@ -34200,11 +34200,11 @@ BIN:	ADDQ.L	#1,A2
 	BEQ.S	.1			; if D0 <> 0
 	MOVEQ	#-1,D0
 .1:	RTS
-      E_EXISTS:
+		E_EXISTS:
 
 
 
-      I_MAPLIST:
+		I_MAPLIST:
 	MOVE.L	4(A7),A0		; code
 	MOVE.L	8(A7),A3		; DESTLIST
 	MOVE.L	12(A7),A1		; SRClist
@@ -34226,30 +34226,30 @@ BIN:	ADDQ.L	#1,A2
 	DBRA	D2,.L
 .1:	MOVE.L	(A7)+,D0
 	RTS
-      E_MAPLIST:
+		E_MAPLIST:
 
-      I_ABS:
+		I_ABS:
 	MOVE.L	4(A7),D0
 	BPL.S	.1
 	NEG.L	D0
 .1:	RTS
-      E_ABS:
+		E_ABS:
 
-      I_SHL:
+		I_SHL:
 	MOVE.L	8(A7),D0
 	MOVE.L	4(A7),D1
 	ASL.L	D1,D0
 	RTS
-      E_SHL:
+		E_SHL:
 
-      I_SHR:
+		I_SHR:
 	MOVE.L	8(A7),D0
 	MOVE.L	4(A7),D1
 	ASR.L	D1,D0
 	RTS
-      E_SHR:
+		E_SHR:
 
-      I_BOX:
+		I_BOX:
 	MOVE.L	D3,A3
 	MOVE.L	-16(A4),A1		; rast
 	MOVE.L	A1,D0
@@ -34265,9 +34265,9 @@ BIN:	ADDQ.L	#1,A2
 	JSR	-306(A6)		; rectfill
 .1:	MOVE.L	A3,D3
 	RTS
-      E_BOX:
+		E_BOX:
 
-      I_DISP:
+		I_DISP:
 	MOVE.L	4(A7),D0
 	BEQ.S	.1
 	SUBQ.L	#8,D0
@@ -34275,7 +34275,7 @@ BIN:	ADDQ.L	#1,A2
 	MOVE.L D0,A1
 	CMP.L #-1,(A1)
 	BEQ.S .P
-  
+	
 	LEA	-20(A4),A1
 
 .L:	MOVE.L	(A1),D1
@@ -34290,12 +34290,12 @@ BIN:	ADDQ.L	#1,A2
 .1:	RTS
 .P
 	MOVE.L	4(A1),D0		; MEMSIZE
-	MOVE.L  -124(A4),A0
-	JSR     -714(A6)  ;freePooled
+	MOVE.L	-124(A4),A0
+	JSR		-714(A6)	;freePooled
 	RTS
-      E_DISP:
+		E_DISP:
 
-      I_DISPL:
+		I_DISPL:
 	MOVE.L	4(A7),A3		; A3=STRING
 	MOVE.L	4.W,A6
 .ML:	MOVE.L	A3,D0
@@ -34319,29 +34319,29 @@ BIN:	ADDQ.L	#1,A2
 	BRA.S	.ML
 .P
 	MOVE.L	4(A1),D0		; MEMSIZE
-	MOVE.L  -124(A4),A0
-	JSR     -714(A6)  ;freePooled
+	MOVE.L	-124(A4),A0
+	JSR		-714(A6)	;freePooled
 	BRA.S	.ML
 .1:	RTS
-      E_DISPL:
+		E_DISPL:
 
-      I_LINK:
+		I_LINK:
 	MOVE.L	8(A7),A0
 	MOVE.L	A0,D0
 	BEQ.S	.1
 	MOVE.L	4(A7),-8(A0)
 .1:	RTS
-      E_LINK:
+		E_LINK:
 
-      I_NEXT:
+		I_NEXT:
 	MOVE.L	4(A7),D0
 	BEQ.S	.1
 	MOVE.L	D0,A0
 	MOVE.L	-8(A0),D0
 .1:	RTS
-      E_NEXT:
+		E_NEXT:
 
-      I_FORWARD:
+		I_FORWARD:
 	LEA	8(A7),A0		; LIST
 	MOVE.L	4(A7),D1		; NUM
 	ADDQ.L	#1,D1
@@ -34352,13 +34352,13 @@ BIN:	ADDQ.L	#1,A2
 	SUBQ.L	#1,D1
 	BNE.S	.L
 .1:	RTS
-      E_FORWARD:
+		E_FORWARD:
 
-      I_SETSTR:
+		I_SETSTR:
 	MOVE.W	6(A7),D0
 	MOVE.L	8(A7),A0
-  CMP.W #-1,D0
-  BEQ .2
+	CMP.W #-1,D0
+	BEQ .2
 .3:
 	CMP.W	-4(A0),D0
 	BHI.S	.1
@@ -34366,24 +34366,24 @@ BIN:	ADDQ.L	#1,A2
 	CLR.B	0(A0,D0.W)
 .1:	RTS
 .2: MOVE.L A0,A1
-.L:    TST.B (A1)+
-    BNE.S .L
-    SUB.L A0,A1
-    MOVE.L A1,D0
-    SUBQ.L #1,D0
-    BRA.S .3
-      E_SETSTR:
+.L:		 TST.B (A1)+
+	BNE.S .L
+	SUB.L A0,A1
+	MOVE.L A1,D0
+	SUBQ.L #1,D0
+	BRA.S .3
+		E_SETSTR:
 
-      I_SETLIST:
+		I_SETLIST:
 	MOVE.W	6(A7),D0
 	MOVE.L	8(A7),A0
 	CMP.W	-4(A0),D0
 	BHI.S	.1
 	MOVE.W	D0,-2(A0)
 .1:	RTS
-      E_SETLIST:
+		E_SETLIST:
 
-      I_WAITMSG:
+		I_WAITMSG:
 	MOVE.L	4(A7),A0
 	MOVE.L	$56(A0),A2		; A2=PORT
 	MOVE.L	4.W,A6
@@ -34406,26 +34406,26 @@ BIN:	ADDQ.L	#1,A2
 	JSR	-378(A6)		; REPLY
 	MOVE.L	D2,D0			; CLASS
 	RTS
-      E_WAITMSG:
+		E_WAITMSG:
 
-      I_MSGCODE:
+		I_MSGCODE:
 	MOVEQ	#0,D0
 	MOVE.W	-68(A4),D0
 	RTS
-      E_MSGCODE:
+		E_MSGCODE:
 
-      I_MSGQUAL:
+		I_MSGQUAL:
 	MOVEQ	#0,D0
 	MOVE.W	-66(A4),D0
 	RTS
-      E_MSGQUAL:
+		E_MSGQUAL:
 
-      I_MSGIADR:
+		I_MSGIADR:
 	MOVE.L	-72(A4),D0
 	RTS
-      E_MSGIADR:
+		E_MSGIADR:
 
-      I_RND:				; rand16:=RangeRand(max16)
+		I_RND:				; rand16:=RangeRand(max16)
 	MOVE.L	4(A7),D2		; 6(a7) was E(a7) ????
 	BMI.S	.SET
 	MOVE.W	D2,D1			; RangeRand(1000) --> 0..999
@@ -34436,29 +34436,29 @@ BIN:	ADDQ.L	#1,A2
 	EORI.L	#$1D872B41,D0
 .3:	LSR.W	#$1,D1
 	BNE.S	.2
-	MOVE.L	D0,-136(A4)   ;new seed
+	MOVE.L	D0,-136(A4)		;new seed
 	TST.W	D2
 	BNE.S	.4
 	SWAP	D0
 	BRA.S	.5
 .4:	MULU	D2,D0
-.5:	EOR.W D0,D0   ;CLR.W	D0
+.5:	EOR.W D0,D0		;CLR.W	D0
 	SWAP	D0
 	RTS
 .SET:	NEG.L	D2
-	MOVE.L	D2,-136(A4)   ;new seed
+	MOVE.L	D2,-136(A4)		;new seed
 	RTS
-    E_RND:
+	E_RND:
 
-      I_RNDQ:				;	seed32:=FastRand(seed32)
+		I_RNDQ:				;	seed32:=FastRand(seed32)
 	MOVE.L	4(A7),D0
 	ADD.L	D0,D0			;	seed:=RndQ(seed)
 	BHI.S	.1
 	EORI.L	#$1D872B41,D0
-.1:	RTS     
-      E_RNDQ:
+.1:	RTS		
+		E_RNDQ:
 
-      I_MOD:
+		I_MOD:
 	MOVE.L	8(A7),D0
 	DIVS	6(A7),D0
 	MOVE.L	D0,D1
@@ -34466,32 +34466,32 @@ BIN:	ADDQ.L	#1,A2
 	EXT.L	D0
 	EXT.L	D1
 	RTS
-      E_MOD:
+		E_MOD:
 
-      I_EOR:
+		I_EOR:
 	MOVE.L	4(A7),D0
 	MOVE.L	8(A7),D1
 	EOR.L	D1,D0
 	RTS
-      E_EOR:
+		E_EOR:
 
 ; see also NEWR(), Throw() and ReThrow()
 
-      I_CAUSE:
+		I_CAUSE:
 	MOVE.L	4(A7),-84(A4)		; FILL "EXCEPTION" VAR
 	MOVE.L -140(A4),A0
-  JMP (A0)
-      E_CAUSE:
+	JMP (A0)
+		E_CAUSE:
 
-      I_LISTITEM:			; SIMPLE, BUT EFFECTIVE !
+		I_LISTITEM:			; SIMPLE, BUT EFFECTIVE !
 	MOVE.L	4(A7),D0
 	LSL.L	#2,D0
 	MOVE.L	8(A7),A0
 	MOVE.L	0(A0,D0.L),D0
 	RTS
-      E_LISTITEM:
+		E_LISTITEM:
 
-      I_NEWR:
+		I_NEWR:
 	MOVE.L	4(A7),D0		; COPY OF New()
 	MOVEQ	#1,D1
 	SWAP	D1
@@ -34500,8 +34500,8 @@ BIN:	ADDQ.L	#1,A2
 	MOVE.L	4.W,A6
 	TST.L -124(a4)
 	BEQ.S .NP
-	MOVE.L  -124(A4),A0
-	JSR     -708(A6)  ;allocPooled
+	MOVE.L	-124(A4),A0
+	JSR		-708(A6)	;allocPooled
 	TST.L	D0
 	BEQ.S	.1
 	MOVE.L	D0,A0
@@ -34521,13 +34521,13 @@ BIN:	ADDQ.L	#1,A2
 	ADDQ.L	#8,D0
 	RTS
 .1:	MOVE.L	#"MEM",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
+	MOVE.L	-148(A4),-96(A4)
 	MOVE.L -140(A4),A0
-  JMP (A0)
-      E_NEWR:
+	JMP (A0)
+		E_NEWR:
 
-      I_SIGN:
-      	MOVEQ	#0,D0
+		I_SIGN:
+		MOVEQ	#0,D0
 	TST.L	4(A7)
 	BEQ.S	.1
 	BMI.S	.2
@@ -34535,9 +34535,9 @@ BIN:	ADDQ.L	#1,A2
 .1:	RTS
 .2:	MOVEQ	#-1,D0
 	RTS
-      E_SIGN:
+		E_SIGN:
 
-      I_PRINTF:
+		I_PRINTF:
 	TST.L	-8(A4)			;STDIO
 	BEQ.S	.2
 .3:	MOVE.L	4(A7),D0
@@ -34547,14 +34547,14 @@ BIN:	ADDQ.L	#1,A2
 	BEQ.S .0
 	LEA	8(A7),A1
 	LEA	.1(PC),A2
-	MOVE.L  4.W,A6
+	MOVE.L	4.W,A6
 	MOVE.L	-64(A4),A3
 	MOVE.L	A3,D2
-	JSR	-522(A6)        ;rawdofmt
+	JSR	-522(A6)		;rawdofmt
 .0
 	MOVE.L	-8(A4),D1
 	MOVE.L	-44(A4),A6
-	JSR	-342(A6)        ;fputs
+	JSR	-342(A6)		;fputs
 	MOVE.L	D2,A0			; JUST FOR LEN!
 .C:	TST.B	(A0)+
 	BNE.S	.C
@@ -34562,7 +34562,7 @@ BIN:	ADDQ.L	#1,A2
 	SUBQ.L	#1,A0
 	MOVE.L	A0,D0
 	RTS
-.1:	MOVE.B  D0,(A3)+		; RDF DUMP
+.1:	MOVE.B	D0,(A3)+		; RDF DUMP
 	RTS
 .2:	LEA	.4(PC),A0
 	MOVE.L	A0,D1			; OPEN CON
@@ -34579,9 +34579,9 @@ BIN:	ADDQ.L	#1,A2
 	JMP	(A0)
 .4:	DC.B	"CON:0/11/640/80/Output",0
 	EVEN
-      E_PRINTF:
+		E_PRINTF:
 
-      I_WAITLEFTMOUSE:
+		I_WAITLEFTMOUSE:
 	MOVE.L	4(A7),A3		; A3=WIN
 	MOVE.L	82(A3),D0
 	BTST	#3,D0
@@ -34611,9 +34611,9 @@ BIN:	ADDQ.L	#1,A2
 	BTST	#3,D0
 	BEQ.S	.2
 	RTS
-      E_WAITLEFTMOUSE:
+		E_WAITLEFTMOUSE:
 
-      I_LEFTMOUSE:
+		I_LEFTMOUSE:
 	MOVE.L	4(A7),A3		; A3=WIN
 	MOVE.L	82(A3),D0
 	BTST	#3,D0
@@ -34639,32 +34639,32 @@ BIN:	ADDQ.L	#1,A2
 	RTS
 .2:	MOVEQ	#0,D0
 	RTS
-      E_LEFTMOUSE:
+		E_LEFTMOUSE:
 
-      I_SETIN:
+		I_SETIN:
 	MOVE.L	-8(A4),D0
 	MOVE.L	4(A7),D1
 	BEQ.S	.1
 	MOVE.L	D1,-92(A4)
 .1:	RTS
-      E_SETIN:
+		E_SETIN:
 
-      I_THROW:
+		I_THROW:
 	MOVE.L	8(A7),-84(A4)		; FILL "EXCEPTION" VAR
 	MOVE.L	4(A7),-96(A4)		; FILL "EXCEPTIONINFO" VAR
- 	MOVE.L -140(A4),A0
-  JMP (A0)
-      E_THROW:
+	MOVE.L -140(A4),A0
+	JMP (A0)
+		E_THROW:
 
-      I_RETHROW:
+		I_RETHROW:
 	TST.L	-84(A4)			; NO RETHROW() IF EXC=0
 	BEQ.S	.2
- 	MOVE.L -140(A4),A0
-  JMP (A0)
+	MOVE.L -140(A4),A0
+	JMP (A0)
 .2:	RTS
-      E_RETHROW:
+		E_RETHROW:
 
-      I_SELECTLIST:
+		I_SELECTLIST:
 	MOVE.L	4(A7),A0		; code
 	MOVE.L	8(A7),A3		; DESTLIST
 	MOVE.L	A3,A6
@@ -34687,9 +34687,9 @@ BIN:	ADDQ.L	#1,A2
 .1:	MOVE.W	D1,-2(A6)
 	MOVE.L	D1,D0
 	RTS
-      E_SELECTLIST:
+		E_SELECTLIST:
 
-      I_SETCOLOUR:
+		I_SETCOLOUR:
 	MOVE.L	D3,A3
 	MOVE.L	D4,A2
 	MOVE.L	4(A7),D3
@@ -34718,9 +34718,9 @@ BIN:	ADDQ.L	#1,A2
 	MOVE.L	A3,D3
 	MOVE.L	A2,D4
 	RTS
-      E_SETCOLOUR:
+		E_SETCOLOUR:
 
-      I_NEWM:
+		I_NEWM:
 	MOVE.L	8(A7),D0		; COPY OF New()
 	MOVE.L	4(A7),D1
 	ADDQ.L	#8,D0
@@ -34737,12 +34737,12 @@ BIN:	ADDQ.L	#1,A2
 	RTS
 
 .1:	MOVE.L	#"MEM",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
+	MOVE.L	-148(A4),-96(A4)
 	MOVE.L -140(A4),A0
-  JMP (A0)
-      E_NEWM:
+	JMP (A0)
+		E_NEWM:
 
-      I_BOUNDS:
+		I_BOUNDS:
 	MOVE.L	12(A7),D0		; D0=VALUE
 	MOVE.L	4(A7),D1		; D1=HIGHERBOUND FIRST
 	CMP.L	D1,D0
@@ -34752,9 +34752,9 @@ BIN:	ADDQ.L	#1,A2
 	BPL.S	.X
 .1:	MOVE.L	D1,D0
 .X:	RTS
-      E_BOUNDS:
+		E_BOUNDS:
 
-      I_REALF:
+		I_REALF:
 	MOVE.L	12(A7),A2
 	CLR.W	-2(A2)
 	MOVE.L	8(A7),D2		; D2=FLOAT
@@ -34841,9 +34841,9 @@ BIN:	ADDQ.L	#1,A2
 	BRA.S	.L
 .O:	LEA	32(A7),A7
 	RTS
-      E_REALF:
+		E_REALF:
 
-      I_REALVAL:
+		I_REALVAL:
 	MOVE.L	D3,A3
 	MOVE.L	4(A7),A0		; A0=STR
 .L:	MOVE.B	(A0)+,D0
@@ -34909,87 +34909,87 @@ BIN:	ADDQ.L	#1,A2
 .FAIL:	MOVEQ	#0,D1
 	MOVEQ	#0,D0
 	RTS
-      E_REALVAL:
+		E_REALVAL:
 
-      I_FABS:
+		I_FABS:
 	MOVE.L	4(A7),D0
 	MOVE.L	-56(A4),A6
 	JSR	-54(A6)
 	RTS
-      E_FABS:
+		E_FABS:
 
-      I_FFLOOR:
+		I_FFLOOR:
 	MOVE.L	4(A7),D0
 	MOVE.L	-56(A4),A6
 	JSR	-90(A6)
 	RTS
-      E_FFLOOR:
+		E_FFLOOR:
 
-      I_FCEIL:
+		I_FCEIL:
 	MOVE.L	4(A7),D0
 	MOVE.L	-56(A4),A6
 	JSR	-96(A6)
 	RTS
-      E_FCEIL:
+		E_FCEIL:
 
-      I_FSIN:
+		I_FSIN:
 	MOVE.L	4(A7),D0
 	MOVE.L	-60(A4),A6
 	JSR	-36(A6)
 	RTS
-      E_FSIN:
+		E_FSIN:
 
-      I_FCOS:
+		I_FCOS:
 	MOVE.L	4(A7),D0
 	MOVE.L	-60(A4),A6
 	JSR	-42(A6)
 	RTS
-      E_FCOS:
+		E_FCOS:
 
-      I_FTAN:
+		I_FTAN:
 	MOVE.L	4(A7),D0
 	MOVE.L	-60(A4),A6
 	JSR	-48(A6)
 	RTS
-      E_FTAN:
+		E_FTAN:
 
-      I_FEXP:
+		I_FEXP:
 	MOVE.L	4(A7),D0
 	MOVE.L	-60(A4),A6
 	JSR	-78(A6)
 	RTS
-      E_FEXP:
+		E_FEXP:
 
-      I_FLOG:
+		I_FLOG:
 	MOVE.L	4(A7),D0
 	MOVE.L	-60(A4),A6
 	JSR	-84(A6)
 	RTS
-      E_FLOG:
+		E_FLOG:
 
-      I_FPOW:
+		I_FPOW:
 	MOVE.L	4(A7),D0
 	MOVE.L	8(A7),D1
 	MOVE.L	-60(A4),A6
 	JSR	-90(A6)
 	RTS
-      E_FPOW:
+		E_FPOW:
 
-      I_FSQRT:
+		I_FSQRT:
 	MOVE.L	4(A7),D0
 	MOVE.L	-60(A4),A6
 	JSR	-96(A6)
 	RTS
-      E_FSQRT:
+		E_FSQRT:
 
-      I_FLOG10:
+		I_FLOG10:
 	MOVE.L	4(A7),D0
 	MOVE.L	-60(A4),A6
 	JSR	-126(A6)
 	RTS
-      E_FLOG10:
+		E_FLOG10:
 
-      I_FASTDISPOSE:			; SEE ALSO: FASTDISPOSELIST!!!!!
+		I_FASTDISPOSE:			; SEE ALSO: FASTDISPOSELIST!!!!!
 	MOVE.L	8(A7),D0		; parms(ptr,size)
 	BEQ.S	.oute
 	MOVE.L	D0,A0
@@ -35019,14 +35019,14 @@ BIN:	ADDQ.L	#1,A2
 	JSR	-210(A6)		; FREEMEM
 .out:	RTS
 .P
-	MOVE.L  A0,A1
+	MOVE.L	A0,A1
 	MOVE.L	4(A1),D0		; MEMSIZE
-	MOVE.L  -124(A4),A0
-	JSR     -714(A6)  ;freePooled
+	MOVE.L	-124(A4),A0
+	JSR		-714(A6)	;freePooled
 	RTS
-      E_FASTDISPOSE:
+		E_FASTDISPOSE:
 
-      I_FASTNEW:
+		I_FASTNEW:
 	MOVE.L	4(A7),D0		; 1st arg = size 0..
 	CMP.L	#257,D0
 	BPL.S	.mem
@@ -35077,40 +35077,40 @@ BIN:	ADDQ.L	#1,A2
 	MOVE.L	D2,4(A0)
 	ADDQ.L	#8,D0
 	RTS
-.P  MOVE.L  -124(A4),A0
-	JSR     -708(A6)  ;allocPooled
+.P	MOVE.L	-124(A4),A0
+	JSR		-708(A6)	;allocPooled
 	TST.L	D0
 	BEQ.S	.raise
 	MOVE.L	D0,A0
-  	MOVEQ #-1,D1
-  	MOVE.L D1,(A0)
+	MOVEQ #-1,D1
+	MOVE.L D1,(A0)
 	BRA.S .P2
 .raise:	MOVE.L	#"MEM",-84(A4)		; COPY OF Raise()
-  MOVE.L  -148(A4),-96(A4)
- 	MOVE.L -140(A4),A0
-  JMP (A0)
-      E_FASTNEW:
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L -140(A4),A0
+	JMP (A0)
+		E_FASTNEW:
 
 
-      I_MIN:
+		I_MIN:
 	MOVE.L	4(A7),D0
 	MOVE.L	8(A7),D1
 	CMP.L	D0,D1
 	BPL.S	.1
 	MOVE.L	D1,D0
 .1:	RTS
-      E_MIN:
+		E_MIN:
 
-      I_MAX:
+		I_MAX:
 	MOVE.L	4(A7),D0
 	MOVE.L	8(A7),D1
 	CMP.L	D0,D1
 	BMI.S	.1
 	MOVE.L	D1,D0
 .1:	RTS
-      E_MAX:
+		E_MAX:
 
-      I_OSTRCMP:
+		I_OSTRCMP:
 	MOVE.W	6(A7),D1
 	MOVE.L	8(A7),A1
 	MOVE.L	12(A7),A0
@@ -35122,16 +35122,16 @@ BIN:	ADDQ.L	#1,A2
 	BEQ.S	.2
 	BMI.S	.3
 	MOVEQ	#1,D0
-  RTS
+	RTS
 .3:	MOVEQ	#-1,D0
 	RTS
 .2:	TST.B	-1(A0)
 	BNE.S	.1
 .4:
-  RTS
-      E_OSTRCMP:
+	RTS
+		E_OSTRCMP:
 
-      I_ASTRCOPY:
+		I_ASTRCOPY:
 	MOVE.W	6(A7),D0
 	BEQ.S	.x2
 	MOVE.L	8(A7),A1
@@ -35144,7 +35144,7 @@ BIN:	ADDQ.L	#1,A2
 	RTS
 .x:	CLR.B	-(A0)
 .x2:	RTS
-      E_ASTRCOPY:
+		E_ASTRCOPY:
 
 
 ; Yet Another MileStone:
@@ -35177,13 +35177,13 @@ CHUNK		= 128*1024		; must be multiple of 256, >1024
 ; mem layout:
 ;
 ; OBJECT cellmem
-;   next:PTR TO cellmem			; 0
-;   end:PTR TO cellmem+SIZEOF cellmem	; 4
-;   cells[n]:ARRAY OF cell		; 8
+;	next:PTR TO cellmem			; 0
+;	end:PTR TO cellmem+SIZEOF cellmem	; 4
+;	cells[n]:ARRAY OF cell		; 8
 ; ENDOBJECT
-;   bits[n]:ARRAY OF BIT
+;	bits[n]:ARRAY OF BIT
 
-      I_CELL:
+		I_CELL:
 	MOVE.L	4(A7),D0
 	BEQ.S	.false			; NIL
 	MOVE.L	D0,D1
@@ -35201,9 +35201,9 @@ CHUNK		= 128*1024		; must be multiple of 256, >1024
 	BNE.S	.cloop
 .false:	MOVEQ	#0,D0
 	RTS
-      E_CELL:
+		E_CELL:
 
-      I_FREECELLS:
+		I_FREECELLS:
 	LEA	CELLSFREE(A4),A0
 	MOVEQ	#0,D0
 .ccl:	MOVE.L	(A0),D1
@@ -35212,9 +35212,9 @@ CHUNK		= 128*1024		; must be multiple of 256, >1024
 	MOVE.L	D1,A0
 	BRA.S	.ccl
 .cco:	RTS
-      E_FREECELLS:
+		E_FREECELLS:
 
-      I_SETCHUNKSIZE:
+		I_SETCHUNKSIZE:
 	TST.L	CHUNKSIZE(A4)
 	BNE.S	.chd
 	MOVE.L	4(A7),D0
@@ -35222,21 +35222,21 @@ CHUNK		= 128*1024		; must be multiple of 256, >1024
 	LSL.L	D1,D0
 	MOVE.L	D0,CHUNKSIZE(A4)
 .chd:	RTS
-      E_SETCHUNKSIZE:
+		E_SETCHUNKSIZE:
 
-      I_CAR:
+		I_CAR:
 	MOVE.L	4(A7),A0
 	MOVE.L	(A0),D0
 	RTS
-      E_CAR:
+		E_CAR:
 
-      I_CDR:
+		I_CDR:
 	MOVE.L	4(A7),A0
 	MOVE.L	4(A0),D0
 	RTS
-      E_CDR:
+		E_CDR:
 
-      I_CONS:
+		I_CONS:
 	MOVE.L	CELLSFREE(A4),D0	; Yep, this is IT!
 	BEQ.S	.gc
 	MOVE.L	D0,A0
@@ -35388,12 +35388,12 @@ CHUNK		= 128*1024		; must be multiple of 256, >1024
 	BRA.S	.rraise
 .raise:	MOVE.L	#"MEM",-84(A4)		; COPY OF Raise()
 .rraise:
-	MOVE.L  -148(A4),-96(A4)
- 	MOVE.L -140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L -140(A4),A0
 	JMP (A0)
-      E_CONS:
+		E_CONS:
 
-      I_FASTDISPOSELIST:		; ALMOST SAME AS FASTDIPOSE!!!!!
+		I_FASTDISPOSELIST:		; ALMOST SAME AS FASTDIPOSE!!!!!
 	MOVE.L	4(A7),D0		; parms(ptr)
 	BEQ.S	.oute
 	MOVE.L	D0,A0
@@ -35428,76 +35428,76 @@ CHUNK		= 128*1024		; must be multiple of 256, >1024
 .P
 	MOVE.L	A0,A1
 	MOVE.L	4(A1),D0		; MEMSIZE
-	MOVE.L  -124(A4),A0
-	JSR     -714(A6)  ;freePooled
+	MOVE.L	-124(A4),A0
+	JSR		-714(A6)	;freePooled
 	RTS
-      E_FASTDISPOSELIST:
+		E_FASTDISPOSELIST:
 
-      I_FATAN:
+		I_FATAN:
 	MOVE.L	4(A7),D0
 	MOVE.L	-60(A4),A6
 	JSR	-30(A6)
 	RTS
-      E_FATAN:
+		E_FATAN:
 
-      I_FSINCOS:
+		I_FSINCOS:
 	MOVE.L	8(A7),A0
 	MOVE.L	4(A7),D0
 	MOVE.L	-60(A4),A6
 	JSR	-54(A6)
 	RTS
-      E_FSINCOS:
+		E_FSINCOS:
 
-      I_FSINH:
+		I_FSINH:
 	MOVE.L	4(A7),D0
 	MOVE.L	-60(A4),A6
 	JSR	-60(A6)
 	RTS
-      E_FSINH:
+		E_FSINH:
 
-      I_FCOSH:
+		I_FCOSH:
 	MOVE.L	4(A7),D0
 	MOVE.L	-60(A4),A6
 	JSR	-66(A6)
 	RTS
-      E_FCOSH:
+		E_FCOSH:
 
-      I_FTANH:
+		I_FTANH:
 	MOVE.L	4(A7),D0
 	MOVE.L	-60(A4),A6
 	JSR	-72(A6)
 	RTS
-      E_FTANH:
+		E_FTANH:
 
-      I_FTIEEE:
+		I_FTIEEE:
 	MOVE.L	4(A7),D0
 	MOVE.L	-60(A4),A6
 	JSR	-102(A6)
 	RTS
-      E_FTIEEE:
+		E_FTIEEE:
 
-      I_FFIEEE:
+		I_FFIEEE:
 	MOVE.L	4(A7),D0
 	MOVE.L	-60(A4),A6
 	JSR	-108(A6)
 	RTS
-      E_FFIEEE:
+		E_FFIEEE:
 
-      I_FASIN:
+		I_FASIN:
 	MOVE.L	4(A7),D0
 	MOVE.L	-60(A4),A6
 	JSR	-114(A6)
 	RTS
-      E_FASIN:
+		E_FASIN:
 
-      I_FACOS:
+		I_FACOS:
 	MOVE.L	4(A7),D0
 	MOVE.L	-60(A4),A6
 	JSR	-120(A6)
 	RTS
-      E_FACOS:
+		E_FACOS:
 
-      I_STRICMP:
+		I_STRICMP:
 	MOVE.L	4(A7),D0		; LEN
 	MOVE.L	D0,D2
 	BEQ.S	.quit
@@ -35540,9 +35540,9 @@ CHUNK		= 128*1024		; must be multiple of 256, >1024
 	SUBA.L	D2,A2
 	MOVE.L	A2,D2
 .quit:	RTS
-      E_STRICMP:
+		E_STRICMP:
 
-      I_INSTRI:
+		I_INSTRI:
 	MOVE.L	8(A7),A1		; STRING TO FIND
 	MOVE.L	12(A7),A0		; THE STRING
 	MOVE.L	A0,D2
@@ -35587,10 +35587,10 @@ CHUNK		= 128*1024		; must be multiple of 256, >1024
 	OR.B	D4,D1
 .N2:	CMP.B	D0,D1
 .OK:	RTS
-      E_INSTRI:
+		E_INSTRI:
 
-      I_STRCLONE:
-      	MOVEQ	#0,D0
+		I_STRCLONE:
+		MOVEQ	#0,D0
 	MOVE.L	4(A7),D1
 	BEQ.S	.1
 	MOVEA.L	D1,A2
@@ -35618,11 +35618,11 @@ CHUNK		= 128*1024		; must be multiple of 256, >1024
 .2:	DBRA	D1,.3
 	CLR.B	(A0)
 .1:	RTS
-      E_STRCLONE:
+		E_STRCLONE:
 
 
-      I_LISTCLONE:
-      	MOVEQ	#0,D0
+		I_LISTCLONE:
+		MOVEQ	#0,D0
 	MOVE.L	4(A7),D1
 	BEQ.S	.1
 	MOVEA.L	D1,A2
@@ -35651,15 +35651,15 @@ CHUNK		= 128*1024		; must be multiple of 256, >1024
 .3:	MOVE.L	(A2)+,(A0)+
 .2:	DBRA	D1,.3
 .1:	RTS
-      E_LISTCLONE:
+		E_LISTCLONE:
 
-	    I_GETA4:
-  MOVEA.L	I_GETA4,A4
-  RTS
-	    E_GETA4:
+		I_GETA4:
+	MOVEA.L	I_GETA4,A4
+	RTS
+		E_GETA4:
 
 
-      I_ASTRINGF:
+		I_ASTRINGF:
 	MOVE.L	A3,-(A7)
 	MOVE.L	4+4(A7),D0
 	MOVEM.L	8+4(A7,D0.L),A0/A3
@@ -35677,447 +35677,447 @@ CHUNK		= 128*1024		; must be multiple of 256, >1024
 .2:
 	MOVE.B	D0,(A3)+
 	RTS
-      E_ASTRINGF:
+		E_ASTRINGF:
 
 ;; DoMethod
 I_DOMETHOD:
-    MOVE.L  4(A7),D0
-    MOVE.L  8(A7,D0.L),A2   ; object
-    LEA     8(A7),A1
-    MOVE.L  -4(A2),A0
-    move.l  8(a0),a3
-    JMP     (A3)
+	MOVE.L	4(A7),D0
+	MOVE.L	8(A7,D0.L),A2	; object
+	LEA		8(A7),A1
+	MOVE.L	-4(A2),A0
+	move.l	8(a0),a3
+	JMP		(A3)
 E_DOMETHOD:
 ;*-*
 ;; DoMethodA
 I_DOMETHODA:
-    MOVE.L  8(A7),A2        ; object
-    MOVE.L  -4(A2),A0       ; class
-    MOVE.L  4(A7),A1        ; message
-    move.l  8(a0),a3
-    MOVEM.L D3-D7/A4-a6,-(A7)
-    JSR     (A3)
-    MOVEM.L (A7)+,D3-D7/A4-a6
-    RTS
+	MOVE.L	8(A7),A2		; object
+	MOVE.L	-4(A2),A0		; class
+	MOVE.L	4(A7),A1		; message
+	move.l	8(a0),a3
+	MOVEM.L D3-D7/A4-a6,-(A7)
+	JSR		(A3)
+	MOVEM.L (A7)+,D3-D7/A4-a6
+	RTS
 E_DOMETHODA:
 ;*-*
 ;; CoerceMethod
 I_CRCMETHOD:
-    MOVE.L  4(A7),D0
-    MOVE.L  8(A7,D0),A2     ; object
-    MOVE.L  12(A7,D0),A0    ; class
-    LEA     8(A7),A1        ; message
-    move.l  8(a0),a3
-    MOVEM.L D3-D7/A4-a6,-(A7)
-    JSR     (A3)
-    MOVEM.L (A7)+,D3-D7/A4-a6
-    RTS
+	MOVE.L	4(A7),D0
+	MOVE.L	8(A7,D0),A2		; object
+	MOVE.L	12(A7,D0),A0	; class
+	LEA		8(A7),A1		; message
+	move.l	8(a0),a3
+	MOVEM.L D3-D7/A4-a6,-(A7)
+	JSR		(A3)
+	MOVEM.L (A7)+,D3-D7/A4-a6
+	RTS
 E_CRCMETHOD:
 ;*-*
 ;; CoerceMethodA
 I_CRCMETHODA:
-    MOVE.L  8(A7),A2    ; object
-    MOVE.L  12(A7),A0   ; class
-    MOVE.L  4(A7),A1    ; message
-    move.l  8(a0),a3
-    MOVEM.L D3-D7/A4-a6,-(A7)
-    JSR     (A3)
-    MOVEM.L (A7)+,D3-D7/A4-a6
-    RTS
+	MOVE.L	8(A7),A2	; object
+	MOVE.L	12(A7),A0	; class
+	MOVE.L	4(A7),A1	; message
+	move.l	8(a0),a3
+	MOVEM.L D3-D7/A4-a6,-(A7)
+	JSR		(A3)
+	MOVEM.L (A7)+,D3-D7/A4-a6
+	RTS
 E_CRCMETHODA:
 ;*-*
 ;; DoSuperMethod
 I_DOSMETHOD:
-    MOVE.L  4(A7),D0
-    LEA     8(A7),A1
-    MOVE.L  8(A7,D0),A2
-    MOVE.L  12(A7,D0),A0
-    MOVE.L  24(A0),A0
-    MOVE.L  8(A0),A3
-    JMP     (A3)
+	MOVE.L	4(A7),D0
+	LEA		8(A7),A1
+	MOVE.L	8(A7,D0),A2
+	MOVE.L	12(A7,D0),A0
+	MOVE.L	24(A0),A0
+	MOVE.L	8(A0),A3
+	JMP		(A3)
 E_DOSMETHOD:
 ;*-*
 ;; DoSuperMethodA
 I_DOSMETHODA:
-    MOVE.L  4(A7),A1    ; message
-    MOVE.L  8(A7),A2    ; object
-    MOVE.L  12(A7),A0   ; class
-    move.l  24(a0),a0
-    MOVE.L  8(a0),a3
-    JMP     (A3)
+	MOVE.L	4(A7),A1	; message
+	MOVE.L	8(A7),A2	; object
+	MOVE.L	12(A7),A0	; class
+	move.l	24(a0),a0
+	MOVE.L	8(a0),a3
+	JMP		(A3)
 E_DOSMETHODA:
 ;*-*
 ;; Set
 I_SET:
-    MOVE.L  -48(A4),A6
-    MOVE.L  4(A7),D0
-    MOVE.L  8(A7,D0),A0
-    LEA     8(A7),A1
-    JMP     -648(A6)
+	MOVE.L	-48(A4),A6
+	MOVE.L	4(A7),D0
+	MOVE.L	8(A7,D0),A0
+	LEA		8(A7),A1
+	JMP		-648(A6)
 E_SET:
 ;*-*
 ;; Sets
 I_SETS:
-    MOVE.L  -48(A4),A6
-    LEA     .T(PC),A1
-    MOVE.L  4(A7),4(A1)
-    MOVE.L  8(A7),(A1)
-    MOVE.L  12(A7),A0
-    JMP     -648(A6)
-.T: DC.L    0,0,0
+	MOVE.L	-48(A4),A6
+	LEA		.T(PC),A1
+	MOVE.L	4(A7),4(A1)
+	MOVE.L	8(A7),(A1)
+	MOVE.L	12(A7),A0
+	JMP		-648(A6)
+.T: DC.L	0,0,0
 E_SETS:
 ;*-*
 ;; Get
 I_GET:
-    MOVE.L  -48(A4),A6
-    MOVE.L  4(A7),A1
-    MOVE.L  8(A7),D0
-    move.l  12(A7),A0
-    JMP     -654(A6)
+	MOVE.L	-48(A4),A6
+	MOVE.L	4(A7),A1
+	MOVE.L	8(A7),D0
+	move.l	12(A7),A0
+	JMP		-654(A6)
 E_GET:
 ;*-*
 ;; Gets
 I_GETS:
-    MOVE.L  -48(A4),A6
-    LEA     .T(PC),A1
-    MOVE.L  4(A7),D0
-    MOVE.L  8(A7),A0
-    JSR     -654(A6)
-    MOVE.L  .T(PC),D0
-    RTS
-.T: DC.L    0
+	MOVE.L	-48(A4),A6
+	LEA		.T(PC),A1
+	MOVE.L	4(A7),D0
+	MOVE.L	8(A7),A0
+	JSR		-654(A6)
+	MOVE.L	.T(PC),D0
+	RTS
+.T: DC.L	0
 E_GETS:
 ;*-*
 ;; CtrlD
 I_CTRLD:
-    MOVEQ   #0,D0
-    MOVEQ   #0,D1
-    MOVE.L  4.W,A6
-    JSR -306(A6)
-    BTST    #13,D0
-    BEQ.S   .1
-    MOVEQ   #0,D0
-    MOVE.L  #8192,D1
-    JSR -306(A6)
-    MOVEQ   #-1,D0
-    RTS
-.1: MOVEQ   #0,D0
-    RTS
+	MOVEQ	#0,D0
+	MOVEQ	#0,D1
+	MOVE.L	4.W,A6
+	JSR -306(A6)
+	BTST	#13,D0
+	BEQ.S	.1
+	MOVEQ	#0,D0
+	MOVE.L	#8192,D1
+	JSR -306(A6)
+	MOVEQ	#-1,D0
+	RTS
+.1: MOVEQ	#0,D0
+	RTS
 E_CTRLD:
 ;*-*
 ;; CtrlE
 I_CTRLE:
-    MOVEQ   #0,D0
-    MOVEQ   #0,D1
-    MOVE.L  4.W,A6
-    JSR -306(A6)
-    BTST    #14,D0
-    BEQ.S   .1
-    MOVEQ   #0,D0
-    MOVE.L  #16384,D1
-    JSR -306(A6)
-    MOVEQ   #-1,D0
-    RTS
-.1: MOVEQ   #0,D0
-    RTS
+	MOVEQ	#0,D0
+	MOVEQ	#0,D1
+	MOVE.L	4.W,A6
+	JSR -306(A6)
+	BTST	#14,D0
+	BEQ.S	.1
+	MOVEQ	#0,D0
+	MOVE.L	#16384,D1
+	JSR -306(A6)
+	MOVEQ	#-1,D0
+	RTS
+.1: MOVEQ	#0,D0
+	RTS
 E_CTRLE:
 ;*-*
 ;; CtrlF
 I_CTRLF:
-    MOVEQ   #0,D0
-    MOVEQ   #0,D1
-    MOVE.L  4.W,A6
-    JSR -306(A6)
-    BTST    #15,D0
-    BEQ.S   .1
-    MOVEQ   #0,D0
-    MOVE.L  #32768,D1
-    JSR -306(A6)
-    MOVEQ   #-1,D0
-    RTS
-.1: MOVEQ   #0,D0
-    RTS
+	MOVEQ	#0,D0
+	MOVEQ	#0,D1
+	MOVE.L	4.W,A6
+	JSR -306(A6)
+	BTST	#15,D0
+	BEQ.S	.1
+	MOVEQ	#0,D0
+	MOVE.L	#32768,D1
+	JSR -306(A6)
+	MOVEQ	#-1,D0
+	RTS
+.1: MOVEQ	#0,D0
+	RTS
 E_CTRLF:
 ;*-*
 ;; Chk
 I_CHK:
-    MOVEQ   #0,D0
-    TST.L   4(A7)
-    BEQ.S   .1
-    MOVEQ   #-1,D0
+	MOVEQ	#0,D0
+	TST.L	4(A7)
+	BEQ.S	.1
+	MOVEQ	#-1,D0
 .1: RTS
 E_CHK:
 ;*-*
 ;; Eof
 I_EOF:
-    move.l  4(a7),d1
-    movem.l d3-d7,-(a7)
-    move.l  -44(a4),a6
-    move.l  d1,d7
-    moveq   #0,d2
-    moveq   #1,d3
-    jsr     -66(a6)         ; seek to end
-    move.l  d0,d6
-    move.l  d0,d2
-    moveq   #-1,d3
-    move.l  d7,d1
-    jsr     -66(a6)         ; and back again
-    cmp.l   d0,d6
-    seq     d0
-    ext.w   d0
-    ext.l   d0
-    movem.l (a7)+,d3-d7
-    rts
+	move.l	4(a7),d1
+	movem.l d3-d7,-(a7)
+	move.l	-44(a4),a6
+	move.l	d1,d7
+	moveq	#0,d2
+	moveq	#1,d3
+	jsr		-66(a6)			; seek to end
+	move.l	d0,d6
+	move.l	d0,d2
+	moveq	#-1,d3
+	move.l	d7,d1
+	jsr		-66(a6)			; and back again
+	cmp.l	d0,d6
+	seq		d0
+	ext.w	d0
+	ext.l	d0
+	movem.l (a7)+,d3-d7
+	rts
 E_EOF:
 ;*-*
 ;; Fopen
 I_FOPEN:
-    MOVE.L  4(A7),D2            ; mode
-    MOVE.L  8(A7),D1            ; name
-    MOVE.L  -44(A4),A6          ; dosbase
-    JSR     -30(A6)             ; open
-    tst.l   d0
-    bne     .ok
-    rts
+	MOVE.L	4(A7),D2			; mode
+	MOVE.L	8(A7),D1			; name
+	MOVE.L	-44(A4),A6			; dosbase
+	JSR		-30(A6)				; open
+	tst.l	d0
+	bne		.ok
+	rts
 .ok:
-    MOVE.L  d0,-(a7)            ; fh
+	MOVE.L	d0,-(a7)			; fh
 
-    move.l  -40(a4),a6
-    moveq   #8,d0
-    moveq   #1,d1
-    jsr     -198(a6)
-    tst.l   d0
-    beq     .close
-    move.l  d0,a0
-    move.l  -128(a4),(a0)
-    move.l  (a7),4(a0)
-    move.l  a0,-128(a4)
-    move.l  (a7)+,d0
-    rts
+	move.l	-40(a4),a6
+	moveq	#8,d0
+	moveq	#1,d1
+	jsr		-198(a6)
+	tst.l	d0
+	beq		.close
+	move.l	d0,a0
+	move.l	-128(a4),(a0)
+	move.l	(a7),4(a0)
+	move.l	a0,-128(a4)
+	move.l	(a7)+,d0
+	rts
 
 .close:
-    move.l  (a7)+,d1
-    move.l  -44(a4),a6
-    jsr     -36(a6)
-    moveq   #0,d0
-    rts
+	move.l	(a7)+,d1
+	move.l	-44(a4),a6
+	jsr		-36(a6)
+	moveq	#0,d0
+	rts
 E_FOPEN:
 
 ;*-*
 ;; Fclose
 I_FCLOSE:
-    move.l  4(a7),d1
-    move.l  -128(a4),a0
-    lea     -128(a4),a1
+	move.l	4(a7),d1
+	move.l	-128(a4),a0
+	lea		-128(a4),a1
 
-.c: move.l  a0,d0
-    beq     .k
-    cmp.l   4(a0),d1
-    beq     .cl
-    move.l  a0,a1
-    move.l  (a0),a0
-    bra     .c
-.k: moveq   #0,d0
-    rts
-.cl:move.l  (a0),(a1)   ; unchain
-    move.l  d1,-(a7)
-    move.l  -40(a4),a6
-    move.l  a0,a1
-    moveq   #8,d0
-    jsr     -210(a6)
-    move.l  (a7)+,d1
-    move.l  -44(a4),a6
-    jsr     -36(a6)
-    moveq   #0,d0
-    rts          
+.c: move.l	a0,d0
+	beq		.k
+	cmp.l	4(a0),d1
+	beq		.cl
+	move.l	a0,a1
+	move.l	(a0),a0
+	bra		.c
+.k: moveq	#0,d0
+	rts
+.cl:move.l	(a0),(a1)	; unchain
+	move.l	d1,-(a7)
+	move.l	-40(a4),a6
+	move.l	a0,a1
+	moveq	#8,d0
+	jsr		-210(a6)
+	move.l	(a7)+,d1
+	move.l	-44(a4),a6
+	jsr		-36(a6)
+	moveq	#0,d0
+	rts			 
 E_FCLOSE:
 ;*-*
 ;; Alloc
 I_ALLOC:
-    MOVE.L  -124(A4),A0
-    MOVe.L  4(A7),D0
-    ADDQ.L  #4,D0
-    MOVE.L  D0,D2
-    MOVE.L  $4.W,A6
-    JSR     -708(A6)
-    MOVE.L  D0,A0
-    MOVE.L  D2,(A0)+
-    MOVE.L  A0,D0
-    RTS
+	MOVE.L	-124(A4),A0
+	MOVe.L	4(A7),D0
+	ADDQ.L	#4,D0
+	MOVE.L	D0,D2
+	MOVE.L	$4.W,A6
+	JSR		-708(A6)
+	MOVE.L	D0,A0
+	MOVE.L	D2,(A0)+
+	MOVE.L	A0,D0
+	RTS
 E_ALLOC:
 ;*-*
 ;; Free
 I_FREE:
-    MOVE.L  4(A7),D0
-    BEQ.S .1
-    MOVE.L D0,A1
-    MOVE.L  -(A1),D0
-    MOVE.L  -124(A4),A0
-    MOVE.L  $4.W,A6
-    JSR     -714(A6)
+	MOVE.L	4(A7),D0
+	BEQ.S .1
+	MOVE.L D0,A1
+	MOVE.L	-(A1),D0
+	MOVE.L	-124(A4),A0
+	MOVE.L	$4.W,A6
+	JSR		-714(A6)
 .1: RTS
 E_FREE:
 ;*-*
 ;; PutF
 I_PUTF:
-.3: MOVE.L  4(A7),D0
-    MOVE.L  8(A7,D0.L),A0
-    MOVE.L A0,D2
-    TST.L D0
-    BEQ.S .5
+.3: MOVE.L	4(A7),D0
+	MOVE.L	8(A7,D0.L),A0
+	MOVE.L A0,D2
+	TST.L D0
+	BEQ.S .5
 
-    LEA 8(A7),A1
-    LEA     .1(PC),A2
-    MOVE.L  4.W,A6
-    MOVE.L  -64(A4),A3
-    MOVE.L  A3,D2
-    JSR     -522(A6)    ;rawdofmt
-    MOVE.L  D2,A0
-.5: TST.B   (A0)+
-    BNE .5
-    SUB.L   D2,A0
-    MOVE.L  D3,A3           ; BACKUP
-    MOVE.L  A0,D3
-    SUBQ.L  #1,D3
-    MOVE.L  -44(A4),A6
-    MOVE.L  4(A7),D0
-    MOVE.L  12(A7,D0),D1
-    JSR     -48(A6)   ;write
-    MOVE.L  D3,D0
-    MOVE.L  A3,D3
-    RTS
-.1: MOVE.B  D0,(A3)+        ; RDF DUMP
-    RTS
+	LEA 8(A7),A1
+	LEA		.1(PC),A2
+	MOVE.L	4.W,A6
+	MOVE.L	-64(A4),A3
+	MOVE.L	A3,D2
+	JSR		-522(A6)	;rawdofmt
+	MOVE.L	D2,A0
+.5: TST.B	(A0)+
+	BNE .5
+	SUB.L	D2,A0
+	MOVE.L	D3,A3			; BACKUP
+	MOVE.L	A0,D3
+	SUBQ.L	#1,D3
+	MOVE.L	-44(A4),A6
+	MOVE.L	4(A7),D0
+	MOVE.L	12(A7,D0),D1
+	JSR		-48(A6)		;write
+	MOVE.L	D3,D0
+	MOVE.L	A3,D3
+	RTS
+.1: MOVE.B	D0,(A3)+		; RDF DUMP
+	RTS
 E_PUTF:
 ;*-*
 ;; PutF (37+)
 I_PUTF37:
-    MOVE.L  D3,A3
-    MOVE.L  4(A7),D0
-    MOVE.L  8(A7,D0),D2
-    MOVE.L  12(A7,D0),D1
-    MOVE.L  -44(a4),A6
-    TST.L D0
-    BEQ.S .1
+	MOVE.L	D3,A3
+	MOVE.L	4(A7),D0
+	MOVE.L	8(A7,D0),D2
+	MOVE.L	12(A7,D0),D1
+	MOVE.L	-44(a4),A6
+	TST.L D0
+	BEQ.S .1
 
-    MOVE.L  A7,D3
-    ADDQ.L  #8,D3
-    JSR     -354(A6)  ;VFPRINTF
+	MOVE.L	A7,D3
+	ADDQ.L	#8,D3
+	JSR		-354(A6)	;VFPRINTF
 .2
-    MOVE.L  -8(A4),D1
-    JSR     -360(A6)  ;FLUSH
-    MOVE.L  A3,D3
-    RTS
-.1  JSR     -$156(A6)  ;FPUTS
-    BRA.S .2
+	MOVE.L	-8(A4),D1
+	JSR		-360(A6)	;FLUSH
+	MOVE.L	A3,D3
+	RTS
+.1	JSR		-$156(A6)	;FPUTS
+	BRA.S .2
 E_PUTF37:
 ;*-*
 I_WRITEF37: ;(37+)
-    MOVE.L  D3,A3
-    MOVE.L  -8(A4),D1
-    MOVE.L  4(A7),D0
-    MOVE.L  8(A7,D0),D2
-    MOVE.L  -44(a4),A6
-    TST.L D0
-    BEQ.S .1
+	MOVE.L	D3,A3
+	MOVE.L	-8(A4),D1
+	MOVE.L	4(A7),D0
+	MOVE.L	8(A7,D0),D2
+	MOVE.L	-44(a4),A6
+	TST.L D0
+	BEQ.S .1
 
-    MOVE.L  A7,D3
-    ADDQ.L  #8,D3
-    JSR     -354(A6)  ;VFPRINTF
-.2    
-    MOVE.L  -8(A4),D1
-    JSR     -360(A6)  ;FLUSH
-    MOVE.L  A3,D3
-    RTS
-.1  JSR     -$156(A6)  ;FPUTS
-    BRA.S .2
+	MOVE.L	A7,D3
+	ADDQ.L	#8,D3
+	JSR		-354(A6)	;VFPRINTF
+.2		
+	MOVE.L	-8(A4),D1
+	JSR		-360(A6)	;FLUSH
+	MOVE.L	A3,D3
+	RTS
+.1	JSR		-$156(A6)	;FPUTS
+	BRA.S .2
 E_WRITEF37: ;(37+)
 ;*-*
 ;; ReadB
 I_READB:
-    MOVE.L  D3,A3
-    MOVE.L  16(A7),D1
-    MOVE.L  12(A7),D0
-    MOVEQ   #0,D2
-    MOVE.L  8(A7),D3
-    SUBQ.L  #1,D3
+	MOVE.L	D3,A3
+	MOVE.L	16(A7),D1
+	MOVE.L	12(A7),D0
+	MOVEQ	#0,D2
+	MOVE.L	8(A7),D3
+	SUBQ.L	#1,D3
 
-.LP:ADD.L   D0,D2
-    DBF     D3,.LP
+.LP:ADD.L	D0,D2
+	DBF		D3,.LP
 
-    MOVE.L  -44(A4),A6
-    MOVE.L  4(A7),D3
-    EXG     D2,D3
-    JSR     -42(A6)
+	MOVE.L	-44(A4),A6
+	MOVE.L	4(A7),D3
+	EXG		D2,D3
+	JSR		-42(A6)
 
-    MOVEQ   #-1,D1
-    MOVE.L  12(A7),D2
-.LD:ADDQ.L  #1,D1
-    SUB.L   D2,D0
-    BPL     .LD
-    MOVE.L  D1,D0
-    MOVE.L  A3,D3
-    RTS
+	MOVEQ	#-1,D1
+	MOVE.L	12(A7),D2
+.LD:ADDQ.L	#1,D1
+	SUB.L	D2,D0
+	BPL		.LD
+	MOVE.L	D1,D0
+	MOVE.L	A3,D3
+	RTS
 E_READB:
 ;*-*
 ;; WriteB
 I_WRITEB:
-    MOVE.L  D3,A3
-    MOVE.L  16(A7),D1
-    MOVE.L  12(A7),D0
-    MOVEQ   #0,D2
-    MOVE.L  08(A7),D3
-    SUBQ.L  #1,D3
+	MOVE.L	D3,A3
+	MOVE.L	16(A7),D1
+	MOVE.L	12(A7),D0
+	MOVEQ	#0,D2
+	MOVE.L	08(A7),D3
+	SUBQ.L	#1,D3
 
-.LP:ADD.L   D0,D2
-    DBF     D3,.LP
+.LP:ADD.L	D0,D2
+	DBF		D3,.LP
 
-    MOVE.L  -44(A4),A6
-    MOVE.L  04(A7),D3
-    EXG     D2,D3
-    JSR     -48(A6)
+	MOVE.L	-44(A4),A6
+	MOVE.L	04(A7),D3
+	EXG		D2,D3
+	JSR		-48(A6)
 
-    MOVEQ   #-1,D1
-    MOVE.L  12(A7),D2
-.LD:ADDQ.L  #1,D1
-    SUB.L   D2,D0
-    BPL     .LD
-    MOVE.L  D1,D0
-    MOVE.L  A3,D3
-    RTS
+	MOVEQ	#-1,D1
+	MOVE.L	12(A7),D2
+.LD:ADDQ.L	#1,D1
+	SUB.L	D2,D0
+	BPL		.LD
+	MOVE.L	D1,D0
+	MOVE.L	A3,D3
+	RTS
 E_WRITEB:
 ;*-*
 ;; Size
 I_SIZE:
-    MOVE.L  4(A7),D1
-    MOVE.L  D3,A3
-    MOVEQ   #0,D2
-    MOVEQ   #1,D3
-    MOVE.L  -44(a4),A6
-    JSR     -66(a6)
+	MOVE.L	4(A7),D1
+	MOVE.L	D3,A3
+	MOVEQ	#0,D2
+	MOVEQ	#1,D3
+	MOVE.L	-44(a4),A6
+	JSR		-66(a6)
 
-    move.l  4(a7),d1
-    move.l  d0,d2
-    moveQ   #-1,d3
-    jsr     -66(a6)
-    move.l  a3,d3
-    rts
+	move.l	4(a7),d1
+	move.l	d0,d2
+	moveQ	#-1,d3
+	jsr		-66(a6)
+	move.l	a3,d3
+	rts
 E_SIZE:
 ;*-*
 ;; Lsl
 I_LSL:
-    MOVE.L  4(A7),D1
-    MOVE.L  8(A7),D0
-    LSL.L   D1,D0
-    RTS
+	MOVE.L	4(A7),D1
+	MOVE.L	8(A7),D0
+	LSL.L	D1,D0
+	RTS
 E_LSL:
 ;*-*
 ;; Lsr
 I_LSR:
-    MOVE.L  4(A7),D1
-    MOVE.L  8(A7),D0
-    LSR.L   D1,D0
-    RTS
+	MOVE.L	4(A7),D1
+	MOVE.L	8(A7),D0
+	LSR.L	D1,D0
+	RTS
 E_LSR:
 ;*-*
 ;; StrAddChar
@@ -36126,8 +36126,8 @@ I_STRADDCHAR:
 	MOVE.L	4(A7),D3		; CHAR
 	MOVEA.L	8(A7),A1		; ESTR
 	LEA	-4(A1),A2
-	MOVE.W	(A2)+,D0  ;MAX LEN
-	MOVE.W	(A2)+,D2  ;CURR LEN
+	MOVE.W	(A2)+,D0	;MAX LEN
+	MOVE.W	(A2)+,D2	;CURR LEN
 	CMP.W D0,D2
 	BEQ.S .3
 	ADDA.W	D2,A1
@@ -36190,24 +36190,24 @@ I_STRINS:
 
 	MOVEM.L D3-D7,-(A7)
 	MOVEQ #0,D3
-	MOVE.W -4(A1),D3  ;max len
+	MOVE.W -4(A1),D3	;max len
 
 	MOVEQ #0,D4
-	MOVE.W -2(A1),D4  ;current dest len
+	MOVE.W -2(A1),D4	;current dest len
 
 	MOVEQ #0,D5
-	MOVE.W -2(A0),D5  ;current source length
-  
-	CMP.L D4,D1     ;insert position is past end of current string
+	MOVE.W -2(A0),D5	;current source length
+	
+	CMP.L D4,D1		;insert position is past end of current string
 	BHI.S .3
-  
-	ADD.L D5,D4   ;calculate new length
-  
+	
+	ADD.L D5,D4		;calculate new length
+	
 	CMP.L D3,D4
 	BLS.S .1
-  
+	
 	MOVE.L D3,D4 
-.1:  
+.1:	 
 	MOVE.W D4,-2(A1)
 	CLR.B (A1,D4)
 	LEA (A1,D1.L),A2
@@ -36215,7 +36215,7 @@ I_STRINS:
 
 	MOVE.L D4,D6
 	SUB.L D1,D4
-	SUB.L D5,D4   ;number of characters to shift in the dest string
+	SUB.L D5,D4		;number of characters to shift in the dest string
 	BLS.S .2
 
 	MOVE.L D1,D7
@@ -36226,17 +36226,17 @@ I_STRINS:
 	SUBQ.L #1,A3
 	MOVE.B (A3,D7.L),(A3,D6.L)
 	DBF D4,.3
-  
+	
 .2:
 	SUBQ.L #1,D5
-  
+	
 .5:	CMP.W D3,D1
 	BHS.S .4
-  
+	
 	MOVE.B (A0)+,(A2)+
 	ADDQ.L #1,D1
 	DBF D5,.5
-  
+	
 .4:	MOVE.L	A1,D0
 	MOVEM.L (A7)+,D3-D7
 	RTS
@@ -36249,12 +36249,12 @@ I_STRREM:
 	MOVEA.L	12(A7),A1		; ESTR
 	LEA	-2(A1),A2
 	MOVEQ #0,D0
-	MOVE.W	(A2),D0    ;var current len
+	MOVE.W	(A2),D0		 ;var current len
 	CMP.L D0,D1
-	BHI.S .3              ;pos>=current len
+	BHI.S .3				;pos>=current len
 
 	MOVE.L A1,A2
-	CMP.L #-1,D2        ;len = all
+	CMP.L #-1,D2		;len = all
 	BEQ.S .4
 
 	SUB.L D1,D0
@@ -36262,7 +36262,7 @@ I_STRREM:
 	SUBQ.L #1,D0
 	BLT.S .4
 	ADD.L D1,D2
-.5:    
+.5:		 
 	MOVE.B (A2,D2.L),(A2,D1.L)
 	ADDQ.L #1,A2
 	DBF D0,.5
@@ -36271,7 +36271,7 @@ I_STRREM:
 	ADD.L D1,A2
 	SUB.L A1,A2
 	MOVE.W A2,-2(A1)
-  
+	
 .3:	MOVE.L	A1,D0
 	RTS
 E_STRREM:
@@ -36293,20 +36293,20 @@ E_DIV020:
 ;*-*
 ; Long (020 variant)
 I_LONG020:
-	MOVE.L  ([4.W,A7]),D0
+	MOVE.L	([4.W,A7]),D0
 	RTS
 E_LONG020:
 ;*-*
 ; Int (020 variant)
 I_INT020:
-	MOVE.W  ([4.W,A7]),D0
+	MOVE.W	([4.W,A7]),D0
 	EXT.L D0
 	RTS
 E_INT020:
 ; Char (020 variant)
 I_CHAR020:
-	MOVEQ   #0,D0
-	MOVE.B  ([4.W,A7]),D0
+	MOVEQ	#0,D0
+	MOVE.B	([4.W,A7]),D0
 	RTS
 E_CHAR020:
 
@@ -36320,10 +36320,10 @@ E_MOD020:
 
 ;; MEMFILL
 I_MEMFILL:
-	MOVE.L	12(A7),A0  ;addr
-	MOVE.L	8(A7),D1  ;len
+	MOVE.L	12(A7),A0	;addr
+	MOVE.L	8(A7),D1	;len
 	MOVE.L	4(A7),D0 ;char
-  
+	
 	MOVE.L A0,D2
 	LSR.L #1,D2
 	BCC.S .iseven
@@ -36335,7 +36335,7 @@ I_MEMFILL:
 	SUBQ.L #1,D1
 
 .iseven:
-	MOVE.L  D1,D2
+	MOVE.L	D1,D2
 	AND.L #3,D1
 	LSR.L #2,D2
 	BEQ .do
@@ -36365,7 +36365,7 @@ E_MEMFILL:
 
 ;; ASTRCLONE
 I_ASTRCLONE:
- 	MOVEQ	#0,D0
+	MOVEQ	#0,D0
 	MOVE.L	8(A7),D1
 	BEQ.S	.1
 	MOVEA.L	D1,A2
@@ -36390,20 +36390,20 @@ I_ASTRCLONE:
 	TST.L	D0
 	BEQ.S	.1
 	MOVE.L	D0,A0
-  
+	
 	MOVE.L	-20(A4),(A0)+
 	MOVE.L	D2,(A0)+
 	CLR.L	(A0)+
 	MOVE.W	D7,(A0)+
 	ADDQ.L	#2,A0
-	MOVEA.L A0,A1		    ; ESTR
+	MOVEA.L A0,A1			; ESTR
 	MOVE.L	D0,-20(A4)
 
 	MOVEA.L	A1,A2
 	MOVE.W	D7,D1		; LEN
 	MOVEA.L 8(A7),A0		; STR
 
-	MOVE.W	-4(A1),D0   ; MAXLEN
+	MOVE.W	-4(A1),D0	; MAXLEN
 	CMP.W	D1,D0
 	BCC.B	.1
 	MOVE.W	D0,D1
@@ -36438,7 +36438,7 @@ I_LISTINSITEM:
 	LSL.L #2,D1
 	ADD.L	D1,A1 ;end
 	LSR.L #2,D1
-	SUB.L  D2,D1
+	SUB.L	D2,D1
 	BRA .doins
 .ins
 	MOVE.L -(A1),4(A1)
@@ -36466,7 +36466,7 @@ I_LISTREMITEM:
 	LSL.L #2,D2
 	ADD.L	D2,A1 ;end
 	LSR.L #2,D2
-	SUB.L  D2,D1
+	SUB.L	D2,D1
 	BRA .dodel
 .del
 	MOVE.L 4(A1),(A1)+
@@ -36510,29 +36510,29 @@ I_ENDSWITH:
 	MOVE.L	4(A7),A1		; STRING TO TEST
 	MOVE.L	8(A7),A0		; THE STRING
 
-  MOVE.L A0,A2
-  MOVE.L A1,A3
+	MOVE.L A0,A2
+	MOVE.L A1,A3
 .L1:
-  TST.B (A2)+
-  BNE .L1
+	TST.B (A2)+
+	BNE .L1
 
 .L2:
-  TST.B (A3)+
-  BNE .L2
-  MOVEQ #-1,D0
+	TST.B (A3)+
+	BNE .L2
+	MOVEQ #-1,D0
 .L3:
-  MOVE.B -(A2),D1
-  CMP.B -(A3),D1
-  BNE.S .F
-  
-  CMP.L A1,A3
-  BEQ.S .T
-  CMP.L A0,A2
-  BNE.S .L3
+	MOVE.B -(A2),D1
+	CMP.B -(A3),D1
+	BNE.S .F
+	
+	CMP.L A1,A3
+	BEQ.S .T
+	CMP.L A0,A2
+	BNE.S .L3
 
 .F MOVEQ #0,D0
 .T:
-  RTS
+	RTS
 E_ENDSWITH:
 ;*-*
 ;; ASTPCOPY
@@ -36546,8 +36546,8 @@ I_ASTPCOPY:
 	BEQ.S	.x
 	MOVE.B	(A1)+,(A0)+
 	BNE.S	.al
-  MOVE.L A0,D0
-  SUBQ.L #1,D0
+	MOVE.L A0,D0
+	SUBQ.L #1,D0
 	RTS
 .x:	CLR.B	-(A0)
 .x2: MOVE.L A0,D0
@@ -36558,29 +36558,29 @@ E_ASTPCOPY:
 I_USEDSTACK:
 	MOVE.L	4.W,A6
 	SUBA.L	A1,A1
-	JSR	-294(A6)  		; findtask
-  MOVE.L D0,A1
-  MOVE.L 62(A1),D0  ;stack top
-  SUB.L A7,D0
-  RTS  
+	JSR	-294(A6)		; findtask
+	MOVE.L D0,A1
+	MOVE.L 62(A1),D0	;stack top
+	SUB.L A7,D0
+	RTS	
 E_USEDSTACK:
 ;*-*
 ;; STACKSIZE
 I_STACKSIZE:
 	MOVE.L	4.W,A6
 	SUBA.L	A1,A1
-	JSR	-294(A6)  		; findtask
-  MOVE.L D0,A1
-  MOVE.L 62(A1),D0  ;stack top
-  SUB.L 58(A1),D0   ;stack bottom
-  RTS
+	JSR	-294(A6)		; findtask
+	MOVE.L D0,A1
+	MOVE.L 62(A1),D0	;stack top
+	SUB.L 58(A1),D0	;stack bottom
+	RTS
 E_STACKSIZE:
 
 I_BYTE:
 	MOVE.L	4(A7),A0
 	MOVE.B	(A0),D0
-	EXT.W   D0
-	EXT.L   D0
+	EXT.W	D0
+	EXT.L	D0
 	RTS
 E_BYTE:
 
@@ -36594,17 +36594,17 @@ E_WORD:
 ; Byte (020 variant)
 I_BYTE020:
 	CPU020
-	MOVE.B  ([4.W,A7]),D0
-	EXTB.L  D0
+	MOVE.B	([4.W,A7]),D0
+	EXTB.L	D0
 	CPU000
 	RTS
 E_BYTE020:
 
 ; Word (020 variant)
 I_WORD020:
-	MOVEQ   #0,D0
+	MOVEQ	#0,D0
 	CPU020
-	MOVE.W  ([4.W,A7]),D0
+	MOVE.W	([4.W,A7]),D0
 	CPU000
 	RTS
 E_WORD020:
@@ -36619,7 +36619,7 @@ I_COMPARE:
 	RTS
 .lower
 	MOVEQ #1,D0
-.done:  RTS
+.done:	RTS
 E_COMPARE:
 
 I_UCOMPARE:
@@ -36632,7 +36632,7 @@ I_UCOMPARE:
 	RTS
 .lower
 	MOVEQ #1,D0
-.done:  RTS
+.done:	RTS
 E_UCOMPARE:
 
 I_FCOMPARE:
@@ -36657,13 +36657,13 @@ I_STRCOMPARE:
 	TST.B	D2
 	BNE.S	.1
 .3:	MOVEQ	#0,D0
-    RTS
+	RTS
 .2:	BLO.S .4
 	MOVEQ #1,D0
 .4: RTS
 E_STRCOMPARE:
 
-      I_SELECTFIRST:
+		I_SELECTFIRST:
 	MOVE.L	4(A7),A0		; code
 	MOVE.L	8(A7),A1		; SRClist
 	MOVE.L	12(A7),A2		; VAR
@@ -36676,37 +36676,37 @@ E_STRCOMPARE:
 	MOVEM.L	(A7)+,D1-D2/A0-A3/A6
 	TST.L	D0
 	BEQ.S	.S
- 	MOVE.L (A2),D0
+	MOVE.L (A2),D0
 	RTS
 .S:	DBRA	D2,.L
 	RTS
-      E_SELECTFIRST:
+		E_SELECTFIRST:
 
-      I_ROL:
+		I_ROL:
 	MOVE.L	8(A7),D0
 	MOVE.L	4(A7),D1
 	ROL.L	D1,D0
 	RTS
-      E_ROL:
+		E_ROL:
 
-      I_ROR:
+		I_ROR:
 	MOVE.L	8(A7),D0
 	MOVE.L	4(A7),D1
 	ROR.L	D1,D0
 	RTS
-      E_ROR:
+		E_ROR:
 
 ; LISTITEM (020 variant)
-      I_LISTITEM020:
+		I_LISTITEM020:
 	CPU020
 	MOVE.L	4(A7),D0
 	MOVE.L	8(A7),A0
 	MOVE.L	0(A0,D0.L*4),D0
 	RTS
 	CPU000
-      E_LISTITEM020:
+		E_LISTITEM020:
 
-      I_CHARINSTR:
+		I_CHARINSTR:
 	MOVE.L	12(A7),A0		; THE STRING
 	MOVE.L	8(A7),D0		; CHAR TO FIND
 	MOVE.L	A0,D2
@@ -36723,9 +36723,9 @@ E_STRCOMPARE:
 	RTS
 .2:	MOVEQ	#-1,D0
 	RTS
-      E_CHARINSTR:
+		E_CHARINSTR:
 
-      I_CHARINSTRI:
+		I_CHARINSTRI:
 	MOVE.L	12(A7),A0		; THE STRING
 	MOVE.L	8(A7),D0		; CHAR TO FIND
 	MOVE.L	A0,D2
@@ -36763,10 +36763,10 @@ E_STRCOMPARE:
 .2:	MOVEQ	#-1,D0
 	MOVEM.L	(A7)+,D4-D6
 	RTS
-      E_CHARINSTRI:
+		E_CHARINSTRI:
 
 
-      I_MEMCMP:
+		I_MEMCMP:
 	MOVE.W	6(A7),D1		; LEN
 	MOVE.L	8(A7),A1		; MEM1
 	MOVE.L	12(A7),A0		; MEM2
@@ -36776,29 +36776,29 @@ E_STRCOMPARE:
 	BEQ.S	.3
 	CMPM.B	(A0)+,(A1)+
 	BEQ.S	.1
-  MOVEQ	#-1,D0
-  MOVE.B -1(A1),D1
+	MOVEQ	#-1,D0
+	MOVE.B -1(A1),D1
 	CMP.B	-1(A0),D1
-  BGT.S .2
-  MOVEQ	#1,D0
+	BGT.S .2
+	MOVEQ	#1,D0
 	RTS
 .3:	MOVEQ	#0,D0
 .2:	RTS
-      E_MEMCMP:
+		E_MEMCMP:
 
 I_CODEEND:
 
 
 
 ;STRCMP (nilcheck variant)
-      I_STRCMPNIL:
+		I_STRCMPNIL:
 	MOVE.W	6(A7),D1		; LEN
 	MOVE.L	8(A7),A1		; STR1
-  MOVE.L A1,D0
-  BEQ.S .NIL
+	MOVE.L A1,D0
+	BEQ.S .NIL
 	MOVE.L	12(A7),A0		; STR2
-  MOVE.L A0,D0
-  BEQ.S .NIL
+	MOVE.L A0,D0
+	BEQ.S .NIL
 	MOVEQ	#0,D0
 	ADDQ.W	#1,D1
 .1:	SUBQ.W	#1,D1
@@ -36811,20 +36811,20 @@ I_CODEEND:
 .3:	MOVEQ	#-1,D0
 .2:	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-	MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_STRCMPNIL:
 
 ;STRCOPY (nilcheck variant)
-      I_STRCOPYNIL:
+		I_STRCOPYNIL:
 	MOVE.W	6(A7),D1		; LEN
 	MOVEA.L 8(A7),A0		; STR
-  MOVE.L A0,D0
-  BEQ.S .NIL
+	MOVE.L A0,D0
+	BEQ.S .NIL
 	MOVEA.L 12(A7),A1		; ESTR
-  MOVE.L A1,D0
-  BEQ.S .NIL
+	MOVE.L A1,D0
+	BEQ.S .NIL
 	MOVEA.L	A1,A2
 	MOVE.W	-4(A1),D0
 	CMP.W	D1,D0
@@ -36841,20 +36841,20 @@ E_STRCMPNIL:
 .3:	MOVE.L	A2,D0
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-	MOVE.L  -148(A4),-96(A4)
+	MOVE.L	-148(A4),-96(A4)
 	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_STRCOPYNIL:
 
 ;STRADD (nilcheck variant)
-      I_STRADDNIL:
-     	MOVE.W	6(A7),D1		; LEN
-     	MOVEA.L	8(A7),A0		; STR
-      MOVE.L A0,D0
-      BEQ.S .NIL
-     	MOVEA.L	12(A7),A1		; ESTR
-      MOVE.L A1,D0
-      BEQ.S .NIL
+		I_STRADDNIL:
+		MOVE.W	6(A7),D1		; LEN
+		MOVEA.L	8(A7),A0		; STR
+		MOVE.L A0,D0
+		BEQ.S .NIL
+		MOVEA.L	12(A7),A1		; ESTR
+		MOVE.L A1,D0
+		BEQ.S .NIL
 	LEA	-4(A1),A2
 	MOVE.W	(A2)+,D0
 	MOVE.W	(A2)+,D2
@@ -36875,16 +36875,16 @@ E_STRCOPYNIL:
 .3:	MOVE.L	A2,D0
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-	MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_STRADDNIL:
 
 ;STRLEN (nilcheck variant)
-      I_STRLENNIL:
+		I_STRLENNIL:
 	MOVE.L	4(A7),A0
 	MOVE.L	A0,D1
-  BEQ.S .NIL
+	BEQ.S .NIL
 .1:	TST.B	(A0)+
 	BNE.S	.1
 	SUBQ.L	#1,A0
@@ -36892,48 +36892,48 @@ E_STRADDNIL:
 	SUB.L	D1,D0
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-	MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_STRLENNIL:
 
 ;ESTRLEN (nilcheck variant)
-      I_ESTRLENNIL:
+		I_ESTRLENNIL:
 	MOVE.L	4(A7),A0
-  MOVE.L A0,D0
-  BEQ.S .NIL
+	MOVE.L A0,D0
+	BEQ.S .NIL
 	MOVEQ	#0,D0
 	MOVE.W	-2(A0),D0
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-	MOVE.L  -148(A4),-96(A4)
+	MOVE.L	-148(A4),-96(A4)
 	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_ESTRLENNIL:
 
 ;ESTRMAX (nilcheck variant)
-      I_STRMAXNIL:
+		I_STRMAXNIL:
 	MOVE.L	4(A7),A0
-  MOVE.L A0,D0
-  BEQ.S .NIL
+	MOVE.L A0,D0
+	BEQ.S .NIL
 	MOVEQ	#0,D0
 	MOVE.W	-4(A0),D0
 	RTS
 .NIL: MOVE.L	#"NIL",-84(A4)
-	MOVE.L  -148(A4),-96(A4)
+	MOVE.L	-148(A4),-96(A4)
 	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_STRMAXNIL:
 
 ;RIGHTSTR (nilcheck variant)
-      I_RIGHTSTRNIL:
+		I_RIGHTSTRNIL:
 	MOVE.W	6(A7),D1		; LEN
 	MOVEA.L	8(A7),A0		; ESTR1
-  MOVE.L A0,D0
-  BEQ.S .NIL
+	MOVE.L A0,D0
+	BEQ.S .NIL
 	MOVEA.L	12(A7),A1		; ESTR2
-  MOVE.L A1,D0
-  BEQ.S .NIL
+	MOVE.L A1,D0
+	BEQ.S .NIL
 	MOVE.W	-2(A0),D0
 	SUB.W	D1,D0
 	BCC.B	.1
@@ -36952,13 +36952,13 @@ E_STRMAXNIL:
 .3:	MOVE.L	A2,D0
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_RIGHTSTRNIL:
 
 ;MIDSTR (nilcheck variant)
-      I_MIDSTRNIL:
+		I_MIDSTRNIL:
 	MOVE.W	6(A7),D1		; LEN
 	MOVEA.L	12(A7),A0		; STR
 	MOVE.L A0,D0
@@ -36973,7 +36973,7 @@ E_RIGHTSTRNIL:
 	BCC.B	.0
 	MOVE.W	D0,D1
 .0:
- 	MOVEQ #-1,D0
+	MOVEQ #-1,D0
 .1:	SUBQ.W	#1,D1
 	BMI.B	.3
 	MOVE.W	D1,D0
@@ -36986,28 +36986,28 @@ E_RIGHTSTRNIL:
 	MOVE.L	A2,D0
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_MIDSTRNIL:
 
 ;STRINGF (nilcheck variant)
-      I_STRINGFNIL:
+		I_STRINGFNIL:
 	MOVE.L	4(A7),D0
 	MOVE.L	8(A7,D0.L),A0		; formatstr
-  MOVE.L A0,D0
-  BEQ.S .NIL
+	MOVE.L A0,D0
+	BEQ.S .NIL
 	LEA	8(A7),A1		; argarray
-	LEA     .1(PC),A2		; putfun
-	MOVE.L  4.W,A6
-	MOVE.L  -64(A4),A3
-	MOVE.L  A3,D2			; both bottom OWN stack
-	JSR     -522(A6)
+	LEA		.1(PC),A2		; putfun
+	MOVE.L	4.W,A6
+	MOVE.L	-64(A4),A3
+	MOVE.L	A3,D2			; both bottom OWN stack
+	JSR		-522(A6)
 	MOVE.L	D2,A1
 	MOVE.L	4(A7),D0
 	MOVE.L	12(A7,D0.L),A0		; ESTR
-  MOVE.L A0,D0
-  BEQ.S .NIL
+	MOVE.L A0,D0
+	BEQ.S .NIL
 	MOVE.L	A0,A2
 	MOVEQ	#0,D0
 	MOVE.W	-4(A0),D0
@@ -37022,22 +37022,22 @@ E_MIDSTRNIL:
 	EXT.L	D1
 	MOVE.L	A2,D0
 	RTS
-.1:	MOVE.B  D0,(A3)+		;RDF DUMP
+.1:	MOVE.B	D0,(A3)+		;RDF DUMP
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_STRINGFNIL:
 
 ;INSTR (nilcheck variant)
-      I_INSTRNIL:
+		I_INSTRNIL:
 	MOVE.L	8(A7),A1		; STRING TO FIND
-  MOVE.L A1,D2
-  BEQ.S .NIL
+	MOVE.L A1,D2
+	BEQ.S .NIL
 	MOVE.L	12(A7),A0		; THE STRING
 	MOVE.L	A0,D2
-  BEQ.S .NIL
+	BEQ.S .NIL
 	ADD.L	4(A7),A0
 	MOVE.B	(A1)+,D0		; FIRST CHAR
 .1:	MOVE.B	(A0)+,D1
@@ -37058,16 +37058,16 @@ E_STRINGFNIL:
 .2:	MOVEQ	#-1,D0
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_INSTRNIL:
 
 ;TRIMSTR (nilcheck variant)
-      I_TRIMSTRNIL:
+		I_TRIMSTRNIL:
 	MOVE.L	4(A7),A0
 	MOVE.L	A0,D0
-  BEQ.S .NIL
+	BEQ.S .NIL
 	MOVEQ	#0,D0
 .1:	MOVE.B	(A0)+,D0
 	BEQ.S	.2
@@ -37077,16 +37077,16 @@ E_INSTRNIL:
 	MOVE.L	A0,D0
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_TRIMSTRNIL:
 
 ;UPPERSTR (nilcheck variant)
-      I_UPPERSTRNIL:
+		I_UPPERSTRNIL:
 	MOVE.L	4(A7),A0
 	MOVE.L	A0,D0
-  BEQ.S .NIL
+	BEQ.S .NIL
 	MOVE.L	A0,A1
 .1:	MOVE.B	(A0)+,D0
 	BEQ.S	.2
@@ -37100,16 +37100,16 @@ E_TRIMSTRNIL:
 .2:	MOVE.L	A1,D0
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_UPPERSTRNIL:
 
 ;LOWERSTR (nilcheck variant)
-      I_LOWERSTRNIL:
+		I_LOWERSTRNIL:
 	MOVE.L	4(A7),A0
 	MOVE.L	A0,D0
-  BEQ.S .NIL
+	BEQ.S .NIL
 	MOVE.L	A0,A1
 .1:	MOVE.B	(A0)+,D0
 	BEQ.S	.2
@@ -37123,18 +37123,18 @@ E_UPPERSTRNIL:
 .2:	MOVE.L	A1,D0
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_LOWERSTRNIL:
 
 
 ;READSTR (nilcheck variant)
-      I_READSTRNIL:
+		I_READSTRNIL:
 	MOVEM.L	D3/D4,-(A7)
 	MOVEA.L	12(A7),A2		; ESTR
 	MOVE.L	A2,D2
-  BEQ.S .NIL
+	BEQ.S .NIL
 	MOVEQ	#0,D3
 	MOVE.W	-4(A2),D3		; MAXLEN
 	MOVE.L	16(A7),D1		; FH
@@ -37169,79 +37169,79 @@ E_LOWERSTRNIL:
 	MOVEM.L	(A7)+,D3/D4
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_READSTRNIL:
 
 ;LISTITEM (nilcheck variant)
-      I_LISTITEMNIL: 
+		I_LISTITEMNIL: 
 	MOVE.L	8(A7),A0
 	MOVE.L	A0,D0
-  BEQ.S .NIL
+	BEQ.S .NIL
 	MOVE.L	4(A7),D0
 	LSL.L	#2,D0
 	MOVE.L	0(A0,D0.L),D0
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_LISTITEMNIL:
 
-  CPU020
+	CPU020
 ; LISTITEM (020 + nilcheck variant)
-      I_LISTITEM020NIL:
+		I_LISTITEM020NIL:
 	MOVE.L	8(A7),A0
 	MOVE.L	A0,D0
-  BEQ.S .NIL
+	BEQ.S .NIL
 	MOVE.L	4(A7),D0
 	MOVE.L	0(A0,D0.L*4),D0
 	RTS
 .NIL: MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_LISTITEM020NIL:
-  CPU000
+	CPU000
 
 ; LISTLEN (nilcheck variant)
-      I_LISTLENNIL:
+		I_LISTLENNIL:
 	MOVE.L	4(A7),A0
 	MOVE.L	A0,D0
-  BEQ.S .NIL
+	BEQ.S .NIL
 	MOVEQ	#0,D0
 	MOVE.W	-2(A0),D0
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_LISTLENNIL:
 
 ; LISTMAX (nilcheck variant)
-      I_LISTMAXNIL:
+		I_LISTMAXNIL:
 	MOVE.L	4(A7),A0
 	MOVE.L	A0,D0
-  BEQ.S .NIL
+	BEQ.S .NIL
 	MOVEQ	#0,D0
 	MOVE.W	-4(A0),D0
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_LISTMAXNIL:
 
 
 ; LISTCOPY (nilcheck variant)
-      I_LISTCOPYNIL:
+		I_LISTCOPYNIL:
 	MOVE.L	8(A7),A0		; SRC
 	MOVE.L	A0,D0
-  BEQ.S .NIL
+	BEQ.S .NIL
 	MOVE.L	12(A7),A1		; DEST
 	MOVE.L	A1,D0
-  BEQ.S .NIL
+	BEQ.S .NIL
 	MOVE.L	A1,A2
 	MOVE.W	6(A7),D0		; LEN
 	BPL.S	.1
@@ -37250,25 +37250,25 @@ E_LISTMAXNIL:
 	BMI.S	.2
 	MOVE.W	-4(A1),D0
 .2:	MOVE.W	D0,-2(A1)
-	BRA.S   .4
+	BRA.S	.4
 .L:	MOVE.L	(A0)+,(A1)+
 .4:	DBRA	D0,.L
 .3:	MOVE.L	A2,D0
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_LISTCOPYNIL:
 
 ; LISTADD (nilcheck variant)
-      I_LISTADDNIL:
+		I_LISTADDNIL:
 	MOVE.L	8(A7),A0		; SRC
 	MOVE.L	A0,D0
-  BEQ.S .NIL
+	BEQ.S .NIL
 	MOVE.L	12(A7),A1		; DEST
 	MOVE.L	A1,D0
-  BEQ.S .NIL
+	BEQ.S .NIL
 	MOVE.L	A1,A2
 	MOVE.W	6(A7),D0		; LEN
 	BPL.S	.1
@@ -37289,26 +37289,26 @@ E_LISTCOPYNIL:
 .3:	MOVE.L	A2,D0
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_LISTADDNIL:
 
 ; LISTCMP (nilcheck variant)
-      I_LISTCMPNIL:
+		I_LISTCMPNIL:
 	MOVE.L	8(A7),A0		; SRC
 	MOVE.L	A0,D0
-  BEQ.S .NIL
+	BEQ.S .NIL
 	MOVE.L	12(A7),A1		; DEST
 	MOVE.L	A1,D0
-  BEQ.S .NIL
+	BEQ.S .NIL
 	MOVEQ	#0,D0
 	MOVE.W	6(A7),D1		; LEN
 	BPL.S	.1
 	MOVE.W	-2(A0),D1
 	CMP.W	-2(A1),D1
 	BEQ.S	.2			; LENDEST=LENSRC
-	RTS  
+	RTS	 
 .1:
 	CMP.W	-2(A0),D1
 	BGT.S .3
@@ -37322,20 +37322,20 @@ E_LISTADDNIL:
 	MOVEQ	#-1,D0
 .3:	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_LISTCMPNIL:
 
 ; SETSTR (nilcheck variant)
-      I_SETSTRNIL:
+		I_SETSTRNIL:
 	MOVE.L	8(A7),A0
-  MOVE.L A0,D0
-  BEQ.S .NIL
+	MOVE.L A0,D0
+	BEQ.S .NIL
 	MOVE.W	6(A7),D0
-  
-  CMP.W #-1,D0
-  BEQ .2
+	
+	CMP.W #-1,D0
+	BEQ .2
 .3:
 	CMP.W	-4(A0),D0
 	BHI.S	.1
@@ -37343,43 +37343,43 @@ E_LISTCMPNIL:
 	CLR.B	0(A0,D0.W)
 .1:	RTS
 .2: MOVE.L A0,A1
-.L:    TST.B (A1)+
-    BNE.S .L
-    SUB.L A0,A1
-    MOVE.L A1,D0
-    SUBQ.L #1,D0
-    BRA.S .3
+.L:		 TST.B (A1)+
+	BNE.S .L
+	SUB.L A0,A1
+	MOVE.L A1,D0
+	SUBQ.L #1,D0
+	BRA.S .3
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_SETSTRNIL:
 
 ; SETLIST (nilcheck variant)
-      I_SETLISTNIL:
+		I_SETLISTNIL:
 	MOVE.L	8(A7),A0
-  MOVE.l A0,D0
-  BEQ.S .NIL
+	MOVE.l A0,D0
+	BEQ.S .NIL
 	MOVE.W	6(A7),D0
 	CMP.W	-4(A0),D0
 	BHI.S	.1
 	MOVE.W	D0,-2(A0)
 .1:	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_SETLISTNIL:
 
 ; OSTRCMP (nilcheck variant)
-      I_OSTRCMPNIL:
+		I_OSTRCMPNIL:
 	MOVE.W	6(A7),D1
 	MOVE.L	8(A7),A1
-  MOVE.L A1,D0
-  BEQ.S .NIL
+	MOVE.L A1,D0
+	BEQ.S .NIL
 	MOVE.L	12(A7),A0
-  MOVE.L A0,D0
-  BEQ.S .NIL
+	MOVE.L A0,D0
+	BEQ.S .NIL
 	;MOVEQ	#-1,D0
 	MOVEQ	#0,D0
 	ADDQ.W	#1,D1
@@ -37398,19 +37398,19 @@ E_SETLISTNIL:
 .4
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_OSTRCMPNIL:
 
 ; ASTRCOPY (nilcheck variant)
-      I_ASTRCOPYNIL:
+		I_ASTRCOPYNIL:
 	MOVE.L	8(A7),A1
-  MOVE.L A1,D0
-  BEQ.S .NIL
+	MOVE.L A1,D0
+	BEQ.S .NIL
 	MOVE.L	12(A7),A0
-  MOVE.L A0,D0
-  BEQ.S .NIL
+	MOVE.L A0,D0
+	BEQ.S .NIL
 	MOVE.W	6(A7),D0
 	BEQ.S	.x2
 	ADDQ.W	#1,D0
@@ -37422,20 +37422,20 @@ E_OSTRCMPNIL:
 .x:	CLR.B	-(A0)
 .x2:	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_ASTRCOPYNIL:
 
 ; STRICMP (nilcheck variant)
-      I_STRICMPNIL:
+		I_STRICMPNIL:
 	MOVEA.L	8(A7),A0		; STR1
-  MOVE.L A0,D0
-  BEQ.S .NIL
+	MOVE.L A0,D0
+	BEQ.S .NIL
 
 	MOVEA.L	12(A7),A1		; STR2
-  MOVE.L A1,D0
-  BEQ.S .NIL
+	MOVE.L A1,D0
+	BEQ.S .NIL
 
 	MOVE.L	4(A7),D0		; LEN
 	MOVE.L	D0,D2
@@ -37479,19 +37479,19 @@ E_ASTRCOPYNIL:
 	MOVE.L	A2,D2
 .quit:	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_STRICMPNIL:
 
 ; INSTRI (nilcheck variant)
-      I_INSTRINIL:
+		I_INSTRINIL:
 	MOVE.L	8(A7),A1		; STRING TO FIND
 	MOVE.L	A1,D2
-  BEQ.S .NIL
+	BEQ.S .NIL
 	MOVE.L	12(A7),A0		; THE STRING
 	MOVE.L	A0,D2
-  BEQ.S .NIL
+	BEQ.S .NIL
 	ADDA.L	4(A7),A0
 	MOVEM.L	D3-D6,-(A7)
 	MOVEQ	#32,D4
@@ -37534,14 +37534,14 @@ E_STRICMPNIL:
 .N2:	CMP.B	D0,D1
 .OK:	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_INSTRINIL:
 
 ; STRCLONE (nilcheck variant)
-      I_STRCLONENIL:
-      	MOVEQ	#0,D0
+		I_STRCLONENIL:
+		MOVEQ	#0,D0
 	MOVE.L	4(A7),D1
 	BEQ.S	.NIL
 	MOVEA.L	D1,A2
@@ -37570,14 +37570,14 @@ E_INSTRINIL:
 	CLR.B	(A0)
 .1:	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_STRCLONENIL:
 
 ; LISTCLONE (nilcheck variant)
-      I_LISTCLONENIL:
-      	MOVEQ	#0,D0
+		I_LISTCLONENIL:
+		MOVEQ	#0,D0
 	MOVE.L	4(A7),D1
 	BEQ.S	.NIL
 	MOVEA.L	D1,A2
@@ -37607,20 +37607,20 @@ E_STRCLONENIL:
 .2:	DBRA	D1,.3
 .1:	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_LISTCLONENIL:
 
 ; ASTRINGF (nilcheck variant)
-      I_ASTRINGFNIL:
+		I_ASTRINGFNIL:
 	MOVE.L	A3,-(A7)
 	MOVE.L	4+4(A7),D0
 	MOVEM.L	8+4(A7,D0.L),A0/A3
-  MOVE.L A0,D1
-  BEQ.S .NIL
-  MOVE.L A3,D1
-  BEQ.S .NIL
+	MOVE.L A0,D1
+	BEQ.S .NIL
+	MOVE.L A3,D1
+	BEQ.S .NIL
 	LEA	8+4(A7),A1
 	LEA	.2(PC),A2
 	MOVEA.L	4.W,A6
@@ -37636,8 +37636,8 @@ E_LISTCLONENIL:
 	MOVE.B	D0,(A3)+
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_ASTRINGFNIL:
 
@@ -37646,11 +37646,11 @@ I_STRADDCHARNIL:
 	MOVE.L D3,A3
 	MOVE.L	4(A7),D3		; CHAR
 	MOVEA.L	8(A7),A1		; ESTR
-  MOVE.L A1,D0
-  BEQ.S .NIL
+	MOVE.L A1,D0
+	BEQ.S .NIL
 	LEA	-4(A1),A2
-	MOVE.W	(A2)+,D0  ;MAX LEN
-	MOVE.W	(A2)+,D2  ;CURR LEN
+	MOVE.W	(A2)+,D0	;MAX LEN
+	MOVE.W	(A2)+,D2	;CURR LEN
 	CMP.W D0,D2
 	BEQ.S .3
 	ADDA.W	D2,A1
@@ -37662,8 +37662,8 @@ I_STRADDCHARNIL:
 	MOVE.L A3,D3
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_STRADDCHARNIL:
 
@@ -37672,8 +37672,8 @@ I_LISTADDITEMNIL:
 	MOVE.L D3,A3
 	MOVE.L	4(A7),D3		; ITEM
 	MOVE.L	8(A7),A1		; DEST
-  MOVE.L A1,D1
-  BEQ.S .NIL
+	MOVE.L A1,D1
+	BEQ.S .NIL
 	MOVE.L	A1,A2
 	MOVEQ #0,D1
 	MOVE.W	-2(A1),D1
@@ -37688,8 +37688,8 @@ I_LISTADDITEMNIL:
 	MOVE.L A3,D3
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_LISTADDITEMNIL:
 
@@ -37698,32 +37698,32 @@ E_LISTADDITEMNIL:
 I_STRINSNIL:
 	MOVE.L	4(A7),D1		; POS
 	MOVEA.L	8(A7),A0		; ESTR SRC
-  MOVE.L A0,D0
-  BEQ.S .NIL
+	MOVE.L A0,D0
+	BEQ.S .NIL
 	MOVEA.L	12(A7),A1		; ESTR DEST
-  MOVE.L A1,D0
-  BEQ.S .NIL
+	MOVE.L A1,D0
+	BEQ.S .NIL
 
 	MOVEM.L D3-D7,-(A7)
 	MOVEQ #0,D3
-	MOVE.W -4(A1),D3  ;max len
+	MOVE.W -4(A1),D3	;max len
 
 	MOVEQ #0,D4
-	MOVE.W -2(A1),D4  ;current dest len
+	MOVE.W -2(A1),D4	;current dest len
 
 	MOVEQ #0,D5
-	MOVE.W -2(A0),D5  ;current source length
-  
-	CMP.L D4,D1     ;insert position is past end of current string
+	MOVE.W -2(A0),D5	;current source length
+	
+	CMP.L D4,D1		;insert position is past end of current string
 	BHI.S .3
-  
-	ADD.L D5,D4   ;calculate new length
-  
+	
+	ADD.L D5,D4		;calculate new length
+	
 	CMP.L D3,D4
 	BLS.S .1
-  
+	
 	MOVE.L D3,D4 
-.1:  
+.1:	 
 	MOVE.W D4,-2(A1)
 	CLR.B (A1,D4)
 	LEA (A1,D1.L),A2
@@ -37731,7 +37731,7 @@ I_STRINSNIL:
 
 	MOVE.L D4,D6
 	SUB.L D1,D4
-	SUB.L D5,D4   ;number of characters to shift in the dest string
+	SUB.L D5,D4		;number of characters to shift in the dest string
 	BLS.S .2
 
 	MOVE.L D1,D7
@@ -37742,23 +37742,23 @@ I_STRINSNIL:
 	SUBQ.L #1,A3
 	MOVE.B (A3,D7.L),(A3,D6.L)
 	DBF D4,.3
-  
+	
 .2:
 	SUBQ.L #1,D5
-  
+	
 .5:	CMP.W D3,D1
 	BHS.S .4
-  
+	
 	MOVE.B (A0)+,(A2)+
 	ADDQ.L #1,D1
 	DBF D5,.5
-  
+	
 .4:	MOVE.L	A1,D0
 	MOVEM.L (A7)+,D3-D7
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_STRINSNIL:
 
@@ -37767,16 +37767,16 @@ I_STRREMNIL:
 	MOVE.L	4(A7),D2		; LEN
 	MOVE.L	8(A7),D1		; POS
 	MOVEA.L	12(A7),A1		; ESTR
-  MOVE.L A1,D0
-  BEQ.S .NIL
+	MOVE.L A1,D0
+	BEQ.S .NIL
 	LEA	-2(A1),A2
 	MOVEQ #0,D0
-	MOVE.W	(A2),D0    ;var current len
+	MOVE.W	(A2),D0		 ;var current len
 	CMP.L D0,D1
-	BHI.S .3              ;pos>=current len
+	BHI.S .3				;pos>=current len
 
 	MOVE.L A1,A2
-	CMP.L #-1,D2        ;len = all
+	CMP.L #-1,D2		;len = all
 	BEQ.S .4
 
 	SUB.L D1,D0
@@ -37784,7 +37784,7 @@ I_STRREMNIL:
 	SUBQ.L #1,D0
 	BLT.S .4
 	ADD.L D1,D2
-.5:    
+.5:		 
 	MOVE.B (A2,D2.L),(A2,D1.L)
 	ADDQ.L #1,A2
 	DBF D0,.5
@@ -37793,23 +37793,23 @@ I_STRREMNIL:
 	ADD.L D1,A2
 	SUB.L A1,A2
 	MOVE.W A2,-2(A1)
-  
+	
 .3:	MOVE.L	A1,D0
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_STRREMNIL:
 
 ; MEMFILL (nilcheck variant)
 I_MEMFILLNIL:
-	MOVE.L	12(A7),A0  ;addr
-  MOVE.L A0,D0
-  BEQ.S .NIL
-	MOVE.L	8(A7),D1  ;len
+	MOVE.L	12(A7),A0	;addr
+	MOVE.L A0,D0
+	BEQ.S .NIL
+	MOVE.L	8(A7),D1	;len
 	MOVE.L	4(A7),D0 ;char
-  
+	
 	MOVE.L A0,D2
 	LSR.L #1,D2
 	BCC.S .iseven
@@ -37821,7 +37821,7 @@ I_MEMFILLNIL:
 	SUBQ.L #1,D1
 
 .iseven:
-	MOVE.L  D1,D2
+	MOVE.L	D1,D2
 	AND.L #3,D1
 	LSR.L #2,D2
 	BEQ .do
@@ -37848,14 +37848,14 @@ I_MEMFILLNIL:
 .done:
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_MEMFILLNIL:
 
 ; ASTRCLONE (nilcheck variant)
 I_ASTRCLONENIL:
- 	MOVEQ	#0,D0
+	MOVEQ	#0,D0
 	MOVE.L	8(A7),D1
 	BEQ.S	.NIL
 	MOVEA.L	D1,A2
@@ -37880,20 +37880,20 @@ I_ASTRCLONENIL:
 	TST.L	D0
 	BEQ.S	.1
 	MOVE.L	D0,A0
-  
+	
 	MOVE.L	-20(A4),(A0)+
 	MOVE.L	D2,(A0)+
 	CLR.L	(A0)+
 	MOVE.W	D7,(A0)+
 	ADDQ.L	#2,A0
-	MOVEA.L A0,A1		    ; ESTR
+	MOVEA.L A0,A1			; ESTR
 	MOVE.L	D0,-20(A4)
 
 	MOVEA.L	A1,A2
 	MOVE.W	D7,D1		; LEN
 	MOVEA.L 8(A7),A0		; STR
 
-	MOVE.W	-4(A1),D0   ; MAXLEN
+	MOVE.W	-4(A1),D0	; MAXLEN
 	CMP.W	D1,D0
 	BCC.B	.1
 	MOVE.W	D0,D1
@@ -37909,18 +37909,18 @@ I_ASTRCLONENIL:
 	MOVE.L A3,D7
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_ASTRCLONENIL:
 
 ; LISTINSITEM (nilcheck variant)
 I_LISTINSITEMNIL:
 	MOVE.L	12(A7),A1		; DEST
-  MOVE.L A1,D0
-  BEQ.S .NIL
+	MOVE.L A1,D0
+	BEQ.S .NIL
 	MOVE.L	8(A7),D0		; SRC
-  BEQ.S .NIL
+	BEQ.S .NIL
 	MOVE.L	4(A7),D2		; POS
 	BMI.S .1
 	MOVE.L	A1,A2
@@ -37935,7 +37935,7 @@ I_LISTINSITEMNIL:
 	LSL.L #2,D1
 	ADD.L	D1,A1 ;end
 	LSR.L #2,D1
-	SUB.L  D2,D1
+	SUB.L	D2,D1
 	BRA .doins
 .ins
 	MOVE.L -(A1),4(A1)
@@ -37945,16 +37945,16 @@ I_LISTINSITEMNIL:
 .1:	MOVE.L	A2,D0
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_LISTINSITEMNIL
 
 ; LISTREMITEM (nilcheck variant)
 I_LISTREMITEMNIL:
 	MOVE.L	8(A7),A1		; DEST
-  MOVE.L A1,D2
-  BEQ.S .NIL
+	MOVE.L A1,D2
+	BEQ.S .NIL
 	MOVE.L	4(A7),D2		; POS
 	BMI.S .1
 	MOVE.L	A1,A2
@@ -37968,7 +37968,7 @@ I_LISTREMITEMNIL:
 	LSL.L #2,D2
 	ADD.L	D2,A1 ;end
 	LSR.L #2,D2
-	SUB.L  D2,D1
+	SUB.L	D2,D1
 	BRA .dodel
 .del
 	MOVE.L 4(A1),(A1)+
@@ -37977,16 +37977,16 @@ I_LISTREMITEMNIL:
 .1:	MOVE.L	A2,D0
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_LISTREMITEMNIL:
 
 ; LISTSWAPITEM (nilcheck variant)
 I_LISTSWAPITEMNIL:
 	MOVE.L	12(A7),A1		; SRC
-  MOVE.L A1,D2
-  BEQ.S .NIL
+	MOVE.L A1,D2
+	BEQ.S .NIL
 	MOVE.L	4(A7),D2		; POS 1
 	BMI.S .1
 	MOVE.L	8(A7),D0		; POS 2
@@ -38011,56 +38011,56 @@ I_LISTSWAPITEMNIL:
 .1:	MOVE.L	A2,D0
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_LISTSWAPITEMNIL:
 
 ; ENDSWITH (nilcheck variant)
 I_ENDSWITHNIL:
 	MOVE.L	4(A7),A1		; STRING TO TEST
-  MOVE.L A1,D0
-  BEQ.S .NIL
+	MOVE.L A1,D0
+	BEQ.S .NIL
 	MOVE.L	8(A7),A0		; THE STRING
-  MOVE.L A0,D0
-  BEQ.S .NIL
-  
-  MOVE.L A0,A2
-  MOVE.L A1,A3
+	MOVE.L A0,D0
+	BEQ.S .NIL
+	
+	MOVE.L A0,A2
+	MOVE.L A1,A3
 .L1:
-  TST.B (A2)+
-  BNE .L1
+	TST.B (A2)+
+	BNE .L1
 
 .L2:
-  TST.B (A3)+
-  BNE .L2
-  MOVEQ #-1,D0
+	TST.B (A3)+
+	BNE .L2
+	MOVEQ #-1,D0
 .L3:
-  MOVE.B -(A2),D1
-  CMP.B -(A3),D1
-  BNE.S .F
-  
-  CMP.L A1,A3
-  BEQ.S .T
-  CMP.L A0,A2
-  BNE.S .L3
+	MOVE.B -(A2),D1
+	CMP.B -(A3),D1
+	BNE.S .F
+	
+	CMP.L A1,A3
+	BEQ.S .T
+	CMP.L A0,A2
+	BNE.S .L3
 .F MOVEQ #0,D0
 .T:
-  RTS
+	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_ENDSWITHNIL:
 
 ; ASTPCOPY (nilcheck variant)
 I_ASTPCOPYNIL:
 	MOVE.L	12(A7),A0
-  MOVE.L A0,D0
-  BEQ.S .NIL
+	MOVE.L A0,D0
+	BEQ.S .NIL
 	MOVE.L	8(A7),A1
-  MOVE.L A1,D0
-  BEQ.S .NIL
+	MOVE.L A1,D0
+	BEQ.S .NIL
 	MOVE.W	6(A7),D0
 	BEQ.S	.x2
 	ADDQ.W	#1,D0
@@ -38068,15 +38068,15 @@ I_ASTPCOPYNIL:
 	BEQ.S	.x
 	MOVE.B	(A1)+,(A0)+
 	BNE.S	.al
-  MOVE.L A0,D0
-  SUBQ.L #1,D0
+	MOVE.L A0,D0
+	SUBQ.L #1,D0
 	RTS
 .x:	CLR.B	-(A0)
 .x2: MOVE.L A0,D0
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_ASTPCOPYNIL:
 
@@ -38084,11 +38084,11 @@ E_ASTPCOPYNIL:
 I_STRCOMPARENIL:
 	MOVE.W	6(A7),D1		; LEN
 	MOVE.L	8(A7),A1		; STR1
-  MOVE.L A1,D0
-  BEQ.S .NIL
+	MOVE.L A1,D0
+	BEQ.S .NIL
 	MOVE.L	12(A7),A0		; STR2
-  MOVE.L A0,D0
-  BEQ.S .NIL
+	MOVE.L A0,D0
+	BEQ.S .NIL
 	MOVEQ	#-1,D0
 	ADDQ.W	#1,D1
 .1:	SUBQ.W	#1,D1
@@ -38099,21 +38099,21 @@ I_STRCOMPARENIL:
 	TST.B	D2
 	BNE.S	.1
 .3:	MOVEQ	#0,D0
-    RTS
+	RTS
 .2:	BLO.S .4
 	MOVEQ #1,D0
 .4: RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_STRCOMPARENIL:
 
 ; CHARINSTR (nilcheck variant)
-      I_CHARINSTRNIL:
+		I_CHARINSTRNIL:
 	MOVE.L	12(A7),A0		; THE STRING
-  MOVE.L A0,D0
-  BEQ.S .NIL
+	MOVE.L A0,D0
+	BEQ.S .NIL
 	MOVE.L	8(A7),D0		; CHAR TO FIND
 	MOVE.L	A0,D2
 	ADD.L	4(A7),A0
@@ -38130,16 +38130,16 @@ E_STRCOMPARENIL:
 .2:	MOVEQ	#-1,D0
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_CHARINSTRNIL:
 
 ; CHARINSTRI (nilcheck variant)
-      I_CHARINSTRINIL:
+		I_CHARINSTRINIL:
 	MOVE.L	12(A7),A0		; THE STRING
-  MOVE.L A0,D0
-  BEQ.S .NIL
+	MOVE.L A0,D0
+	BEQ.S .NIL
 	MOVE.L	8(A7),D0		; CHAR TO FIND
 	MOVE.L	A0,D2
 	ADD.L	4(A7),A0
@@ -38174,49 +38174,49 @@ E_CHARINSTRNIL:
 .2:	MOVEQ	#-1,D0
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_CHARINSTRINIL:
 
 ; MEMCMP (nilcheck variant)
-      I_MEMCMPNIL:
+		I_MEMCMPNIL:
 	MOVE.W	6(A7),D1		; LEN
 	MOVE.L	8(A7),A1		; MEM1
-  MOVE.L A1,D0
-  BEQ.S .NIL
+	MOVE.L A1,D0
+	BEQ.S .NIL
 	MOVE.L	12(A7),A0		; MEM2
-  MOVE.L A0,D0
-  BEQ.S .NIL
+	MOVE.L A0,D0
+	BEQ.S .NIL
 	MOVEQ	#0,D0
 	ADDQ.W	#1,D1
 .1:	SUBQ.W	#1,D1
 	BEQ.S	.3
 	CMPM.B	(A0)+,(A1)+
 	BEQ.S	.1
-  MOVEQ	#-1,D0
-  MOVE.B -1(A1),D1
+	MOVEQ	#-1,D0
+	MOVE.B -1(A1),D1
 	CMP.B	-1(A0),D1
-  BGT.S .2
-  MOVEQ	#1,D0
+	BGT.S .2
+	MOVEQ	#1,D0
 	RTS
 .3:	MOVEQ	#0,D0
 .2:	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_MEMCMPNIL:
 
 ; SELECTFIRST (nilcheck variant)
-      I_SELECTFIRSTNIL:
+		I_SELECTFIRSTNIL:
 	MOVE.L	4(A7),A0		; code
 	MOVE.L	8(A7),A1		; SRClist
-  MOVE.L A1,D1
-  BEQ.S .NIL
+	MOVE.L A1,D1
+	BEQ.S .NIL
 	MOVE.L	12(A7),A2		; VAR
-  MOVE.L A2,D1
-  BEQ.S .NIL
+	MOVE.L A2,D1
+	BEQ.S .NIL
 	MOVEQ	#0,D1
 	MOVE.W	-2(A1),D2		; COUNT
 	BRA.S	.S
@@ -38226,39 +38226,39 @@ E_MEMCMPNIL:
 	MOVEM.L	(A7)+,D1-D2/A0-A3/A6
 	TST.L	D0
 	BEQ.S	.S
- 	MOVE.L (A2),D0
+	MOVE.L (A2),D0
 	RTS
 .S:	DBRA	D2,.L
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_SELECTFIRSTNIL:
 
 ; EVAL (nilcheck variant)
-      I_EVALNIL:
-      	MOVE.L	4(A7),D0
-      	BNE.S	.1
-        MOVE.L	#"NIL",-84(A4)
-        MOVE.L  -148(A4),-96(A4)
-        MOVE.L	-140(A4),A0
-        JMP	(A0)
-.1:    	MOVEA.L	D0,A0
+		I_EVALNIL:
+		MOVE.L	4(A7),D0
+		BNE.S	.1
+		MOVE.L	#"NIL",-84(A4)
+		MOVE.L	-148(A4),-96(A4)
+		MOVE.L	-140(A4),A0
+		JMP	(A0)
+.1:		MOVEA.L	D0,A0
 	JMP	(A0)			; ACTIONNES DANGEREUSES !!!
 E_EVALNIL:
 
 ; FORALL (nilcheck variant)
-      I_FORALLNIL:
+		I_FORALLNIL:
 	MOVE.L	4(A7),A0		; code
-  MOVE.L A0,D0
-  BEQ.S .NIL
+	MOVE.L A0,D0
+	BEQ.S .NIL
 	MOVE.L	8(A7),A1		; list
-  MOVE.L A1,D0
-  BEQ.S .NIL
+	MOVE.L A1,D0
+	BEQ.S .NIL
 	MOVE.L	12(A7),A2		; VAR
-  MOVE.L A2,D0
-  BEQ.S .NIL
+	MOVE.L A2,D0
+	BEQ.S .NIL
 	MOVEQ	#-1,D0			; TRUTH VALUE ->D1
 	MOVE.W	-2(A1),D2		; COUNT
 	BEQ.S	.1
@@ -38275,22 +38275,22 @@ E_EVALNIL:
 	MOVE.L	D1,D0
 .1:	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_FORALLNIL:
 
 ; EXISTS (nilcheck variant)
-      I_EXISTSNIL:
+		I_EXISTSNIL:
 	MOVE.L	4(A7),A0		; code
-  MOVE.L A0,D0
-  BEQ.S .NIL
+	MOVE.L A0,D0
+	BEQ.S .NIL
 	MOVE.L	8(A7),A1		; list
-  MOVE.L A1,D0
-  BEQ.S .NIL
+	MOVE.L A1,D0
+	BEQ.S .NIL
 	MOVE.L	12(A7),A2		; VAR
-  MOVE.L A2,D0
-  BEQ.S .NIL
+	MOVE.L A2,D0
+	BEQ.S .NIL
 	MOVEQ	#0,D0
 	MOVE.W	-2(A1),D1		; COUNT
 	BEQ.S	.1
@@ -38305,25 +38305,25 @@ E_FORALLNIL:
 	MOVEQ	#-1,D0
 .1:	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_EXISTSNIL:
 
 ; MAPLIST (nilcheck variant)
-      I_MAPLISTNIL:
+		I_MAPLISTNIL:
 	MOVE.L	4(A7),A0		; code
-  MOVE.L A0,D0
-  BEQ.S .NIL
+	MOVE.L A0,D0
+	BEQ.S .NIL
 	MOVE.L	8(A7),A3		; DESTLIST
-  MOVE.L A3,D0
-  BEQ.S .NIL
+	MOVE.L A3,D0
+	BEQ.S .NIL
 	MOVE.L	12(A7),A1		; SRClist
-  MOVE.L A1,D0
-  BEQ.S .NIL
+	MOVE.L A1,D0
+	BEQ.S .NIL
 	MOVE.L	16(A7),A2		; VAR
-  MOVE.L A2,D0
-  BEQ.S .NIL
+	MOVE.L A2,D0
+	BEQ.S .NIL
 	MOVE.L	A3,-(A7)
 	MOVE.W	-4(A3),D0
 	CMP.W	-2(A1),D0
@@ -38342,42 +38342,42 @@ E_EXISTSNIL:
 .1:	MOVE.L	(A7)+,D0
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_MAPLISTNIL:
 
 ; LINK (nilcheck variant)
-      I_LINKNIL:
+		I_LINKNIL:
 	MOVE.L	8(A7),A0
 	MOVE.L	A0,D0
 	BEQ.S	.NIL
 	MOVE.L	4(A7),-8(A0)
 .1:	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_LINKNIL:
 
 ; NEXT (nilcheck variant)
-      I_NEXTNIL:
+		I_NEXTNIL:
 	MOVE.L	4(A7),D0
 	BEQ.S	.NIL
 	MOVE.L	D0,A0
 	MOVE.L	-8(A0),D0
 .1:	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_NEXTNIL:
 
 ; FORWARD (nilcheck variant)
-      I_FORWARDNIL:
+		I_FORWARDNIL:
 	LEA	8(A7),A0		; LIST
-  MOVE.L A0,D0
-  BEQ.S .NIL
+	MOVE.L A0,D0
+	BEQ.S .NIL
 	MOVE.L	4(A7),D1		; NUM
 	ADDQ.L	#1,D1
 .L:	MOVE.L	(A0),D0
@@ -38388,26 +38388,26 @@ E_NEXTNIL:
 	BNE.S	.L
 .1:	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_FORWARDNIL:
 
 ; SELECTLIST (nilcheck variant)
-      I_SELECTLISTNIL:
+		I_SELECTLISTNIL:
 	MOVE.L	4(A7),A0		; code
-  MOVE.L A0,D1
-  BEQ.S .NIL
+	MOVE.L A0,D1
+	BEQ.S .NIL
 	MOVE.L	8(A7),A3		; DESTLIST
-  MOVE.L A3,D1
-  BEQ.S .NIL
+	MOVE.L A3,D1
+	BEQ.S .NIL
 	MOVE.L	A3,A6
 	MOVE.L	12(A7),A1		; SRClist
-  MOVE.L A1,D1
-  BEQ.S .NIL
+	MOVE.L A1,D1
+	BEQ.S .NIL
 	MOVE.L	16(A7),A2		; VAR
-  MOVE.L A2,D1
-  BEQ.S .NIL
+	MOVE.L A2,D1
+	BEQ.S .NIL
 	MOVEQ	#0,D1
 	MOVE.W	-2(A1),D2		; COUNT
 	BRA.S	.S
@@ -38426,8 +38426,8 @@ E_FORWARDNIL:
 	MOVE.L	D1,D0
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_SELECTLISTNIL:
 
@@ -38439,7 +38439,7 @@ I_LONGNIL:
 	MOVE.L	(A0),D0
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
+	MOVE.L	-148(A4),-96(A4)
 	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_LONGNIL:
@@ -38452,7 +38452,7 @@ I_INTNIL:
 	EXT.L D0
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
+	MOVE.L	-148(A4),-96(A4)
 	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_INTNIL
@@ -38465,7 +38465,7 @@ I_CHARNIL:
 	MOVE.B	(A0),D0
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
+	MOVE.L	-148(A4),-96(A4)
 	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_CHARNIL:
@@ -38477,7 +38477,7 @@ I_PUTLONGNIL:
 	MOVE.L	4(A7),(A0)
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
+	MOVE.L	-148(A4),-96(A4)
 	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_PUTLONGNIL:
@@ -38489,7 +38489,7 @@ I_PUTINTNIL:
 	MOVE.W	6(A7),(A0)
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
+	MOVE.L	-148(A4),-96(A4)
 	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_PUTINTNIL:
@@ -38501,7 +38501,7 @@ I_PUTCHARNIL:
 	MOVE.B	7(A7),(A0)
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
+	MOVE.L	-148(A4),-96(A4)
 	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_PUTCHARNIL:
@@ -38596,7 +38596,7 @@ I_REALFNIL:
 .O:	LEA	32(A7),A7
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
+	MOVE.L	-148(A4),-96(A4)
 	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_REALFNIL:
@@ -38670,7 +38670,7 @@ I_REALVALNIL:
 	MOVEQ	#0,D0
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
+	MOVE.L	-148(A4),-96(A4)
 	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_REALVALNIL:
@@ -38678,122 +38678,122 @@ E_REALVALNIL:
 
 ;; DoMethod
 I_DOMETHODNIL:
-	MOVE.L  4(A7),D0
-	MOVE.L  8(A7,D0.L),A2   ; object
-	MOVE.L  A2,D1
+	MOVE.L	4(A7),D0
+	MOVE.L	8(A7,D0.L),A2	; object
+	MOVE.L	A2,D1
 	BEQ.S .NIL
-	LEA     8(A7),A1
-	MOVE.L  -4(A2),A0
-	MOVE.L  A0,D1
+	LEA		8(A7),A1
+	MOVE.L	-4(A2),A0
+	MOVE.L	A0,D1
 	BEQ.S .NIL
-	move.l  8(a0),a3
-	JMP     (A3)
+	move.l	8(a0),a3
+	JMP		(A3)
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
+	MOVE.L	-148(A4),-96(A4)
 	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_DOMETHODNIL:
 
 ;; DoMethodA
 I_DOMETHODANIL:
-    MOVE.L  8(A7),A2        ; object
+	MOVE.L	8(A7),A2		; object
 	MOVE.L A2,D0
 	BEQ.S .NIL
-    MOVE.L  -4(A2),A0       ; class
+	MOVE.L	-4(A2),A0		; class
 	MOVE.L A0,D0
 	BEQ.S .NIL
-    MOVE.L  4(A7),A1        ; message
+	MOVE.L	4(A7),A1		; message
 	MOVE.L A1,D0
 	BEQ.S .NIL
-    move.l  8(a0),a3
-    MOVEM.L D3-D7/A4-a6,-(A7)
-    JSR     (A3)
-    MOVEM.L (A7)+,D3-D7/A4-a6
-    RTS
+	move.l	8(a0),a3
+	MOVEM.L D3-D7/A4-a6,-(A7)
+	JSR		(A3)
+	MOVEM.L (A7)+,D3-D7/A4-a6
+	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
+	MOVE.L	-148(A4),-96(A4)
 	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_DOMETHODANIL:
 
 ;; CoerceMethod
 I_CRCMETHODNIL:
-    MOVE.L  8(A7,D0),A2     ; object
+	MOVE.L	8(A7,D0),A2		; object
 	MOVE.L A2,D0
 	BEQ.S .NIL
-    MOVE.L  12(A7,D0),A0    ; class
+	MOVE.L	12(A7,D0),A0	; class
 	MOVE.L A0,D0
 	BEQ.S .NIL
-    MOVE.L  4(A7),D0
-    LEA     8(A7),A1        ; message
-    move.l  8(a0),a3
-    MOVEM.L D3-D7/A4-a6,-(A7)
-    JSR     (A3)
-    MOVEM.L (A7)+,D3-D7/A4-a6
-    RTS
+	MOVE.L	4(A7),D0
+	LEA		8(A7),A1		; message
+	move.l	8(a0),a3
+	MOVEM.L D3-D7/A4-a6,-(A7)
+	JSR		(A3)
+	MOVEM.L (A7)+,D3-D7/A4-a6
+	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
+	MOVE.L	-148(A4),-96(A4)
 	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_CRCMETHODNIL:
 
 ;; CoerceMethodA
 I_CRCMETHODANIL:
-    MOVE.L  8(A7),A2    ; object
+	MOVE.L	8(A7),A2	; object
 	MOVE.L A2,D0
 	BEQ.S .NIL
-    MOVE.L  12(A7),A0   ; class
+	MOVE.L	12(A7),A0	; class
 	MOVE.L A0,D0
 	BEQ.S .NIL
-    MOVE.L  4(A7),A1    ; message
+	MOVE.L	4(A7),A1	; message
 	MOVE.L A1,D0
 	BEQ.S .NIL
-    move.l  8(a0),a3
-    MOVEM.L D3-D7/A4-a6,-(A7)
-    JSR     (A3)
-    MOVEM.L (A7)+,D3-D7/A4-a6
-    RTS
+	move.l	8(a0),a3
+	MOVEM.L D3-D7/A4-a6,-(A7)
+	JSR		(A3)
+	MOVEM.L (A7)+,D3-D7/A4-a6
+	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
+	MOVE.L	-148(A4),-96(A4)
 	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_CRCMETHODANIL:
 
 ;; DoSuperMethod
 I_DOSMETHODNIL:
-    LEA     8(A7),A1
-    MOVE.L  8(A7,D0),A2
+	LEA		8(A7),A1
+	MOVE.L	8(A7,D0),A2
 	MOVE.L A2,D0
 	BEQ.S .NIL
-    MOVE.L  12(A7,D0),A0
+	MOVE.L	12(A7,D0),A0
 	MOVE.L A0,D0
 	BEQ.S .NIL
-    MOVE.L  4(A7),D0
-    MOVE.L  24(A0),A0
-    MOVE.L  8(A0),A3
-    JMP     (A3)
+	MOVE.L	4(A7),D0
+	MOVE.L	24(A0),A0
+	MOVE.L	8(A0),A3
+	JMP		(A3)
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
+	MOVE.L	-148(A4),-96(A4)
 	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_DOSMETHODNIL:
 
 ;; DoSuperMethodA
 I_DOSMETHODANIL:
-    MOVE.L  4(A7),A1    ; message
+	MOVE.L	4(A7),A1	; message
 	MOVE.L A1,D0
 	BEQ.S .NIL
-    MOVE.L  8(A7),A2    ; object
+	MOVE.L	8(A7),A2	; object
 	MOVE.L A2,D0
 	BEQ.S .NIL
-    MOVE.L  12(A7),A0   ; class
+	MOVE.L	12(A7),A0	; class
 	MOVE.L A0,D0
 	BEQ.S .NIL
-    move.l  24(a0),a0
-    MOVE.L  8(a0),a3
-    JMP     (A3)
+	move.l	24(a0),a0
+	MOVE.L	8(a0),a3
+	JMP		(A3)
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
+	MOVE.L	-148(A4),-96(A4)
 	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_DOSMETHODANIL:
@@ -38803,11 +38803,11 @@ I_LONG020NIL:
 	TST.L	4(A7)
 	BEQ.S .NIL
 	CPU020
-	MOVE.L  ([4.W,A7]),D0
+	MOVE.L	([4.W,A7]),D0
 	CPU000
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
+	MOVE.L	-148(A4),-96(A4)
 	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_LONG020NIL:
@@ -38817,12 +38817,12 @@ I_INT020NIL:
 	TST.L	4(A7)
 	BEQ.S .NIL
 	CPU020
-	MOVE.W  ([4.W,A7]),D0
+	MOVE.W	([4.W,A7]),D0
 	CPU000
 	EXT.L D0
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
+	MOVE.L	-148(A4),-96(A4)
 	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_INT020NIL:
@@ -38831,13 +38831,13 @@ E_INT020NIL:
 I_CHAR020NIL:
 	TST.L	4(A7)
 	BEQ.S .NIL
-	MOVEQ   #0,D0
-  CPU020
-	MOVE.B  ([4.W,A7]),D0
-  CPU000
+	MOVEQ	#0,D0
+	CPU020
+	MOVE.B	([4.W,A7]),D0
+	CPU000
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
+	MOVE.L	-148(A4),-96(A4)
 	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_CHAR020NIL:
@@ -38847,11 +38847,11 @@ I_BYTENIL:
 	MOVE.L A0,D0
 	BEQ.S .NIL
 	MOVE.B	(A0),D0
-	EXT.W   D0
-	EXT.L   D0
+	EXT.W	D0
+	EXT.L	D0
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
+	MOVE.L	-148(A4),-96(A4)
 	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_BYTENIL:
@@ -38864,7 +38864,7 @@ I_WORDNIL:
 	MOVE.W	(A0),D0
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
+	MOVE.L	-148(A4),-96(A4)
 	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_WORDNIL:
@@ -38874,12 +38874,12 @@ I_BYTE020NIL:
 	TST.L	4(A7)
 	BEQ.S .NIL
 	CPU020
-	MOVE.B  ([4.W,A7]),D0
-	EXTB.L  D0
+	MOVE.B	([4.W,A7]),D0
+	EXTB.L	D0
 	CPU000
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
+	MOVE.L	-148(A4),-96(A4)
 	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_BYTE020NIL:
@@ -38888,13 +38888,13 @@ E_BYTE020NIL:
 I_WORD020NIL:
 	TST.L	4(A7)
 	BEQ.S .NIL
-	MOVEQ   #0,D0
+	MOVEQ	#0,D0
 	CPU020
-	MOVE.W  ([4.W,A7]),D0
+	MOVE.W	([4.W,A7]),D0
 	CPU000
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
+	MOVE.L	-148(A4),-96(A4)
 	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_WORD020NIL:
@@ -38911,25 +38911,25 @@ I_WRITEFNIL:
 	BEQ.S .5
 
 	LEA	8(A7),A1
-	LEA     .1(PC),A2
-	MOVE.L  4.W,A6
-	MOVE.L  -64(A4),A3
-	MOVE.L  A3,D2
-	JSR     -522(A6)    ;rawdofmt
-	MOVE.L  D2,A0
+	LEA		.1(PC),A2
+	MOVE.L	4.W,A6
+	MOVE.L	-64(A4),A3
+	MOVE.L	A3,D2
+	JSR		-522(A6)	;rawdofmt
+	MOVE.L	D2,A0
 .5:	TST.B	(A0)+
 	BNE.S	.5
 	SUB.L	D2,A0
-	MOVE.L  -8(A4),D1
+	MOVE.L	-8(A4),D1
 	MOVE.L	D3,A3			; BACKUP
 	MOVE.L	A0,D3
 	SUBQ.L	#1,D3
-	MOVE.L  -44(A4),A6
-	JSR     -48(A6)   ;write
+	MOVE.L	-44(A4),A6
+	JSR		-48(A6)		;write
 	MOVE.L	D3,D0
 	MOVE.L	A3,D3
 	RTS
-.1:	MOVE.B  D0,(A3)+		; RDF DUMP
+.1:	MOVE.B	D0,(A3)+		; RDF DUMP
 	RTS
 .2:	LEA	.4(PC),A0
 	MOVE.L	A0,D1			;OPEN CON
@@ -38945,26 +38945,26 @@ I_WRITEFNIL:
 	MOVE.L	-24(A4),A0
 	JMP	(A0)
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 .4:	DC.B	"CON:0/11/640/80/Output",0
 	EVEN
-      E_WRITEFNIL:
+		E_WRITEFNIL:
 
-      I_TEXTFNIL:
+		I_TEXTFNIL:
 	MOVE.L	4(A7),D0
 	MOVE.L	8(A7,D0.L),A0
 	BEQ.S .NIL
-  TST.L D0
-  BEQ.S .4
+	TST.L D0
+	BEQ.S .4
 
 	LEA	8(A7),A1
-	LEA     .3(PC),A2
-	MOVE.L  4.W,A6
-	MOVE.L  -64(A4),A3		;stack bottom
-	MOVE.L  A3,D2
-	JSR     -522(A6)      ;rawdofmt
+	LEA		.3(PC),A2
+	MOVE.L	4.W,A6
+	MOVE.L	-64(A4),A3		;stack bottom
+	MOVE.L	A3,D2
+	JSR		-522(A6)		;rawdofmt
 	MOVE.L	-16(A4),A1
 	MOVE.L	A1,D0
 	BEQ.S	.1
@@ -38985,15 +38985,15 @@ I_WRITEFNIL:
 	JSR	-60(A6)
 	MOVE.L	D2,D0
 .1:	RTS
-.3:	MOVE.B  D0,(A3)+		;RDF DUMP
+.3:	MOVE.B	D0,(A3)+		;RDF DUMP
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
-      E_TEXTFNIL:
+		E_TEXTFNIL:
 
-      I_BOOLGADNIL:
+		I_BOOLGADNIL:
 	MOVE.L	32(A7),D2
 	BEQ.W .NIL
 	MOVE.L	D2,A1			; A1,D2=GADGET
@@ -39001,9 +39001,9 @@ I_WRITEFNIL:
 	MOVEQ	#28,D0
 .L:	CLR.L	(A2)+
 	DBRA	D0,.L
-	LEA	44(A1),A0		; A0   =BORDER1
-	LEA	16(A0),A2		; A2   =INTUITEXT
-	LEA	20(A2),A3		; A3   =20 empty bytes
+	LEA	44(A1),A0		; A0	 =BORDER1
+	LEA	16(A0),A2		; A2	 =INTUITEXT
+	LEA	20(A2),A3		; A3	 =20 empty bytes
 	MOVE.L	24(A7),40(A1)		; --> INIT GADGET
 	MOVE.W	18(A7),4(A1)
 	MOVE.W	14(A7),6(A1)
@@ -39061,14 +39061,14 @@ I_WRITEFNIL:
 	RTS
 .3:	DC.L	0,$80060
 .4:	DC.B	"topaz.font",0
-    EVEN
+	EVEN
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
-      E_BOOLGADNIL:
+		E_BOOLGADNIL:
 
-      I_MOUSEXNIL:
+		I_MOUSEXNIL:
 	MOVEQ	#0,D0
 	MOVE.L	4(A7),A0
 	MOVE.L A0,D0
@@ -39076,12 +39076,12 @@ I_WRITEFNIL:
 	MOVE.W	14(A0),D0
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
-      E_MOUSEXNIL:
+		E_MOUSEXNIL:
 
-      I_MOUSEYNIL:
+		I_MOUSEYNIL:
 	MOVEQ	#0,D0
 	MOVE.L	4(A7),A0
 	MOVE.L A0,D0
@@ -39089,12 +39089,12 @@ I_WRITEFNIL:
 	MOVE.W	12(A0),D0
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
-      E_MOUSEYNIL:
+		E_MOUSEYNIL:
 
-      I_WAITMSGNIL:
+		I_WAITMSGNIL:
 	MOVE.L	4(A7),A0
 	MOVE.L A0,D0
 	BEQ.S .NIL
@@ -39120,12 +39120,12 @@ I_WRITEFNIL:
 	MOVE.L	D2,D0			; CLASS
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
-      E_WAITMSGNIL:
+		E_WAITMSGNIL:
 
-      I_PRINTFNIL:
+		I_PRINTFNIL:
 	TST.L	-8(A4)			;STDIO
 	BEQ.S	.2
 .3:	MOVE.L	4(A7),D0
@@ -39136,14 +39136,14 @@ I_WRITEFNIL:
 	BEQ.S .0
 	LEA	8(A7),A1
 	LEA	.1(PC),A2
-	MOVE.L  4.W,A6
+	MOVE.L	4.W,A6
 	MOVE.L	-64(A4),A3
 	MOVE.L	A3,D2
-	JSR	-522(A6)        ;rawdofmt
+	JSR	-522(A6)		;rawdofmt
 .0
 	MOVE.L	-8(A4),D1
 	MOVE.L	-44(A4),A6
-	JSR	-342(A6)        ;fputs
+	JSR	-342(A6)		;fputs
 	MOVE.L	D2,A0			; JUST FOR LEN!
 .C:	TST.B	(A0)+
 	BNE.S	.C
@@ -39151,7 +39151,7 @@ I_WRITEFNIL:
 	SUBQ.L	#1,A0
 	MOVE.L	A0,D0
 	RTS
-.1:	MOVE.B  D0,(A3)+		; RDF DUMP
+.1:	MOVE.B	D0,(A3)+		; RDF DUMP
 	RTS
 .2:	LEA	.4(PC),A0
 	MOVE.L	A0,D1			; OPEN CON
@@ -39169,12 +39169,12 @@ I_WRITEFNIL:
 .4:	DC.B	"CON:0/11/640/80/Output",0
 	EVEN
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
-      E_PRINTFNIL:
+		E_PRINTFNIL:
 
-      I_WAITLEFTMOUSENIL:
+		I_WAITLEFTMOUSENIL:
 	MOVE.L	4(A7),A3		; A3=WIN
 	MOVE.L A3,D0
 	BEQ.S .NIL
@@ -39207,12 +39207,12 @@ I_WRITEFNIL:
 	BEQ.S	.2
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
-      E_WAITLEFTMOUSENIL:
+		E_WAITLEFTMOUSENIL:
 
-      I_LEFTMOUSENIL:
+		I_LEFTMOUSENIL:
 	MOVE.L	4(A7),A3		; A3=WIN
 	MOVE.L A3,D0
 	BEQ.S .NIL
@@ -39241,310 +39241,310 @@ I_WRITEFNIL:
 .2:	MOVEQ	#0,D0
 	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
-      E_LEFTMOUSENIL:
+		E_LEFTMOUSENIL:
 
 ;; Set
 I_SETNIL:
-    MOVE.L  -48(A4),A6
-    MOVE.L  4(A7),D0
-    MOVE.L  8(A7,D0),A0
+	MOVE.L	-48(A4),A6
+	MOVE.L	4(A7),D0
+	MOVE.L	8(A7,D0),A0
 		MOVE.L A0,D1
 		BEQ.S .NIL
-    LEA     8(A7),A1
-    JMP     -648(A6)
+	LEA		8(A7),A1
+	JMP		-648(A6)
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_SETNIL:
 ;*-*
 ;; Sets
 I_SETSNIL:
-    MOVE.L  -48(A4),A6
-    LEA     .T(PC),A1
-    MOVE.L  4(A7),4(A1)
-    MOVE.L  8(A7),(A1)
-    MOVE.L  12(A7),D0
+	MOVE.L	-48(A4),A6
+	LEA		.T(PC),A1
+	MOVE.L	4(A7),4(A1)
+	MOVE.L	8(A7),(A1)
+	MOVE.L	12(A7),D0
 		BEQ.S .NIL
-    MOVE.L  D0,A0
-    JMP     -648(A6)
-.T: DC.L    0,0,0
+	MOVE.L	D0,A0
+	JMP		-648(A6)
+.T: DC.L	0,0,0
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_SETSNIL:
 ;*-*
 ;; Get
 I_GETNIL:
-    MOVE.L  -48(A4),A6
-    MOVE.L  4(A7),A1
+	MOVE.L	-48(A4),A6
+	MOVE.L	4(A7),A1
 		MOVE.L A1,D0
 		BEQ.S .NIL
-    move.l  12(A7),A0
+	move.l	12(A7),A0
 		MOVE.L A0,D0
 		BEQ.S .NIL
-    MOVE.L  8(A7),D0
-    JMP     -654(A6)
+	MOVE.L	8(A7),D0
+	JMP		-654(A6)
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_GETNIL:
 ;*-*
 ;; Gets
 I_GETSNIL:
-    MOVE.L  -48(A4),A6
-    LEA     .T(PC),A1
-    MOVE.L  8(A7),A0
+	MOVE.L	-48(A4),A6
+	LEA		.T(PC),A1
+	MOVE.L	8(A7),A0
 		MOVE.L A0,D0
 		BEQ.S .NIL
-    MOVE.L  4(A7),D0
-    JSR     -654(A6)
-    MOVE.L  .T(PC),D0
-    RTS
+	MOVE.L	4(A7),D0
+	JSR		-654(A6)
+	MOVE.L	.T(PC),D0
+	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
-.T: DC.L    0
+.T: DC.L	0
 E_GETSNIL:
 
 I_PUTFNIL:
-.3: MOVE.L  4(A7),D0
-    MOVE.L  8(A7,D0.L),A0
-    MOVE.L A0,D2
+.3: MOVE.L	4(A7),D0
+	MOVE.L	8(A7,D0.L),A0
+	MOVE.L A0,D2
 		BEQ.S .NIL
-    TST.L D0
-    BEQ.S .5
+	TST.L D0
+	BEQ.S .5
 
-    LEA 8(A7),A1
-    LEA     .1(PC),A2
-    MOVE.L  4.W,A6
-    MOVE.L  -64(A4),A3
-    MOVE.L  A3,D2
-    JSR     -522(A6)    ;rawdofmt
-    MOVE.L  D2,A0
-.5: TST.B   (A0)+
-    BNE .5
-    SUB.L   D2,A0
-    MOVE.L  D3,A3           ; BACKUP
-    MOVE.L  A0,D3
-    SUBQ.L  #1,D3
-    MOVE.L  -44(A4),A6
-    MOVE.L  4(A7),D0
-    MOVE.L  12(A7,D0),D1
-    JSR     -48(A6)   ;write
-    MOVE.L  D3,D0
-    MOVE.L  A3,D3
-    RTS
-.1: MOVE.B  D0,(A3)+        ; RDF DUMP
-    RTS
+	LEA 8(A7),A1
+	LEA		.1(PC),A2
+	MOVE.L	4.W,A6
+	MOVE.L	-64(A4),A3
+	MOVE.L	A3,D2
+	JSR		-522(A6)	;rawdofmt
+	MOVE.L	D2,A0
+.5: TST.B	(A0)+
+	BNE .5
+	SUB.L	D2,A0
+	MOVE.L	D3,A3			; BACKUP
+	MOVE.L	A0,D3
+	SUBQ.L	#1,D3
+	MOVE.L	-44(A4),A6
+	MOVE.L	4(A7),D0
+	MOVE.L	12(A7,D0),D1
+	JSR		-48(A6)		;write
+	MOVE.L	D3,D0
+	MOVE.L	A3,D3
+	RTS
+.1: MOVE.B	D0,(A3)+		; RDF DUMP
+	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_PUTFNIL:
 ;*-*
 ;; PutF (37+)
 I_PUTF37NIL:
-    MOVE.L  D3,A3
-    MOVE.L  4(A7),D0
-    MOVE.L  8(A7,D0),D2
+	MOVE.L	D3,A3
+	MOVE.L	4(A7),D0
+	MOVE.L	8(A7,D0),D2
 		BEQ.S .NIL
 
-    MOVE.L  12(A7,D0),D1
-    MOVE.L  -44(a4),A6
-    TST.L D0
-    BEQ.S .1
+	MOVE.L	12(A7,D0),D1
+	MOVE.L	-44(a4),A6
+	TST.L D0
+	BEQ.S .1
 
-    MOVE.L  A7,D3
-    ADDQ.L  #8,D3
-    JSR     -354(A6)  ;VFPRINTF
+	MOVE.L	A7,D3
+	ADDQ.L	#8,D3
+	JSR		-354(A6)	;VFPRINTF
 .2
-    MOVE.L  -8(A4),D1
-    JSR     -360(A6)  ;FLUSH
-    MOVE.L  A3,D3
-    RTS
-.1  JSR     -$156(A6)  ;FPUTS
-    BRA.S .2
+	MOVE.L	-8(A4),D1
+	JSR		-360(A6)	;FLUSH
+	MOVE.L	A3,D3
+	RTS
+.1	JSR		-$156(A6)	;FPUTS
+	BRA.S .2
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_PUTF37NIL:
 ;*-*
 I_WRITEF37NIL: ;(37+)
-    MOVE.L  D3,A3
-    MOVE.L  -8(A4),D1
-    MOVE.L  4(A7),D0
-    MOVE.L  8(A7,D0),D2
+	MOVE.L	D3,A3
+	MOVE.L	-8(A4),D1
+	MOVE.L	4(A7),D0
+	MOVE.L	8(A7,D0),D2
 		BEQ.S .NIL
-    MOVE.L  -44(a4),A6
-    TST.L D0
-    BEQ.S .1
+	MOVE.L	-44(a4),A6
+	TST.L D0
+	BEQ.S .1
 
-    MOVE.L  A7,D3
-    ADDQ.L  #8,D3
-    JSR     -354(A6)  ;VFPRINTF
-.2    
-    MOVE.L  -8(A4),D1
-    JSR     -360(A6)  ;FLUSH
-    MOVE.L  A3,D3
-    RTS
-.1  JSR     -$156(A6)  ;FPUTS
-    BRA.S .2
+	MOVE.L	A7,D3
+	ADDQ.L	#8,D3
+	JSR		-354(A6)	;VFPRINTF
+.2		
+	MOVE.L	-8(A4),D1
+	JSR		-360(A6)	;FLUSH
+	MOVE.L	A3,D3
+	RTS
+.1	JSR		-$156(A6)	;FPUTS
+	BRA.S .2
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_WRITEF37NIL: ;(37+)
 ;*-*
 ;; ReadB
 I_READBNIL:
-	  TST.L 4(A7)
+		TST.L 4(A7)
 		BEQ.S .NIL
-    MOVE.L  D3,A3
-    MOVE.L  16(A7),D1
-    MOVE.L  12(A7),D0
-    MOVEQ   #0,D2
-    MOVE.L  8(A7),D3
-    SUBQ.L  #1,D3
+	MOVE.L	D3,A3
+	MOVE.L	16(A7),D1
+	MOVE.L	12(A7),D0
+	MOVEQ	#0,D2
+	MOVE.L	8(A7),D3
+	SUBQ.L	#1,D3
 
-.LP:ADD.L   D0,D2
-    DBF     D3,.LP
+.LP:ADD.L	D0,D2
+	DBF		D3,.LP
 
-    MOVE.L  -44(A4),A6
-    MOVE.L  4(A7),D3
-    EXG     D2,D3
-    JSR     -42(A6)
+	MOVE.L	-44(A4),A6
+	MOVE.L	4(A7),D3
+	EXG		D2,D3
+	JSR		-42(A6)
 
-    MOVEQ   #-1,D1
-    MOVE.L  12(A7),D2
-.LD:ADDQ.L  #1,D1
-    SUB.L   D2,D0
-    BPL     .LD
-    MOVE.L  D1,D0
-    MOVE.L  A3,D3
-    RTS
+	MOVEQ	#-1,D1
+	MOVE.L	12(A7),D2
+.LD:ADDQ.L	#1,D1
+	SUB.L	D2,D0
+	BPL		.LD
+	MOVE.L	D1,D0
+	MOVE.L	A3,D3
+	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_READBNIL:
 ;*-*
 ;; WriteB
 I_WRITEBNIL:
-	  TST.L 4(A7)
+		TST.L 4(A7)
 		BEQ.S .NIL
 		
-    MOVE.L  D3,A3
-    MOVE.L  16(A7),D1
-    MOVE.L  12(A7),D0
-    MOVEQ   #0,D2
-    MOVE.L  08(A7),D3
-    SUBQ.L  #1,D3
+	MOVE.L	D3,A3
+	MOVE.L	16(A7),D1
+	MOVE.L	12(A7),D0
+	MOVEQ	#0,D2
+	MOVE.L	08(A7),D3
+	SUBQ.L	#1,D3
 
-.LP:ADD.L   D0,D2
-    DBF     D3,.LP
+.LP:ADD.L	D0,D2
+	DBF		D3,.LP
 
-    MOVE.L  -44(A4),A6
-    MOVE.L  04(A7),D3
-    EXG     D2,D3
-    JSR     -48(A6)
+	MOVE.L	-44(A4),A6
+	MOVE.L	04(A7),D3
+	EXG		D2,D3
+	JSR		-48(A6)
 
-    MOVEQ   #-1,D1
-    MOVE.L  12(A7),D2
-.LD:ADDQ.L  #1,D1
-    SUB.L   D2,D0
-    BPL     .LD
-    MOVE.L  D1,D0
-    MOVE.L  A3,D3
-    RTS
+	MOVEQ	#-1,D1
+	MOVE.L	12(A7),D2
+.LD:ADDQ.L	#1,D1
+	SUB.L	D2,D0
+	BPL		.LD
+	MOVE.L	D1,D0
+	MOVE.L	A3,D3
+	RTS
 .NIL:	MOVE.L	#"NIL",-84(A4)
-  MOVE.L  -148(A4),-96(A4)
-  MOVE.L	-140(A4),A0
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
 	JMP	(A0)
 E_WRITEBNIL:
 
 
 LINEDEF:
-  MOVE.B #1,EVODEFFLAG
-  MOVEM.L D0-D7/A0-A6,-(A7)
-  MOVE.W LINENUM,D0
-  ADDQ.W #1,D0
-  
-  LEA .ldeftxt+15(PC),A0
-  lea .hextxt(PC),A1
-  MOVE.W #3,D2
+	MOVE.B #1,EVODEFFLAG
+	MOVEM.L D0-D7/A0-A6,-(A7)
+	MOVE.W LINENUM,D0
+	ADDQ.W #1,D0
+	
+	LEA .ldeftxt+15(PC),A0
+	lea .hextxt(PC),A1
+	MOVE.W #3,D2
 .lnum
-  MOVE.W D0,D1
-  AND.W #$F,D1
-  LSR.W #4,D0
-  MOVE.B (A1,D1.W),-(A0)
-  DBF D2,.lnum
-  
-  LEA .ldeftxt(PC),A0
-  MOVE.B #10,9(A0)
-  JSR UNDEFMAIN
-  LEA .ldeftxt(PC),A0
-  MOVE.B #32,9(A0)
-  JSR DEFMAIN
-  CLR.B EVODEFFLAG
-  MOVEM.L (A7)+,D0-D7/A0-A6
-  RTS
+	MOVE.W D0,D1
+	AND.W #$F,D1
+	LSR.W #4,D0
+	MOVE.B (A1,D1.W),-(A0)
+	DBF D2,.lnum
+	
+	LEA .ldeftxt(PC),A0
+	MOVE.B #10,9(A0)
+	JSR UNDEFMAIN
+	LEA .ldeftxt(PC),A0
+	MOVE.B #32,9(A0)
+	JSR DEFMAIN
+	CLR.B EVODEFFLAG
+	MOVEM.L (A7)+,D0-D7/A0-A6
+	RTS
 
-  LEA .ldeftxt(PC),A0
+	LEA .ldeftxt(PC),A0
 .ldeftxt DC.B "_SRCLINE_ $0000",0
 .hextxt DC.B "0123456789ABCDEF"
 
 PROCDEF:
-  MOVE.B #1,EVODEFFLAG
-  MOVEM.L D0-D7/A0-A6,-(A7)
-  MOVE.l (A2),A0
-  
-  LEA .pdeftxt+11(PC),A1
+	MOVE.B #1,EVODEFFLAG
+	MOVEM.L D0-D7/A0-A6,-(A7)
+	MOVE.l (A2),A0
+	
+	LEA .pdeftxt+11(PC),A1
 .copyproc
-  TST.B (A0)
-  BEQ.S .maxproc
-  MOVE.B (A0)+,(A1)+
-  CMP.B #39,(A1)
-  BEQ.S .maxproc
-  BRA.S .copyproc
+	TST.B (A0)
+	BEQ.S .maxproc
+	MOVE.B (A0)+,(A1)+
+	CMP.B #39,(A1)
+	BEQ.S .maxproc
+	BRA.S .copyproc
 .maxproc:
-  MOVE.B #39,(A1)+
-  CLR.B (A1)+
-  
-  LEA .pdeftxt(PC),A0
-  MOVE.B #10,9(A0)
-  JSR UNDEFMAIN
-  LEA .pdeftxt(PC),A0
-  MOVE.B #32,9(A0)
-  JSR DEFMAIN
-  CLR.B EVODEFFLAG
-  MOVEM.L (A7)+,D0-D7/A0-A6
-  RTS
+	MOVE.B #39,(A1)+
+	CLR.B (A1)+
+	
+	LEA .pdeftxt(PC),A0
+	MOVE.B #10,9(A0)
+	JSR UNDEFMAIN
+	LEA .pdeftxt(PC),A0
+	MOVE.B #32,9(A0)
+	JSR DEFMAIN
+	CLR.B EVODEFFLAG
+	MOVEM.L (A7)+,D0-D7/A0-A6
+	RTS
 .pdeftxt DC.B "_SRCPROC_ '000000000000000000000000000000'",0
 
-  even
+	even
 ENDPROCDEF:
-  MOVE.B #1,EVODEFFLAG
-  MOVEM.L D0-D7/A0-A6,-(A7)
-  LEA .pdeftxt2(PC),A0
-  JSR UNDEFMAIN
-  MOVEM.L (A7)+,D0-D7/A0-A6
-  CLR.B EVODEFFLAG
-  RTS
+	MOVE.B #1,EVODEFFLAG
+	MOVEM.L D0-D7/A0-A6,-(A7)
+	LEA .pdeftxt2(PC),A0
+	JSR UNDEFMAIN
+	MOVEM.L (A7)+,D0-D7/A0-A6
+	CLR.B EVODEFFLAG
+	RTS
 
 .pdeftxt2 DC.B "_SRCPROC_",10
 
 DOARGMACROS:
 
 	LEA .evodef(PC),A0
-    MOVE.B #1,EVODEFFLAG
+	MOVE.B #1,EVODEFFLAG
 .nextdef:
 	MOVE.L A0,-(A7)
 	JSR DEFMAIN
@@ -39556,24 +39556,24 @@ DOARGMACROS:
 	BNE .nextdef
 
 	movem.l d0-a6,-(a7)
-	move.l  MCRS,D0  
-	beq.s     .11EX
-    
-	move.l  d0,a0
+	move.l	MCRS,D0	 
+	beq.s		.11EX
+	
+	move.l	d0,a0
 .11LP1:
-	move.l  (a0)+,d0
-	beq.s    .11EX
+	move.l	(a0)+,d0
+	beq.s	 .11EX
 
 	MOVE.L A0,-(A7)
 	MOVE.L D0,A0
 	JSR DEFMAIN
 	MOVE.L (A7)+,A0
 
-	bra.s     .11LP1
+	bra.s		.11LP1
 
 .11EX:
 	movem.l (a7)+,d0-a6
-    CLR.B EVODEFFLAG
+	CLR.B EVODEFFLAG
 	rts
 
 
@@ -39589,325 +39589,325 @@ DOARGMACROS:
 	DC.B 'EVO_3_10_0',0
 	DC.B 0,0
 
-    EVEN
+	EVEN
 
-DOPREPDATE:             ; #date
-    LEA .1(PC),A6           ; name
-    JSR PREPKCMP            ; check if true
-    JSR PREPWHITE           ; and if yes - skip whitespaces.
-    GETML    A5              ; A5=buffer mem
-    MOVE.L  A5,A4           ; A4=IDENT
-    PREPTAL  A6              ; A6=TABLE
-    MOVEQ   #0,D0           ;
-    MOVE.B  (A0)+,D0        ; D0=CHAR
-    MOVEQ   #0,D1           ; D1=HASH
-    PREPID  A6,D0           ;
-    BMI .iERROR64             ;
-.XL:HASHC   D1,D0           ; calculate macro hashvalue
-    MOVE.B  D0,(A5)+        ; A5 - macro name
-    MOVE.B  (A0)+,D0        ;
-    PREPIDR A6,D0           ;
-    BPL.S   .XL             ; until end of macro name
-    SUBQ.L  #1,A0           ;
-    CLR.B   (A5)+           ; macro name = "name\0"
-    MOVE.L  A5,D0           ;
-    BTST    #0,D0           ;
-    BEQ.S   .2              ;
-    CLR.B   (A5)+           ; must be word aligned
-.2: HASHE   D1              ;
-    LSL.L   #2,D1           ;
-    ADD.L   #MACROHASH,D1   ; add macro to hash table
-    MOVE.L  D1,A6           ;
-    JSR PREPFINDMACRO       ; and check if it wasnt already defined
-    TST.L   D0              ;
-    BNE .iERROR66             ;
-    MOVE.L  D1,A6           ; restore location
-    MOVE.L  (A6),(A5)       ; and add to list
-    MOVE.L  A5,(A6)         ;
-    MOVE.L  A5,A6           ; A6=MACOBJ
-    ADDQ.L  #4,A5           ; leave space for links
-    MOVE.L  A4,(A5)+        ; MAC_NAME
-    CLR.L   (A5)+           ; MAC_BODY
-    CLR.L   (A5)+           ; MAC_NARGS + MAC_FLAGS
-    DONEM   A5              ; -->FOR MACBODY NEEDS HEAVY
+DOPREPDATE:				; #date
+	LEA .1(PC),A6			; name
+	JSR PREPKCMP			; check if true
+	JSR PREPWHITE			; and if yes - skip whitespaces.
+	GETML	 A5				 ; A5=buffer mem
+	MOVE.L	A5,A4			; A4=IDENT
+	PREPTAL	 A6				 ; A6=TABLE
+	MOVEQ	#0,D0			;
+	MOVE.B	(A0)+,D0		; D0=CHAR
+	MOVEQ	#0,D1			; D1=HASH
+	PREPID	A6,D0			;
+	BMI .iERROR64				;
+.XL:HASHC	D1,D0			; calculate macro hashvalue
+	MOVE.B	D0,(A5)+		; A5 - macro name
+	MOVE.B	(A0)+,D0		;
+	PREPIDR A6,D0			;
+	BPL.S	.XL				; until end of macro name
+	SUBQ.L	#1,A0			;
+	CLR.B	(A5)+			; macro name = "name\0"
+	MOVE.L	A5,D0			;
+	BTST	#0,D0			;
+	BEQ.S	.2				;
+	CLR.B	(A5)+			; must be word aligned
+.2: HASHE	D1				;
+	LSL.L	#2,D1			;
+	ADD.L	#MACROHASH,D1	; add macro to hash table
+	MOVE.L	D1,A6			;
+	JSR PREPFINDMACRO		; and check if it wasnt already defined
+	TST.L	D0				;
+	BNE .iERROR66				;
+	MOVE.L	D1,A6			; restore location
+	MOVE.L	(A6),(A5)		; and add to list
+	MOVE.L	A5,(A6)			;
+	MOVE.L	A5,A6			; A6=MACOBJ
+	ADDQ.L	#4,A5			; leave space for links
+	MOVE.L	A4,(A5)+		; MAC_NAME
+	CLR.L	(A5)+			; MAC_BODY
+	CLR.L	(A5)+			; MAC_NARGS + MAC_FLAGS
+	DONEM	A5				; -->FOR MACBODY NEEDS HEAVY
 
-    JSR     PREPWHITE
-    BSR     .PREPARE
+	JSR		PREPWHITE
+	BSR		.PREPARE
 
-    GETML    A3              ; A3,D6=PRE_ANA_MACBODY
-    MOVE.L  A3,A2
-    MOVE.L  A3,MAC_BODY(A6) ;
-    MOVE.B  (A0)+,D0
-    CMP.B   #"'",D0
-    BNE     .iERROR64
-    MOVE.B  D0,(A3)+
+	GETML	 A3				 ; A3,D6=PRE_ANA_MACBODY
+	MOVE.L	A3,A2
+	MOVE.L	A3,MAC_BODY(A6) ;
+	MOVE.B	(A0)+,D0
+	CMP.B	#"'",D0
+	BNE		.iERROR64
+	MOVE.B	D0,(A3)+
 .LOOP:
-    MOVE.B  (A0)+,D0
-    CMP.B   #"%",D0
-    BEQ     .EXTEND
-    MOVE.B  d0,(A3)+
-    CMP.B   #"'",D0
-    BNE     .LOOP
-    CMP.B   #"'",(a0)+
-    BEQ     .LOOP
-    SUBQ.L  #1,A0
-    CLR.B   (A3)+
-    MOVE.L  A3,D0
-    BTST    #0,D0
-    BEQ     .DONTSET
-    CLR.B   (A3)+
+	MOVE.B	(A0)+,D0
+	CMP.B	#"%",D0
+	BEQ		.EXTEND
+	MOVE.B	d0,(A3)+
+	CMP.B	#"'",D0
+	BNE		.LOOP
+	CMP.B	#"'",(a0)+
+	BEQ		.LOOP
+	SUBQ.L	#1,A0
+	CLR.B	(A3)+
+	MOVE.L	A3,D0
+	BTST	#0,D0
+	BEQ		.DONTSET
+	CLR.B	(A3)+
 .DONTSET:
-    DONEH   A3
-    RTS
+	DONEH	A3
+	RTS
 .iERROR64: JMP ERROR64
 .iERROR66: JMP ERROR66
 
 .PREPARE:
-    MOVEM.L D0-D7/A0-A6,-(A7)
-    MOVE.L DOSBASE,A6
-    MOVE.L #.DATESTAMP,D1
-    JSR     -$c0(A6)
+	MOVEM.L D0-D7/A0-A6,-(A7)
+	MOVE.L DOSBASE,A6
+	MOVE.L #.DATESTAMP,D1
+	JSR		-$c0(A6)
 
-    MOVE.L  .DATESTAMP(PC),D0
-    MOVE.L D0,D7
-    MULU #43200,D7
-    ADD.L D7,D7
-    MOVE.L  .DATESTAMP+4(PC),D0
-    MULU #60,D0
-    ADD.L D0,D7
-    MOVE.L  .DATESTAMP+8(PC),D0
-    DIVU #50,D0
-    EXT.L D0
-    ADD.L D0,D7   
-    
-    MOVE.L 4,A6
-    LEA	.UTILLIB(PC),A1
-    MOVEQ	#0,D0
-    JSR	-552(A6)		;
-    MOVE.L	D0,A6
-    BEQ.S .SKIP_GO
-    
-    MOVE.L D7,D0
-    LEA     .DATESTORE(PC),A0
-    JSR     -120(A6)
+	MOVE.L	.DATESTAMP(PC),D0
+	MOVE.L D0,D7
+	MULU #43200,D7
+	ADD.L D7,D7
+	MOVE.L	.DATESTAMP+4(PC),D0
+	MULU #60,D0
+	ADD.L D0,D7
+	MOVE.L	.DATESTAMP+8(PC),D0
+	DIVU #50,D0
+	EXT.L D0
+	ADD.L D0,D7		
+	
+	MOVE.L 4,A6
+	LEA	.UTILLIB(PC),A1
+	MOVEQ	#0,D0
+	JSR	-552(A6)		;
+	MOVE.L	D0,A6
+	BEQ.S .SKIP_GO
+	
+	MOVE.L D7,D0
+	LEA		.DATESTORE(PC),A0
+	JSR		-120(A6)
 
-    MOVE.L  A6,A1
-    MOVE.L 4,A6
-    JSR	-414(A6)  
+	MOVE.L	A6,A1
+	MOVE.L 4,A6
+	JSR	-414(A6)	
 
 .SKIP_GO:
-    MOVEM.L (A7)+,D0-D7/A0-A6
-    RTS
+	MOVEM.L (A7)+,D0-D7/A0-A6
+	RTS
 
 .EXTEND:
-    MOVEQ   #0,D1
-    MOVe.B  (A0)+,D0
-    CMp.B   #"%",D0
-    BEQ     .S01
-    CMP.B   #"d",D0
-    BEQ     .S02
-    CMp.B   #"m",D0
-    BEQ     .S03
-    CMp.B   #"y",D0
-    BEQ     .S04
-    CMp.B   #"D",D0
-    BEQ     .S05
-    CMp.B   #"M",D0
-    BEQ     .S06
-    CMP.B   #"Y",D0
-    BEQ     .S09
-    CMP.B   #"h",D0
-    BEQ     .S10
-    CMP.B   #"n",D0
-    BEQ     .S11
-    CMP.B   #"s",D0
-    BEQ     .S12
-  
-    
-    CMP.B   #"a",D0
-    BNE     .XX
-    MOVE.B  (A0)+,D0
-    CMP.B   #"D",D0
-    BEQ     .S07
-    CMP.B   #"M",D0
-    BEQ     .S08
-.XX:BRA     .iERROR64
+	MOVEQ	#0,D1
+	MOVe.B	(A0)+,D0
+	CMp.B	#"%",D0
+	BEQ		.S01
+	CMP.B	#"d",D0
+	BEQ		.S02
+	CMp.B	#"m",D0
+	BEQ		.S03
+	CMp.B	#"y",D0
+	BEQ		.S04
+	CMp.B	#"D",D0
+	BEQ		.S05
+	CMp.B	#"M",D0
+	BEQ		.S06
+	CMP.B	#"Y",D0
+	BEQ		.S09
+	CMP.B	#"h",D0
+	BEQ		.S10
+	CMP.B	#"n",D0
+	BEQ		.S11
+	CMP.B	#"s",D0
+	BEQ		.S12
+	
+	
+	CMP.B	#"a",D0
+	BNE		.XX
+	MOVE.B	(A0)+,D0
+	CMP.B	#"D",D0
+	BEQ		.S07
+	CMP.B	#"M",D0
+	BEQ		.S08
+.XX:BRA		.iERROR64
 .S01:
-    MOVE.B  #"%",(A3)+
-    BRA     .LOOP
+	MOVE.B	#"%",(A3)+
+	BRA		.LOOP
 .S02:
-    MOVE.W  .DATESTORE+6(PC),D1
-    MOVEM.L D0-D7/A1-A2/A4-A6,-(A7)
-    MOVEQ   #1,D3
-    BSR     .PUTNUMBER
-    MOVEM.L (A7)+,D0-D7/A1-A2/A4-A6
-    BRA     .LOOP
+	MOVE.W	.DATESTORE+6(PC),D1
+	MOVEM.L D0-D7/A1-A2/A4-A6,-(A7)
+	MOVEQ	#1,D3
+	BSR		.PUTNUMBER
+	MOVEM.L (A7)+,D0-D7/A1-A2/A4-A6
+	BRA		.LOOP
 .S03:
-    MOVE.W  .DATESTORE+8(PC),D1
-    MOVEM.L D0-D7/A1-A2/A4-A6,-(A7)
-    MOVEQ   #1,D3
-    BSR     .PUTNUMBER
-    MOVEM.L (A7)+,D0-D7/A1-A2/A4-A6
-    BRA     .LOOP
+	MOVE.W	.DATESTORE+8(PC),D1
+	MOVEM.L D0-D7/A1-A2/A4-A6,-(A7)
+	MOVEQ	#1,D3
+	BSR		.PUTNUMBER
+	MOVEM.L (A7)+,D0-D7/A1-A2/A4-A6
+	BRA		.LOOP
 .S04:
-    MOVE.W  .DATESTORE+10(PC),D1
-    MOVEM.L D0-D7/A1-A2/A4-A6,-(A7)
-    MOVEQ   #3,D3
-    BSR     .PUTNUMBER
-    MOVEM.L (A7)+,D0-D7/A1-A2/A4-A6
-    BRA     .LOOP
+	MOVE.W	.DATESTORE+10(PC),D1
+	MOVEM.L D0-D7/A1-A2/A4-A6,-(A7)
+	MOVEQ	#3,D3
+	BSR		.PUTNUMBER
+	MOVEM.L (A7)+,D0-D7/A1-A2/A4-A6
+	BRA		.LOOP
 .S05:
-    MOVE.W  .DATESTORE+12(PC),D1
-    MOVEM.L D0-D7/A1-A2/A4-A6,-(A7)
-    LEA     LongDays,A1
-    BSR     .PUTSTRING
-    MOVEM.L (A7)+,D0-D7/A1-A2/A4-A6
-    BRA     .LOOP
+	MOVE.W	.DATESTORE+12(PC),D1
+	MOVEM.L D0-D7/A1-A2/A4-A6,-(A7)
+	LEA		LongDays,A1
+	BSR		.PUTSTRING
+	MOVEM.L (A7)+,D0-D7/A1-A2/A4-A6
+	BRA		.LOOP
 .S06:
-    MOVE.W  .DATESTORE+8(PC),D1
-    SUBQ.L  #1,D1
-    MOVEM.L D0-D7/A1-A2/A4-A6,-(A7)
-    LEA     LongMonths,A1
-    BSR     .PUTSTRING
-    MOVEM.L (A7)+,D0-D7/A1-A2/A4-A6
-    BRA     .LOOP
+	MOVE.W	.DATESTORE+8(PC),D1
+	SUBQ.L	#1,D1
+	MOVEM.L D0-D7/A1-A2/A4-A6,-(A7)
+	LEA		LongMonths,A1
+	BSR		.PUTSTRING
+	MOVEM.L (A7)+,D0-D7/A1-A2/A4-A6
+	BRA		.LOOP
 .S07:
-    MOVE.W  .DATESTORE+12(PC),D1
-    MOVEM.L D0-D7/A1-A2/A4-A6,-(A7)
-    LEA     ShortDays,A1
-    BSR     .PUTSTRING
-    MOVEM.L (A7)+,D0-D7/A1-A2/A4-A6
-    BRA     .LOOP
+	MOVE.W	.DATESTORE+12(PC),D1
+	MOVEM.L D0-D7/A1-A2/A4-A6,-(A7)
+	LEA		ShortDays,A1
+	BSR		.PUTSTRING
+	MOVEM.L (A7)+,D0-D7/A1-A2/A4-A6
+	BRA		.LOOP
 .S08:
-    MOVE.W  .DATESTORE+8(PC),D1
-    SUBQ.L  #1,D1
-    MOVEM.L D0-D7/A1-A2/A4-A6,-(A7)
-    LEA     ShortMonths,A1
-    BSR     .PUTSTRING
-    MOVEM.L (A7)+,D0-D7/A1-A2/A4-A6
-    BRA     .LOOP
+	MOVE.W	.DATESTORE+8(PC),D1
+	SUBQ.L	#1,D1
+	MOVEM.L D0-D7/A1-A2/A4-A6,-(A7)
+	LEA		ShortMonths,A1
+	BSR		.PUTSTRING
+	MOVEM.L (A7)+,D0-D7/A1-A2/A4-A6
+	BRA		.LOOP
 .S09:
-    MOVEQ   #0,D1
-    MOVE.W  .DATESTORE+10(PC),D1
+	MOVEQ	#0,D1
+	MOVE.W	.DATESTORE+10(PC),D1
 .S09_1:
-    SUB.L   #100,D1
-    BPL     .S09_1
-    ADD.L   #100,D1
-    MOVEM.L D0-D7/A1-A2/A4-A6,-(A7)
-    MOVEQ   #1,D3
-    BSR     .PUTNUMBER
-    MOVEM.L (A7)+,D0-D7/A1-A2/A4-A6
-    BRA     .LOOP
+	SUB.L	#100,D1
+	BPL		.S09_1
+	ADD.L	#100,D1
+	MOVEM.L D0-D7/A1-A2/A4-A6,-(A7)
+	MOVEQ	#1,D3
+	BSR		.PUTNUMBER
+	MOVEM.L (A7)+,D0-D7/A1-A2/A4-A6
+	BRA		.LOOP
 .S10:
-    MOVE.W  .DATESTORE+4(PC),D1
-    MOVEM.L D0-D7/A1-A2/A4-A6,-(A7)
-    MOVEQ   #1,D3
-    BSR     .PUTNUMBER
-    MOVEM.L (A7)+,D0-D7/A1-A2/A4-A6
-    BRA     .LOOP
+	MOVE.W	.DATESTORE+4(PC),D1
+	MOVEM.L D0-D7/A1-A2/A4-A6,-(A7)
+	MOVEQ	#1,D3
+	BSR		.PUTNUMBER
+	MOVEM.L (A7)+,D0-D7/A1-A2/A4-A6
+	BRA		.LOOP
 .S11:
-    MOVE.W  .DATESTORE+2(PC),D1
-    MOVEM.L D0-D7/A1-A2/A4-A6,-(A7)
-    MOVEQ   #1,D3
-    BSR     .PUTNUMBER
-    MOVEM.L (A7)+,D0-D7/A1-A2/A4-A6
-    BRA     .LOOP    
+	MOVE.W	.DATESTORE+2(PC),D1
+	MOVEM.L D0-D7/A1-A2/A4-A6,-(A7)
+	MOVEQ	#1,D3
+	BSR		.PUTNUMBER
+	MOVEM.L (A7)+,D0-D7/A1-A2/A4-A6
+	BRA		.LOOP	 
 .S12:
-    MOVE.W  .DATESTORE(PC),D1
-    MOVEM.L D0-D7/A1-A2/A4-A6,-(A7)
-    MOVEQ   #1,D3
-    BSR     .PUTNUMBER
-    MOVEM.L (A7)+,D0-D7/A1-A2/A4-A6
-    BRA     .LOOP    
-    
+	MOVE.W	.DATESTORE(PC),D1
+	MOVEM.L D0-D7/A1-A2/A4-A6,-(A7)
+	MOVEQ	#1,D3
+	BSR		.PUTNUMBER
+	MOVEM.L (A7)+,D0-D7/A1-A2/A4-A6
+	BRA		.LOOP	 
+	
 .PUTSTRING:
-    LSL.W   #2,D1
-    MOVE.L  0(A1,D1),A1
+	LSL.W	#2,D1
+	MOVE.L	0(A1,D1),A1
 .P:
-    MOVE.B  (A1)+,(A3)+
-    TST.B   (A1)
-    BNE     .P
-    RTS
+	MOVE.B	(A1)+,(A3)+
+	TST.B	(A1)
+	BNE		.P
+	RTS
 
 .PUTNUMBER:
-    LSL.W   #1,D3
-    LEA     .NUMBERS(PC),A1
-    ADD.L   D3,A1
-    LSR.W   #1,D3
+	LSL.W	#1,D3
+	LEA		.NUMBERS(PC),A1
+	ADD.L	D3,A1
+	LSR.W	#1,D3
 
-.D: MOVEQ   #-1,D2
-.S: ADDQ.L  #1,D2
-    SUB.W   (A1),D1
-    BPL     .S
-    ADD.W   (A1),D1
-    ADD.B   #"0",D2
-    MOVE.B  D2,(A3)+
-    SUBQ.L  #2,A1
-    DBF     D3,.D
-    RTS
+.D: MOVEQ	#-1,D2
+.S: ADDQ.L	#1,D2
+	SUB.W	(A1),D1
+	BPL		.S
+	ADD.W	(A1),D1
+	ADD.B	#"0",D2
+	MOVE.B	D2,(A3)+
+	SUBQ.L	#2,A1
+	DBF		D3,.D
+	RTS
 .NUMBERS:
-    DC.W    1,10,100,1000,10000
+	DC.W	1,10,100,1000,10000
 
 .UTILLIB: DC.B 'utility.library',0
 .DATESTAMP: DC.L 0,0,0
 .DATESTORE:
-    DC.L    0,0,0,0
-.1: DC.B    "ate",0
+	DC.L	0,0,0,0
+.1: DC.B	"ate",0
 
 ;; #date data
 
 LongMonths:
-    DC.L    .01,.02,.03,.04,.05,.06,.07,.08,.09,.10,.11,.12
-.01:DC.B    "January",0
-.02:DC.B    "February",0
-.03:DC.B    "March",0
-.04:DC.B    "April",0
-.05:DC.B    "May",0
-.06:DC.B    "June",0
-.07:DC.B    "July",0
-.08:DC.B    "August",0
-.09:DC.B    "September",0
-.10:DC.B    "October",0
-.11:DC.B    "November",0
-.12:DC.B    "December",0
-    EVEN
+	DC.L	.01,.02,.03,.04,.05,.06,.07,.08,.09,.10,.11,.12
+.01:DC.B	"January",0
+.02:DC.B	"February",0
+.03:DC.B	"March",0
+.04:DC.B	"April",0
+.05:DC.B	"May",0
+.06:DC.B	"June",0
+.07:DC.B	"July",0
+.08:DC.B	"August",0
+.09:DC.B	"September",0
+.10:DC.B	"October",0
+.11:DC.B	"November",0
+.12:DC.B	"December",0
+	EVEN
 ShortMonths:
-    DC.L    .01,.02,.03,.04,.05,.06,.07,.08,.09,.10,.11,.12
-.01:DC.B    "Jan",0
-.02:DC.B    "Feb",0
-.03:DC.B    "Mar",0
-.04:DC.B    "Apr",0
-.05:DC.B    "May",0
-.06:DC.B    "Jun",0
-.07:DC.B    "Jul",0
-.08:DC.B    "Aug",0
-.09:DC.B    "Sep",0
-.10:DC.B    "Oct",0
-.11:DC.B    "Nov",0
-.12:DC.B    "Dec",0
-    EVEN
+	DC.L	.01,.02,.03,.04,.05,.06,.07,.08,.09,.10,.11,.12
+.01:DC.B	"Jan",0
+.02:DC.B	"Feb",0
+.03:DC.B	"Mar",0
+.04:DC.B	"Apr",0
+.05:DC.B	"May",0
+.06:DC.B	"Jun",0
+.07:DC.B	"Jul",0
+.08:DC.B	"Aug",0
+.09:DC.B	"Sep",0
+.10:DC.B	"Oct",0
+.11:DC.B	"Nov",0
+.12:DC.B	"Dec",0
+	EVEN
 
 LongDays:
-    DC.L    .0,.1,.2,.3,.4,.5,.6
-.0: DC.B    "Sunday",0
-.1: DC.B    "Monday",0
-.2: DC.B    "Tuesday",0
-.3: DC.B    "Wednesday",0
-.4: DC.B    "Thursday",0
-.5: DC.B    "Friday",0
-.6: DC.B    "Saturday",0
-    EVEN
+	DC.L	.0,.1,.2,.3,.4,.5,.6
+.0: DC.B	"Sunday",0
+.1: DC.B	"Monday",0
+.2: DC.B	"Tuesday",0
+.3: DC.B	"Wednesday",0
+.4: DC.B	"Thursday",0
+.5: DC.B	"Friday",0
+.6: DC.B	"Saturday",0
+	EVEN
 
 ShortDays:
-    DC.L    .0,.1,.2,.3,.4,.5,.6
-.0: DC.B    "Su",0
-.1: DC.B    "Mo",0
-.2: DC.B    "Tu",0
-.3: DC.B    "We",0
-.4: DC.B    "Th",0
-.5: DC.B    "Fr",0
-.6: DC.B    "Sa",0
-    EVEN
+	DC.L	.0,.1,.2,.3,.4,.5,.6
+.0: DC.B	"Su",0
+.1: DC.B	"Mo",0
+.2: DC.B	"Tu",0
+.3: DC.B	"We",0
+.4: DC.B	"Th",0
+.5: DC.B	"Fr",0
+.6: DC.B	"Sa",0
+	EVEN
 
 ;xxx:
 ;	lea	.1(pc),a0
@@ -39917,8 +39917,8 @@ ShortDays:
 
 
 ; NEEDS TO GEN T/F IN D2
-      MATHINITETC:			; A4=CODE
-  BTST	#3,CODEPREFS+1
+		MATHINITETC:			; A4=CODE
+	BTST	#3,CODEPREFS+1
 	BEQ.S	.1
 	LEA	OPENMATHBAS(PC),A0
 	MOVE.L	#OPENBASEND,D0
@@ -39928,75 +39928,75 @@ ShortDays:
 	LEA	OPENMATHTRANS(PC),A0
 	MOVE.L	#OPENTRANSEND,D0
 	BSR	CCOPY
-.2:	BTST    #7,CODEPREFS
-	BEQ     .2_0
-	BTST    #4,CODEPREFS
-	BNE     .iERROR50
+.2:	BTST	#7,CODEPREFS
+	BEQ		.2_0
+	BTST	#4,CODEPREFS
+	BNE		.iERROR50
 	LEA OPENUTIL(PC),A0
-	MOVE.L  #OPENUTILEND,D0
+	MOVE.L	#OPENUTILEND,D0
 	BSR CCOPY
 .2_0:
 	BTST	#2,CODEPREFS
 	BEQ.S .3
-	BTST    #4,CODEPREFS
-	BNE     .iERROR50
+	BTST	#4,CODEPREFS
+	BNE		.iERROR50
 
 	CMP.W	#39,OSVERSION
 	BPL.S	.pool3
 
 	LEA OPENPOOLWITHCHECK(PC),A0
-	MOVE.L  #OPENPOOLWITHCHECKEND,D0
+	MOVE.L	#OPENPOOLWITHCHECKEND,D0
 	BSR CCOPY
 	BRA.S .3
 
 .pool3
 	LEA OPENPOOL(PC),A0
-	MOVE.L  #OPENPOOLEND,D0
+	MOVE.L	#OPENPOOLEND,D0
 	BSR CCOPY
-.3:	BTST    #3,CODEPREFS
-	BEQ     .4
+.3:	BTST	#3,CODEPREFS
+	BEQ		.4
 	LEA OPENFILES(PC),A0
-	MOVE.L  #OPENFILESEND,D0
+	MOVE.L	#OPENFILESEND,D0
 	BSR CCOPY
 .4:	
 	MOVE.L	.T(PC),(A4)+
-  TST.W   ASMCPU
-  BEQ     .0
-  LEA CHECK_CPU_FPU(PC),A0
-  MOVE.W  ASMCPU,2(A0)
-  MOVE.L  #CHECK_CPU_FPU_END,D0
-  BSR CCOPY
+	TST.W		ASMCPU
+	BEQ		.0
+	LEA CHECK_CPU_FPU(PC),A0
+	MOVE.W	ASMCPU,2(A0)
+	MOVE.L	#CHECK_CPU_FPU_END,D0
+	BSR CCOPY
 .0:
-  BTST #0,CODEPREFS+2
-  BEQ     .00
-  LEA CHECK_OSVERSION(PC),A0
-  MOVE.W  OSVERSION,2(A0)
-  MOVE.L  #CHECK_OSVERSION_END,D0
-  BSR CCOPY
+	BTST #0,CODEPREFS+2
+	BEQ		.00
+	LEA CHECK_OSVERSION(PC),A0
+	MOVE.W	OSVERSION,2(A0)
+	MOVE.L	#CHECK_OSVERSION_END,D0
+	BSR CCOPY
 .00:
-    LEA  SetupMod+4,A0
-.A: MOVE.L  -4(A0),D0
-    BEQ     .C
-    MOVE.L  D0,A0
-    MOVE.W  .U(PC),(A4)+
-    MOVE.L  A0,-(A7)
-    MOVE.L  (A0),A0
-    MOve.L  14(A0),A0
-    MOVEQ   #0,D0
-    MOVE.W  10(A0),D0
-    JSR     ADDBRANCHRELOC
-    MOVE.L  (A7)+,A0
-    BRA     .A
+	LEA	 SetupMod+4,A0
+.A: MOVE.L	-4(A0),D0
+	BEQ		.C
+	MOVE.L	D0,A0
+	MOVE.W	.U(PC),(A4)+
+	MOVE.L	A0,-(A7)
+	MOVE.L	(A0),A0
+	MOve.L	14(A0),A0
+	MOVEQ	#0,D0
+	MOVE.W	10(A0),D0
+	JSR		ADDBRANCHRELOC
+	MOVE.L	(A7)+,A0
+	BRA		.A
 .C:
-  RTS
+	RTS
 
 .T:	MOVEQ	#-1,D2
-    SUB.L A2,A2
-.U: JSR     .U   
+	SUB.L A2,A2
+.U: JSR		.U	 
  
 .iERROR50 JMP ERROR50
 
-      MATHEXITETC:
+		MATHEXITETC:
 	TSTMOD
 	BNE	.EX
 	BTST	#3,CODEPREFS+3
@@ -40005,19 +40005,19 @@ ShortDays:
 	MOVEQ	#8,D0
 	JSR	ADDLABEL
 
-    LEA  CleanupMod+4,A0
-.8: MOVE.L  -4(A0),D0
-    BEQ     .9
-    MOVE.L  D0,A0
-    MOVE.W  .JSR(PC),(A4)+
-    MOVE.L  A0,-(A7)
-    MOVE.L  (A0),A0
-    MOve.L  14(A0),A0
-    MOVEQ   #0,D0
-    MOVE.W  10(A0),D0
-    JSR     ADDBRANCHRELOC
-    MOVE.L  (A7)+,A0
-    BRA     .8
+	LEA	 CleanupMod+4,A0
+.8: MOVE.L	-4(A0),D0
+	BEQ		.9
+	MOVE.L	D0,A0
+	MOVE.W	.JSR(PC),(A4)+
+	MOVE.L	A0,-(A7)
+	MOVE.L	(A0),A0
+	MOve.L	14(A0),A0
+	MOVEQ	#0,D0
+	MOVE.W	10(A0),D0
+	JSR		ADDBRANCHRELOC
+	MOVE.L	(A7)+,A0
+	BRA		.8
 .9:
 
 	BTST	#3,CODEPREFS+1
@@ -40030,25 +40030,25 @@ ShortDays:
 	LEA	CLOSEMATHTRANS(PC),A0
 	MOVE.L	#CLOSETRANSEND,D0
 	BSR	CCOPY
-.2: BTST    #7,CODEPREFS
-    BEQ     .2_0
-    BTST    #4,CODEPREFS
-    BNE     .iERROR50
-    LEA CLOSEUTIL(PC),A0
-    MOVE.L  #CLOSEUTILEND,D0
-    BSR CCOPY
-.2_0:
-    BTST	#2,CODEPREFS
-	BEQ.S .2a
-    BTST    #4,CODEPREFS
-    BNE     .iERROR50
-	LEA CLOSEPOOL(PC),A0
-	MOVE.L  #CLOSEPOOLEND,D0
+.2: BTST	#7,CODEPREFS
+	BEQ		.2_0
+	BTST	#4,CODEPREFS
+	BNE		.iERROR50
+	LEA CLOSEUTIL(PC),A0
+	MOVE.L	#CLOSEUTILEND,D0
 	BSR CCOPY
-.2a:	BTST    #3,CODEPREFS
-	BEQ     .2b
+.2_0:
+	BTST	#2,CODEPREFS
+	BEQ.S .2a
+	BTST	#4,CODEPREFS
+	BNE		.iERROR50
+	LEA CLOSEPOOL(PC),A0
+	MOVE.L	#CLOSEPOOLEND,D0
+	BSR CCOPY
+.2a:	BTST	#3,CODEPREFS
+	BEQ		.2b
 	LEA CLOSEFILES(PC),A0
-	MOVE.L  #CLOSEFILESEND,D0
+	MOVE.L	#CLOSEFILESEND,D0
 	BSR CCOPY
 .2b:
 	CMP.W	#37,OSVERSION
@@ -40066,9 +40066,9 @@ ShortDays:
 	JSR	CHECK3
 .EX:
 .RTS:	RTS
-.JSR:   JSR .JSR
+.JSR:	JSR .JSR
 
-.iERROR50   JMP ERROR50
+.iERROR50	JMP ERROR50
 
 .CLEANCON:
 	MOVE.L	-12(A4),D1
@@ -40091,7 +40091,7 @@ ShortDays:
 	JSR	-36(A6)
 .ENDCON37:
 
-      CCOPY:
+		CCOPY:
 	SUB.L	A0,D0
 	LSR.L	#1,D0
 	SUBQ.L	#1,D0
@@ -40099,14 +40099,14 @@ ShortDays:
 	DBRA	D0,.L
 	RTS
 
-      OPENMATHBAS:
+		OPENMATHBAS:
 	BRA.S	BASCONT
 requires1:
-  DC.B  "requires "
-      INITMATH:
+	DC.B	"requires "
+		INITMATH:
 	DC.B	"mathieeesingbas.library",0,0
 	EVEN
-      BASCONT:
+		BASCONT:
 	MOVE.L	4.W,A6
 	LEA	INITMATH(PC),A1
 	MOVEQ	#33,D0
@@ -40114,18 +40114,18 @@ requires1:
 	MOVE.L	D0,-56(A4)
 	BNE.S	OPENBASEND
 	MOVEQ	#0,D2
-  LEA requires1(PC),A2
-  MOVE.B #10,32(a2)
-      OPENBASEND:
+	LEA requires1(PC),A2
+	MOVE.B #10,32(a2)
+		OPENBASEND:
 
-      OPENMATHTRANS:
+		OPENMATHTRANS:
 	BRA.S	TRANSCONT
 requires2:
-  DC.B  "requires "
-      INITMATHT:
+	DC.B	"requires "
+		INITMATHT:
 	DC.B	"mathieeesingtrans.library",0
 	EVEN
-      TRANSCONT:
+		TRANSCONT:
 	MOVE.L	4.W,A6
 	LEA	INITMATHT(PC),A1
 	MOVEQ	#33,D0
@@ -40133,125 +40133,125 @@ requires2:
 	MOVE.L	D0,-60(A4)
 	BNE.S	OPENTRANSEND
 	MOVEQ	#0,D2
-  LEA requires2(PC),A2
-  MOVE.B #10,34(a2)
-      OPENTRANSEND:
+	LEA requires2(PC),A2
+	MOVE.B #10,34(a2)
+		OPENTRANSEND:
 
-      CLOSEMATHBAS:
+		CLOSEMATHBAS:
 	MOVE.L	4.W,A6
 	MOVE.L	-56(A4),D0
 	BEQ.S	CLOSEBASEND
 	MOVE.L	D0,A1
 	JSR	-414(A6)
-      CLOSEBASEND:
+		CLOSEBASEND:
 
-      CLOSEMATHTRANS:
+		CLOSEMATHTRANS:
 	MOVE.L	4.W,A6
 	MOVE.L	-60(A4),D0
 	BEQ.S	CLOSETRANSEND
 	MOVE.L	D0,A1
 	JSR	-414(A6)
-      CLOSETRANSEND:
+		CLOSETRANSEND:
 
 ;*-*
-; OpenPool      
+; OpenPool		
 OPENPOOLWITHCHECK:
-    MOVE.L  $4,A6
-    CMP.W #39,20(A6)
-    BMI.S OPENPOOLWITHCHECKEND
-    MOVE.L  #$10001,D0  ;these values are updated
-    MOVE.L  #10240,D1   ;these values are updated
-    MOVE.L  #256,D2     ;these values are updated
-    JSR     -696(A6)
-    MOVE.L  D0,-124(A4)
+	MOVE.L	$4,A6
+	CMP.W #39,20(A6)
+	BMI.S OPENPOOLWITHCHECKEND
+	MOVE.L	#$10001,D0	;these values are updated
+	MOVE.L	#10240,D1	;these values are updated
+	MOVE.L	#256,D2		;these values are updated
+	JSR		-696(A6)
+	MOVE.L	D0,-124(A4)
 OPENPOOLWITHCHECKEND:
 OPENPOOL:
-    MOVE.L  #$10001,D0  ;these values are updated
-    MOVE.L  #10240,D1   ;these values are updated
-    MOVE.L  #256,D2     ;these values are updated
-    MOVE.L  $4,A6
-    JSR     -696(A6)
-    MOVE.L  D0,-124(A4)
+	MOVE.L	#$10001,D0	;these values are updated
+	MOVE.L	#10240,D1	;these values are updated
+	MOVE.L	#256,D2		;these values are updated
+	MOVE.L	$4,A6
+	JSR		-696(A6)
+	MOVE.L	D0,-124(A4)
 OPENPOOLEND:
 ;; OpenFiles
 OPENFILES:
-    CLR.L   -128(A4)
+	CLR.L	-128(A4)
 OPENFILESEND:
 ;; OpenUtil
 OPENUTIL:
-    BRA.S   .OPENUTIL2
-.REQUTIL  DC.B 'requires '
+	BRA.S	.OPENUTIL2
+.REQUTIL	DC.B 'requires '
 .UTILNAME:
-    DC.B    "utility.library",0,0
-    EVEN
+	DC.B	"utility.library",0,0
+	EVEN
 .OPENUTIL2:
-    MOVE.L  $4.W,A6
-    LEA .UTILNAME(PC),A1
-    MOVEQ   #33,D0
-    JSR -552(A6)
-    MOVE.L  D0,-132(A4)
-    BNE.S   OPENUTILEND
-    MOVEQ   #0,D2
-    LEA .REQUTIL(PC),A2
-    MOVE.B #10,24(a2)
-    
+	MOVE.L	$4.W,A6
+	LEA .UTILNAME(PC),A1
+	MOVEQ	#33,D0
+	JSR -552(A6)
+	MOVE.L	D0,-132(A4)
+	BNE.S	OPENUTILEND
+	MOVEQ	#0,D2
+	LEA .REQUTIL(PC),A2
+	MOVE.B #10,24(a2)
+	
 OPENUTILEND:
 
 ;; Check CPU/FPU
 CHECK_CPU_FPU:
-    MOVE.W  #0,D0
-    BRA.S   .LM1
-.LM0:DC.B    'This program requires a better CPU/FPU',10,0
-.LM1:MOVE.L  $4.W,A6
-    AND.W   296(A6),D0
-    BNE     CHECK_CPU_FPU_END
-    MOVEQ   #0,D2
-    LEA     .LM0(PC),A2
+	MOVE.W	#0,D0
+	BRA.S	.LM1
+.LM0:DC.B	 'This program requires a better CPU/FPU',10,0
+.LM1:MOVE.L	 $4.W,A6
+	AND.W	296(A6),D0
+	BNE		CHECK_CPU_FPU_END
+	MOVEQ	#0,D2
+	LEA		.LM0(PC),A2
 CHECK_CPU_FPU_END:
 ;; Check OSVersion
 CHECK_OSVERSION:
-    MOVE.W  #0,D0
-    BRA.B   .LM3
-.LM2:DC.B    'This program requires a newer OS',10,0
-.LM3:MOVE.L  $4.W,A6
-    CMP.W   20(A6),D0
-    BLE     CHECK_OSVERSION_END
-    MOVEQ   #0,D2
-    LEA     .LM2(PC),A2
+	MOVE.W	#0,D0
+	BRA.B	.LM3
+.LM2:DC.B	 'This program requires a newer OS',10,0
+.LM3:MOVE.L	 $4.W,A6
+	CMP.W	20(A6),D0
+	BLE		CHECK_OSVERSION_END
+	MOVEQ	#0,D2
+	LEA		.LM2(PC),A2
 CHECK_OSVERSION_END:
 ;*-*
 
 ; ClosePool
 CLOSEPOOL:
-    MOVE.L  $4.W,A6
-    MOVE.L  -124(A4),A0
-    JSR     -702(A6)
+	MOVE.L	$4.W,A6
+	MOVE.L	-124(A4),A0
+	JSR		-702(A6)
 CLOSEPOOLEND:
 ;*-*
 ;; CloseFiles
 CLOSEFILES:
-    move.l  -128(a4),d0
-    beq     CLOSEFILESEND
-.1: move.l  d0,a0
-    move.l  (a0),d4
-    move.l  4(a0),d5
-    move.l  a0,a1
-    moveq   #8,d0
-    move.l  -40(a4),a6
-    jsr     -210(a6)
-    move.l  d5,d1
-    move.l  -44(a4),a6
-    jsr     -36(a6)
-    move.l  d4,d0
-    bne     .1
+	move.l	-128(a4),d0
+	beq		CLOSEFILESEND
+.1: move.l	d0,a0
+	move.l	(a0),d4
+	move.l	4(a0),d5
+	move.l	a0,a1
+	moveq	#8,d0
+	move.l	-40(a4),a6
+	jsr		-210(a6)
+	move.l	d5,d1
+	move.l	-44(a4),a6
+	jsr		-36(a6)
+	move.l	d4,d0
+	bne		.1
 CLOSEFILESEND:
 ;; CloseUtil
 CLOSEUTIL:
-    MOVE.L $4.W,A6
-    MOVE.L -132(A4),D0
-    BEQ CLOSEUTILEND
-    MOVE.L D0,A1
-    JSR -414(A6)
+	MOVE.L $4.W,A6
+	MOVE.L -132(A4),D0
+	BEQ CLOSEUTILEND
+	MOVE.L D0,A1
+	JSR -414(A6)
 CLOSEUTILEND:
 ;*-*
 
@@ -40269,7 +40269,7 @@ DESTNAMEBUF:	DS.B	300
 		EVEN
 SRCDIRBUF:	DS.B	300
 		EVEN
-SRCFULLNAME     DS.B	300
+SRCFULLNAME		DS.B	300
 		EVEN
 DIRNAME:	DS.B	300
 		EVEN
@@ -40279,9 +40279,9 @@ PRINTBUF2:	DS.B	300
 		EVEN
 WORKBUF:	DS.B	MAXIDENT+2
 		EVEN
-TEMPSPACEDATABUF:  DS.B 10000
+TEMPSPACEDATABUF:	DS.B 10000
 tempspacebuffend:
-globmapbuf:  DS.B 15000
+globmapbuf:	 DS.B 15000
 globmapbuffend:
 ;ESTACKBUF:	DS.B	MAXSTACK+2
 ;		EVEN
