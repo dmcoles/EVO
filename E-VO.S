@@ -10194,7 +10194,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.10.0-dev',160
-			DC.B	'(31.07.2026)'
+			DC.B	'(11.09.2026)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -39130,8 +39130,8 @@ I_WRITEFNIL:
 	BEQ.S	.2
 .3:	MOVE.L	4(A7),D0
 	MOVE.L	8(A7,D0.L),A0
-	BEQ.S .NIL
 	MOVE.L A0,D2
+	BEQ.S .NIL
 	TST.L D0
 	BEQ.S .0
 	LEA	8(A7),A1
