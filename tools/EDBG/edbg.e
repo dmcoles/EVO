@@ -59,7 +59,7 @@ DEF exe=NIL:PTR TO e_exe,frame:PTR TO stackframe,
 
 ENUM STEP_NONE,STEP_IN,STEP_OVER,STEP_RUN,STEP_THROW,STEP_FOLLOW
 
-CONST MAX_WATCH=250, MAX_WLINE=100
+CONST MAX_WATCH=250, MAX_WLINE=120
 
 RAISE "MEM" IF String()=NIL
 
@@ -67,7 +67,7 @@ PROC main() HANDLE
   DEF options:PTR TO LONG,rdargs=NIL,exename[100]:STRING,e:PTR TO dbgwin,
       pubconname[200]:STRING, i
   DEF gb:PTR TO gfxbase
-  title:='EDBG v3.10.0, The E Debugger! © 1994-1997 Wouter (and Jason), 2021-2026 Darren Coles'
+  title:='EDBG v3.10.0, The E Debugger! ©1994-1997 Wouter (and Jason)\n© 2021-2026 Darren Coles'
   reqtitle:='EDBG'
   vars:=newlist()
   options:=[0,0,0,0]
@@ -75,7 +75,7 @@ PROC main() HANDLE
     StrCopy(exename,options[0])
     IF options[3] THEN StrCopy(argstring,options[3])
     IF options[2]
-      StrCopy(pubname,options[1])
+      StrCopy(pubname,options[2])
       IF scr:=LockPubScreen(pubname) THEN font:=scr.rastport::rastport.font
     ENDIF
     FreeArgs(rdargs)
@@ -91,10 +91,11 @@ PROC main() HANDLE
   ENDIF
  
   WriteF('\s.\nLoading "\s"...\n',title,exename)
+  title[CharInStr(title,"\n")]:=" "
   NEW exe.load(exename,trap1,trap2)
   IF scr=NIL
     StrCopy(pubname,'EDBG')
-    IF options[1] THEN StrAdd(pubname,options[1])
+    IF options[2] THEN StrAdd(pubname,options[2])
     scr,font:=openclonescreen('Workbench',title,2,pubname)
     oscr:=scr
     PubScreenStatus(scr,0)       -> TEMP!!
@@ -208,6 +209,7 @@ PROC createmenus()
       2,0,'Refresh Views',      'V',0,0,0,
       2,0,'Find in Source',     'F',0,0,0,
       2,0,'Find next',          'N',0,0,0,
+      2,0,'Goto line',          'G',0,0,0,
       2,0,'Locate Offset',      'L',0,0,0,
     1,0,'Rexx',0,0,0,0,
       2,0,'Execute script 1',    0 ,0,0,0,
@@ -711,23 +713,28 @@ PROC ehelp(p)
 ENDPROC
 
 PROC search()
-  DEF st:PTR TO scrolltext
-  st:=currentwin.scwin
-  IF easyguiA(reqtitle,
-      [ROWS,
-        [TEXT,'Enter text to find ',NIL,FALSE,3],
-        [STR,1,'_Text:',findstr,100,10,0,0,"t"],
-        [CHECK,{mcasesensitive},'Case Sensitive?',casesensitivefind,TRUE,0,"c"],
-        [BAR],
-        [COLS,
-          [BUTTON,1,'_Find',0,"f"],
-          [SPACEH],
-          [BUTTON,0,'_Cancel',0,"c"]
-        ]
-      ],
-      [EG_SCRN,scr,NIL])
+  DEF st=0:PTR TO scrolltext
 
-    runsearch(0)    
+  IF issrcwin(currentwin) THEN st:=currentwin.scwin
+  IF st
+    IF easyguiA(reqtitle,
+        [ROWS,
+          [TEXT,'Enter text to find ',NIL,FALSE,3],
+          [STR,1,'_Text:',findstr,100,10,0,0,"t"],
+          [CHECK,{mcasesensitive},'Case Sensitive?',casesensitivefind,TRUE,0,"c"],
+          [BAR],
+          [COLS,
+            [BUTTON,1,'_Find',0,"f"],
+            [SPACEH],
+            [BUTTON,0,'_Cancel',0,"c"]
+          ]
+        ],
+        [EG_SCRN,scr,NIL])
+
+      runsearch(0)    
+    ENDIF
+  ELSE
+    request1('No source file selected','_Oh',"o")
   ENDIF
 ENDPROC
 
@@ -742,29 +749,34 @@ ENDPROC
 PROC runsearch(start)
   DEF n,max,r
   DEF lines:PTR TO LONG
-  DEF st:PTR TO scrolltext
+  DEF st=0:PTR TO scrolltext
   
-  st:=currentwin.scwin
-  n:=start
-  max:=ListLen(lines:=currentwin.src.lines())
-  lines:=lines+(n*4)
-  WHILE n<max
-     IF casesensitivefind
-       r:=InStr(lines[],findstr,0)<>-1
-     ELSE 
-       r:=InStr(lines[],findstr,0)<>-1
-     ENDIF
-	EXIT r
-    lines++
-    n++
-  ENDWHILE
-->    IF n THEN st.settop(max-n) ELSE request1('Could not find text','_Hmmm',"h")
-  IF n<max
-    st.active(n)
-    lastfind:=n
-  ELSE 
-    request1('Could not find text','_Hmmm',"h")
-    lastfind:=-1
+  IF issrcwin(currentwin) THEN st:=currentwin.scwin
+  IF st
+  
+    n:=start
+    max:=ListLen(lines:=currentwin.src.lines())
+    lines:=lines+(n*4)
+    WHILE n<max
+       IF casesensitivefind
+         r:=InStr(lines[],findstr,0)<>-1
+       ELSE 
+         r:=InStr(lines[],findstr,0)<>-1
+       ENDIF
+    EXIT r
+      lines++
+      n++
+    ENDWHILE
+  ->    IF n THEN st.settop(max-n) ELSE request1('Could not find text','_Hmmm',"h")
+    IF n<max
+      st.active(n)
+      lastfind:=n
+    ELSE 
+      request1('Could not find text','_Hmmm',"h")
+      lastfind:=-1
+    ENDIF
+  ELSE
+    request1('No source file selected','_Oh',"o")
   ENDIF
 ENDPROC
 
@@ -814,6 +826,7 @@ PROC handlemenu(imsg:PTR TO intuimessage)
         CASE 2; dwins.refresh()     -> Refresh
         CASE 3; search()            -> Find in Source
         CASE 4; searchnext()        -> Find next
+        CASE 5; gotoline()          -> Goto line in source
         CASE 5; offset()            -> Locate Offset
       ENDSELECT
     CASE 4
@@ -823,6 +836,47 @@ PROC handlemenu(imsg:PTR TO intuimessage)
         CASE 2;	exe_arexx_cmd(rxs3)
       ENDSELECT
   ENDSELECT
+ENDPROC
+
+PROC issrcwin(checkwin)
+  DEF dw:PTR TO dbgwin
+  dw:=dwins
+  WHILE dw
+    IF (dw.type=T_SRC) AND (dw=checkwin) THEN RETURN TRUE
+    dw:=dw.next
+  ENDWHILE
+ENDPROC FALSE
+
+PROC gotoline()
+  DEF v,r,i,max,st=0:PTR TO scrolltext
+  
+  IF issrcwin(currentwin) THEN st:=currentwin.scwin
+  IF st
+    IF easyguiA(reqtitle,
+        [ROWS,
+          [TEXT,'Enter line number',NIL,FALSE,3],
+          [STR,1,'Line:',offstr,12,10,0,0,"o"],
+          [BAR],
+          [COLS,
+            [BUTTON,1,'_Goto',0,"l"],
+            [SPACEH],
+            [BUTTON,0,'_Cancel',0,"c"]
+          ]
+        ],
+        [EG_SCRN,scr,NIL])
+      v,r:=Val(offstr)
+      IF r
+        max:=ListLen(currentwin.src.lines())
+        IF v<max
+          st.active(v)
+        ELSE 
+          request1('Bad line number','_Oh',"o")
+        ENDIF
+      ENDIF
+    ENDIF
+  ELSE
+    request1('No source file selected','_Oh',"o")
+  ENDIF
 ENDPROC
 
 PROC offset()
@@ -864,6 +918,7 @@ PROC handlesrc(data,imsg:PTR TO intuimessage)
   DEF cl,vx,vy
   IF data THEN currentwin:=data
   IF (cl:=imsg.class)=IDCMP_MENUPICK
+    currentwin:=data
     handlemenu(imsg)
   ELSEIF cl=IDCMP_RAWKEY
     handlekey(imsg.code)
@@ -1031,10 +1086,7 @@ PROC step(fr:PTR TO stackframe)
     IF followgh=NIL
       IF first_step_done=FALSE
         unreachablea7:=fr+100000			-> imp! beyond main stack level
-        first_step_done:=TRUE
-  WriteF('about to execute rexx startup\n')
-  Delay(300)
-        
+        first_step_done:=TRUE       
         exe_arexx_cmd('.edbg-startup.rexx')
         IF doabout THEN Delay(6) BUT about()
       ENDIF
@@ -1359,15 +1411,19 @@ ENDPROC
 
 PROC choose_source() HANDLE
   DEF l,s:PTR TO e_source,a=0,num=-1
+  DEF wid
   s:=exe.sources()
   l:=newlist()
+  wid:=24
   WHILE s
     AddTail(l,newnode(NIL,s.name()))
+    IF StrLen(s.name())>wid THEN wid:=StrLen(s.name())
     s:=s.next()
   ENDWHILE
+  IF wid>40 THEN wid:=40
   easyguiA(reqtitle,
     [EQROWS,
-       [LISTV,{sourcenum},'Select Source:',24,5,l,FALSE,0,0],
+       [LISTV,{sourcenum},'Select Source:',wid,5,l,FALSE,0,0],
        [BAR],
        [COLS,[SPACEH],[BUTTON,0,'_Cancel',0,"c"],[SPACEH]]
     ],
@@ -1524,15 +1580,12 @@ PROC exe_arexx_cmd(cmdstr) HANDLE	-> either a file name or a quoted string
   rmsg.action:=RXCOMM
   PutMsg(rexx,rmsg)
   Permit(); forb:=FALSE
-  Delay(300)
-  WriteF('executing script \s\n',cmdstr)
   WHILE noreply
     Wait(-1)
     WHILE TRUE
       rrmsg,cstr:=rx_GetMsg(rexxport)
     EXIT rrmsg=NIL
       IF rrmsg::ln.type=NT_REPLYMSG
-        WriteF('done with script \s\n',cmdstr)
         noreply:=FALSE
       ELSE
         rexxcontinue(cstr,rrmsg)
