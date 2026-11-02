@@ -18,6 +18,7 @@ CONST TESTFAIL=1
 /* global variables used within tests */
 
 DEF swap_a,swap_b
+DEF gstr:STR
 
 /* Helper procedure to report test results */
 PROC assert_equal(expected, actual, name:PTR TO CHAR,linenum)
@@ -3948,6 +3949,144 @@ PROC test_extranot()
   assert(r=-1,'NOT a()',_SRCLINE_)
 ENDPROC
   
+/* ============ STR (managed strings) ============ */
+
+OBJECT strperson
+  name:STR
+  city:STR
+  age:LONG
+ENDOBJECT
+
+
+PROC str_make(name)
+  DEF s:STR
+  s:='Hi '+name
+  RETURN s
+ENDPROC
+
+PROC str_wrap(in)
+  DEF t:STR
+  t:='['+in+']'
+  RETURN t
+ENDPROC
+
+PROC test_str_basic()
+  DEF a:STR, b:STR
+  a:='abc'
+  assert_equal(3, StrLen(a), 'STR literal length',_SRCLINE_)
+  assert(a='abc','STR equals literal',_SRCLINE_)
+  b:=a
+  assert_equal(a, b, 'STR assignment shares the string',_SRCLINE_)
+  a:=NIL
+  assert_equal(NIL, a, 'STR set to NIL',_SRCLINE_)
+  assert(b='abc','STR survives release of the other reference',_SRCLINE_)
+  b:=NIL
+  assert_equal(NIL, b, 'STR second NIL',_SRCLINE_)
+ENDPROC
+
+PROC test_str_concat()
+  DEF a:STR, b:STR, c:STR
+  a:='foo'
+  b:='bar'
+  c:=a+b
+  assert(c='foobar','STR concat of two',_SRCLINE_)
+  c:=a+'-'+b+'!'
+  assert(c='foo-bar!','STR concat of four',_SRCLINE_)
+  c:=c+c
+  assert(c='foo-bar!foo-bar!','STR concat with itself',_SRCLINE_)
+  assert_equal(16, StrLen(c), 'STR concat length',_SRCLINE_)
+  c:=''+a
+  assert(c='foo','STR concat with empty constant',_SRCLINE_)
+  c:=NIL
+  a:=NIL
+  b:=NIL
+ENDPROC
+
+PROC test_str_compare()
+  DEF a:STR, b:STR, c:STR, e:STR
+  a:='apple'
+  b:='banana'
+  c:='apple'
+  assert(a=c,'STR a=c',_SRCLINE_)
+  assert(a<>b,'STR a<>b',_SRCLINE_)
+  assert(a<b,'STR a<b',_SRCLINE_)
+  assert(b>a,'STR b>a',_SRCLINE_)
+  assert(a<=c,'STR a<=c',_SRCLINE_)
+  assert(a>=c,'STR a>=c',_SRCLINE_)
+  assert(a='apple','STR a=literal',_SRCLINE_)
+  assert('apple'=a,'STR literal=a',_SRCLINE_)
+  assert(a<>'pear','STR a<>literal',_SRCLINE_)
+  assert_equal(FALSE, (a=b), 'STR a=b is FALSE',_SRCLINE_)
+  assert_equal(TRUE, (a=c), 'STR a=c is TRUE',_SRCLINE_)
+  assert(e='','STR NIL equals empty',_SRCLINE_)
+  assert(e<a,'STR NIL before text',_SRCLINE_)
+  assert(a<>NIL,'STR compare with NIL is a pointer test',_SRCLINE_)
+  assert((a=c) AND (b='banana'),'STR compare with AND',_SRCLINE_)
+  assert((a=b) OR (b='banana'),'STR compare with OR',_SRCLINE_)
+  a:=NIL
+  b:=NIL
+  c:=NIL
+ENDPROC
+
+PROC test_str_foreign()
+  DEF a:STR, p:PTR TO CHAR
+  p:='plain'
+  a:=p
+  assert(a='plain','STR from a plain pointer copies it',_SRCLINE_)
+  assert(a<>p,'STR copy is a different pointer',_SRCLINE_)
+  a:=NIL
+ENDPROC
+
+PROC test_str_proc()
+  DEF a:STR, b:STR
+  a:=str_make('Bob')
+  assert(a='Hi Bob','STR returned from a procedure',_SRCLINE_)
+  b:=str_wrap(a)
+  assert(b='[Hi Bob]','STR passed in and returned',_SRCLINE_)
+  assert(a='Hi Bob','STR argument is not changed',_SRCLINE_)
+  a:=NIL
+  b:=NIL
+ENDPROC
+
+PROC test_str_global()
+  gstr:='global'
+  assert(gstr='global','STR global',_SRCLINE_)
+  gstr:=gstr+'!'
+  assert(gstr='global!','STR global concat',_SRCLINE_)
+  gstr:=NIL
+  assert_equal(NIL, gstr, 'STR global NIL',_SRCLINE_)
+ENDPROC
+
+PROC test_str_member()
+  DEF p:PTR TO strperson, q:PTR TO strperson
+  NEW p
+  NEW q
+  p.name:='Ann'
+  p.city:='Paris'
+  p.age:=30
+  assert(StrCmp(p.name,'Ann'),'STR member assigned',_SRCLINE_)
+  p.name:=p.name+' Smith'
+  assert(StrCmp(p.name,'Ann Smith'),'STR member concat with itself',_SRCLINE_)
+  q.name:=p.name
+  assert_equal(p.name, q.name, 'STR member shared',_SRCLINE_)
+  p.name:=NIL
+  assert_equal(NIL, p.name, 'STR member NIL',_SRCLINE_)
+  assert(StrCmp(q.name,'Ann Smith'),'STR member survives other release',_SRCLINE_)
+  assert_equal(30, p.age, 'other members unaffected',_SRCLINE_)
+  END p
+  END q
+ENDPROC
+
+PROC test_str()
+  test_str_basic()
+  test_str_concat()
+  test_str_compare()
+  test_str_foreign()
+  test_str_proc()
+  test_str_global()
+  test_str_member()
+ENDPROC
+
 /* Main test runner */
 PROC main() HANDLE
   WriteF('*************************************************\n')
@@ -4329,6 +4468,7 @@ PROC main() HANDLE
   test_newobj()
   test_immlistnot()
   test_extranot()
+  test_str()
   EXCEPT DO
   /* Print summary */
   WriteF('\n=================================================\n')
