@@ -260,7 +260,7 @@ syntax of the compiler (2.04+):
 SOURCE/A,REG=NUMREGALLOC/N/K,LARGE/S,SYM=SYMBOLHUNK/S,NOWARN/S
 QUIET/S,ASM/S,ERRLINE/S,ERRBYTE/S,SHOWBUF/S,ADDBUF/N/K,COMPILESTACK/N/K,
 IC=IGNORECACHE/S,HOLD/S,WB/S,LINEDEBUG/S,OPTI/S,LEGACY/S,LEGACYINT/S,
-DEBUG/S,DEBUG50/S,NILCHECK/S,STACKCHECK/S,ARRAYCHECK/S,SHOWFNAME/S,NOPROGRESS/S,DEFINE/M',0
+DEBUG/S,DEBUG50/S,NILCHECK/S,STACKCHECK/S,ARRAYCHECK/S,SHOWFNAME/S,NOPROGRESS/S,MEMDEBUG/S,DEFINE/M',0
 
 for 1.2 to 2.03:
 
@@ -342,6 +342,29 @@ STACKCHECK       add code to the start each PROC to check for enough stack space
 
 SHOWFNAME        Displays the filename of the E file being compiled.
 NOPROGRESS       Don't display progress line numbers during compilation
+MEMDEBUG         Build a memory debugging version of the program. All memory
+                 obtained with New(), NewR(), NewM(), NEW, FastNew(), String()
+                 and List() is tracked together with the source line it was
+                 allocated from. When the program ends, every block that was
+                 never disposed (Dispose(), END, FastDispose(),
+                 FastDisposeList(), DisposeLink()) is listed on stdout:
+
+                   MEMDEBUG: 20 bytes at $0007A3C8 not disposed, allocated at line 12
+                   MEMDEBUG: 1 block(s), 20 bytes not disposed
+
+                 Dispose(), FastDispose() and FastDisposeList() of a pointer
+                 that is not currently allocated (for example a second END
+                 of the same pointer) print a warning with the source line.
+                 The list can also be requested at any time by calling
+                 MemDebugReport(), which returns the number of blocks listed.
+                 Blocks from other allocators (StrClone() and so on) are
+                 listed as 'allocation site unknown'.
+                 In this mode all FastNew() blocks come straight from the
+                 system (no small block cache) and OPT POOL is not used for
+                 these functions, so the program is slower and bigger.
+                 Without MEMDEBUG the generated program is unchanged.
+                 (the exit report is not generated for NOSTARTUP or library
+                 programs, call MemDebugReport() yourself there)
 DEFINE           Equivalent to #DEFINE in your code, defines a macro
 
 example:  evo large blabla

@@ -3538,6 +3538,7 @@ SMERGE:	DC.B	0
 EVODEFFLAG: DC.B 0
 LONGDEBUG: DC.B 0
 DEBUGLINENOS: DC.B 0
+MEMDEBUGFLAG: DC.B 0
 PURECHECK: DC.B 0
 
 	even
@@ -10082,6 +10083,11 @@ PORTCOOKIE	= $DEADBEEF
 	BEQ.S .11E
 	MOVE.B #-1,DEBUGLINENOS
 .11E
+	TST.L	MEMDEBUG
+	BEQ.S	.11EM
+	MOVE.B	#-1,MEMDEBUGFLAG
+	MOVE.B	#-1,DEBUGLINENOS
+.11EM:
 	TST.L	.OPTI
 	BEQ.S	.11F
 	BSET	#7,D6
@@ -10162,6 +10168,7 @@ STACKCHECK: DC.L 0
 ARRAYCHECK: DC.L 0
 SHOWFN: DC.L	0
 NOPROGRESS: DC.L	0
+MEMDEBUG: DC.L 0
 MCRS:	DC.L	0
 DOS_RDA:DC.L	0
 SRCFN: DC.L 0
@@ -10171,7 +10178,7 @@ SRCFN: DC.L 0
 			DC.B	'QUIET/S,ASM/S,ERRLINE/S,ERRBYTE/S,'
 			DC.B	'SHOWBUF/S,ADDBUF/N/K,COMPILESTACK/N/K,DDIR=DESTDIR/K,EXENAME/K,IC=IGNORECACHE/S,'
 			DC.B	'HOLD/S,WB/S,LINEDEBUG/S,OPTI/S,LEGACY/S,LEGACYINT/S,'
-			DC.B	'DEBUG/S,DEBUG50/S,DEBUGLINENOS/S,NILCHECK/S,STACKCHECK/S,ARRAYCHECK/S,SHOWFNAME/S,NOPROGRESS/S,DEFINE/M',0
+			DC.B	'DEBUG/S,DEBUG50/S,DEBUGLINENOS/S,NILCHECK/S,STACKCHECK/S,ARRAYCHECK/S,SHOWFNAME/S,NOPROGRESS/S,MEMDEBUG/S,DEFINE/M',0
 			EVEN
 	KICKVERS:	DC.W	0
 	ARGLEN:		DC.L	0	; =0 IF NO ARGS
@@ -16867,6 +16874,7 @@ AAAAAA:	BLOCK2	#8,#IOFF+12
 SAVEDREGSPTR:	DC.L	0
 
 		DOEND:				; 74
+	JSR	GENLINENO
 	MOVE.W	#-1,.ISM
 	CMP.W	#IDENT,(A3)+
 	BNE	ERROR6
@@ -21004,6 +21012,7 @@ MOVED0FP0: MACRO
 
 		EXPNEW:
 	CLR.L	LAST_CMD_ADR
+	JSR	GENLINENO
 	CMP.W	#1,D5
 	BEQ	ERROR0
 	MOVE.L LABLOG,-(A7)
@@ -25753,6 +25762,10 @@ iiERROR5: JMP ERROR5
  
 	MOVE.L	(A3)+,A0		; A0=FUNCTABENTRY
 	
+	TST.B	MEMDEBUGFLAG
+	BEQ.S	.nomd
+	JSR	GENLINENO
+.nomd:
 	TST.B DEBUGLINENOS
 	BEQ.S .done
 	MOVE.L	A0,D0
@@ -28947,7 +28960,7 @@ ENDGETA4:
 	SUB.L	ACODE,D0
 	MOVE.L	D0,(A5)
 	MOVE.L	A5,D0
-	BSR	ADDDIVRELOC
+	JSR	ADDDIVRELOC
 	LEA	funcTable(PC),A0
 	BSR	COPYRELOC
 	BSR	COPYRELOC
@@ -29547,6 +29560,10 @@ STRLENADR:	DC.L	0
 	BSR NILPATCHES		;update to efunctab and efuncsizes to use NILCHECK versions
 
 .notnilcheck
+	TST.B	MEMDEBUGFLAG
+	BEQ.S	.notmemdbg
+	BSR	MEMDBGPATCHES
+.notmemdbg
 	MOVE.L	#EFUNCBYTE,A3
 	MOVE.W	#NREFUNC,D2
 	SUBQ.W	#1,D2
@@ -29617,6 +29634,36 @@ STRLENADR:	DC.L	0
 .CON:	DC.B	'/CLOSE/AUTO/WAIT',0
 	EVEN
 	
+
+MEMDBGPATCHES:
+	LEA EFUNCTAB,A0
+	LEA EFUNCSIZES,A1
+	LEA MEMDBGPATCHLIST,A2
+.next
+	MOVE.L (A2)+,D0	;function number
+	BMI.S .done
+	LSL.L #2,D0
+	LEA (A1,D0),A3
+	LSL.L #2,D0
+	LEA (A0,D0),A4
+	MOVE.L (A2)+,4(A4)	;copy new function address
+	MOVE.L (A2)+,(A3)		;copy new function size
+	BRA.S .next
+.done
+	RTS
+
+MEMDBGPATCHLIST:
+	;		function number, new code, new size
+	DC.L 18,I_NEWDBG,E_NEWDBG-I_NEWDBG						;new
+	DC.L 33,I_STRINGDBG,E_STRINGDBG-I_STRINGDBG			;string
+	DC.L 51,I_LISTDBG,E_LISTDBG-I_LISTDBG					;list
+	DC.L 67,I_DISPDBG,E_DISPDBG-I_DISPDBG					;dispose
+	DC.L 84,I_NEWRDBG,E_NEWRDBG-I_NEWRDBG					;newr
+	DC.L 94,I_NEWMDBG,E_NEWMDBG-I_NEWMDBG					;newm
+	DC.L 109,I_FASTDISPOSEDBG,E_FASTDISPOSEDBG-I_FASTDISPOSEDBG	;fastdispose
+	DC.L 110,I_FASTNEWDBG,E_FASTNEWDBG-I_FASTNEWDBG		;fastnew
+	DC.L 121,I_FASTDISPOSELISTDBG,E_FASTDISPOSELISTDBG-I_FASTDISPOSELISTDBG	;fastdisposelist
+	DC.L -1
 
 NILPATCHES:
 	LEA EFUNCTAB,A0
@@ -31033,7 +31080,7 @@ INL_ROR:
 ;
 
 FOFF		= $100
-NREFUNC		= 202
+NREFUNC		= 203
 NRLEGEFUNC = 131
 EFUNCENTRYSIZE=16	;size of efunctab entry (eg 4 LONGWORD entries)
 
@@ -31241,6 +31288,7 @@ EFUNCENTRYSIZE=16	;size of efunctab entry (eg 4 LONGWORD entries)
 	DC.L	.200,	I_CHARINSTR,3,-1
 	DC.L	.201,	I_CHARINSTRI,3,-1
 	DC.L	.202,	I_MEMCMP,3,0
+	DC.L	.203,	I_MEMREPORT,0,0
 
 	DC.L	0,I_CODEEND,0,0
 
@@ -31446,6 +31494,7 @@ EFUNCENTRYSIZE=16	;size of efunctab entry (eg 4 LONGWORD entries)
 .200: DC.B		'CharInStr',0
 .201: DC.B		'CharInStri',0
 .202: DC.B		'MemCompare',0
+.203: DC.B		'MemDebugReport',0
 
 	 EVEN
 		EFUNCSIZES:
@@ -31651,6 +31700,7 @@ EFUNCENTRYSIZE=16	;size of efunctab entry (eg 4 LONGWORD entries)
 	DC.L	E_CHARINSTR-I_CHARINSTR
 	DC.L	E_CHARINSTRI-I_CHARINSTRI
 	DC.L	E_MEMCMP-I_MEMCMP
+	DC.L	E_MEMREPORT-I_MEMREPORT
 
 GETA4NR = 136
 WRITEF = 1
@@ -36790,6 +36840,7 @@ E_STRCOMPARE:
 .2:	RTS
 		E_MEMCMP:
 
+
 I_CODEEND:
 
 
@@ -40008,6 +40059,13 @@ ShortDays:
 	MOVE.L	CURACODE,A4		; A4=CODE
 	MOVEQ	#8,D0
 	JSR	ADDLABEL
+	TST.B	MEMDEBUGFLAG
+	BEQ.S	.nomdrpt
+	MOVE.W	#$4EB9,(A4)+		; JSR MemDebugReport
+	MOVE.W	#202+10,D0
+	JSR	ADDBRANCHRELOC
+	MOVE.B	#-1,EFUNCBYTE+202
+.nomdrpt:
 
 	LEA	 CleanupMod+4,A0
 .8: MOVE.L	-4(A0),D0
@@ -40260,6 +40318,387 @@ CLOSEUTILEND:
 ;*-*
 
 
+
+; *************************************************************	;
+;	MEMDEBUG runtime (CLI switch MEMDEBUG)			;
+;								;
+;	debug replacements for the allocating/freeing E functions	;
+;	(patched in by MEMDBGPATCHES) plus MemDebugReport().		;
+;								;
+;	blocks stay on the usual -20(A4) chain ([next][size]) but	;
+;	are over-allocated with a trailer at the end of the block:	;
+;	  magic.L, line.L, callerpc.L, requestedsize.L		;
+;	small FastNew() blocks are NOT served from the fast free	;
+;	lists in this mode, so every block is tracked individually	;
+; *************************************************************	;
+
+MDMAGIC		= $4D444247		; 'MDBG'
+MDTRAIL		= 16
+
+; stamp trailer.  A0=block base, D2=total (stored) size, (A7)=return address
+; \1 = ea of the requested size.  trashes A1
+MDSTAMP:	MACRO
+	LEA	-MDTRAIL(A0,D2.L),A1
+	MOVE.L	#MDMAGIC,(A1)+
+	MOVE.L	-148(A4),(A1)+
+	MOVE.L	(A7),(A1)+
+	MOVE.L	\1,(A1)
+	ENDM
+
+; print format A0, longword args at A1 to stdout.  preserves all registers.
+; \1 = label of the routine
+MDPRINT:	MACRO
+\1:	MOVEM.L	D0-D3/A0-A3/A6,-(A7)
+	LEA	-160(A7),A7
+	MOVE.L	A7,A3
+	LEA	.pc\@(PC),A2
+	MOVE.L	4.W,A6
+	JSR	-522(A6)		; RawDoFmt
+	MOVE.L	A7,D2
+	MOVE.L	A7,A0
+.l\@:	TST.B	(A0)+
+	BNE.S	.l\@
+	SUBQ.L	#1,A0
+	MOVE.L	A0,D3
+	SUB.L	D2,D3			; D3=len
+	MOVE.L	-8(A4),D1		; stdout, may be 0
+	BEQ.S	.s\@
+	MOVE.L	-44(A4),A6		; dosbase
+	JSR	-48(A6)			; Write
+.s\@:	LEA	160(A7),A7
+	MOVEM.L	(A7)+,D0-D3/A0-A3/A6
+	RTS
+.pc\@:	MOVE.B	D0,(A3)+
+	RTS
+	ENDM
+
+; ---------------------------------------------------------------
+; New(size)
+I_NEWDBG:
+	MOVE.L	4(A7),D0
+	ADD.L	#8+MDTRAIL+3,D0
+	AND.L	#-4,D0
+	MOVE.L	D0,D2
+	MOVEQ	#1,D1
+	SWAP	D1
+	MOVE.L	4.W,A6
+	JSR	-198(A6)
+	TST.L	D0
+	BEQ.S	.1
+	MOVE.L	D0,A0
+	MOVE.L	-20(A4),(A0)
+	MOVE.L	D0,-20(A4)
+	MOVE.L	D2,4(A0)
+	MDSTAMP	4(A7)
+	ADDQ.L	#8,D0
+.1:	RTS
+		E_NEWDBG:
+
+; ---------------------------------------------------------------
+; NewR(size)
+I_NEWRDBG:
+	MOVE.L	4(A7),D0
+	ADD.L	#8+MDTRAIL+3,D0
+	AND.L	#-4,D0
+	MOVE.L	D0,D2
+	MOVEQ	#1,D1
+	SWAP	D1
+	MOVE.L	4.W,A6
+	JSR	-198(A6)
+	TST.L	D0
+	BEQ.S	.1
+	MOVE.L	D0,A0
+	MOVE.L	-20(A4),(A0)
+	MOVE.L	D0,-20(A4)
+	MOVE.L	D2,4(A0)
+	MDSTAMP	4(A7)
+	ADDQ.L	#8,D0
+	RTS
+.1:	MOVE.L	#"MEM",-84(A4)
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
+	JMP	(A0)
+		E_NEWRDBG:
+
+; ---------------------------------------------------------------
+; NewM(size,flags)
+I_NEWMDBG:
+	MOVE.L	8(A7),D0
+	MOVE.L	4(A7),D1
+	ADD.L	#8+MDTRAIL+3,D0
+	AND.L	#-4,D0
+	MOVE.L	D0,D2
+	MOVE.L	4.W,A6
+	JSR	-198(A6)
+	TST.L	D0
+	BEQ.S	.1
+	MOVE.L	D0,A0
+	MOVE.L	-20(A4),(A0)
+	MOVE.L	D0,-20(A4)
+	MOVE.L	D2,4(A0)
+	MDSTAMP	8(A7)
+	ADDQ.L	#8,D0
+	RTS
+.1:	MOVE.L	#"MEM",-84(A4)
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
+	JMP	(A0)
+		E_NEWMDBG:
+
+; ---------------------------------------------------------------
+; FastNew(size) : always from the chain, never from the small block lists
+I_FASTNEWDBG:
+	MOVE.L	4(A7),D0
+	ADD.L	#8+MDTRAIL+3,D0
+	AND.L	#-4,D0
+	MOVE.L	D0,D2
+	MOVEQ	#1,D1
+	SWAP	D1
+	MOVE.L	4.W,A6
+	JSR	-198(A6)
+	TST.L	D0
+	BEQ.S	.1
+	MOVE.L	D0,A0
+	MOVE.L	-20(A4),(A0)
+	MOVE.L	D0,-20(A4)
+	MOVE.L	D2,4(A0)
+	MDSTAMP	4(A7)
+	ADDQ.L	#8,D0
+	RTS
+.1:	MOVE.L	#"MEM",-84(A4)
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
+	JMP	(A0)
+		E_FASTNEWDBG:
+
+; ---------------------------------------------------------------
+; String(maxlen)
+I_STRINGDBG:
+	MOVEQ	#0,D0
+	MOVE.L	4(A7),D1
+	MOVEA.L	D1,A2
+	CMPA.W	#$7FF0,A2
+	BHS.S	.1
+	MOVEQ	#17,D0			; 8 (LIST) + 4 (LINK) + 4 (LENGTHS) + 1 (ZERO)
+	ADD.L	D1,D0
+	ADD.L	#MDTRAIL+3,D0
+	AND.L	#-4,D0
+	MOVEQ	#0,D1
+	MOVE.L	D0,D2
+	MOVE.L	4.W,A6
+	JSR	-198(A6)
+	TST.L	D0
+	BEQ.S	.1
+	MOVE.L	D0,A0
+	MDSTAMP	4(A7)
+	MOVE.L	-20(A4),(A0)+		; insert link
+	MOVE.L	D0,-20(A4)		; next link
+	MOVE.L	D2,(A0)+		; length
+	CLR.L	(A0)+
+	MOVE.W	A2,(A0)+		; maxlen
+	CLR.W	(A0)+			; len
+	CLR.B	(A0)			; terminator
+	MOVE.L	A0,D0
+.1:	RTS
+		E_STRINGDBG:
+
+; ---------------------------------------------------------------
+; List(maxlen)
+I_LISTDBG:
+	MOVEQ	#0,D0
+	MOVE.L	4(A7),D1
+	MOVEA.L	D1,A2
+	CMPA.W	#$FFF0,A2
+	BHS.S	.1
+	LSL.L	#2,D1
+	MOVEQ	#16,D0			; 8 (LIST) + 4 (LINK) + 4 (LENGTHS)
+	ADD.L	D1,D0
+	ADD.L	#MDTRAIL+3,D0
+	AND.L	#-4,D0
+	MOVEQ	#1,D1
+	SWAP	D1
+	MOVE.L	D0,D2
+	MOVE.L	4.W,A6
+	JSR	-198(A6)
+	TST.L	D0
+	BEQ.S	.1
+	MOVE.L	D0,A0
+	MDSTAMP	4(A7)
+	MOVE.L	-20(A4),(A0)+
+	MOVE.L	D0,-20(A4)
+	MOVE.L	D2,(A0)+
+	CLR.L	(A0)+
+	MOVE.W	A2,(A0)+
+	CLR.W	(A0)+
+	MOVE.L	A0,D0
+.1:	RTS
+		E_LISTDBG:
+
+; ---------------------------------------------------------------
+; Dispose(ptr)
+I_DISPDBG:
+	MOVE.L	4(A7),D0
+	BEQ.S	.out
+	MOVE.L	D0,A0
+	SUBQ.L	#8,A0
+	LEA	-20(A4),A1
+.loop:	MOVE.L	(A1),D1
+	BEQ.S	.bad
+	MOVE.L	A1,A2			; ADR TO LINK BACK TO
+	MOVE.L	D1,A1
+	CMPA.L	D1,A0
+	BNE.S	.loop
+	MOVE.L	4(A1),D0		; MEMSIZE
+	MOVE.L	(A1),(A2)		; LINK BACK
+	MOVE.L	4.W,A6
+	JSR	-210(A6)
+.out:	RTS
+.bad:	MOVE.L	-148(A4),D0
+	ADDQ.L	#1,D0
+	MOVE.L	D0,-(A7)
+	MOVE.L	8(A7),-(A7)
+	LEA	.fmt(PC),A0
+	MOVE.L	A7,A1
+	BSR	.print
+	LEA	8(A7),A7
+	RTS
+	MDPRINT	.print
+.fmt:	DC.B	'MEMDEBUG: Dispose() of unknown or already freed block $%08lx (line %ld)',10,0
+	EVEN
+		E_DISPDBG:
+
+; ---------------------------------------------------------------
+; FastDispose(ptr,size) : ignores size, block must be on the chain
+I_FASTDISPOSEDBG:
+	MOVE.L	8(A7),D0
+	BEQ.S	.out
+	MOVE.L	D0,A0
+	SUBQ.L	#8,A0
+	LEA	-20(A4),A1
+.loop:	MOVE.L	(A1),D1
+	BEQ.S	.bad
+	MOVE.L	A1,A2
+	MOVE.L	D1,A1
+	CMPA.L	D1,A0
+	BNE.S	.loop
+	MOVE.L	4(A1),D0
+	MOVE.L	(A1),(A2)
+	MOVE.L	4.W,A6
+	JSR	-210(A6)
+.out:	RTS
+.bad:	MOVE.L	-148(A4),D0
+	ADDQ.L	#1,D0
+	MOVE.L	D0,-(A7)
+	MOVE.L	12(A7),-(A7)
+	LEA	.fmt(PC),A0
+	MOVE.L	A7,A1
+	BSR	.print
+	LEA	8(A7),A7
+	RTS
+	MDPRINT	.print
+.fmt:	DC.B	'MEMDEBUG: FastDispose() of unknown or already freed block $%08lx (line %ld)',10,0
+	EVEN
+		E_FASTDISPOSEDBG:
+
+; ---------------------------------------------------------------
+; FastDisposeList(list)
+I_FASTDISPOSELISTDBG:
+	MOVE.L	4(A7),D0
+	BEQ.S	.out
+	MOVE.L	D0,A0
+	LEA	-12(A0),A0
+	LEA	-20(A4),A1
+.loop:	MOVE.L	(A1),D1
+	BEQ.S	.bad
+	MOVE.L	A1,A2
+	MOVE.L	D1,A1
+	CMPA.L	D1,A0
+	BNE.S	.loop
+	MOVE.L	4(A1),D0
+	MOVE.L	(A1),(A2)
+	MOVE.L	4.W,A6
+	JSR	-210(A6)
+.out:	RTS
+.bad:	MOVE.L	-148(A4),D0
+	ADDQ.L	#1,D0
+	MOVE.L	D0,-(A7)
+	MOVE.L	8(A7),-(A7)
+	LEA	.fmt(PC),A0
+	MOVE.L	A7,A1
+	BSR	.print
+	LEA	8(A7),A7
+	RTS
+	MDPRINT	.print
+.fmt:	DC.B	'MEMDEBUG: FastDisposeList() of unknown or already freed list $%08lx (line %ld)',10,0
+	EVEN
+		E_FASTDISPOSELISTDBG:
+
+; ---------------------------------------------------------------
+; MemDebugReport() : list every block still on the allocation chain.
+; returns the number of blocks.  also called automatically at program exit
+; when compiled with MEMDEBUG.
+I_MEMREPORT:
+	MOVEM.L	D0-D7/A0-A6,-(A7)
+	MOVEQ	#0,D4			; blocks
+	MOVEQ	#0,D5			; bytes
+	MOVE.L	-20(A4),A2
+.loop:	MOVE.L	A2,D0
+	BEQ.S	.done
+	MOVE.L	4(A2),D2		; stored size
+	CMP.L	#8+MDTRAIL,D2
+	BCS.S	.unk
+	LEA	-MDTRAIL(A2,D2.L),A3
+	CMP.L	#MDMAGIC,(A3)
+	BNE.S	.unk
+	MOVE.L	4(A3),D0
+	ADDQ.L	#1,D0
+	MOVE.L	D0,-(A7)		; line (compiler counts from 0)
+	LEA	8(A2),A0
+	MOVE.L	A0,-(A7)		; address
+	MOVE.L	12(A3),-(A7)		; requested size
+	ADD.L	12(A3),D5
+	LEA	.fmt1(PC),A0
+	MOVE.L	A7,A1
+	BSR	.print
+	LEA	12(A7),A7
+	BRA.S	.next
+.unk:	LEA	8(A2),A0
+	MOVE.L	A0,-(A7)		; address
+	MOVE.L	D2,D0
+	SUBQ.L	#8,D0
+	BPL.S	.pos
+	MOVEQ	#0,D0
+.pos:	ADD.L	D0,D5
+	MOVE.L	D0,-(A7)		; size
+	LEA	.fmt2(PC),A0
+	MOVE.L	A7,A1
+	BSR	.print
+	LEA	8(A7),A7
+.next:	ADDQ.L	#1,D4
+	MOVE.L	(A2),A2
+	BRA.S	.loop
+.done:	TST.L	D4
+	BNE.S	.some
+	LEA	.fmt3(PC),A0
+	MOVE.L	A7,A1
+	BSR	.print
+	BRA.S	.ret
+.some:	MOVE.L	D5,-(A7)
+	MOVE.L	D4,-(A7)
+	LEA	.fmt4(PC),A0
+	MOVE.L	A7,A1
+	BSR	.print
+	LEA	8(A7),A7
+.ret:	MOVE.L	D4,(A7)			; D0 result
+	MOVEM.L	(A7)+,D0-D7/A0-A6
+	RTS
+	MDPRINT	.print
+.fmt1:	DC.B	'MEMDEBUG: %ld bytes at $%08lx not disposed, allocated at line %ld',10,0
+.fmt2:	DC.B	'MEMDEBUG: %ld bytes at $%08lx not disposed, allocation site unknown',10,0
+.fmt3:	DC.B	'MEMDEBUG: all memory was disposed',10,0
+.fmt4:	DC.B	'MEMDEBUG: %ld block(s), %ld bytes not disposed',10,0
+	EVEN
+		E_MEMREPORT:
 ;*************************************************************	;
 ;	UnInitialized DataSection for E Compiler		;
 ;*************************************************************	;
