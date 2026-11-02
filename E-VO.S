@@ -12852,7 +12852,7 @@ ERROR108:	MOVEQ	#108,D0
 	DC.L	FILLEXIT,DOSUPER,DOUBLEIF,INCDEC,EXPECT3		 ; 75
 	DC.L	JOBOUT,JOBOUT,FILLCONT,DOFATAL,DOWARN		 ; 80
 	DC.L	JOB_SECTION, INS_FLAG, INVERT_BRANCH, STACK_CHECK, STACK_UPDATE	 ;85
-	DC.L	JOB_AUTOPROC		;90
+	DC.L	JOB_AUTOPROC,JOBSTRRETURN		;90,91
 
 		DOBECOMESMETHOD:
 	CMP.W	#42,6(A3)
@@ -30009,7 +30009,7 @@ UTIL:
 		UNLK	A5
 		DC.W	68,89,0
 
-.RETURN:	DC.W	16,58,0
+.RETURN:	DC.W	91,58,0
 .EXIT:		DC.W	86,IOFF+107,61,56
 		TST.L	D0
 		BEQ	DUM
@@ -31096,7 +31096,7 @@ INL_ROR:
 ;
 
 FOFF		= $100
-NREFUNC		= 206
+NREFUNC		= 207
 NRLEGEFUNC = 131
 EFUNCENTRYSIZE=16	;size of efunctab entry (eg 4 LONGWORD entries)
 
@@ -31308,6 +31308,7 @@ EFUNCENTRYSIZE=16	;size of efunctab entry (eg 4 LONGWORD entries)
 	DC.L	.204,	I_STRCAT,-1,0
 	DC.L	.205,	I_STRRELEASE,1,0
 	DC.L	.206,	I_STRRETAIN,1,0
+	DC.L	.207,	I_STRPOOL,2,0
 
 	DC.L	0,I_CODEEND,0,0
 
@@ -31517,6 +31518,7 @@ EFUNCENTRYSIZE=16	;size of efunctab entry (eg 4 LONGWORD entries)
 .204: DC.B		'_StrCat',0
 .205: DC.B		'_StrRelease',0
 .206: DC.B		'_StrRetain',0
+.207: DC.B		'_StrPool',0
 
 	 EVEN
 		EFUNCSIZES:
@@ -31726,6 +31728,7 @@ EFUNCENTRYSIZE=16	;size of efunctab entry (eg 4 LONGWORD entries)
 	DC.L	E_STRCAT-I_STRCAT
 	DC.L	E_STRRELEASE-I_STRRELEASE
 	DC.L	E_STRRETAIN-I_STRRETAIN
+	DC.L	E_STRPOOL-I_STRPOOL
 
 GETA4NR = 136
 WRITEF = 1
@@ -40731,13 +40734,16 @@ I_MEMREPORT:
 ;	DEF s:STR   declares a string variable that owns a	;
 ;	reference counted string.  s:=a+b+'x' concatenates,	;
 ;	s:=t shares, s:=NIL releases.  locals are released	;
-;	when the procedure ends.				;
+;	when the procedure ends.  RETURN s hands the string	;
+;	to the caller (it is parked in a pool until the	;
+;	caller's assignment has taken its own reference).	;
 ;								;
 ;	a STR value is a pointer to the characters of an	;
-;	estring: max.W/len.W precede the characters, the	;
-;	longword before that is the reference count (where	;
-;	String() keeps its link) and the block is on the	;
-;	-20(A4) allocation chain like any other.		;
+;	estring: max.W/len.W precede the characters, before	;
+;	that is the reference count longword ('ST' in the	;
+;	high word, count in the low word; where String()	;
+;	keeps its link) and the block is on the -20(A4)	;
+;	allocation chain like any other.			;
 ; *************************************************************	;
 
 STRMAX		= 256
@@ -40745,6 +40751,7 @@ STRMAX		= 256
 EFN_STRCAT	= 203
 EFN_STRRELEASE	= 204
 EFN_STRRETAIN	= 205
+EFN_STRPOOL	= 206
 
 ; ---------------------------------------------------------------
 ; compile time: A0 = ident record just declared as STR
@@ -40846,10 +40853,41 @@ STRSKIPOPERAND:
 	RTS
 
 ; ---------------------------------------------------------------
+; RETURN <expression>.  RETURN <STR variable> parks the string in the pool
+; so that it survives the release of the locals of this procedure.
+JOBSTRRETURN:
+	CMP.W	#IDENT,(A3)
+	BNE.S	.norm
+	TST.W	6(A3)
+	BNE.S	.norm
+	MOVE.L	2(A3),A1
+	JSR	STRISSTR
+	BNE.S	.norm
+	JSR	EXP			; loads the variable
+	MOVE.W	.PUSHD0(PC),(A4)+
+	MOVE.W	.PEA(PC),(A4)+		; PEA 1.W : push
+	MOVE.W	#1,(A4)+
+	MOVE.W	#EFN_STRPOOL,D0
+	BSR	STRCALL
+	MOVE.W	.ADDQ8(PC),(A4)+
+	JMP	JOBLOOP
+.norm:	JMP	EXPORNILL
+.PUSHD0:	MOVE.L	D0,-(A7)
+.PEA:		PEA	1.W
+.ADDQ8:		ADDQ.L	#8,A7
+
+; ---------------------------------------------------------------
 ; <strvar> := <expression>      A1=ident, A3 at the := token
 DOSTRASSIGN:
 	ADDQ.L	#2,A3			; skip :=
 	MOVE.L	A1,-(A7)		; target
+	MOVE.W	.CLRPUSH(PC),(A4)+	; mark the pool : CLR.L -(A7)
+	MOVE.W	.PEA(PC),(A4)+		; PEA 0.W
+	MOVE.W	#0,(A4)+
+	MOVE.W	#EFN_STRPOOL,D0
+	BSR	STRCALL
+	MOVE.W	.ADDQ8(PC),(A4)+
+	MOVE.W	.PUSHD0(PC),(A4)+	; the mark stays on the stack
 	MOVE.L	A3,A0
 	MOVEQ	#0,D3			; number of '+'
 .scan:	BSR	STRSKIPOPERAND
@@ -40880,12 +40918,22 @@ DOSTRASSIGN:
 	MOVE.W	.ADDQ4(PC),(A4)+
 	BRA	.store
 
-.generic:				; copy whatever the expression is
-	JSR	EXP
+.generic:				; share it if it is a STR, else copy it
+	MOVEQ	#0,D4
+	CMP.W	#STR,(A3)		; a literal is always copied
+	BNE.S	.gx
+	MOVEQ	#-1,D4
+.gx:	JSR	EXP
 	MOVE.W	.PUSHD0(PC),(A4)+
+	TST.W	D4
+	BNE.S	.gforce
 	MOVE.W	.PEA(PC),(A4)+
 	MOVE.W	#1,(A4)+
-	MOVE.W	#EFN_STRCAT,D0
+	BRA.S	.gcall
+.gforce:
+	MOVE.W	.PUSHL(PC),(A4)+	; MOVE.L #$80000001,-(A7)
+	MOVE.L	#$80000001,(A4)+
+.gcall:	MOVE.W	#EFN_STRCAT,D0
 	BSR	STRCALL
 	MOVE.W	.ADDQ8(PC),(A4)+
 	BRA	.store
@@ -40933,8 +40981,15 @@ DOSTRASSIGN:
 	MOVE.W	#EFN_STRRELEASE,D0
 	BSR	STRCALL
 	MOVE.W	.ADDQ4(PC),(A4)+
+	MOVE.W	.PEA(PC),(A4)+		; release what the statement parked
+	MOVE.W	#2,(A4)+		; (the mark is on the stack)
+	MOVE.W	#EFN_STRPOOL,D0
+	BSR	STRCALL
+	MOVE.W	.ADDQ8(PC),(A4)+
 	JMP	DOINSOUT
 
+.CLRPUSH:	CLR.L	-(A7)
+.PUSHL:		MOVE.L	#0,-(A7)
 .PUSHD0:	MOVE.L	D0,-(A7)
 .PUSHD1:	MOVE.L	D1,-(A7)
 .PEA:		PEA	1.W
@@ -40948,15 +41003,31 @@ DOSTRASSIGN:
 ; run time
 
 ; _StrCat(op1,..opN,N)   new string rc=1 holding the operands joined.
-; NIL operands are empty.  a single NIL operand gives NIL.
+; NIL operands are empty.  a single NIL operand gives NIL.  a single operand
+; that already is a STR is shared (rc+1) unless N has bit 31 set (literal).
 I_STRCAT:
 	MOVEM.L	D2-D4/A2-A3,-(A7)
 	MOVE.L	24(A7),D3		; N
+	MOVE.L	D3,D4
+	AND.L	#$7FFFFFFF,D3
 	CMP.L	#1,D3
 	BNE.S	.go
-	TST.L	28(A7)
+	MOVE.L	28(A7),D0
+	BEQ	.ret			; NIL gives NIL
+	TST.L	D4
+	BMI.S	.go			; forced copy
+	MOVE.L	D0,A0
+	CMP.W	#$5354,-8(A0)		; is it one of ours ?
 	BNE.S	.go
-	MOVEQ	#0,D0
+	MOVE.L	-12(A0),D1
+	CMP.L	#18,D1
+	BCS.S	.go
+	BTST	#0,D1
+	BNE.S	.go
+	MOVE.W	-2(A0),D1
+	CMP.W	-4(A0),D1		; len <= max
+	BHI.S	.go
+	ADDQ.W	#1,-6(A0)		; share
 	BRA	.ret
 .go:	MOVEQ	#0,D2			; total length
 	LEA	28(A7),A2
@@ -40987,8 +41058,7 @@ I_STRCAT:
 	MOVE.L	-20(A4),(A0)
 	MOVE.L	D0,-20(A4)
 	MOVE.L	D4,4(A0)
-	MOVEQ	#1,D1
-	MOVE.L	D1,8(A0)		; reference count
+	MOVE.L	#$53540001,8(A0)	; 'ST', reference count 1
 	MOVE.W	D2,12(A0)		; max
 	MOVE.W	D2,14(A0)		; len
 	LEA	16(A0),A1		; the string
@@ -41023,7 +41093,7 @@ I_STRRELEASE:
 	MOVE.L	32(A7),D0
 	BEQ.S	.x
 	MOVE.L	D0,A0
-	SUBQ.L	#1,-8(A0)
+	SUBQ.W	#1,-6(A0)
 	BNE.S	.x
 	LEA	-16(A0),A0		; block
 	LEA	-20(A4),A1
@@ -41046,9 +41116,114 @@ I_STRRETAIN:
 	MOVE.L	4(A7),D0
 	BEQ.S	.x
 	MOVE.L	D0,A0
-	ADDQ.L	#1,-8(A0)
+	ADDQ.W	#1,-6(A0)
 .x:	RTS
 		E_STRRETAIN:
+
+; _StrPool(a,op)  op 0: returns the current mark
+;                 op 1: parks string a (keeps its reference), returns a
+;                 op 2: releases everything parked since mark a
+; the pool is an array on the allocation chain, freed when it becomes empty.
+I_STRPOOL:
+	MOVEM.L	D1-D5/A0-A3/A6,-(A7)
+	MOVE.L	44(A7),D1		; op
+	MOVE.L	48(A7),D2		; a
+	LEA	.data(PC),A2
+	TST.L	D1
+	BEQ	.mark
+	SUBQ.L	#1,D1
+	BEQ	.push
+.drain:	MOVE.L	4(A2),D3
+	CMP.L	D2,D3
+	BLS.S	.drdone
+	SUBQ.L	#1,D3
+	MOVE.L	D3,4(A2)
+	MOVE.L	(A2),A0
+	LSL.L	#2,D3
+	MOVE.L	0(A0,D3.L),A0
+	SUBQ.W	#1,-6(A0)
+	BNE.S	.drain
+	LEA	-16(A0),A0
+	BSR	.freeblk
+	BRA.S	.drain
+.drdone:
+	TST.L	4(A2)
+	BNE.S	.out
+	MOVE.L	(A2),D0
+	BEQ.S	.out
+	MOVE.L	D0,A0
+	SUBQ.L	#8,A0
+	CLR.L	(A2)
+	CLR.L	8(A2)
+	BSR	.freeblk
+.out:	MOVEM.L	(A7)+,D1-D5/A0-A3/A6
+	RTS
+.mark:	MOVE.L	4(A2),D0
+	BRA.S	.out
+.push:	MOVE.L	4(A2),D3		; count
+	CMP.L	8(A2),D3
+	BCS.S	.room
+	MOVE.L	8(A2),D4		; capacity: double it
+	ADD.L	D4,D4
+	BNE.S	.nz
+	MOVEQ	#16,D4
+.nz:	MOVE.L	D4,D5
+	LSL.L	#2,D5
+	ADDQ.L	#8,D5			; block size
+	MOVE.L	D5,D0
+	MOVEQ	#1,D1
+	SWAP	D1
+	MOVE.L	4.W,A6
+	JSR	-198(A6)
+	TST.L	D0
+	BEQ.S	.raise
+	MOVE.L	D0,A3			; new block
+	MOVE.L	-20(A4),(A3)
+	MOVE.L	A3,-20(A4)
+	MOVE.L	D5,4(A3)
+	MOVE.L	(A2),D0
+	BEQ.S	.nocp
+	MOVE.L	D0,A0
+	LEA	8(A3),A1
+	MOVE.L	D3,D1
+	BRA.S	.cpe
+.cpl:	MOVE.L	(A0)+,(A1)+
+.cpe:	DBRA	D1,.cpl
+	MOVE.L	(A2),A0
+	SUBQ.L	#8,A0
+	BSR.S	.freeblk
+.nocp:	LEA	8(A3),A0
+	MOVE.L	A0,(A2)
+	MOVE.L	D4,8(A2)
+.room:	MOVE.L	(A2),A0
+	MOVE.L	4(A2),D0
+	LSL.L	#2,D0
+	MOVE.L	D2,0(A0,D0.L)
+	ADDQ.L	#1,4(A2)
+	MOVE.L	D2,D0
+	BRA.S	.out
+.raise:	MOVE.L	#"MEM",-84(A4)
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
+	JMP	(A0)
+; A0 = block on the chain : unlink and free it
+.freeblk:
+	MOVE.L	A3,-(A7)
+	LEA	-20(A4),A1
+.fl:	MOVE.L	(A1),D1
+	BEQ.S	.fx
+	MOVE.L	A1,A3
+	MOVE.L	D1,A1
+	CMPA.L	D1,A0
+	BNE.S	.fl
+	MOVE.L	4(A1),D0
+	MOVE.L	(A1),(A3)
+	MOVE.L	4.W,A6
+	JSR	-210(A6)
+.fx:	MOVE.L	(A7)+,A3
+	RTS
+.data:	DC.L	0,0,0			; entries, count, capacity
+		E_STRPOOL:
 ;*************************************************************	;
 ;	UnInitialized DataSection for E Compiler		;
 ;*************************************************************	;
