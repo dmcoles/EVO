@@ -12988,6 +12988,10 @@ ERROR108:	MOVEQ	#108,D0
 	LEA	-6(A3),A0
 		COMPLEXST:
 	MOVE.L	A0,-(A7)		; complexstart -->STACK (D7)
+	JSR	STRMEMBERLV
+	BNE.S	.nstrlv
+	JMP	DOSTRMEMBERASSIGN
+.nstrlv:
 	BSR	EATLEXP
 	BSR	EXP
 	MOVE.L	(A7)+,D7
@@ -15667,7 +15671,14 @@ CHECKPR:	MACRO			; \1=TR.DX
  
 	MOVE.L	(A7)+,A2
 	BRA	JOBLOOP			; ONLY EXIT!
-.SOBJ:	CMP.W	#IOFF+44,D0
+.SOBJ:
+	CMP.W	#IOFF+120,D0
+	BNE.S	.nstrm
+	BSET	#5,OFLAGS(A0)		; STR member (a LONG)
+	ADDQ.W	#1,STRMCNT
+	BRA	.O
+.nstrm:
+	CMP.W	#IOFF+44,D0
 	BEQ.S	.PTR
 	CMP.W	#31,D0
 	BNE	ERROR33
@@ -15999,7 +16010,14 @@ ALIGN:	DC.W	0
 	BNE	ERROR34
 	RTS
 
-.SOBJ:	CMP.W	#IOFF+44,D0
+.SOBJ:
+	CMP.W	#IOFF+120,D0
+	BNE.S	.nstrm
+	BSET	#5,OFLAGS(A0)		; STR member (a LONG)
+	ADDQ.W	#1,STRMCNT
+	BRA	.O
+.nstrm:
+	CMP.W	#IOFF+44,D0
 	BEQ.S	.PTR
 	CMP.W	#31,D0
 	BNE	ERROR33
@@ -16942,6 +16960,7 @@ SAVEDREGSPTR:	DC.L	0
 	MOVE.L	A6,D1
 	BEQ.S	.ND
 	BSR	DESTR
+	JSR	STRENDMEMBERS
 .ND:
 	CMP.W	#29,(A3)
 	BNE.S	.1
@@ -40852,6 +40871,13 @@ STRSKIPOPERAND:
 	CMP.W	#IDENT,D0
 	BNE.S	.nid
 	ADDQ.L	#6,A0
+.mem:	CMP.W	#35,(A0)
+	BNE.S	.memx
+	CMP.W	#39,2(A0)
+	BNE.S	.memx
+	ADDQ.L	#8,A0
+	BRA.S	.mem
+.memx:
 	MOVEQ	#0,D0
 	RTS
 .nid:	CMP.W	#STR,D0
@@ -40888,18 +40914,46 @@ JOBSTRRETURN:
 .PEA:		PEA	1.W
 .ADDQ8:		ADDQ.L	#8,A7
 
-; ---------------------------------------------------------------
-; <strvar> := <expression>      A1=ident, A3 at the := token
-DOSTRASSIGN:
-	ADDQ.L	#2,A3			; skip :=
-	MOVE.L	A1,-(A7)		; target
-	MOVE.W	.CLRPUSH(PC),(A4)+	; mark the pool : CLR.L -(A7)
-	MOVE.W	.PEA(PC),(A4)+		; PEA 0.W
+; templates shared by the STR routines
+STRT_CLRPUSH:	CLR.L	-(A7)
+STRT_PUSHL:	MOVE.L	#0,-(A7)
+STRT_PUSHD0:	MOVE.L	D0,-(A7)
+STRT_PUSHD1:	MOVE.L	D1,-(A7)
+STRT_PEA:	PEA	1.W
+STRT_ADDQ4:	ADDQ.L	#4,A7
+STRT_ADDQ8:	ADDQ.L	#8,A7
+STRT_LEAA7:	LEA	4(A7),A7
+STRT_LDD1:	MOVE.L	2(A5),D1
+STRT_STD0:	MOVE.L	D0,2(A5)
+STRT_LDD04A7:	MOVE.L	4(A7),D0
+STRT_A0FROMD0:	MOVE.L	D0,A0
+STRT_A0FROMA7:	MOVE.L	(A7),A0
+STRT_PUSHOFF:	MOVE.L	2(A0),-(A7)
+
+; emit: mark the pool, the mark stays on the run time stack
+STRMARK:
+	MOVE.W	STRT_CLRPUSH(PC),(A4)+
+	MOVE.W	STRT_PEA(PC),(A4)+
 	MOVE.W	#0,(A4)+
 	MOVE.W	#EFN_STRPOOL,D0
 	BSR	STRCALL
-	MOVE.W	.ADDQ8(PC),(A4)+
-	MOVE.W	.PUSHD0(PC),(A4)+	; the mark stays on the stack
+	MOVE.W	STRT_ADDQ8(PC),(A4)+
+	MOVE.W	STRT_PUSHD0(PC),(A4)+
+	RTS
+
+; emit: release what the statement parked (the mark is on top of the stack)
+STRDRAIN:
+	MOVE.W	STRT_PEA(PC),(A4)+
+	MOVE.W	#2,(A4)+
+	MOVE.W	#EFN_STRPOOL,D0
+	BSR	STRCALL
+	MOVE.W	STRT_ADDQ8(PC),(A4)+
+	RTS
+
+; ---------------------------------------------------------------
+; compile the right hand side of a STR assignment, A3 at its first token.
+; the generated code leaves a new reference in D0, A3 ends at the terminator
+STRRHS:
 	MOVE.L	A3,A0
 	MOVEQ	#0,D3			; number of '+'
 .scan:	BSR	STRSKIPOPERAND
@@ -40917,6 +40971,8 @@ DOSTRASSIGN:
 	BNE	.concat
 	CMP.W	#IDENT,(A3)		; single STR variable : share it
 	BNE.S	.generic
+	TST.W	6(A3)
+	BNE.S	.generic
 	MOVE.L	2(A3),A0
 	MOVE.L	A1,-(A7)
 	MOVE.L	A0,A1
@@ -40924,11 +40980,11 @@ DOSTRASSIGN:
 	MOVE.L	(A7)+,A1
 	BNE.S	.generic
 	JSR	EXP
-	MOVE.W	.PUSHD0(PC),(A4)+
+	MOVE.W	STRT_PUSHD0(PC),(A4)+
 	MOVE.W	#EFN_STRRETAIN,D0
 	BSR	STRCALL
-	MOVE.W	.ADDQ4(PC),(A4)+
-	BRA	.store
+	MOVE.W	STRT_ADDQ4(PC),(A4)+
+	RTS
 
 .generic:				; share it if it is a STR, else copy it
 	MOVEQ	#0,D4
@@ -40936,19 +40992,19 @@ DOSTRASSIGN:
 	BNE.S	.gx
 	MOVEQ	#-1,D4
 .gx:	JSR	EXP
-	MOVE.W	.PUSHD0(PC),(A4)+
+	MOVE.W	STRT_PUSHD0(PC),(A4)+
 	TST.W	D4
 	BNE.S	.gforce
-	MOVE.W	.PEA(PC),(A4)+
+	MOVE.W	STRT_PEA(PC),(A4)+
 	MOVE.W	#1,(A4)+
 	BRA.S	.gcall
 .gforce:
-	MOVE.W	.PUSHL(PC),(A4)+	; MOVE.L #$80000001,-(A7)
+	MOVE.W	STRT_PUSHL(PC),(A4)+	; MOVE.L #$80000001,-(A7)
 	MOVE.L	#$80000001,(A4)+
 .gcall:	MOVE.W	#EFN_STRCAT,D0
 	BSR	STRCALL
-	MOVE.W	.ADDQ8(PC),(A4)+
-	BRA	.store
+	MOVE.W	STRT_ADDQ8(PC),(A4)+
+	RTS
 
 .concat:
 	ADDQ.W	#1,D3			; D3 = number of operands
@@ -40965,7 +41021,7 @@ DOSTRASSIGN:
 	MOVE.W	(A7)+,(A0)		; put the token back
 	MOVE.L	(A7)+,A0
 	ADDQ.L	#4,A7
-	MOVE.W	.PUSHD0(PC),(A4)+
+	MOVE.W	STRT_PUSHD0(PC),(A4)+
 	CMP.W	#7,(A0)
 	BNE.S	.opdone
 	ADDQ.L	#2,A0
@@ -40973,43 +41029,137 @@ DOSTRASSIGN:
 .opdone:
 	MOVE.L	A0,A3
 	MOVE.W	(A7)+,D3
-	MOVE.W	.PEA(PC),(A4)+
+	MOVE.W	STRT_PEA(PC),(A4)+
 	MOVE.W	D3,(A4)+
 	MOVE.W	#EFN_STRCAT,D0
 	BSR	STRCALL
-	MOVE.W	.LEAA7(PC),(A4)+
+	MOVE.W	STRT_LEAA7(PC),(A4)+
 	MOVE.W	D3,D0
 	ADDQ.W	#1,D0
 	LSL.W	#2,D0
 	MOVE.W	D0,(A4)+
+	RTS
 
-.store:					; D0 = new reference
+; ---------------------------------------------------------------
+; <strvar> := <expression>      A1=ident, A3 at the := token
+DOSTRASSIGN:
+	ADDQ.L	#2,A3			; skip :=
+	MOVE.L	A1,-(A7)		; target
+	BSR	STRMARK
+	BSR	STRRHS			; D0 = new reference
 	MOVE.L	(A7)+,A1
-	MOVE.W	.LDD1(PC),(A4)+		; old value
+	MOVE.W	STRT_LDD1(PC),(A4)+	; old value
 	JSR	GVA1D2_0
-	MOVE.W	.STD0(PC),(A4)+		; store the new one
+	MOVE.W	STRT_STD0(PC),(A4)+	; store the new one
 	JSR	GVA1D2_9
-	MOVE.W	.PUSHD1(PC),(A4)+	; and release the old
+	MOVE.W	STRT_PUSHD1(PC),(A4)+	; and release the old
 	MOVE.W	#EFN_STRRELEASE,D0
 	BSR	STRCALL
-	MOVE.W	.ADDQ4(PC),(A4)+
-	MOVE.W	.PEA(PC),(A4)+		; release what the statement parked
-	MOVE.W	#2,(A4)+		; (the mark is on the stack)
-	MOVE.W	#EFN_STRPOOL,D0
-	BSR	STRCALL
-	MOVE.W	.ADDQ8(PC),(A4)+
+	MOVE.W	STRT_ADDQ4(PC),(A4)+
+	BSR	STRDRAIN
 	JMP	DOINSOUT
 
-.CLRPUSH:	CLR.L	-(A7)
-.PUSHL:		MOVE.L	#0,-(A7)
-.PUSHD0:	MOVE.L	D0,-(A7)
-.PUSHD1:	MOVE.L	D1,-(A7)
-.PEA:		PEA	1.W
-.ADDQ4:		ADDQ.L	#4,A7
-.ADDQ8:		ADDQ.L	#8,A7
-.LEAA7:		LEA	4(A7),A7
-.LDD1:		MOVE.L	2(A5),D1
-.STD0:		MOVE.L	D0,2(A5)
+; ---------------------------------------------------------------
+; A0 = start of an assignment target.  Z set if it is
+; <ident>.<member>{.<member>} := with the last member declared STR
+STRMEMBERLV:
+	MOVEM.L	D0-D2/A0-A2/A6,-(A7)
+	TST.W	STRMCNT
+	BEQ.S	.no
+	CMP.W	#IDENT,(A0)+
+	BNE.S	.no
+	MOVE.L	(A0)+,A1
+	MOVE.L	(A1),D0			; type of the variable
+	CMP.L	#5,D0
+	BLO.S	.no
+	MOVE.L	D0,A6
+.next:	CMP.W	#35,(A0)+		; .
+	BNE.S	.no
+	CMP.W	#39,(A0)+		; member
+	BNE.S	.no
+	MOVE.L	(A0)+,A1
+	JSR	FINDMEMBER		; A6=object, A1 -> the member
+	CMP.W	#35,(A0)
+	BNE.S	.last
+	MOVE.L	OPTRTYPE(A1),D0
+	CMP.L	#5,D0
+	BLO.S	.no
+	MOVE.L	D0,A6
+	BRA.S	.next
+.last:	CMP.W	#ASSGN,(A0)
+	BNE.S	.no
+	BTST	#5,OFLAGS(A1)
+	BEQ.S	.no
+	MOVEQ	#0,D0			; Z set
+	BRA.S	.out
+.no:	MOVEQ	#1,D0			; Z clear
+.out:	MOVEM.L	(A7)+,D0-D2/A0-A2/A6
+	RTS
+
+; ---------------------------------------------------------------
+; <obj>.<strmember> := <expression>
+; the COMPLEXST has pushed the start of the target on the stack
+DOSTRMEMBERASSIGN:
+	MOVE.L	(A7)+,A0		; target start
+	MOVE.L	A0,-(A7)		; [8]
+	BSR	STRMARK
+	JSR	EATLEXP			; A3 -> first token after :=
+	MOVE.L	A3,-(A7)		; [4] right hand side
+	BSR	STRRHS			; D0 = new reference
+	MOVE.L	A3,-(A7)		; [0] end of the statement
+	MOVE.W	STRT_PUSHD0(PC),(A4)+	; run time: new
+	MOVE.L	4(A7),A0
+	SUBQ.L	#2,A0			; the := token
+	MOVE.W	(A0),-(A7)
+	CLR.W	(A0)
+	MOVE.L	10(A7),A3
+	JSR	EXP			; run time: D0 = the old value
+	MOVE.L	6(A7),A0
+	SUBQ.L	#2,A0
+	MOVE.W	(A7)+,(A0)		; := back
+	MOVE.W	STRT_PUSHD0(PC),(A4)+	; run time: old
+	MOVE.W	STRT_LDD04A7(PC),(A4)+	; D0 = new
+	MOVE.W	#4,(A4)+
+	MOVE.L	8(A7),A3		; store D0 into the member
+	MOVEQ	#2,D0
+	JSR	EADDRESSMODI
+	MOVE.W	#EFN_STRRELEASE,D0	; release old, drop new
+	BSR	STRCALL
+	MOVE.W	STRT_ADDQ8(PC),(A4)+
+	BSR	STRDRAIN
+	MOVE.L	(A7)+,A3
+	ADDQ.L	#8,A7
+	JMP	DOINSOUT
+
+; ---------------------------------------------------------------
+; END obj: A6 = object, D0 (compile time) = -1 if the object pointer is on
+; top of the stack, else the run time D0 holds it.  emits the release of
+; every STR member.  preserves D0 and A6.
+STRENDMEMBERS:
+	MOVEM.L	D0-D2/A0-A3/A6,-(A7)
+	TST.W	STRMCNT
+	BEQ	.x
+	MOVE.L	D0,D2
+	LEA	OMEMB+4(A6),A3
+.l:	MOVE.L	ONEXT(A3),A3
+	MOVE.L	A3,D1
+	BEQ.S	.x
+	BTST	#5,OFLAGS(A3)
+	BEQ.S	.l
+	TST.L	D2
+	BPL.S	.fromd0
+	MOVE.W	STRT_A0FROMA7(PC),(A4)+
+	BRA.S	.g
+.fromd0:
+	MOVE.W	STRT_A0FROMD0(PC),(A4)+
+.g:	MOVE.W	STRT_PUSHOFF(PC),(A4)+	; MOVE.L off(A0),-(A7)
+	MOVE.W	OOFF(A3),(A4)+
+	MOVE.W	#EFN_STRRELEASE,D0
+	BSR	STRCALL
+	MOVE.W	STRT_ADDQ4(PC),(A4)+
+	BRA.S	.l
+.x:	MOVEM.L	(A7)+,D0-D2/A0-A3/A6
+	RTS
 
 ; ---------------------------------------------------------------
 ; expression hook.  D0.W = token (IDENT or STR), A3 just after it.
@@ -41404,6 +41554,7 @@ STRTAB:		DS.L	256
 STRLTAB:	DS.L	256
 STRCNT:		DS.W	1
 STRLCNT:	DS.W	1
+STRMCNT:	DS.W	1
 		EVEN
 EFUNCRAISE:	DS.B	(NREFUNC+10)*10
 		EVEN
