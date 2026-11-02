@@ -20595,6 +20595,14 @@ XIT:	MOVEM.L	(A7)+,D3-D5/A1
 	CMP.W	#IOFF+71,D0
 	BEQ	EXPNOT
 	CMP.W	#IDENT,D0
+	BEQ.S	.xsc
+	CMP.W	#STR,D0
+	BNE.S	.xsn
+.xsc:	JSR	STRCMPCHECK
+	BNE.S	.xsn
+	JMP	EXPSTRCMP
+.xsn:
+	CMP.W	#IDENT,D0
 	BEQ	EXPVAR
 	CMP.W	#STR,D0
 	BEQ	EXPSTRING
@@ -31096,7 +31104,7 @@ INL_ROR:
 ;
 
 FOFF		= $100
-NREFUNC		= 207
+NREFUNC		= 208
 NRLEGEFUNC = 131
 EFUNCENTRYSIZE=16	;size of efunctab entry (eg 4 LONGWORD entries)
 
@@ -31309,6 +31317,7 @@ EFUNCENTRYSIZE=16	;size of efunctab entry (eg 4 LONGWORD entries)
 	DC.L	.205,	I_STRRELEASE,1,0
 	DC.L	.206,	I_STRRETAIN,1,0
 	DC.L	.207,	I_STRPOOL,2,0
+	DC.L	.208,	I_STRCMPS,2,0
 
 	DC.L	0,I_CODEEND,0,0
 
@@ -31519,6 +31528,7 @@ EFUNCENTRYSIZE=16	;size of efunctab entry (eg 4 LONGWORD entries)
 .205: DC.B		'_StrRelease',0
 .206: DC.B		'_StrRetain',0
 .207: DC.B		'_StrPool',0
+.208: DC.B		'_StrCmp',0
 
 	 EVEN
 		EFUNCSIZES:
@@ -31729,6 +31739,7 @@ EFUNCENTRYSIZE=16	;size of efunctab entry (eg 4 LONGWORD entries)
 	DC.L	E_STRRELEASE-I_STRRELEASE
 	DC.L	E_STRRETAIN-I_STRRETAIN
 	DC.L	E_STRPOOL-I_STRPOOL
+	DC.L	E_STRCMPS-I_STRCMPS
 
 GETA4NR = 136
 WRITEF = 1
@@ -40752,6 +40763,7 @@ EFN_STRCAT	= 203
 EFN_STRRELEASE	= 204
 EFN_STRRETAIN	= 205
 EFN_STRPOOL	= 206
+EFN_STRCMP	= 207
 
 ; ---------------------------------------------------------------
 ; compile time: A0 = ident record just declared as STR
@@ -41000,6 +41012,113 @@ DOSTRASSIGN:
 .STD0:		MOVE.L	D0,2(A5)
 
 ; ---------------------------------------------------------------
+; expression hook.  D0.W = token (IDENT or STR), A3 just after it.
+; Z set if this is the start of  <strvar|literal> <cmp> <strvar|literal>
+; where at least one side is a STR variable and neither side is anything else
+STRCMPCHECK:
+	MOVEM.L	D0-D2/A0-A2,-(A7)
+	TST.W	STRCNT
+	BEQ.S	.no
+	LEA	-2(A3),A0		; first operand
+	MOVEQ	#0,D1			; D1 bit0: first is STR var, bit1: second
+	CMP.W	#IDENT,(A0)
+	BNE.S	.l1
+	MOVE.L	2(A0),A1
+	BSR	STRISSTR
+	BNE.S	.l1
+	MOVEQ	#1,D1
+.l1:	BSR	STRSKIPOPERAND
+	TST.W	D0
+	BMI.S	.no
+	MOVE.W	(A0)+,D2		; comparator
+	CMP.W	#11,D2
+	BLO.S	.no
+	CMP.W	#16,D2
+	BHI.S	.no
+	CMP.W	#IDENT,(A0)
+	BNE.S	.r1
+	MOVE.L	2(A0),A1
+	BSR	STRISSTR
+	BNE.S	.no
+	OR.W	#2,D1
+	BRA.S	.rl
+.r1:	CMP.W	#STR,(A0)
+	BNE.S	.no
+.rl:	BSR	STRSKIPOPERAND
+	TST.W	D0
+	BMI.S	.no
+	; first side STR var, or second side STR var (first then must be a literal)
+	TST.W	D1
+	BEQ.S	.no
+	CMP.W	#1,D1
+	BEQ.S	.yes			; var cmp (var|literal)
+	CMP.W	#3,D1
+	BEQ.S	.yes			; var cmp var
+	; D1=2 : first must be a literal
+	MOVE.W	-2(A3),D0
+	CMP.W	#STR,D0
+	BEQ.S	.yes
+.no:	MOVEQ	#1,D0			; Z clear
+	BRA.S	.out
+.yes:	MOVEQ	#0,D0			; Z set
+.out:	MOVEM.L	(A7)+,D0-D2/A0-A2	; (does not touch the flags)
+	RTS
+
+; ---------------------------------------------------------------
+; the string comparison itself.  A3 just after the first operand token,
+; D5 etc as for any operand
+EXPSTRCMP:
+	CLR.L	LAST_CMD_ADR
+	CMP.W	#1,D5
+	BNE.S	.ok
+	JMP	ERROR0
+.ok:	MOVE.L	LABLOG,-(A7)
+	JSR	SD0
+	SUBQ.L	#2,A3
+	MOVE.L	A3,A0
+	BSR	STRSKIPOPERAND		; A0 -> comparator
+	MOVE.L	A0,-(A7)
+	MOVE.W	(A0),-(A7)
+	CLR.W	(A0)
+	JSR	EXP			; first operand -> D0
+	MOVE.L	2(A7),A0
+	MOVE.W	(A7),(A0)
+	MOVE.W	.PUSHD0(PC),(A4)+
+	ADDQ.L	#2,A0			; second operand
+	MOVE.L	A0,A3
+	BSR	STRSKIPOPERAND
+	MOVE.L	A0,-(A7)
+	MOVE.W	(A0),-(A7)
+	CLR.W	(A0)
+	JSR	EXP
+	MOVE.L	2(A7),A0
+	MOVE.W	(A7)+,(A0)
+	ADDQ.L	#4,A7
+	MOVE.W	.PUSHD0(PC),(A4)+
+	MOVE.W	#EFN_STRCMP,D0
+	BSR	STRCALL
+	MOVE.W	.ADDQ8(PC),(A4)+
+	MOVE.W	.TST(PC),(A4)+
+	MOVE.W	(A7)+,D0		; comparator
+	ADDQ.L	#4,A7
+	SUB.W	#11,D0
+	ADD.W	D0,D0
+	LEA	.SCC(PC),A0
+	MOVE.W	0(A0,D0.W),(A4)+
+	MOVE.W	.EXTW(PC),(A4)+
+	MOVE.W	.EXTL(PC),(A4)+
+	JSR	RD0
+	MOVE.L	(A7)+,LABLOG
+	MOVEQ	#1,D5
+	JMP	EXPLOOP
+.PUSHD0:	MOVE.L	D0,-(A7)
+.ADDQ8:		ADDQ.L	#8,A7
+.TST:		TST.L	D0
+.EXTW:		EXT.W	D0
+.EXTL:		EXT.L	D0
+.SCC:		DC.W	$57C0,$5EC0,$5DC0,$5CC0,$5FC0,$56C0	; SEQ SGT SLT SGE SLE SNE D0
+
+; ---------------------------------------------------------------
 ; run time
 
 ; _StrCat(op1,..opN,N)   new string rc=1 holding the operands joined.
@@ -41224,6 +41343,32 @@ I_STRPOOL:
 	RTS
 .data:	DC.L	0,0,0			; entries, count, capacity
 		E_STRPOOL:
+
+; _StrCmp(a,b) : -1,0,1 comparing the characters (unsigned).  NIL is empty.
+I_STRCMPS:
+	MOVE.L	8(A7),A0
+	MOVE.L	4(A7),A1
+	MOVE.L	A0,D0
+	BNE.S	.a
+	LEA	.empty(PC),A0
+.a:	MOVE.L	A1,D0
+	BNE.S	.b
+	LEA	.empty(PC),A1
+.b:	MOVE.B	(A0)+,D0
+	MOVE.B	(A1)+,D1
+	CMP.B	D1,D0
+	BNE.S	.diff
+	TST.B	D0
+	BNE.S	.b
+	MOVEQ	#0,D0
+	RTS
+.diff:	BCS.S	.less
+	MOVEQ	#1,D0
+	RTS
+.less:	MOVEQ	#-1,D0
+	RTS
+.empty:	DC.B	0,0
+		E_STRCMPS:
 ;*************************************************************	;
 ;	UnInitialized DataSection for E Compiler		;
 ;*************************************************************	;
