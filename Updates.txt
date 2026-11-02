@@ -668,6 +668,15 @@ Development restarted as E-VO by Darren Coles
    - checks for arrays and object properties being used with :=:
      (raise syntax error as these are currently not supported)
    - ListClone did not allocate the correct amount of memory for the new List
+
+   (3.10.0)
+   - Added MEMDEBUG command line switch: builds a program that tracks memory
+     allocated by New(), NewR(), NewM(), NEW, FastNew(), String() and List()
+     with the source line of each allocation and lists blocks never disposed
+     when the program exits. Also warns about Dispose(), FastDispose() and
+     FastDisposeList() of blocks that are not allocated.
+   - Added MemDebugReport() function to list undisposed memory on demand
+     (returns the number of blocks).
    
 DATE HISTORY:
     3.3b    20.11.1999 -> 12.12.1999
