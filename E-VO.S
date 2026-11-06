@@ -10208,7 +10208,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.10.0-dev',160
-			DC.B	'(26.10.2026)'
+			DC.B	'(04.11.2026)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -29852,7 +29852,7 @@ EXEC:
  DC.B "AttemptSemaphoreShared",8,"ColdReboot",16,"StackSwap",8,"ChildFree",0
  DC.B "ChildOrphan",0,"ChildStatus",0,"ChildWait",0,"CachePreDMA",8,9,0
  DC.B "CachePostDMA",8,9,0,"AddMemHandler",9,"RemMemHandler",9
- DC.B "ObtainQuickVector",8,"ÿ",0,0,0,0
+ DC.B "ObtainQuickVector",8,"ï¿½",0,0,0,0
 
 GFX:
  DC.B "BltBitMap",8,0,1,9,2,3,4,5,6,7,10
@@ -29900,7 +29900,7 @@ GFX:
  DC.B 0,"SetMaxPen",8,0,"SetRGB32CM",8,0,1,2,3,"ScrollRasterBF",9,0,1,2,3,4,5
  DC.B "FindColor",11,1,2,3,4,16,"AllocSpriteDataA",10,9,"ChangeExtSpriteA",8,9
  DC.B 10,11,"FreeSpriteData",10,"SetRPAttrsA",8,9,"GetRPAttrsA",8,9
- DC.B "BestModeIDA",8,"WriteChunkyPixels",8,0,1,2,3,10,4,"ÿ",0,0,0,0
+ DC.B "BestModeIDA",8,"WriteChunkyPixels",8,0,1,2,3,10,4,"ï¿½",0,0,0,0
 
 
 INTUI:
@@ -29943,7 +29943,7 @@ INTUI:
  DC.B 9,"ScreenDepth",8,0,9,"ScreenPosition",8,0,1,2,3,4,"ScrollWindowRaster"
  DC.B 9,0,1,2,3,4,5,"LendMenus",8,9,"DoGadgetMethodA",8,9,10,11
  DC.B "SetWindowPointerA",8,9,"TimedDisplayAlert",0,8,1,9,"HelpControl",8,0
- DC.B "ÿ",0,0,0,0
+ DC.B "ï¿½",0,0,0,0
 
 DOS:
  DC.B "Open",1,2,"Close",1,"Read",1,2,3,"Write",1,2,3
@@ -29983,7 +29983,7 @@ DOS:
  DC.B 3,4,"GetVar",1,2,3,4,"DeleteVar",1,2,"FindVar",1,2,16,"CliInitNewcli",8
  DC.B "CliInitRun",8,"WriteChars",1,2,"PutStr",1,"Vprintf",1,2,16
  DC.B "ParsePatternNoCase",1,2,3,"MatchPatternNoCase",1,2,16,"SameDevice",1,2
- DC.B "ExAllEnd",1,2,3,4,5,"SetOwner",1,2,"ÿ",0,0,0,0
+ DC.B "ExAllEnd",1,2,3,4,5,"SetOwner",1,2,"ï¿½",0,0,0,0
 
 UTIL:
  DC.B "FindTagItem",0,8,"GetTagData",0,1,8,"PackBoolTags",0,8,9,"NextTagItem",8
