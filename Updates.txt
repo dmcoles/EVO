@@ -678,6 +678,14 @@ Development restarted as E-VO by Darren Coles
    - Added MemDebugReport() function to list undisposed memory on demand
      (returns the number of blocks).
 
+    (3.11.0)
+   - Added the STR type: a managed (reference counted) string. DEF s:STR,
+     s:='a'+b+'c' joins strings, s:=t shares, s:=NIL releases, the STR
+     locals of a procedure are released when it ends, RETURN s hands a STR
+     to the caller, = <> < > <= >= compare STR variables and string
+     constants, and STR members of objects are released by END. See
+     chapter 8I of the guide.
+
 DATE HISTORY:
     3.3b    20.11.1999 -> 12.12.1999
     3.3c    15.12.1999 -> 12.01.2000
