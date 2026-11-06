@@ -2397,6 +2397,7 @@ CURBRACK:	DC.L	0
 	DC.L	.DONE,.DONE,.DONE,.DONE,.DONE,.DONE ; 102 UNTILN .. EXITN
 	DC.L	.DONE,.DONE,.DONE,.DONE,.DONE,.DONE ; 108 CONTN .. ARRAYSIZE
 	DC.L	.STACKCHECK,.GETA4,.DONE,.DONE,.DONE,.DONE ; 114 STACKCHECK .. ESTRCONST
+	DC.L	.DONE ; 120 STR
 
 .WARN:	
 	MOVE.W	#1,CHECKPARSEWARN
@@ -3161,7 +3162,7 @@ CONTINUEKEY:
 		DC.B	0,0,0,0,0,0,0,0,0,0,0,0 ; 84 WARN .. DATA
 		DC.B	0,0,0,0,0,0,0,0,0,0,0,0 ; 96 CHIP .. EXITN
 		DC.B	0,0,0,0,0,0,0,0,0,0,0,0 ; 108 CONTN..ARRAYSIZE
-		DC.B	0,0,0,0,0,0				; 114 STACKCHECK..
+		DC.B	0,0,0,0,0,0,0			; 114 STACKCHECK.. 120 STR
 		EVEN
 
 
@@ -4371,6 +4372,8 @@ CPUTAB:
 	BEQ.S .6
 	CMP.W #IOFF+110,D0		;WORD
 	BEQ.S .6
+	CMP.W	#IOFF+120,D0		;STR
+	BEQ.S	.6
 	CMP.W	#IOFF+50,D0
 	BPL.S	.5
 .6:	MOVE.W	(A7)+,CURINS
@@ -12849,7 +12852,7 @@ ERROR108:	MOVEQ	#108,D0
 	DC.L	FILLEXIT,DOSUPER,DOUBLEIF,INCDEC,EXPECT3		 ; 75
 	DC.L	JOBOUT,JOBOUT,FILLCONT,DOFATAL,DOWARN		 ; 80
 	DC.L	JOB_SECTION, INS_FLAG, INVERT_BRANCH, STACK_CHECK, STACK_UPDATE	 ;85
-	DC.L	JOB_AUTOPROC		;90
+	DC.L	JOB_AUTOPROC,JOBSTRRETURN		;90,91
 
 		DOBECOMESMETHOD:
 	CMP.W	#42,6(A3)
@@ -12860,6 +12863,10 @@ ERROR108:	MOVEQ	#108,D0
 
 	CMP.W	#ASSGN,(A3)
 	BNE	COMPLEXBECOMES
+	JSR	STRISSTR
+	BNE.S	.notstrvar
+	JMP	DOSTRASSIGN
+.notstrvar:
 
 
 	tst.l VAR_DIMDATA(a1)
@@ -12981,6 +12988,10 @@ ERROR108:	MOVEQ	#108,D0
 	LEA	-6(A3),A0
 		COMPLEXST:
 	MOVE.L	A0,-(A7)		; complexstart -->STACK (D7)
+	JSR	STRMEMBERLV
+	BNE.S	.nstrlv
+	JMP	DOSTRMEMBERASSIGN
+.nstrlv:
 	BSR	EATLEXP
 	BSR	EXP
 	MOVE.L	(A7)+,D7
@@ -13468,6 +13479,7 @@ LIBINFO:	DC.L	0
 	MOVE.L	6(A0),A0
 	MOVE.L	A0,COMPILEPROC
 	CLR.L	PROCMASK		; + REV
+	CLR.W	STRLCNT
 	MOVE.W	4(A0),NRLOC
 	BTST	#0,2(A0)		;rtd flags
 	BEQ.S	.1
@@ -13494,6 +13506,7 @@ LIBINFO:	DC.L	0
 	BEQ	ERROR9
 	MOVE.L	PROCEND(PC),D0
 	BSR	ADDLABEL
+	JSR	STRPROCEXIT
 	MOVE.L	A4,D0
 	SUB.L	PROCSTARTADR(PC),D0
 	CMP.L	#32700,D0
@@ -14165,6 +14178,11 @@ LDEF:	MACRO
 	BSET #7,VARFLAGS(a0) ;set LONG var flag
 	CMP.W	#IOFF+20,-2(A3)		; a:LONG
 	BEQ	.1
+	CMP.W	#IOFF+120,-2(A3)		; a:STR
+	BNE.S	.notstr
+	JSR	STRREGISTER
+	BRA	.1
+.notstr:
 	;this was from E v3.3a
 	;but makes no sense as REAL is not an actual type
 	;IOFF+61 is "END"
@@ -15653,7 +15671,14 @@ CHECKPR:	MACRO			; \1=TR.DX
  
 	MOVE.L	(A7)+,A2
 	BRA	JOBLOOP			; ONLY EXIT!
-.SOBJ:	CMP.W	#IOFF+44,D0
+.SOBJ:
+	CMP.W	#IOFF+120,D0
+	BNE.S	.nstrm
+	BSET	#5,OFLAGS(A0)		; STR member (a LONG)
+	ADDQ.W	#1,STRMCNT
+	BRA	.O
+.nstrm:
+	CMP.W	#IOFF+44,D0
 	BEQ.S	.PTR
 	CMP.W	#31,D0
 	BNE	ERROR33
@@ -15985,7 +16010,14 @@ ALIGN:	DC.W	0
 	BNE	ERROR34
 	RTS
 
-.SOBJ:	CMP.W	#IOFF+44,D0
+.SOBJ:
+	CMP.W	#IOFF+120,D0
+	BNE.S	.nstrm
+	BSET	#5,OFLAGS(A0)		; STR member (a LONG)
+	ADDQ.W	#1,STRMCNT
+	BRA	.O
+.nstrm:
+	CMP.W	#IOFF+44,D0
 	BEQ.S	.PTR
 	CMP.W	#31,D0
 	BNE	ERROR33
@@ -16928,6 +16960,7 @@ SAVEDREGSPTR:	DC.L	0
 	MOVE.L	A6,D1
 	BEQ.S	.ND
 	BSR	DESTR
+	JSR	STRENDMEMBERS
 .ND:
 	CMP.W	#29,(A3)
 	BNE.S	.1
@@ -20580,6 +20613,14 @@ XIT:	MOVEM.L	(A7)+,D3-D5/A1
 		EXPBACK:
 	CMP.W	#IOFF+71,D0
 	BEQ	EXPNOT
+	CMP.W	#IDENT,D0
+	BEQ.S	.xsc
+	CMP.W	#STR,D0
+	BNE.S	.xsn
+.xsc:	JSR	STRCMPCHECK
+	BNE.S	.xsn
+	JMP	EXPSTRCMP
+.xsn:
 	CMP.W	#IDENT,D0
 	BEQ	EXPVAR
 	CMP.W	#STR,D0
@@ -29811,7 +29852,7 @@ EXEC:
  DC.B "AttemptSemaphoreShared",8,"ColdReboot",16,"StackSwap",8,"ChildFree",0
  DC.B "ChildOrphan",0,"ChildStatus",0,"ChildWait",0,"CachePreDMA",8,9,0
  DC.B "CachePostDMA",8,9,0,"AddMemHandler",9,"RemMemHandler",9
- DC.B "ObtainQuickVector",8,"ÿ",0,0,0,0
+ DC.B "ObtainQuickVector",8,"ï¿½",0,0,0,0
 
 GFX:
  DC.B "BltBitMap",8,0,1,9,2,3,4,5,6,7,10
@@ -29859,7 +29900,7 @@ GFX:
  DC.B 0,"SetMaxPen",8,0,"SetRGB32CM",8,0,1,2,3,"ScrollRasterBF",9,0,1,2,3,4,5
  DC.B "FindColor",11,1,2,3,4,16,"AllocSpriteDataA",10,9,"ChangeExtSpriteA",8,9
  DC.B 10,11,"FreeSpriteData",10,"SetRPAttrsA",8,9,"GetRPAttrsA",8,9
- DC.B "BestModeIDA",8,"WriteChunkyPixels",8,0,1,2,3,10,4,"ÿ",0,0,0,0
+ DC.B "BestModeIDA",8,"WriteChunkyPixels",8,0,1,2,3,10,4,"ï¿½",0,0,0,0
 
 
 INTUI:
@@ -29902,7 +29943,7 @@ INTUI:
  DC.B 9,"ScreenDepth",8,0,9,"ScreenPosition",8,0,1,2,3,4,"ScrollWindowRaster"
  DC.B 9,0,1,2,3,4,5,"LendMenus",8,9,"DoGadgetMethodA",8,9,10,11
  DC.B "SetWindowPointerA",8,9,"TimedDisplayAlert",0,8,1,9,"HelpControl",8,0
- DC.B "ÿ",0,0,0,0
+ DC.B "ï¿½",0,0,0,0
 
 DOS:
  DC.B "Open",1,2,"Close",1,"Read",1,2,3,"Write",1,2,3
@@ -29942,7 +29983,7 @@ DOS:
  DC.B 3,4,"GetVar",1,2,3,4,"DeleteVar",1,2,"FindVar",1,2,16,"CliInitNewcli",8
  DC.B "CliInitRun",8,"WriteChars",1,2,"PutStr",1,"Vprintf",1,2,16
  DC.B "ParsePatternNoCase",1,2,3,"MatchPatternNoCase",1,2,16,"SameDevice",1,2
- DC.B "ExAllEnd",1,2,3,4,5,"SetOwner",1,2,"ÿ",0,0,0,0
+ DC.B "ExAllEnd",1,2,3,4,5,"SetOwner",1,2,"ï¿½",0,0,0,0
 
 UTIL:
  DC.B "FindTagItem",0,8,"GetTagData",0,1,8,"PackBoolTags",0,8,9,"NextTagItem",8
@@ -29995,7 +30036,7 @@ UTIL:
 		UNLK	A5
 		DC.W	68,89,0
 
-.RETURN:	DC.W	16,58,0
+.RETURN:	DC.W	91,58,0
 .EXIT:		DC.W	86,IOFF+107,61,56
 		TST.L	D0
 		BEQ	DUM
@@ -30179,6 +30220,7 @@ UTIL:
 	DC.L	.92,0,.93,0,.94,0,.95,0,.96,0,.97,0,.98,0,.99,0,.100,0,.101,0
 	DC.L	.102,0,.103,0,.104,0,.105,0,.106,0,.107,0,.108,0,.109,0,.110,0
 	DC.L	.111,0,.112,0,.113,0,.114,0,.115,0,.116,0,.117,0,.118,0,.119,0
+	DC.L	.120,0
 	DC.L	 0,0
 
 .0:	DC.B	'PROC',0
@@ -30301,6 +30343,7 @@ UTIL:
 .117:	DC.B 'MODCLEANUP',0
 .118:	DC.B	'CANPOOL',0
 .119: DC.B	'ESTRCONST',0
+.120:	DC.B	'STR',0
 
 	EVEN
 
@@ -31080,7 +31123,7 @@ INL_ROR:
 ;
 
 FOFF		= $100
-NREFUNC		= 203
+NREFUNC		= 208
 NRLEGEFUNC = 131
 EFUNCENTRYSIZE=16	;size of efunctab entry (eg 4 LONGWORD entries)
 
@@ -31289,6 +31332,11 @@ EFUNCENTRYSIZE=16	;size of efunctab entry (eg 4 LONGWORD entries)
 	DC.L	.201,	I_CHARINSTRI,3,-1
 	DC.L	.202,	I_MEMCMP,3,0
 	DC.L	.203,	I_MEMREPORT,0,0
+	DC.L	.204,	I_STRCAT,-1,0
+	DC.L	.205,	I_STRRELEASE,1,0
+	DC.L	.206,	I_STRRETAIN,1,0
+	DC.L	.207,	I_STRPOOL,2,0
+	DC.L	.208,	I_STRCMPS,2,0
 
 	DC.L	0,I_CODEEND,0,0
 
@@ -31495,6 +31543,11 @@ EFUNCENTRYSIZE=16	;size of efunctab entry (eg 4 LONGWORD entries)
 .201: DC.B		'CharInStri',0
 .202: DC.B		'MemCompare',0
 .203: DC.B		'MemDebugReport',0
+.204: DC.B		'_StrCat',0
+.205: DC.B		'_StrRelease',0
+.206: DC.B		'_StrRetain',0
+.207: DC.B		'_StrPool',0
+.208: DC.B		'_StrCmp',0
 
 	 EVEN
 		EFUNCSIZES:
@@ -31701,6 +31754,11 @@ EFUNCENTRYSIZE=16	;size of efunctab entry (eg 4 LONGWORD entries)
 	DC.L	E_CHARINSTRI-I_CHARINSTRI
 	DC.L	E_MEMCMP-I_MEMCMP
 	DC.L	E_MEMREPORT-I_MEMREPORT
+	DC.L	E_STRCAT-I_STRCAT
+	DC.L	E_STRRELEASE-I_STRRELEASE
+	DC.L	E_STRRETAIN-I_STRRETAIN
+	DC.L	E_STRPOOL-I_STRPOOL
+	DC.L	E_STRCMPS-I_STRCMPS
 
 GETA4NR = 136
 WRITEF = 1
@@ -40699,6 +40757,768 @@ I_MEMREPORT:
 .fmt4:	DC.B	'MEMDEBUG: %ld block(s), %ld bytes not disposed',10,0
 	EVEN
 		E_MEMREPORT:
+
+; *************************************************************	;
+;	STR: managed (reference counted) strings		;
+;								;
+;	DEF s:STR   declares a string variable that owns a	;
+;	reference counted string.  s:=a+b+'x' concatenates,	;
+;	s:=t shares, s:=NIL releases.  locals are released	;
+;	when the procedure ends.  RETURN s hands the string	;
+;	to the caller (it is parked in a pool until the	;
+;	caller's assignment has taken its own reference).	;
+;								;
+;	a STR value is a pointer to the characters of an	;
+;	estring: max.W/len.W precede the characters, before	;
+;	that is the reference count longword ('ST' in the	;
+;	high word, count in the low word; where String()	;
+;	keeps its link) and the block is on the -20(A4)	;
+;	allocation chain like any other.			;
+; *************************************************************	;
+
+STRMAX		= 256
+
+EFN_STRCAT	= 203
+EFN_STRRELEASE	= 204
+EFN_STRRETAIN	= 205
+EFN_STRPOOL	= 206
+EFN_STRCMP	= 207
+
+; ---------------------------------------------------------------
+; compile time: A0 = ident record just declared as STR
+STRREGISTER:
+	MOVEM.L	D0-D1/A0-A2,-(A7)
+	MOVE.W	STRCNT,D0
+	CMP.W	#STRMAX,D0
+	BLO.S	.okc1
+	JMP	ERROR33
+.okc1:
+	LEA	STRTAB,A1
+	LSL.W	#2,D0
+	MOVE.L	A0,0(A1,D0.W)
+	ADDQ.W	#1,STRCNT
+	CMP.B	#LOCV,4(A0)
+	BNE.S	.done
+	MOVE.W	STRLCNT,D0
+	CMP.W	#STRMAX,D0
+	BLO.S	.okc2
+	JMP	ERROR33
+.okc2:
+	LEA	STRLTAB,A1
+	LSL.W	#2,D0
+	MOVE.L	A0,0(A1,D0.W)
+	ADDQ.W	#1,STRLCNT
+	MOVE.W	.CLR(PC),(A4)+		; CLR.L var : starts as NIL
+	JSR	GVA0D0_0
+.done:	MOVEM.L	(A7)+,D0-D1/A0-A2
+	RTS
+.CLR:	CLR.L	2(A5)
+
+; ---------------------------------------------------------------
+; A1 = ident record.  Z set if it was declared STR.  trashes nothing
+STRISSTR:
+	MOVEM.L	D0/A0,-(A7)
+	MOVE.W	STRCNT,D0
+	BEQ.S	.no
+	SUBQ.W	#1,D0
+	LEA	STRTAB,A0
+.l:	CMPA.L	(A0)+,A1
+	DBEQ	D0,.l
+	BRA.S	.out
+.no:	MOVEQ	#1,D0			; Z clear
+.out:	MOVEM.L	(A7)+,D0/A0
+	RTS
+
+; ---------------------------------------------------------------
+; emit the release of every STR local at the procedure exit label
+STRPROCEXIT:
+	MOVEM.L	D0-D2/A0-A2,-(A7)
+	MOVE.W	STRLCNT,D2
+	BEQ.S	.x
+	SUBQ.W	#1,D2
+	LEA	STRLTAB,A2
+.l:	MOVE.L	(A2)+,A0
+	MOVE.W	.PUSHV(PC),(A4)+	; MOVE.L var,-(A7)
+	JSR	GVA0D0_0
+	MOVE.W	#EFN_STRRELEASE,D0
+	BSR	STRCALL
+	MOVE.W	.ADDQ4(PC),(A4)+
+	DBRA	D2,.l
+.x:	MOVEM.L	(A7)+,D0-D2/A0-A2
+	RTS
+.PUSHV:	MOVE.L	2(A5),-(A7)
+.ADDQ4:	ADDQ.L	#4,A7
+
+; ---------------------------------------------------------------
+; emit a JSR to built-in function number D0.W (zero based)
+STRCALL:
+	MOVEM.L	D0-D1/A0,-(A7)
+	MOVEQ	#0,D1
+	MOVE.W	D0,D1
+	LEA	EFUNCBYTE,A0
+	MOVE.B	#-1,0(A0,D1.L)
+	ADD.W	#10,D0
+	MOVE.W	#$4EB9,(A4)+
+	JSR	ADDBRANCHRELOC
+	MOVEM.L	(A7)+,D0-D1/A0
+	RTS
+
+; ---------------------------------------------------------------
+; A0 -> start of an operand token (IDENT or string literal).
+; on exit A0 is after it and D0.W=0, or D0.W=-1 if not an operand
+STRSKIPOPERAND:
+	MOVE.W	(A0),D0
+	CMP.W	#IDENT,D0
+	BNE.S	.nid
+	ADDQ.L	#6,A0
+.mem:	CMP.W	#35,(A0)
+	BNE.S	.memx
+	CMP.W	#39,2(A0)
+	BNE.S	.memx
+	ADDQ.L	#8,A0
+	BRA.S	.mem
+.memx:
+	MOVEQ	#0,D0
+	RTS
+.nid:	CMP.W	#STR,D0
+	BNE.S	.bad
+	MOVE.W	4(A0),D0		; wordlen
+	ADD.W	D0,D0
+	LEA	6(A0,D0.W),A0
+	MOVEQ	#0,D0
+	RTS
+.bad:	MOVEQ	#-1,D0
+	RTS
+
+; ---------------------------------------------------------------
+; RETURN <expression>.  RETURN <STR variable> parks the string in the pool
+; so that it survives the release of the locals of this procedure.
+JOBSTRRETURN:
+	CMP.W	#IDENT,(A3)
+	BNE.S	.norm
+	TST.W	6(A3)
+	BNE.S	.norm
+	MOVE.L	2(A3),A1
+	JSR	STRISSTR
+	BNE.S	.norm
+	JSR	EXP			; loads the variable
+	MOVE.W	.PUSHD0(PC),(A4)+
+	MOVE.W	.PEA(PC),(A4)+		; PEA 1.W : push
+	MOVE.W	#1,(A4)+
+	MOVE.W	#EFN_STRPOOL,D0
+	BSR	STRCALL
+	MOVE.W	.ADDQ8(PC),(A4)+
+	JMP	JOBLOOP
+.norm:	JMP	EXPORNILL
+.PUSHD0:	MOVE.L	D0,-(A7)
+.PEA:		PEA	1.W
+.ADDQ8:		ADDQ.L	#8,A7
+
+; templates shared by the STR routines
+STRT_CLRPUSH:	CLR.L	-(A7)
+STRT_PUSHL:	MOVE.L	#0,-(A7)
+STRT_PUSHD0:	MOVE.L	D0,-(A7)
+STRT_PUSHD1:	MOVE.L	D1,-(A7)
+STRT_PEA:	PEA	1.W
+STRT_ADDQ4:	ADDQ.L	#4,A7
+STRT_ADDQ8:	ADDQ.L	#8,A7
+STRT_LEAA7:	LEA	4(A7),A7
+STRT_LDD1:	MOVE.L	2(A5),D1
+STRT_STD0:	MOVE.L	D0,2(A5)
+STRT_LDD04A7:	MOVE.L	4(A7),D0
+STRT_A0FROMD0:	MOVE.L	D0,A0
+STRT_A0FROMA7:	MOVE.L	(A7),A0
+STRT_PUSHOFF:	MOVE.L	2(A0),-(A7)
+
+; emit: mark the pool, the mark stays on the run time stack
+STRMARK:
+	MOVE.W	STRT_CLRPUSH(PC),(A4)+
+	MOVE.W	STRT_PEA(PC),(A4)+
+	MOVE.W	#0,(A4)+
+	MOVE.W	#EFN_STRPOOL,D0
+	BSR	STRCALL
+	MOVE.W	STRT_ADDQ8(PC),(A4)+
+	MOVE.W	STRT_PUSHD0(PC),(A4)+
+	RTS
+
+; emit: release what the statement parked (the mark is on top of the stack)
+STRDRAIN:
+	MOVE.W	STRT_PEA(PC),(A4)+
+	MOVE.W	#2,(A4)+
+	MOVE.W	#EFN_STRPOOL,D0
+	BSR	STRCALL
+	MOVE.W	STRT_ADDQ8(PC),(A4)+
+	RTS
+
+; ---------------------------------------------------------------
+; compile the right hand side of a STR assignment, A3 at its first token.
+; the generated code leaves a new reference in D0, A3 ends at the terminator
+STRRHS:
+	MOVE.L	A3,A0
+	MOVEQ	#0,D3			; number of '+'
+.scan:	BSR	STRSKIPOPERAND
+	TST.W	D0
+	BMI	.generic
+	CMP.W	#7,(A0)
+	BNE.S	.endscan
+	ADDQ.L	#2,A0
+	ADDQ.W	#1,D3
+	BRA.S	.scan
+.endscan:
+	TST.W	(A0)
+	BNE	.generic		; something else follows the operands
+	TST.W	D3
+	BNE	.concat
+	CMP.W	#IDENT,(A3)		; single STR variable : share it
+	BNE.S	.generic
+	TST.W	6(A3)
+	BNE.S	.generic
+	MOVE.L	2(A3),A0
+	MOVE.L	A1,-(A7)
+	MOVE.L	A0,A1
+	BSR	STRISSTR
+	MOVE.L	(A7)+,A1
+	BNE.S	.generic
+	JSR	EXP
+	MOVE.W	STRT_PUSHD0(PC),(A4)+
+	MOVE.W	#EFN_STRRETAIN,D0
+	BSR	STRCALL
+	MOVE.W	STRT_ADDQ4(PC),(A4)+
+	RTS
+
+.generic:				; share it if it is a STR, else copy it
+	MOVEQ	#0,D4
+	CMP.W	#STR,(A3)		; a literal is always copied
+	BNE.S	.gx
+	MOVEQ	#-1,D4
+.gx:	JSR	EXP
+	MOVE.W	STRT_PUSHD0(PC),(A4)+
+	TST.W	D4
+	BNE.S	.gforce
+	MOVE.W	STRT_PEA(PC),(A4)+
+	MOVE.W	#1,(A4)+
+	BRA.S	.gcall
+.gforce:
+	MOVE.W	STRT_PUSHL(PC),(A4)+	; MOVE.L #$80000001,-(A7)
+	MOVE.L	#$80000001,(A4)+
+.gcall:	MOVE.W	#EFN_STRCAT,D0
+	BSR	STRCALL
+	MOVE.W	STRT_ADDQ8(PC),(A4)+
+	RTS
+
+.concat:
+	ADDQ.W	#1,D3			; D3 = number of operands
+	MOVE.W	D3,-(A7)
+	MOVE.L	A3,A0
+.opl:	MOVE.L	A0,-(A7)		; operand start
+	BSR	STRSKIPOPERAND
+	MOVE.L	A0,-(A7)		; operand end
+	MOVE.W	(A0),-(A7)		; following token (+ or end)
+	CLR.W	(A0)			; make the expression stop there
+	MOVE.L	6(A7),A3
+	JSR	EXP
+	MOVE.L	2(A7),A0
+	MOVE.W	(A7)+,(A0)		; put the token back
+	MOVE.L	(A7)+,A0
+	ADDQ.L	#4,A7
+	MOVE.W	STRT_PUSHD0(PC),(A4)+
+	CMP.W	#7,(A0)
+	BNE.S	.opdone
+	ADDQ.L	#2,A0
+	BRA.S	.opl
+.opdone:
+	MOVE.L	A0,A3
+	MOVE.W	(A7)+,D3
+	MOVE.W	STRT_PEA(PC),(A4)+
+	MOVE.W	D3,(A4)+
+	MOVE.W	#EFN_STRCAT,D0
+	BSR	STRCALL
+	MOVE.W	STRT_LEAA7(PC),(A4)+
+	MOVE.W	D3,D0
+	ADDQ.W	#1,D0
+	LSL.W	#2,D0
+	MOVE.W	D0,(A4)+
+	RTS
+
+; ---------------------------------------------------------------
+; <strvar> := <expression>      A1=ident, A3 at the := token
+DOSTRASSIGN:
+	ADDQ.L	#2,A3			; skip :=
+	MOVE.L	A1,-(A7)		; target
+	BSR	STRMARK
+	BSR	STRRHS			; D0 = new reference
+	MOVE.L	(A7)+,A1
+	MOVE.W	STRT_LDD1(PC),(A4)+	; old value
+	JSR	GVA1D2_0
+	MOVE.W	STRT_STD0(PC),(A4)+	; store the new one
+	JSR	GVA1D2_9
+	MOVE.W	STRT_PUSHD1(PC),(A4)+	; and release the old
+	MOVE.W	#EFN_STRRELEASE,D0
+	BSR	STRCALL
+	MOVE.W	STRT_ADDQ4(PC),(A4)+
+	BSR	STRDRAIN
+	JMP	DOINSOUT
+
+; ---------------------------------------------------------------
+; A0 = start of an assignment target.  Z set if it is
+; <ident>.<member>{.<member>} := with the last member declared STR
+STRMEMBERLV:
+	MOVEM.L	D0-D2/A0-A2/A6,-(A7)
+	TST.W	STRMCNT
+	BEQ.S	.no
+	CMP.W	#IDENT,(A0)+
+	BNE.S	.no
+	MOVE.L	(A0)+,A1
+	MOVE.L	(A1),D0			; type of the variable
+	CMP.L	#5,D0
+	BLO.S	.no
+	MOVE.L	D0,A6
+.next:	CMP.W	#35,(A0)+		; .
+	BNE.S	.no
+	CMP.W	#39,(A0)+		; member
+	BNE.S	.no
+	MOVE.L	(A0)+,A1
+	JSR	FINDMEMBER		; A6=object, A1 -> the member
+	CMP.W	#35,(A0)
+	BNE.S	.last
+	MOVE.L	OPTRTYPE(A1),D0
+	CMP.L	#5,D0
+	BLO.S	.no
+	MOVE.L	D0,A6
+	BRA.S	.next
+.last:	CMP.W	#ASSGN,(A0)
+	BNE.S	.no
+	BTST	#5,OFLAGS(A1)
+	BEQ.S	.no
+	MOVEQ	#0,D0			; Z set
+	BRA.S	.out
+.no:	MOVEQ	#1,D0			; Z clear
+.out:	MOVEM.L	(A7)+,D0-D2/A0-A2/A6
+	RTS
+
+; ---------------------------------------------------------------
+; <obj>.<strmember> := <expression>
+; the COMPLEXST has pushed the start of the target on the stack
+DOSTRMEMBERASSIGN:
+	MOVE.L	(A7)+,A0		; target start
+	MOVE.L	A0,-(A7)		; [8]
+	BSR	STRMARK
+	JSR	EATLEXP			; A3 -> first token after :=
+	MOVE.L	A3,-(A7)		; [4] right hand side
+	BSR	STRRHS			; D0 = new reference
+	MOVE.L	A3,-(A7)		; [0] end of the statement
+	MOVE.W	STRT_PUSHD0(PC),(A4)+	; run time: new
+	MOVE.L	4(A7),A0
+	SUBQ.L	#2,A0			; the := token
+	MOVE.W	(A0),-(A7)
+	CLR.W	(A0)
+	MOVE.L	10(A7),A3
+	JSR	EXP			; run time: D0 = the old value
+	MOVE.L	6(A7),A0
+	SUBQ.L	#2,A0
+	MOVE.W	(A7)+,(A0)		; := back
+	MOVE.W	STRT_PUSHD0(PC),(A4)+	; run time: old
+	MOVE.W	STRT_LDD04A7(PC),(A4)+	; D0 = new
+	MOVE.W	#4,(A4)+
+	MOVE.L	8(A7),A3		; store D0 into the member
+	MOVEQ	#2,D0
+	JSR	EADDRESSMODI
+	MOVE.W	#EFN_STRRELEASE,D0	; release old, drop new
+	BSR	STRCALL
+	MOVE.W	STRT_ADDQ8(PC),(A4)+
+	BSR	STRDRAIN
+	MOVE.L	(A7)+,A3
+	ADDQ.L	#8,A7
+	JMP	DOINSOUT
+
+; ---------------------------------------------------------------
+; END obj: A6 = object, D0 (compile time) = -1 if the object pointer is on
+; top of the stack, else the run time D0 holds it.  emits the release of
+; every STR member.  preserves D0 and A6.
+STRENDMEMBERS:
+	MOVEM.L	D0-D2/A0-A3/A6,-(A7)
+	TST.W	STRMCNT
+	BEQ	.x
+	MOVE.L	D0,D2
+	LEA	OMEMB+4(A6),A3
+.l:	MOVE.L	ONEXT(A3),A3
+	MOVE.L	A3,D1
+	BEQ.S	.x
+	BTST	#5,OFLAGS(A3)
+	BEQ.S	.l
+	TST.L	D2
+	BPL.S	.fromd0
+	MOVE.W	STRT_A0FROMA7(PC),(A4)+
+	BRA.S	.g
+.fromd0:
+	MOVE.W	STRT_A0FROMD0(PC),(A4)+
+.g:	MOVE.W	STRT_PUSHOFF(PC),(A4)+	; MOVE.L off(A0),-(A7)
+	MOVE.W	OOFF(A3),(A4)+
+	MOVE.W	#EFN_STRRELEASE,D0
+	BSR	STRCALL
+	MOVE.W	STRT_ADDQ4(PC),(A4)+
+	BRA.S	.l
+.x:	MOVEM.L	(A7)+,D0-D2/A0-A3/A6
+	RTS
+
+; ---------------------------------------------------------------
+; expression hook.  D0.W = token (IDENT or STR), A3 just after it.
+; Z set if this is the start of  <strvar|literal> <cmp> <strvar|literal>
+; where at least one side is a STR variable and neither side is anything else
+STRCMPCHECK:
+	MOVEM.L	D0-D2/A0-A2,-(A7)
+	TST.W	STRCNT
+	BEQ.S	.no
+	LEA	-2(A3),A0		; first operand
+	MOVEQ	#0,D1			; D1 bit0: first is STR var, bit1: second
+	CMP.W	#IDENT,(A0)
+	BNE.S	.l1
+	MOVE.L	2(A0),A1
+	BSR	STRISSTR
+	BNE.S	.l1
+	MOVEQ	#1,D1
+.l1:	BSR	STRSKIPOPERAND
+	TST.W	D0
+	BMI.S	.no
+	MOVE.W	(A0)+,D2		; comparator
+	CMP.W	#11,D2
+	BLO.S	.no
+	CMP.W	#16,D2
+	BHI.S	.no
+	CMP.W	#IDENT,(A0)
+	BNE.S	.r1
+	MOVE.L	2(A0),A1
+	BSR	STRISSTR
+	BNE.S	.no
+	OR.W	#2,D1
+	BRA.S	.rl
+.r1:	CMP.W	#STR,(A0)
+	BNE.S	.no
+.rl:	BSR	STRSKIPOPERAND
+	TST.W	D0
+	BMI.S	.no
+	; first side STR var, or second side STR var (first then must be a literal)
+	TST.W	D1
+	BEQ.S	.no
+	CMP.W	#1,D1
+	BEQ.S	.yes			; var cmp (var|literal)
+	CMP.W	#3,D1
+	BEQ.S	.yes			; var cmp var
+	; D1=2 : first must be a literal
+	MOVE.W	-2(A3),D0
+	CMP.W	#STR,D0
+	BEQ.S	.yes
+.no:	MOVEQ	#1,D0			; Z clear
+	BRA.S	.out
+.yes:	MOVEQ	#0,D0			; Z set
+.out:	MOVEM.L	(A7)+,D0-D2/A0-A2	; (does not touch the flags)
+	RTS
+
+; ---------------------------------------------------------------
+; the string comparison itself.  A3 just after the first operand token,
+; D5 etc as for any operand
+EXPSTRCMP:
+	CLR.L	LAST_CMD_ADR
+	CMP.W	#1,D5
+	BNE.S	.ok
+	JMP	ERROR0
+.ok:	MOVE.L	LABLOG,-(A7)
+	JSR	SD0
+	SUBQ.L	#2,A3
+	MOVE.L	A3,A0
+	BSR	STRSKIPOPERAND		; A0 -> comparator
+	MOVE.L	A0,-(A7)
+	MOVE.W	(A0),-(A7)
+	CLR.W	(A0)
+	JSR	EXP			; first operand -> D0
+	MOVE.L	2(A7),A0
+	MOVE.W	(A7),(A0)
+	MOVE.W	.PUSHD0(PC),(A4)+
+	ADDQ.L	#2,A0			; second operand
+	MOVE.L	A0,A3
+	BSR	STRSKIPOPERAND
+	MOVE.L	A0,-(A7)
+	MOVE.W	(A0),-(A7)
+	CLR.W	(A0)
+	JSR	EXP
+	MOVE.L	2(A7),A0
+	MOVE.W	(A7)+,(A0)
+	ADDQ.L	#4,A7
+	MOVE.W	.PUSHD0(PC),(A4)+
+	MOVE.W	#EFN_STRCMP,D0
+	BSR	STRCALL
+	MOVE.W	.ADDQ8(PC),(A4)+
+	MOVE.W	.TST(PC),(A4)+
+	MOVE.W	(A7)+,D0		; comparator
+	ADDQ.L	#4,A7
+	SUB.W	#11,D0
+	ADD.W	D0,D0
+	LEA	.SCC(PC),A0
+	MOVE.W	0(A0,D0.W),(A4)+
+	MOVE.W	.EXTW(PC),(A4)+
+	MOVE.W	.EXTL(PC),(A4)+
+	JSR	RD0
+	MOVE.L	(A7)+,LABLOG
+	MOVEQ	#1,D5
+	JMP	EXPLOOP
+.PUSHD0:	MOVE.L	D0,-(A7)
+.ADDQ8:		ADDQ.L	#8,A7
+.TST:		TST.L	D0
+.EXTW:		EXT.W	D0
+.EXTL:		EXT.L	D0
+.SCC:		DC.W	$57C0,$5EC0,$5DC0,$5CC0,$5FC0,$56C0	; SEQ SGT SLT SGE SLE SNE D0
+
+; ---------------------------------------------------------------
+; run time
+
+; _StrCat(op1,..opN,N)   new string rc=1 holding the operands joined.
+; NIL operands are empty.  a single NIL operand gives NIL.  a single operand
+; that already is a STR is shared (rc+1) unless N has bit 31 set (literal).
+I_STRCAT:
+	MOVEM.L	D2-D4/A2-A3,-(A7)
+	MOVE.L	24(A7),D3		; N
+	MOVE.L	D3,D4
+	AND.L	#$7FFFFFFF,D3
+	CMP.L	#1,D3
+	BNE.S	.go
+	MOVE.L	28(A7),D0
+	BEQ	.ret			; NIL gives NIL
+	TST.L	D4
+	BMI.S	.go			; forced copy
+	MOVE.L	D0,A0
+	CMP.W	#$5354,-8(A0)		; is it one of ours ?
+	BNE.S	.go
+	MOVE.L	-12(A0),D1
+	CMP.L	#18,D1
+	BCS.S	.go
+	BTST	#0,D1
+	BNE.S	.go
+	MOVE.W	-2(A0),D1
+	CMP.W	-4(A0),D1		; len <= max
+	BHI.S	.go
+	ADDQ.W	#1,-6(A0)		; share
+	BRA	.ret
+.go:	MOVEQ	#0,D2			; total length
+	LEA	28(A7),A2
+	MOVE.L	D3,D4
+	SUBQ.L	#1,D4
+.p1:	MOVE.L	(A2)+,D0
+	BEQ.S	.p1n
+	MOVE.L	D0,A0
+.p1s:	TST.B	(A0)+
+	BNE.S	.p1s
+	SUBA.L	D0,A0
+	SUBQ.L	#1,A0
+	ADD.L	A0,D2
+.p1n:	DBRA	D4,.p1
+	CMP.L	#$FFFF,D2
+	BHI	.raise
+	MOVE.L	D2,D0
+	ADD.L	#18,D0			; 16 header + NUL, rounded up to even
+	AND.L	#-2,D0
+	MOVE.L	D0,D4
+	MOVEQ	#1,D1
+	SWAP	D1			; MEMF_CLEAR
+	MOVE.L	4.W,A6
+	JSR	-198(A6)
+	TST.L	D0
+	BEQ.S	.raise
+	MOVE.L	D0,A0
+	MOVE.L	-20(A4),(A0)
+	MOVE.L	D0,-20(A4)
+	MOVE.L	D4,4(A0)
+	MOVE.L	#$53540001,8(A0)	; 'ST', reference count 1
+	MOVE.W	D2,12(A0)		; max
+	MOVE.W	D2,14(A0)		; len
+	LEA	16(A0),A1		; the string
+	MOVE.L	A1,A3
+	LEA	28(A7),A2
+	MOVE.L	D3,D0
+	LSL.L	#2,D0
+	LEA	-4(A2,D0.L),A2		; first operand
+	SUBQ.L	#1,D3
+.p2:	MOVE.L	(A2),D0
+	SUBQ.L	#4,A2
+	TST.L	D0
+	BEQ.S	.p2n
+	MOVE.L	D0,A0
+.p2c:	MOVE.B	(A0)+,(A3)+
+	BNE.S	.p2c
+	SUBQ.L	#1,A3
+.p2n:	DBRA	D3,.p2
+	CLR.B	(A3)
+	MOVE.L	A1,D0
+.ret:	MOVEM.L	(A7)+,D2-D4/A2-A3
+	RTS
+.raise:	MOVE.L	#"MEM",-84(A4)
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
+	JMP	(A0)
+		E_STRCAT:
+
+; _StrRelease(s) : drops one reference, frees at zero.  preserves all registers.
+I_STRRELEASE:
+	MOVEM.L	D0-D2/A0-A2/A6,-(A7)
+	MOVE.L	32(A7),D0
+	BEQ.S	.x
+	MOVE.L	D0,A0
+	SUBQ.W	#1,-6(A0)
+	BNE.S	.x
+	LEA	-16(A0),A0		; block
+	LEA	-20(A4),A1
+.loop:	MOVE.L	(A1),D1
+	BEQ.S	.x
+	MOVE.L	A1,A2
+	MOVE.L	D1,A1
+	CMPA.L	D1,A0
+	BNE.S	.loop
+	MOVE.L	4(A1),D0
+	MOVE.L	(A1),(A2)
+	MOVE.L	4.W,A6
+	JSR	-210(A6)
+.x:	MOVEM.L	(A7)+,D0-D2/A0-A2/A6
+	RTS
+		E_STRRELEASE:
+
+; _StrRetain(s) : adds a reference, returns s
+I_STRRETAIN:
+	MOVE.L	4(A7),D0
+	BEQ.S	.x
+	MOVE.L	D0,A0
+	ADDQ.W	#1,-6(A0)
+.x:	RTS
+		E_STRRETAIN:
+
+; _StrPool(a,op)  op 0: returns the current mark
+;                 op 1: parks string a (keeps its reference), returns a
+;                 op 2: releases everything parked since mark a
+; the pool is an array on the allocation chain, freed when it becomes empty.
+I_STRPOOL:
+	MOVEM.L	D1-D5/A0-A3/A6,-(A7)
+	MOVE.L	44(A7),D1		; op
+	MOVE.L	48(A7),D2		; a
+	LEA	.data(PC),A2
+	TST.L	D1
+	BEQ	.mark
+	SUBQ.L	#1,D1
+	BEQ	.push
+.drain:	MOVE.L	4(A2),D3
+	CMP.L	D2,D3
+	BLS.S	.drdone
+	SUBQ.L	#1,D3
+	MOVE.L	D3,4(A2)
+	MOVE.L	(A2),A0
+	LSL.L	#2,D3
+	MOVE.L	0(A0,D3.L),A0
+	SUBQ.W	#1,-6(A0)
+	BNE.S	.drain
+	LEA	-16(A0),A0
+	BSR	.freeblk
+	BRA.S	.drain
+.drdone:
+	TST.L	4(A2)
+	BNE.S	.out
+	MOVE.L	(A2),D0
+	BEQ.S	.out
+	MOVE.L	D0,A0
+	SUBQ.L	#8,A0
+	CLR.L	(A2)
+	CLR.L	8(A2)
+	BSR	.freeblk
+.out:	MOVEM.L	(A7)+,D1-D5/A0-A3/A6
+	RTS
+.mark:	MOVE.L	4(A2),D0
+	BRA.S	.out
+.push:	MOVE.L	4(A2),D3		; count
+	CMP.L	8(A2),D3
+	BCS.S	.room
+	MOVE.L	8(A2),D4		; capacity: double it
+	ADD.L	D4,D4
+	BNE.S	.nz
+	MOVEQ	#16,D4
+.nz:	MOVE.L	D4,D5
+	LSL.L	#2,D5
+	ADDQ.L	#8,D5			; block size
+	MOVE.L	D5,D0
+	MOVEQ	#1,D1
+	SWAP	D1
+	MOVE.L	4.W,A6
+	JSR	-198(A6)
+	TST.L	D0
+	BEQ.S	.raise
+	MOVE.L	D0,A3			; new block
+	MOVE.L	-20(A4),(A3)
+	MOVE.L	A3,-20(A4)
+	MOVE.L	D5,4(A3)
+	MOVE.L	(A2),D0
+	BEQ.S	.nocp
+	MOVE.L	D0,A0
+	LEA	8(A3),A1
+	MOVE.L	D3,D1
+	BRA.S	.cpe
+.cpl:	MOVE.L	(A0)+,(A1)+
+.cpe:	DBRA	D1,.cpl
+	MOVE.L	(A2),A0
+	SUBQ.L	#8,A0
+	BSR.S	.freeblk
+.nocp:	LEA	8(A3),A0
+	MOVE.L	A0,(A2)
+	MOVE.L	D4,8(A2)
+.room:	MOVE.L	(A2),A0
+	MOVE.L	4(A2),D0
+	LSL.L	#2,D0
+	MOVE.L	D2,0(A0,D0.L)
+	ADDQ.L	#1,4(A2)
+	MOVE.L	D2,D0
+	BRA.S	.out
+.raise:	MOVE.L	#"MEM",-84(A4)
+	MOVE.L	-148(A4),-96(A4)
+	MOVE.L	-140(A4),A0
+	JMP	(A0)
+; A0 = block on the chain : unlink and free it
+.freeblk:
+	MOVE.L	A3,-(A7)
+	LEA	-20(A4),A1
+.fl:	MOVE.L	(A1),D1
+	BEQ.S	.fx
+	MOVE.L	A1,A3
+	MOVE.L	D1,A1
+	CMPA.L	D1,A0
+	BNE.S	.fl
+	MOVE.L	4(A1),D0
+	MOVE.L	(A1),(A3)
+	MOVE.L	4.W,A6
+	JSR	-210(A6)
+.fx:	MOVE.L	(A7)+,A3
+	RTS
+.data:	DC.L	0,0,0			; entries, count, capacity
+		E_STRPOOL:
+
+; _StrCmp(a,b) : -1,0,1 comparing the characters (unsigned).  NIL is empty.
+I_STRCMPS:
+	MOVE.L	8(A7),A0
+	MOVE.L	4(A7),A1
+	MOVE.L	A0,D0
+	BNE.S	.a
+	LEA	.empty(PC),A0
+.a:	MOVE.L	A1,D0
+	BNE.S	.b
+	LEA	.empty(PC),A1
+.b:	MOVE.B	(A0)+,D0
+	MOVE.B	(A1)+,D1
+	CMP.B	D1,D0
+	BNE.S	.diff
+	TST.B	D0
+	BNE.S	.b
+	MOVEQ	#0,D0
+	RTS
+.diff:	BCS.S	.less
+	MOVEQ	#1,D0
+	RTS
+.less:	MOVEQ	#-1,D0
+	RTS
+.empty:	DC.B	0,0
+		E_STRCMPS:
 ;*************************************************************	;
 ;	UnInitialized DataSection for E Compiler		;
 ;*************************************************************	;
@@ -40729,6 +41549,12 @@ globmapbuffend:
 ;ESTACKBUF:	DS.B	MAXSTACK+2
 ;		EVEN
 EFUNCBYTE:	DS.B	NREFUNC+10
+		EVEN
+STRTAB:		DS.L	256
+STRLTAB:	DS.L	256
+STRCNT:		DS.W	1
+STRLCNT:	DS.W	1
+STRMCNT:	DS.W	1
 		EVEN
 EFUNCRAISE:	DS.B	(NREFUNC+10)*10
 		EVEN

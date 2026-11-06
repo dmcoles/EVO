@@ -103,6 +103,7 @@ Contents:
           @{"  F. the compound type (OBJECT)  " link CH_8F }
           @{"  G. initialisation  " link CH_8G }
           @{"  H. the essentials of the E typesystem  " link CH_8H }
+          @{"  I. the managed string type (STR)  " link CH_8I }
 
          9. built-in functions
           @{"  A. io functions  " link CH_9A }
@@ -3344,6 +3345,115 @@ bla(sys.ADR('hallo')) because the string doesn't represent a pointer,
 but a value as a whole...
 
 
+
+@endnode
+@node CH_8I
+@title "8I. the managed string type (STR)"
+8I. the managed string type (STR)
+---------------------------------
+A STR variable owns a string that is allocated, shared and freed for you,
+there is no String(), DisposeLink() or StrAdd() to write.
+
+  DEF s:STR, t:STR
+
+A STR holds NIL until it is assigned.  It can be a global variable, a local
+variable or an OBJECT member (see below).
+
+assignment
+----------
+  s:='hello'               copies the string constant
+  s:=a+', '+b+'!'          joins any number of strings in one go
+  t:=s                     shares the string (no copy is made)
+  s:=NIL                   lets go of the string
+  s:=name                  any other expression is taken to point to a
+                           string, a copy is made (or the string is shared
+                           when it already is a STR)
+
+The operands of + can be STR variables, other variables or members that
+point to a string, and string constants.  The old string of the variable
+is released after the new one has been built, so s:=s+s is fine.
+
+A string is freed when the last variable that uses it lets go of it.  The
+local STR variables of a procedure are released when it ends (at ENDPROC or
+RETURN).  Strings that are still in use when the program ends are freed with
+the rest of the memory.
+
+using a STR
+-----------
+A STR is a pointer to the characters of an estring (see @{" 8E " link CH_8E }).
+It can be given to anything that wants a string:
+
+  WriteF('\s\n',s)
+  n:=StrLen(s)
+  OpenW(...) / OS functions
+
+but do not change it with StrAdd(), StrCopy() and friends when it is shared,
+and do not use END or DisposeLink() on it.  (A STR can hold 65535 characters.)
+
+comparison
+----------
+  IF s='yes' THEN ...
+  IF a<>b THEN ...
+  IF a<b ...                (also > <= >=)
+
+compares the characters, the order is that of the character codes.  This is
+used when both sides are a STR variable or a string constant, and at least one
+of them is a STR variable.  Comparing with NIL is still a pointer comparison
+(IF s=NIL tells whether the variable holds a string at all) and a NIL STR counts
+as an empty string in the comparisons above.  For anything else use StrCmp().
+
+arguments and return values
+---------------------------
+Parameters are plain pointers, declare them without a type and assign them to
+a STR variable to keep them:
+
+  PROC shout(in)
+    DEF t:STR
+    t:=in+'!!!'
+    RETURN t
+  ENDPROC
+
+RETURN with a STR variable hands the string to the caller, who keeps it by
+assigning the result to a STR variable:
+
+  DEF a:STR
+  a:=shout('hey')
+
+A returned string that is not assigned to a STR variable (for instance when it
+is only passed to WriteF) stays allocated until a later assignment statement
+of an outer procedure has finished, or the program ends.
+
+STR members
+-----------
+  OBJECT person
+    name:STR
+    city:STR
+    age:LONG
+  ENDOBJECT
+
+  DEF p:PTR TO person
+  NEW p
+  p.name:='Ann'
+  p.name:=p.name+' Smith'
+  END p                     /* releases name and city */
+
+STR members are assigned like STR variables and are released by END.  Objects
+that are declared by value (DEF o:person) do not release their STR members.
+Members of an object that is reached through an array index cannot be STR.
+
+compiler support
+----------------
+STR needs the extra functions that are linked in the first time it is used,
+programs that do not use it are not changed.  Compile with MEMDEBUG (see
+@{" 0C " link CH_0C }) to check that a program that uses STR frees everything.
+
+not (yet) supported
+-------------------
+- STR as the type of a procedure parameter or result
+- RETURN of an expression that is not a STR variable gives the plain pointer
+- STR in arrays (ARRAY OF STR), LIST elements or PTR TO STR
+- releasing the STR variables of the procedures that are skipped when an
+  exception is raised (they are freed when the program ends)
 
 @endnode
 @node CH_9A

@@ -200,7 +200,7 @@ Added features:
      module .
   (3.3g)
     - Improved fake stack setting , now is more os compatible
-      ( used exec SwapStack() for OS v37 else old things ).
+      (ï¿½used exec SwapStack() for OS v37 else old things ).
     - Added PRIVATE methods in OOP ( PROC bla() OF abc PRIVATE IS EMPTY )
     - member can be used as method ( OBJECT abc;a,b;ENDOBJECT -> abc.a(1,2) )
     - possible set PROC/label address in static list like this [1,2,main]
@@ -677,7 +677,15 @@ Development restarted as E-VO by Darren Coles
      FastDisposeList() of blocks that are not allocated.
    - Added MemDebugReport() function to list undisposed memory on demand
      (returns the number of blocks).
-   
+
+    (3.11.0)
+   - Added the STR type: a managed (reference counted) string. DEF s:STR,
+     s:='a'+b+'c' joins strings, s:=t shares, s:=NIL releases, the STR
+     locals of a procedure are released when it ends, RETURN s hands a STR
+     to the caller, = <> < > <= >= compare STR variables and string
+     constants, and STR members of objects are released by END. See
+     chapter 8I of the guide.
+
 DATE HISTORY:
     3.3b    20.11.1999 -> 12.12.1999
     3.3c    15.12.1999 -> 12.01.2000
