@@ -3948,6 +3948,42 @@ PROC test_extranot()
   assert(r=-1,'NOT a()',_SRCLINE_)
 ENDPROC
   
+
+OBJECT optrptr
+  pp:PTR TO PTR TO LONG
+ENDOBJECT
+
+PROC test() OF optrptr
+  DEF r
+  r:=self.pp[0][0]
+ENDPROC r
+
+PROC test_selfptrptr()
+  DEF t:PTR TO optrptr
+  DEF n
+  
+  NEW t
+  t.pp:=[[$12345678]]
+  n:=t.test()
+  END t
+  
+  assert_equal($12345678, n,'self ptr to ptr',_SRCLINE_)
+ENDPROC
+
+PROC proc_param_ptr_to_ptr(a:PTR TO PTR TO LONG)
+  DEF r
+  r:=a[0][0]
+ENDPROC r
+
+PROC test_param_ptr_to_ptr()
+  DEF n
+  n:=proc_param_ptr_to_ptr([[$87654321]])
+
+  assert_equal($87654321, n,'ptr to ptr parameter',_SRCLINE_)
+  
+ENDPROC
+
+
 /* Main test runner */
 PROC main() HANDLE
   WriteF('*************************************************\n')
@@ -4329,6 +4365,8 @@ PROC main() HANDLE
   test_newobj()
   test_immlistnot()
   test_extranot()
+  test_selfptrptr()
+  test_param_ptr_to_ptr()
   EXCEPT DO
   /* Print summary */
   WriteF('\n=================================================\n')

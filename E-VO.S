@@ -3949,7 +3949,7 @@ PURECHECK: DC.B 0
 	CLR.L (A6)+		;VAR_NAME
 	CLR.L (A6)+		;DEF_VALUE
 	CLR.L (A6)+		;IMPORT_DATA
-	MOVE.W #-1,(A6)+	;VAR_PTRREPCOUNT
+	MOVE.W #0,(A6)+	;VAR_PTRREPCOUNT
 	CLR.L (A6)+ ;VAR_DIMDATA
 	IFD IDENT_COOKIE
 	MOVE.W #$C0DE,(A6)+ ;VAR_IDCOOKIE
@@ -3976,21 +3976,26 @@ PURECHECK: DC.B 0
 .SKIP:	MOVE.W	(A3)+,D0
 	CMP.W	#19,D0
 	BEQ.S	.SKIP
-	CMP.W	#IOFF+20,D0
+	CMP.W	#IOFF+20,D0		;LONG
 	BEQ.S	.S3
-	CMP.W	#IOFF+44,D0
+	CMP.W	#IOFF+44,D0		;PTR
 	BEQ.S	.S1
 	CMP.W	#IOFF+61,D0
 	BEQ.S	.S3
 	SUBQ.L	#2,A3
 .S3:	RTS
-.S1:	CMP.W	#IOFF+39,(A3)+		; PTR TO
+.S1:	CMP.W	#IOFF+39,(A3)+		; TO
 	BNE	ERROR33
-	CMP.W	#IOFF+109,(A3)
+	CMP.W	#IOFF+44,(A3)		;PTR
+	BNE.S	.nrep
+	ADDQ.L	#2,A3
+	BRA.S	.S1
+.nrep
+	CMP.W	#IOFF+109,(A3)		;BYTE
 	BEQ.S .SX
-	CMP.W	#IOFF+110,(A3)
+	CMP.W	#IOFF+110,(A3)		;WORD
 	BEQ.S .SX
-	CMP.W	#IOFF+20,(A3)
+	CMP.W	#IOFF+20,(A3)		;LONG
 	BPL.S	.S2
 	CMP.W	#31,(A3)+
 	BNE	ERROR33
@@ -10205,7 +10210,7 @@ SRCFN: DC.L 0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
 			DC.B	'/Assembler/Linker/PP',160,'v3.10.0-dev',160
-			DC.B	'(04.11.2026)'
+			DC.B	'(12.11.2026)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -18585,9 +18590,6 @@ PLB:
 	MOVE.L	(A0),.SSPEC1
 	CLR.B	.TDRF
 .DREFL:
-	MOVE.L	COMPILEPROC(PC),A1
-	CMP.L	18(A1),A0
-	BEQ .0_2					; self cant be a ptr to ptr ... - problems
 
 .NDIM:
 	 
