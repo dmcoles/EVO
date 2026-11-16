@@ -1,4 +1,4 @@
-E-VO v3.9.4 :
+E-VO v3.10.0 :
 
 Formerly : GRIO Amiga E Compiler !
 
@@ -670,6 +670,29 @@ Development restarted as E-VO by Darren Coles
    - ListClone did not allocate the correct amount of memory for the new List
 
    (3.10.0)
+   - Improve NOT handling - did not work correctly in some scenarios
+   - added OPT CANPOOL which enables memory pools only if OS39 is detected
+   - added DEBUGLINENOS command line option which allows system generated run
+     time exceptions (eg "MEM" "NIL" "INDX") to know which line number
+     triggered the exception
+   - fix for memory allocation / freeing issues when using OPT POOL
+   - changed some compiler flags to byte to save space
+   - added OPT ESTRCONST to make all string constants be created as estrings
+   - updated module loader to only display warning about opt settings once
+   - updated module loader to update newer OPT settings (LEGACYINT AND
+     ESTRCONST) correctly when importing a module
+   - fix compile error when calling SUPER obj.method() when the method name
+     exists as a member of another object
+   - improve module import warnings to be more specific about what was changed
+   - updated line numbers on warnings to be unsigned word
+   - consolidated tabs/spacing
+   - EDBG: update to support code files with >32767 lines (new limit is 65535)
+   - fix nilcheck triggered incorrectly in PrintF
+   - Modules: fix typo in datatypes/pictureclass.m PMODE_V44 =1 should be
+     PMODE_V43=1
+   - treat line numbers as unsigned
+   - EDBG: add goto line menu option
+   - EDBG: add checks for selected source window (prevents crash)
    - Added MEMDEBUG command line switch: builds a program that tracks memory
      allocated by New(), NewR(), NewM(), NEW, FastNew(), String() and List()
      with the source line of each allocation and lists blocks never disposed
@@ -677,7 +700,9 @@ Development restarted as E-VO by Darren Coles
      FastDisposeList() of blocks that are not allocated.
    - Added MemDebugReport() function to list undisposed memory on demand
      (returns the number of blocks).
-   
+   - fix ptr to ptr in PROC parameter was identified as invalid syntax
+   - self.m[0][0] where m is a PTR TO PTR TO LONG, the code generated a byte
+     read instead of a long read
 DATE HISTORY:
     3.3b    20.11.1999 -> 12.12.1999
     3.3c    15.12.1999 -> 12.01.2000
@@ -699,3 +724,4 @@ DATE HISTORY:
     3.9.2   22.12.2025 -> 02.02.2026
     3.9.3   03.02.2026 -> 06.03.2026
     3.9.4   08.05.2026 -> 06.07.2026
+    3.10.0  13.07.2026 -> 16.11.2026

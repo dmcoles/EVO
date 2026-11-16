@@ -1,10 +1,10 @@
 @database "e.guide"
 @node MAIN
-@title "Amiga E-VO v3.9.4"
+@title "Amiga E-VO v3.10.0"
 
                 +-----------------------------------------------+
                 |                                               |
-                |               Amiga E-VO v3.9.4               |
+                |              Amiga E-VO v3.10.0               |
                 |          Compiler for The E Language          |
                 |     Originally By Wouter van Oortmerssen      |
                 |           Updates By GRIO 1999-2003           |
@@ -260,7 +260,7 @@ syntax of the compiler (2.04+):
 SOURCE/A,REG=NUMREGALLOC/N/K,LARGE/S,SYM=SYMBOLHUNK/S,NOWARN/S
 QUIET/S,ASM/S,ERRLINE/S,ERRBYTE/S,SHOWBUF/S,ADDBUF/N/K,COMPILESTACK/N/K,
 IC=IGNORECACHE/S,HOLD/S,WB/S,LINEDEBUG/S,OPTI/S,LEGACY/S,LEGACYINT/S,
-DEBUG/S,DEBUG50/S,NILCHECK/S,STACKCHECK/S,ARRAYCHECK/S,SHOWFNAME/S,NOPROGRESS/S,MEMDEBUG/S,DEFINE/M',0
+DEBUG/S,DEBUG50/S,DEBUGLINENOS/S,NILCHECK/S,STACKCHECK/S,ARRAYCHECK/S,SHOWFNAME/S,NOPROGRESS/S,MEMDEBUG/S,DEFINE/M',0
 
 for 1.2 to 2.03:
 
@@ -329,6 +329,9 @@ LEGACYINT        see OPT LEGACYINT. Enables backward compability with
 DEBUG            attach debug infos to executable/module (see @{" 17K " link CH_17K })
 DEBUG50          attach debug infos to executable/module in a way that
                  allows debugging under OS 4.x (see @{" 17K " link CH_17K })
+DEBUGLINENOS     include extra code to track line numbers at runtime to allow
+                 system generated exceptions (eg "MEM" "NIL" "INDX") to know
+                 which line number triggered the exception
 NILCHECK         insert code at every "." or "[]" dereference to check
                  for a NIL pointer. Will throw an exception of the form
                  Throw("NIL",source_line_number). Using this option will also
@@ -377,6 +380,42 @@ NOTE: in most cases you won't need to use any of these options
 @title "0D. changes / history / new features"
 0D. changes / history / new features
 ------------------------------------
+
+ New in E-VO  (3.10.0)
+   - Improve NOT handling - did not work correctly in some scenarios
+   - added OPT CANPOOL which enables memory pools only if OS39 is detected
+   - added DEBUGLINENOS command line option which allows system generated run
+     time exceptions (eg "MEM" "NIL" "INDX") to know which line number
+     triggered the exception
+   - fix for memory allocation / freeing issues when using OPT POOL
+   - changed some compiler flags to byte to save space
+   - added OPT ESTRCONST to make all string constants be created as estrings
+   - updated module loader to only display warning about opt settings once
+   - updated module loader to update newer OPT settings (LEGACYINT AND
+     ESTRCONST) correctly when importing a module
+   - fix compile error when calling SUPER obj.method() when the method name
+     exists as a member of another object
+   - improve module import warnings to be more specific about what was changed
+   - updated line numbers on warnings to be unsigned word
+   - consolidated tabs/spacing in E-VO source
+   - EDBG: update to support code files with >32767 lines (new limit is 65535)
+   - fix nilcheck triggered incorrectly in PrintF
+   - Modules: fix typo in datatypes/pictureclass.m PMODE_V44 =1 should be
+     PMODE_V43=1
+   - treat line numbers as unsigned
+   - EDBG: add goto line menu option
+   - EDBG: add checks for selected source window (prevents crash)
+   - Added MEMDEBUG command line switch: builds a program that tracks memory
+     allocated by New(), NewR(), NewM(), NEW, FastNew(), String() and List()
+     with the source line of each allocation and lists blocks never disposed
+     when the program exits. Also warns about Dispose(), FastDispose() and
+     FastDisposeList() of blocks that are not allocated.
+   - Added MemDebugReport() function to list undisposed memory on demand
+     (returns the number of blocks).
+   - fix ptr to ptr in PROC parameter was identified as invalid syntax
+   - self.m[0][0] where m is a PTR TO PTR TO LONG, the code generated a byte
+     read instead of a long read
+
  New in E-VO  (3.9.4)
    - swap operator (:=:) did not work correctly with global variables
    - fix issue with ANDALSO or ELSE processing producing corrupt code
@@ -6079,6 +6118,15 @@ POOL(memtype, puddlesize, threshsize)
                 10240 and 256. When using OPT POOL memory for e-lists, objects
                 and other memory functions will be allocated from the POOL.
                 Pools are only availablein OS v39 and above.
+CANPOOL(memtype, puddlesize, threshsize)
+                works as OPT POOL but the application will check the OS
+                at runtime and only enable the pool if OS v39 is detected
+                and reverts to the normal memory routines if an earlier OS
+                revision is detected.
+ESTRCONST       Forces the compiler to create all string constants as
+                estrings this means for example you can pass a string
+                constant to a procedure which calls EstrLen() on that
+                parameter
 FPEXP           Tells the compiler to generate FPU based floating point math
                 code. You also need to specify either the cpu like 040/060
                 or the fpu like 881/882 to switch this on.

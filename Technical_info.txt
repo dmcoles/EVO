@@ -1456,6 +1456,7 @@ has to become (ends with):      FOR/WHILE/UNTIL:        lab,jumpback,id
 104             invalid array dimension
 105             global map workspace full
 106             array index out of range
+107             cant export private object
 
 WARNINGS:
 
