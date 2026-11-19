@@ -673,8 +673,10 @@ Development restarted as E-VO by Darren Coles
    - Improve NOT handling - did not work correctly in some scenarios
    - added OPT CANPOOL which enables memory pools only if OS39 is detected
    - added DEBUGLINENOS command line option which allows system generated run
-     time exceptions (eg "MEM" "NIL" "INDX") to know which line number
-     triggered the exception
+     time exceptions (eg "MEM" "NIL" "INDX") to know which line number and
+     which source file triggered the exception
+   - added exceptionsrc system variable which contains the source filename
+     where an exception occured (requires DEBUGLINENOS to be active)
    - fix for memory allocation / freeing issues when using OPT POOL
    - changed some compiler flags to byte to save space
    - added OPT ESTRCONST to make all string constants be created as estrings
@@ -703,6 +705,7 @@ Development restarted as E-VO by Darren Coles
    - fix ptr to ptr in PROC parameter was identified as invalid syntax
    - self.m[0][0] where m is a PTR TO PTR TO LONG, the code generated a byte
      read instead of a long read
+   
 DATE HISTORY:
     3.3b    20.11.1999 -> 12.12.1999
     3.3c    15.12.1999 -> 12.01.2000
