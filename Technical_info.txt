@@ -573,6 +573,9 @@ store = set to current variables
 88      stack check
 89      stack update
 90      autoproc
+91      save current src name, set new src
+92      restore old src
+93      set new src
 +---------------------------------------------------------------+
 |       OPT bits and cli-flags                                  |
 +---------------------------------------------------------------+
