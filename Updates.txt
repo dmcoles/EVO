@@ -675,7 +675,9 @@ Development restarted as E-VO by Darren Coles
    - added DEBUGLINENOS command line option which allows system generated run
      time exceptions (eg "MEM" "NIL" "INDX") to know which line number and
      which source file triggered the exception
-   - added exceptionsrc system variable which contains the source filename
+   - added exceptionsrc variable which contains the source filename
+     (requires DEBUGLINENOS to be active)
+   - added exceptionline variable which contains the source line number
      where an exception occured (requires DEBUGLINENOS to be active)
    - fix for memory allocation / freeing issues when using OPT POOL
    - changed some compiler flags to byte to save space
@@ -687,7 +689,7 @@ Development restarted as E-VO by Darren Coles
      exists as a member of another object
    - improve module import warnings to be more specific about what was changed
    - updated line numbers on warnings to be unsigned word
-   - consolidated tabs/spacing
+   - consolidated tabs/spacing in E-VO source
    - EDBG: update to support code files with >32767 lines (new limit is 65535)
    - fix nilcheck triggered incorrectly in PrintF
    - Modules: fix typo in datatypes/pictureclass.m PMODE_V44 =1 should be
