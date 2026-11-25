@@ -388,6 +388,7 @@ NOTE: in most cases you won't need to use any of these options
      time exceptions (eg "MEM" "NIL" "INDX") to know which line number and
      which source file triggered the exception
    - added exceptionsrc variable which contains the source filename
+   - added exceptionline variable which contains the source line number
      where an exception occured (requires DEBUGLINENOS to be active)
    - fix for memory allocation / freeing issues when using OPT POOL
    - changed some compiler flags to byte to save space
@@ -2819,6 +2820,8 @@ wbmessage       Contains a ptr to a message you got if you started
 exception       exception ID used in exception handling
 exceptioninfo   additional information used in exception handling
 exceptionsrc    source filename where exception occured (only populated if
+                DEBUGLINENOS or MEMDEBUG command line parameters are in use)
+exceptionline   source line number where exception occured (only populated if
                 DEBUGLINENOS or MEMDEBUG command line parameters are in use)
 thistask        address of this task
 __pool          address of the memory pool (OS 3.0+ only and when pooling is

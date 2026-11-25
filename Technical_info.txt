@@ -170,6 +170,7 @@ GLOBOFF		= -512 which reserves this space
 -148    line number tracker for nilcheck and memdebug
 -152    source file tracker for nilcheck and memdebug
 -156    "exceptionsrc" copied from -152 when exception happens
+-160    "exceptionline" copied from -148 when exception happens
 
 +---------------------------------------------------------------+
 |       structures                                              |
