@@ -61,6 +61,7 @@ S:	MOVE.L	A7,INITSTACK
 	BSR	INITBUFFERS
 	CLR.L ConstsList
 	CLR.L ConstTemp
+	BSR DOEFUNCPATCHES
 	BSR	SETVARS
 	BSR	MAKEKEYHASH
 	BSR	MAKEASMHASH
@@ -1875,6 +1876,19 @@ GENLINENO:
 		LINEBUFCUR:	DC.L	0
 		LINEBUFCURSTART:	DC.L	0
 		SOURCENAMEPTR:	DC.L 0
+
+		DOEFUNCPATCHES:
+	BTST #1,CODEPREFS+3			 ;NIL CHECK 
+	BEQ.S .notnilcheck
+
+	JSR NILPATCHES		;update to efunctab and efuncsizes to use NILCHECK versions
+
+.notnilcheck
+	TST.B	MEMDEBUGFLAG
+	BEQ.S	.notmemdbg
+	JSR	MEMDBGPATCHES
+.notmemdbg
+	RTS
 
 		SETVARS:
 	MOVE.L	#BRACKETSBUF,CURBRACK
@@ -10211,8 +10225,8 @@ SRCFN: DC.L 0
 	EROBJLINE:	DC.B	'WITH: %s',10,0
 			DC.B	'$VER:'
 	TITLE:		DC.B	'E-VO',160,'E',160,'Compiler'
-			DC.B	'/Assembler/Linker/PP',160,'v3.10.0-dev',160
-			DC.B	'(25.11.2026)'
+			DC.B	'/Assembler/Linker/PP',160,'v3.10.0',160
+			DC.B	'(26.11.2026)'
 			DC.B	10,'developing as "EC"',160
 			DC.B	'''1991-97',160,'by Wouter van Oortmerssen',10
 			DC.B	'developing as "GEC"',160
@@ -25820,50 +25834,14 @@ iiERROR5: JMP ERROR5
 	SUB.L	#EFUNCTAB,D0
 	LSR.L	#4,D0
 	
-	TST.B	MEMDEBUGFLAG
-	BEQ.S	.nomemdbg
-
-	LEA MEMDBGPATCHLIST,A2
-.nextmdbg
-	MOVE.L (A2)+,D2		;function number
-	BMI.S .nomemdbg
-	ADD.L #8,A2
-	CMP.L D0,D2
-	BNE.S .nextmdbg
-	BRA.S .dolineno
-
-.nomemdbg
 	TST.B DEBUGLINENOS
 	BEQ.S .done
+
+	LEA EFUNCFLAGSTAB,A6
 	
-	CMP.L #91-1,D0		 ;THROW
-	BEQ.S .dolineno
-
-	CMP.L #83-1,D0		 ;RAISE
-	BEQ.S .dolineno
-
-	;functions that can throw "NIL" exception
-	CMP.L #85-1,D0		 ;NEWR
-	BEQ.S .dolineno
-	CMP.L #95-1,D0		 ;NEWM
-	BEQ.S .dolineno
-	CMP.L #115-1,D0			;CONS
-	BEQ.S .dolineno
-	CMP.L #111-1,D0			;FASTNEW
-	BEQ.S .dolineno
-
-	;e functions that can throw a "NIL" exception
-	BTST #1,CODEPREFS+3			 ;NIL CHECK 
+	BTST #7,(A6,D0)			;check needs debug line numbers flag
 	BEQ.S .done
-	LEA NILPATCHLIST,A2
-.next
-	MOVE.L (A2)+,D2		;function number
-	BMI.S .done
-	ADD.L #8,A2
-	CMP.L D0,D2
-	BNE.S .next
-
-.dolineno
+	
 	JSR GENLINENO
 .done
 
@@ -26099,6 +26077,7 @@ EFUNDA:	ADDQ.L	#1,D0
 	LSL.W	#1,D0
 	MOVE.W	.2(PC,D0.W),(A4)+
 	MOVE.L	A4,A0
+	JSR GENLINENO
 	MOVE.L	2(A6),D0
 	BNE.S	.NZER
 	MOVE.W	.8(PC),(A4)+
@@ -26123,18 +26102,7 @@ EFUNDA:	ADDQ.L	#1,D0
 	MOVE.W	.5(PC),NEWOP
 	JSR	ADDBRANCH
 	BRA.S	.CC
-.MOD:	SUBQ.L	#4,A4
-	MOVE.W	.5(PC),(A4)+
-	JSR	ADDBRANCHRELOC
-	MOVE.W	D0,-2(A4)
-.CC:
 
-	MOVEM.L	(A7)+,D0/A0
-	MOVE.L	A4,D0
-	SUB.L	A0,D0
-	MOVE.B	D0,-1(A0)
-	MOVEM.L	(A7)+,D0/D1/A0
-	RTS
 .1:	CMP.L	#1,D0
 .1B:	TST.L	D0
 .2:	BNE.S	.1
@@ -26149,6 +26117,19 @@ EFUNDA:	ADDQ.L	#1,D0
 .6:	CMP.L	D1,D0
 .7:	PEA	2.W
 .8:	CLR.L	-(A7)
+
+.MOD:	SUBQ.L	#4,A4
+	MOVE.W	.5(PC),(A4)+
+	JSR	ADDBRANCHRELOC
+	MOVE.W	D0,-2(A4)
+.CC:
+
+	MOVEM.L	(A7)+,D0/A0
+	MOVE.L	A4,D0
+	SUB.L	A0,D0
+	MOVE.B	D0,-1(A0)
+	MOVEM.L	(A7)+,D0/D1/A0
+	RTS
 
 ;*-*
 ;; EXPINLINE
@@ -29652,17 +29633,7 @@ STRLENADR:	DC.L	0
 		LINKFUNCS:
 	TSTMOD
 	BNE.W	.X
-	
-	BTST #1,CODEPREFS+3			 ;NIL CHECK 
-	BEQ.S .notnilcheck
 
-	BSR NILPATCHES		;update to efunctab and efuncsizes to use NILCHECK versions
-
-.notnilcheck
-	TST.B	MEMDEBUGFLAG
-	BEQ.S	.notmemdbg
-	BSR	MEMDBGPATCHES
-.notmemdbg
 	MOVE.L	#EFUNCBYTE,A3
 	MOVE.W	#NREFUNC,D2
 	SUBQ.W	#1,D2
@@ -29741,6 +29712,8 @@ MEMDBGPATCHES:
 .next
 	MOVE.L (A2)+,D0	;function number
 	BMI.S .done
+	LEA EFUNCFLAGSTAB,A3
+	OR.B #128,(A3,D0)			;set needs debug line numbers flag
 	LSL.L #2,D0
 	LEA (A1,D0),A3
 	LSL.L #2,D0
@@ -29771,6 +29744,9 @@ NILPATCHES:
 .next
 	MOVE.L (A2)+,D0	;function number
 	BMI.S .done
+	LEA EFUNCFLAGSTAB,A3
+	OR.B #128,(A3,D0)			;set needs debug line numbers flag
+	
 	LSL.L #2,D0
 	LEA (A1,D0),A3
 	LSL.L #2,D0
@@ -31155,10 +31131,10 @@ INL_ROR:
 	DC.B	0,0,0,0,0,0,0,64,64,64	; 51-60
 	DC.B	0,0,0,64,64,64,0,0,0,0	; 61-70
 	DC.B	0,0,0,0,0,64,64,64,0,64	; 71-80
-	DC.B	0,64,0,0,0,0,0,0,0,0	; 81-90
-	DC.B	0,0,0,0,0,0,1,1,64+1,64+1	; 91-100
+	DC.B	0,64,128,0,128,0,0,0,0,0	; 81-90
+	DC.B	128,0,0,0,128,0,1,1,64+1,64+1	; 91-100
 	DC.B	64+1,64+2,64+2,64+2,64+2,64+2,64+2,64+2,64+2,0	; 101-110
-	DC.B	0,0,0,0,0,0,0,0,64,64	; 111-120
+	DC.B	128,0,0,0,128,0,0,0,64,64	; 111-120
 	DC.B	0,0,64+2,64+2,64+2,64+2,64+2,64+2,64+2,64+2	; 121-130
 	DC.B	64+2,0,0,0,0,64+32,0,8,8,8	; 131-140
 	DC.B	8,8,8,8,32+8,8,32+8,0,0,0	; 141-150
@@ -31176,7 +31152,7 @@ INL_ROR:
 ;		4 = autoclose files
 ;		5 = not pure
 ;		6 = inline
-;
+;		7 = needs debug line numbers generating
 
 FOFF		= $100
 NREFUNC		= 203

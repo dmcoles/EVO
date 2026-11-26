@@ -702,11 +702,14 @@ Development restarted as E-VO by Darren Coles
      with the source line of each allocation and lists blocks never disposed
      when the program exits. Also warns about Dispose(), FastDispose() and
      FastDisposeList() of blocks that are not allocated.
+     (Credit: Richard Collier)
    - Added MemDebugReport() function to list undisposed memory on demand
      (returns the number of blocks).
+     (Credit: Richard Collier)
    - fix ptr to ptr in PROC parameter was identified as invalid syntax
    - self.m[0][0] where m is a PTR TO PTR TO LONG, the code generated a byte
      read instead of a long read
+   - added EVO_3_10_0 define
    
 DATE HISTORY:
     3.3b    20.11.1999 -> 12.12.1999
@@ -729,4 +732,4 @@ DATE HISTORY:
     3.9.2   22.12.2025 -> 02.02.2026
     3.9.3   03.02.2026 -> 06.03.2026
     3.9.4   08.05.2026 -> 06.07.2026
-    3.10.0  13.07.2026 -> 25.11.2026
+    3.10.0  13.07.2026 -> 26.11.2026
